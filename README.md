@@ -49,8 +49,7 @@ If that fails, the way to connect to the Config Portal depends on whether the de
 - Otherwise type *90 followed by OK on the remote control and listen, the IP address will be read out loud.
 
 In the main menu, click on "Setup" to configure your Flux Capacitor.
-
-| ![The_Config_Portal](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/5cb25845-4734-47bd-957f-bb86b5528729) |
+| ![The_Config_Portal](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/8e5fa98e-a9aa-4332-8c81-f7ea9bb19ee8) |
 |:--:| 
 | *The Config Portal's Setup page* |
 
