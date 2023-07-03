@@ -1,5 +1,18 @@
-# Flux-Capacitor
-Firmware for CircuitSetup's Flux Capacitor
+# Firmware for Flux-Capacitor
+
+This repository holds the most current firmware for CircuitSetup's wonderful ESP32-based Flux Capacitor.
+
+The hardware is (or will be) available [here](https://circuitsetup.us) and is built around a NodeMCU ESP32-S dev board.
+
+Features include
+- movie-accurate default flux sequence, plus 9 alternative flux sequences
+- [Time Travel](#time-travel) function, triggered by button, TCD or via MQTT
+- [Music player](#the-music-player): Play mp3 files located on an SD card
+- [Home Assistant](#home-assistant--mqtt) (MQTT 3.1.1) support
+- [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player
+- Advanced network-accessible [Config Portal](#the-config-portal) for setup with mDNS support for easy access (http://flux.local, hostname configurable)
+- Optional [flux](#the-flux-sound) sound (4 modes)
+- Built-in installer for default audio files in addition to OTA firmware updates
 
 ## Installation
 
