@@ -209,6 +209,8 @@ If no key is pressed for 10 seconds, the learning process aborts, as does briefl
     </tr>
 </table>
 
+[Here](https://github.com/realA10001986/Flux-Capacitor/blob/main/CheatSheet.pdf) is a cheat sheet for printing or screen-use. (Note that MacOS' preview application has a bug that scrambles the links in the document. Acrobat Reader does it correctly.)
+
 ## The Flux sound
 
 By default, the FC plays a "flux" sound continously.
