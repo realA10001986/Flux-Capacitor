@@ -2,7 +2,7 @@
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
- * https://github.com/realA10001986/Flux-Capacitor-A10001986
+ * https://github.com/realA10001986/Flux-Capacitor
  *
  * FCRemote Class: Remote control handling
  * Inspired by Ken Shirriff's IRRemote library

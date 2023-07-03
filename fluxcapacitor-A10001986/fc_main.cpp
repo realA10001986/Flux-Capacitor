@@ -2,7 +2,7 @@
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
- * https://github.com/realA10001986/Flux-Capacitor-A10001986
+ * https://github.com/realA10001986/Flux-Capacitor
  *
  * Main controller
  *
@@ -80,6 +80,8 @@ static PWMLED centerLED(LED_PWM_PIN);
 // The Box LED object
 static PWMLED boxLED(BLED_PWM_PIN);
 static bool PLforBL = false;
+uint16_t minBLL = 0;
+const uint8_t mbllArray[5] = { 0, 5, 10, 15, 20 };
 
 // The FC LEDs object
 FCLEDs fcLEDs(1, SHIFT_CLK_PIN, REG_CLK_PIN, SERDATA_PIN, MRESET_PIN);
@@ -103,8 +105,14 @@ bool mqttReentry    = false;
 bool mqttAlarm      = false;
 #endif
 
-bool        playFLUX = true;
-static bool playTTsounds = true;
+#define FLUXM2_SECS  30
+#define FLUXM3_SECS  60
+int                  playFLUX = 1;
+static bool          fluxTimer = false;
+static unsigned long fluxTimerNow = 0;
+static unsigned long fluxTimeout = FLUXM2_SECS * 1000;
+
+static bool          playTTsounds = true;
 
 // Time travel status flags etc.
 bool                 TTrunning = false;  // TT sequence is running
@@ -150,6 +158,10 @@ static bool          volchanged = false;
 static unsigned long volchgnow = 0;
 static bool          spdchanged = false;
 static unsigned long spdchgnow = 0;
+static bool          bllchanged = false;
+static unsigned long bllchgnow = 0;
+static bool          irlchanged = false;
+static unsigned long irlchgnow = 0;
 
 /*
  * Leave first two columns at 0 here, those will be filled
@@ -188,7 +200,7 @@ static unsigned long lastKeyPressed = 0;
 static bool          irFeedBack = false;
 static unsigned long irFeedBackNow = 0;
 
-static bool          irLocked = false;
+bool                 irLocked = false;
 
 bool                 IRLearning = false;
 static uint32_t      backupIRcodes[NUM_IR_KEYS];
@@ -261,6 +273,14 @@ void main_setup()
     Serial.println(F("Flux Capacitor version " FC_VERSION " " FC_VERSION_EXTRA));
 
     loadCurSpeed();
+    loadBLLevel();
+    loadIRLock();
+
+    if(playFLUX >= 3) {
+        playFLUX = 3;
+        fluxTimeout = FLUXM3_SECS*1000;
+    } else if(playFLUX == 2) 
+        fluxTimeout = FLUXM2_SECS*1000;
     
     // Start the Config Portal. A WiFiScan does not
     // disturb anything at this point.
@@ -286,13 +306,15 @@ void main_setup()
     Serial.println(F("Booting Box LED"));
     #endif
     boxLED.begin(BLED_CHANNEL, BLED_FREQ, BLED_RES, PLforBL ? PANEL_LED : 255);
+    // Set minimum box light level
+    boxLED.setDC(mbllArray[minBLL]);
 
     // Determine if Time Circuits Display is connected
     // via wire, and is source of GPIO tt trigger
     TCDconnected = ((int)atoi(settings.TCDpresent) > 0);
 
     // Set up option to play/mute sounds
-    playFLUX = ((int)atoi(settings.playFLUXsnd) > 0);
+    playFLUX = (int)atoi(settings.playFLUXsnd);
     playTTsounds = ((int)atoi(settings.playTTsnds) > 0);
 
     // Set up TT button / TCD trigger
@@ -562,7 +584,7 @@ void main_loop()
                 }
 
                 if(!bDone && now - TTbUpdNow > 2) {
-                    if((t = boxLED.getDC()) > 0) {
+                    if((t = boxLED.getDC()) > mbllArray[minBLL]) {
                         t -= 1;
                         if(t < 0) t = 0;
                         boxLED.setDC(t);
@@ -707,7 +729,7 @@ void main_loop()
                 }
 
                 if(!bDone && now - TTbUpdNow > 2) {
-                    if((t = boxLED.getDC()) > 0) {
+                    if((t = boxLED.getDC()) > mbllArray[minBLL]) {
                         t -= 1;
                         if(t < 0) t = 0;
                         boxLED.setDC(t);
@@ -742,6 +764,14 @@ void main_loop()
         }
     }
 
+    // Flux auto modes
+    if(fluxTimer && (millis() - fluxTimerNow > fluxTimeout)) {
+        if(playingFlux) {
+            stopAudio();
+        }
+        fluxTimer = false;
+    }
+
     // Save volume 10 seconds after last change
     if(!TTrunning && volchanged && (millis() - volchgnow > 10000)) {
         volchanged = false;
@@ -754,10 +784,22 @@ void main_loop()
         saveCurSpeed();
     }
 
+    // Save mbll 10 seconds after last change
+    if(!TTrunning && bllchanged && (millis() - bllchgnow > 10000)) {
+        bllchanged = false;
+        saveBLLevel();
+    }
+
+    // Save irlock 10 seconds after last change
+    if(!TTrunning && irlchanged && (millis() - irlchgnow > 10000)) {
+        irlchanged = false;
+        saveIRLock();
+    }
+
     if(!TTrunning && !IRLearning && mqttAlarm) {
         mqttAlarm = false;
         play_file("/alarm.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
-        if(playFLUX) {
+        if(playFLUX == 1) {
             append_flux();
         }
         fcLEDs.SpecialSignal(FCSEQ_ALARM);
@@ -777,9 +819,10 @@ static void timeTravel(bool TCDtriggered)
         return;
 
     if(playTTsounds) {
-        if(mp_stop()) {
+        if(mp_stop() || !playingFlux) {
            play_flux();
         }
+        fluxTimer = false;  // Disable timer for tt phase 0
     }
         
     TTrunning = true;
@@ -991,7 +1034,7 @@ static void executeIRCmd(int key)
         if(irLocked) return;
         if(!TTrunning) {
             play_file("/key3.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
-            if(playFLUX) {
+            if(playFLUX == 1) {
                 append_flux();
             }
         }
@@ -1004,7 +1047,7 @@ static void executeIRCmd(int key)
         if(haveMusic) {
             if(mpActive) {
                 mp_stop();
-                if(playFLUX) {
+                if(playFLUX == 1) {
                     play_flux();
                 }
             } else {
@@ -1016,7 +1059,7 @@ static void executeIRCmd(int key)
         if(irLocked) return;
         if(!TTrunning) {
             play_file("/key6.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
-            if(playFLUX) {
+            if(playFLUX == 1) {
                 append_flux();
             }
         }
@@ -1100,30 +1143,23 @@ static void executeIRCmd(int key)
             if(!TTrunning) {
                 switch(temp) {
                 case 0:                               // *00 Disable looped FLUX sound playback
-                    if(!irLocked) {
-                        if(playingFlux) {
-                            stopAudio();
-                        }
-                        playFLUX = false;
-                    }
-                    break;
                 case 1:                               // *01 Enable looped FLUX sound playback
+                case 2:                               // *02 Enable looped FLUX sound playback for 30 seconds
+                case 3:                               // *03 Enable looped FLUX sound playback for 60 seconds
                     if(!irLocked) {
-                        playFLUX = true;
-                        append_flux();
+                        setFluxMode(temp);
                     }
                     break;
-                case 10:                              // *10 Toggle knob use for volume
+                case 10:                              // *10 - *14: Set minimum box light level
+                case 11:
+                case 12:
+                case 13:
+                case 14:
                     if(!irLocked) {
-                        useVKnob = !useVKnob;
-                    }
-                    break;
-                case 11:                              // *11 Toggle knob use for LED speed
-                    if(!irLocked) {
-                        useSKnob = !useSKnob;
-                        if(!useSKnob) {
-                            fcLEDs.setSpeed(lastIRspeed);
-                        }
+                        minBLL = temp - 10;
+                        boxLED.setDC(mbllArray[minBLL]);
+                        bllchanged = true;
+                        bllchgnow = millis();
                     }
                     break;
                 case 20:                              // *20 set default speed
@@ -1138,6 +1174,23 @@ static void executeIRCmd(int key)
                     break;
                 case 70:                              // *70 lock/unlock ir
                     irLocked = !irLocked;
+                    irlchanged = true;
+                    irlchgnow = millis();
+                    break;
+                case 71:
+                    break;
+                case 80:                              // *80 Toggle knob use for volume
+                    if(!irLocked) {
+                        useVKnob = !useVKnob;
+                    }
+                    break;
+                case 81:                              // *81 Toggle knob use for LED speed
+                    if(!irLocked) {
+                        useSKnob = !useSKnob;
+                        if(!useSKnob) {
+                            fcLEDs.setSpeed(lastIRspeed);
+                        }
+                    }
                     break;
                 case 89:
                     if(!irLocked) {
@@ -1176,7 +1229,7 @@ static void executeIRCmd(int key)
                             }
                         }
                         waitAudioDone(false);
-                        if(wasActive && playFLUX) play_flux();
+                        if(wasActive && playFLUX == 1) play_flux();
                         ir_remote.loop(); // Flush IR afterwards
                     }
                     break;
@@ -1208,7 +1261,7 @@ static void executeIRCmd(int key)
                                 if(waitShown) {
                                     fcLEDs.SpecialSignal(0);
                                 }
-                                if(wasActive && playFLUX) play_flux();
+                                if(wasActive && playFLUX == 1) play_flux();
                                 ir_remote.loop(); // Flush IR afterwards
                             }
                         } else {
@@ -1407,6 +1460,44 @@ static void TTKeyPressed()
 static void TTKeyHeld()
 {
     isTTKeyHeld = true;
+}
+
+// Flux sound mode
+void setFluxMode(int mode)
+{
+    switch(mode) {
+    case 0:
+        if(playingFlux) {
+            stopAudio();
+        }
+        playFLUX = 0;
+        fluxTimer = false;
+        break;
+    case 1:
+        if(!mpActive) {
+            append_flux();
+        }
+        playFLUX = 1;
+        fluxTimer = false;
+        break;
+    case 2:
+    case 3:
+        if(playingFlux) {
+            fluxTimerNow = millis();
+            fluxTimer = true;
+        }
+        playFLUX = mode;
+        fluxTimeout = (mode == 2) ? FLUXM2_SECS*1000 : FLUXM3_SECS*1000;
+        break;
+    }
+}
+
+void startFluxTimer()
+{
+    if(playFLUX >= 2) {
+        fluxTimer = true;
+        fluxTimerNow = millis();
+    }
 }
 
 static void waitAudioDone(bool withIR)

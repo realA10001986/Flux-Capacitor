@@ -2,7 +2,7 @@
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
- * https://github.com/realA10001986/Flux-Capacitor-A10001986
+ * https://github.com/realA10001986/Flux-Capacitor
  *
  * Global definitions
  */
@@ -11,8 +11,8 @@
 #define _FC_GLOBAL_H
 
 // Version strings.
-#define FC_VERSION       "V0.28"
-#define FC_VERSION_EXTRA "JUN272023"
+#define FC_VERSION       "V1.0"
+#define FC_VERSION_EXTRA "JUL032023"
 
 #define FC_DBG              // debug output on Serial
 

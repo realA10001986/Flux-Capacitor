@@ -2,7 +2,7 @@
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
- * https://github.com/realA10001986/Flux-Capacitor-A10001986
+ * https://github.com/realA10001986/Flux-Capacitor
  *
  * Settings handling
  *
@@ -100,6 +100,12 @@ void saveCurVolume(bool useCache = true);
 
 bool loadCurSpeed();
 void saveCurSpeed(bool useCache = true);
+
+bool loadBLLevel();
+void saveBLLevel(bool useCache = true);
+
+bool loadIRLock();
+void saveIRLock(bool useCache = true);
 
 bool loadMusFoldNum();
 void saveMusFoldNum();

@@ -2,7 +2,7 @@
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
- * https://github.com/realA10001986/Flux-Capacitor-A10001986
+ * https://github.com/realA10001986/Flux-Capacitor
  *
  * Main controller
  *
@@ -40,10 +40,12 @@
 #define FC_SPD_MIN 500   // 5000ms
 #define FC_SPD_IDLE 20
 
+extern uint16_t minBLL;
 extern uint16_t lastIRspeed;
+extern bool     irLocked;
 
 extern bool TTrunning;
-extern bool playFLUX;
+extern int  playFLUX;
 extern bool IRLearning;
 
 #ifdef FC_HAVEMQTT
@@ -62,6 +64,9 @@ void endWaitSequence();
 
 void populateIRarray(uint32_t *irkeys, int index);
 void copyIRarray(uint32_t *irkeys, int index);
+
+void setFluxMode(int mode);
+void startFluxTimer();
 
 void mydelay(unsigned long mydel, bool withIR);
 

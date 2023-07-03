@@ -2,7 +2,7 @@
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
- * https://github.com/realA10001986/Flux-Capacitor-A10001986
+ * https://github.com/realA10001986/Flux-Capacitor
  *
  * WiFi and Config Portal handling
  *
@@ -68,13 +68,19 @@ WiFiClient mqttWClient;
 PubSubClient mqttClient(mqttWClient);
 #endif
 
+static char fluxCustHTML[512] = "";
+static const char fluxCustHTML1[] = "<div class='cmp0'><label for='fluxmode'>Default flux sound mode</label><select class='sel0' value='";
+static const char fluxCustHTML2[] = "' name='fluxmode' id='fluxmode' autocomplete='off' title='Select power-up flux sound mode'><option value='0'";
+static const char fluxCustHTML3[] = ">Off</option><option value='1'";
+static const char fluxCustHTML4[] = ">On</option><option value='2'";
+static const char fluxCustHTML5[] = ">Auto (30 secs)</option><option value='3'";
+static const char fluxCustHTML6[] = ">Auto (60 secs)</option></select></div>";
+
 static const char *aco = "autocomplete='off'";
 
-#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-WiFiManagerParameter custom_playFLUXSnd("plyFS", "Play continuous flux sound (0=no, 1=yes)", settings.playFLUXsnd, 1, "autocomplete='off' title='Enable to have the device play the flux sound after power-up'");
-#else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_playFLUXSnd("plyFS", "Play continuous flux sound", settings.playFLUXsnd, 1, "autocomplete='off' title='Check to have the device play the flux sound after power-up' type='checkbox' style='margin-top:3px'", WFM_LABEL_AFTER);
-#endif // -------------------------------------------------
+WiFiManagerParameter custom_playFLUXSnd(fluxCustHTML);
+//WiFiManagerParameter custom_playFLUXSnd("plyFS", "Play continuous flux sound", settings.playFLUXsnd, 1, "autocomplete='off' title='Check to have the device play the flux sound after power-up' type='checkbox' style='margin-top:3px'", WFM_LABEL_AFTER);
+
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds (0=no, 1=yes)", settings.playTTsnds, 1, "autocomplete='off' title='Enable to have the device play time travel sounds. Disable if other props provide time travel sound.'");
 #else // -------------------- Checkbox hack: --------------
@@ -506,6 +512,10 @@ void wifi_loop()
         // Only read parms if the user actually clicked SAVE on the params page
         if(shouldSaveConfig > 1) {
 
+            getParam("fluxmode", settings.playFLUXsnd, 1);
+            if(strlen(settings.playFLUXsnd) == 0) {
+                sprintf(settings.playFLUXsnd, "%d", DEF_PLAY_FLUX_SND);
+            }
             strcpytrim(settings.hostName, custom_hostName.getValue(), true);
             if(strlen(settings.hostName) == 0) {
                 strcpy(settings.hostName, DEF_HOSTNAME);
@@ -523,7 +533,6 @@ void wifi_loop()
             
             #ifdef TC_NOCHECKBOXES // --------- Plain text boxes:
 
-            mystrcpy(settings.playFLUXsnd, &custom_playFLUXSnd);
             mystrcpy(settings.playTTsnds, &custom_playTTSnd);
             
             mystrcpy(settings.useVknob, &custom_useVknob);
@@ -544,7 +553,6 @@ void wifi_loop()
 
             #else // -------------------------- Checkboxes:
 
-            strcpyCB(settings.playFLUXsnd, &custom_playFLUXSnd);
             strcpyCB(settings.playTTsnds, &custom_playTTSnd);
             
             strcpyCB(settings.useVknob, &custom_useVknob);
@@ -565,7 +573,7 @@ void wifi_loop()
 
             #endif  // -------------------------
 
-            // Copy volume/speed/IR settings to other medium if
+            // Copy volume/speed/IR/etc settings to other medium if
             // user changed respective option
             if(oldCfgOnSD != settings.CfgOnSD[0]) {
                 copySettings();
@@ -927,8 +935,21 @@ static void setupStaticIP()
 void updateConfigPortalValues()
 {
     const char custHTMLSel[] = " selected";
+    int tb = atoi(settings.playFLUXsnd);
 
     // Make sure the settings form has the correct values
+
+    strcpy(fluxCustHTML, fluxCustHTML1);          // flux mode
+    strcat(fluxCustHTML, settings.playFLUXsnd);
+    strcat(fluxCustHTML, fluxCustHTML2);
+    if(tb == 0) strcat(fluxCustHTML, custHTMLSel);
+    strcat(fluxCustHTML, fluxCustHTML3);
+    if(tb == 1) strcat(fluxCustHTML, custHTMLSel);
+    strcat(fluxCustHTML, fluxCustHTML4);
+    if(tb == 2) strcat(fluxCustHTML, custHTMLSel);
+    strcat(fluxCustHTML, fluxCustHTML5);
+    if(tb == 3) strcat(fluxCustHTML, custHTMLSel);
+    strcat(fluxCustHTML, fluxCustHTML6);
 
     custom_hostName.setValue(settings.hostName, 31);
     custom_wifiConTimeout.setValue(settings.wifiConTimeout, 2);
@@ -1170,14 +1191,16 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
     char tempBuf[256];
     static const char *cmdList[] = {
       "TIMETRAVEL",       // 0
-      "FLUX_ON",          // 1
-      "FLUX_OFF",         // 2
-      "MP_SHUFFLE_ON",    // 3
-      "MP_SHUFFLE_OFF",   // 4
-      "MP_PLAY",          // 5
-      "MP_STOP",          // 6
-      "MP_NEXT",          // 7
-      "MP_PREV",          // 8
+      "FLUX_OFF",         // 1
+      "FLUX_ON",          // 2
+      "FLUX_30",          // 3
+      "FLUX_60",          // 4
+      "MP_SHUFFLE_ON",    // 5 
+      "MP_SHUFFLE_OFF",   // 6
+      "MP_PLAY",          // 7
+      "MP_STOP",          // 8
+      "MP_NEXT",          // 9
+      "MP_PREV",          // 10
       NULL
     };
     static const char *cmdList2[] = {
@@ -1212,8 +1235,9 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
 
         switch(i) {
         case 0:
-            // trigger Time Travel (if not running already)
-            if(!TTrunning && !IRLearning) {
+            // Trigger Time Travel (if not running already)
+            // Ignore command if TCD is connected by wire
+            if(!TCDconnected && !TTrunning && !IRLearning) {
                 mqttTimeTravel = true;
                 mqttTCDTT = true;
                 mqttReentry = false;
@@ -1221,7 +1245,8 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
             break;
         case 1:
             // Start re-entry (if TT currently running)
-            if(TTrunning && mqttTCDTT) {
+            // Ignore command if TCD is connected by wire
+            if(!TCDconnected && TTrunning && mqttTCDTT) {
                 mqttReentry = true;
             }
             break;
@@ -1257,23 +1282,19 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
             mqttTCDTT = false;
             break;
         case 1:
-            playFLUX = true;
-            append_flux();
-            break;
         case 2:
-            if(playingFlux) {
-                stopAudio();
-            }
-            playFLUX = false;
-            break;
         case 3:
         case 4:
-            if(haveMusic) mp_makeShuffle((i == 3));
+            setFluxMode(i - 1);
             break;
-        case 5:    
+        case 5:
+        case 6:
+            if(haveMusic) mp_makeShuffle((i == 5));
+            break;
+        case 7:    
             if(haveMusic) mp_play();
             break;
-        case 6:
+        case 8:
             if(haveMusic && mpActive) {
                 mp_stop();
                 if(playFLUX) {
@@ -1281,10 +1302,10 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
                 }
             }
             break;
-        case 7:
+        case 9:
             if(haveMusic) mp_next(mpActive);
             break;
-        case 8:
+        case 10:
             if(haveMusic) mp_prev(mpActive);
             break;
         }

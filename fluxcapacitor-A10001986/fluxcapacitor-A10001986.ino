@@ -2,7 +2,7 @@
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
- * https://github.com/realA10001986/Flux-Capacitor-A10001986
+ * https://github.com/realA10001986/Flux-Capacitor
  *
  * License: MIT
  * 
@@ -78,13 +78,22 @@
  *   - Copy the contents of install/sound-pack-xxxxxxxx.zip in the top folder of a FAT32 
  *     (not ExFAT!) formatted SD card (max 32GB) and put this card into the slot while
  *     the device is powered down. Now power-up the device.
- *   - The audio files will be installed automatically
- *   - After reboot, power-down the flux capacitor and remove the SD card.
+ *   - The audio files will be installed automatically, SD no longer needed afterwards.
+ *     (but is recommended to be left in slot for saving settings and avoiding flash
+ *     wear on the ESP32.)
  */
 
 /*  Changelog
  *   
- 
+ *  2023/07/03 (A10001986)
+ *    - Add "minimum box light level": Box lights will always be at that minimum 
+ *      level in order to bring some light into the box. 5 Level available, chosen
+ *      by *10 through *14 followed by OK.
+ *    - Add flux sound modes 2 and 3 (30/60 seconds after power-up and time travel,
+ *      like TCD's beep modes)
+ *    - Re-assigned knob usage command sequences from *1x to *8x
+ *    - Save ir lock status (*70) and minimum box light level on the fly so that 
+ *      they are persistent.
  *  2023/06/27 (A10001986)
  *    - Change names of most config files so that they are device specific
  *    - *70OK locks IR; as long as IR is locked, no keys or commands are accepted

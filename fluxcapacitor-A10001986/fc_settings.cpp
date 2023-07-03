@@ -2,7 +2,7 @@
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
- * https://github.com/realA10001986/Flux-Capacitor-A10001986
+ * https://github.com/realA10001986/Flux-Capacitor
  *
  * Settings & file handling
  * 
@@ -71,6 +71,12 @@ static uint8_t prevSavedVol = 255;
 /* Cache for speed */
 static uint16_t prevSavedSpd = 999;
 
+/* Cache for mbll */
+static uint16_t prevSavedBLL = 0;
+
+/* Cache for IR lock */
+static bool prevSavedIRL = 0;
+
 /* Paranoia: No writes Flash-FS  */
 bool FlashROMode = false;
 
@@ -94,10 +100,12 @@ static const char *IDFN = "/FC_def_snd.txt";
 static const char *cfgName    = "/fcconfig.json";   // Main config (flash)
 static const char *volCfgName = "/fcvolcfg.json";   // Volume config (flash/SD)
 static const char *spdCfgName = "/fcspdcfg.json";   // Speed config (flash/SD)
+static const char *bllCfgName = "/fcbllcfg.json";   // Minimum box light level config (flash/SD)
 static const char *musCfgName = "/fcmcfg.json";     // Music config (SD)
 static const char *ipCfgName  = "/fcipcfg.json";    // IP config (flash)
 static const char *irUCfgName = "/fcirkeys.txt";    // IR keys (user-created) (SD)
 static const char *irCfgName  = "/fcirkeys.json";   // IR keys (system-created) (flash/SD)
+static const char *irlCfgName = "/fcirlcfg.json";   // IR lock (flash/SD)
 
 static const char *jsonNames[NUM_IR_KEYS] = {
         "key0", "key1", "key2", "key3", "key4", 
@@ -295,7 +303,7 @@ static bool read_settings(File configFile)
 
     if(!error) {
 
-        wd |= CopyCheckValidNumParm(json["playFLUXsnd"], settings.playFLUXsnd, sizeof(settings.playFLUXsnd), 0, 1, DEF_PLAY_FLUX_SND);
+        wd |= CopyCheckValidNumParm(json["playFLUXsnd"], settings.playFLUXsnd, sizeof(settings.playFLUXsnd), 0, 3, DEF_PLAY_FLUX_SND);
         wd |= CopyCheckValidNumParm(json["playTTsnds"], settings.playTTsnds, sizeof(settings.playTTsnds), 0, 1, DEF_PLAY_TT_SND);
         
         wd |= CopyCheckValidNumParm(json["useVknob"], settings.useVknob, sizeof(settings.useVknob), 0, 1, DEF_VKNOB);
@@ -668,6 +676,181 @@ void saveCurSpeed(bool useCache)
     }
 }
 
+/*
+ *  Load/save the Minimum Box Light Level
+ */
+
+bool loadBLLevel()
+{
+    const char *funcName = "loadBLLevel";
+    char temp[6];
+    bool haveConfigFile = false;
+    File configFile;
+
+    if(!haveFS && !configOnSD) {
+        Serial.printf("%s: %s\n", funcName, fsNoAvail);
+        return false;
+    }
+
+    #ifdef FC_DBG
+    Serial.printf("%s: Loading from %s\n", funcName, configOnSD ? "SD" : "flash FS");
+    #endif
+
+    if(configOnSD) {
+        if(SD.exists(bllCfgName)) {
+            haveConfigFile = (configFile = SD.open(bllCfgName, "r"));
+        }
+    } else {
+        if(SPIFFS.exists(bllCfgName)) {
+            haveConfigFile = (configFile = SPIFFS.open(bllCfgName, "r"));
+        } 
+    }
+
+    if(haveConfigFile) {
+        StaticJsonDocument<512> json;
+        if(!deserializeJson(json, configFile)) {
+            if(!CopyCheckValidNumParm(json["mbll"], temp, sizeof(temp), 0, 4, 0)) {
+                minBLL = atoi(temp);
+            }
+        } 
+        configFile.close();
+    }
+
+    // Do not write a default file, use pre-set value
+
+    prevSavedBLL = minBLL;
+
+    return true;
+}
+
+void saveBLLevel(bool useCache)
+{
+    const char *funcName = "saveBLLevel";
+    char buf[6];
+    StaticJsonDocument<512> json;
+
+    if(useCache && (prevSavedBLL == minBLL)) {
+        #ifdef FC_DBG
+        Serial.printf("%s: Prev. saved bll identical, not writing\n", funcName);
+        #endif
+        return;
+    }
+
+    if(!haveFS && !configOnSD) {
+        Serial.printf("%s: %s\n", funcName, fsNoAvail);
+        return;
+    }
+
+    #ifdef FC_DBG
+    Serial.printf("%s: Writing to %s\n", funcName, configOnSD ? "SD" : "flash FS");
+    #endif
+
+    sprintf(buf, "%d", minBLL);
+    json["mbll"] = (char *)buf;
+
+    File configFile = configOnSD ? SD.open(bllCfgName, FILE_WRITE) : SPIFFS.open(bllCfgName, FILE_WRITE);
+
+    #ifdef FC_DBG
+    serializeJson(json, Serial);
+    Serial.println(F(" "));
+    #endif
+
+    if(configFile) {
+        serializeJson(json, configFile);
+        configFile.close();
+        prevSavedBLL = minBLL;
+    } else {
+        Serial.printf("%s: %s\n", funcName, failFileWrite);
+    }
+}
+
+/*
+ *  Load/save the IR lock status
+ */
+
+bool loadIRLock()
+{
+    const char *funcName = "loadIRLock";
+    char temp[6];
+    bool haveConfigFile = false;
+    File configFile;
+
+    if(!haveFS && !configOnSD) {
+        Serial.printf("%s: %s\n", funcName, fsNoAvail);
+        return false;
+    }
+
+    #ifdef FC_DBG
+    Serial.printf("%s: Loading from %s\n", funcName, configOnSD ? "SD" : "flash FS");
+    #endif
+
+    if(configOnSD) {
+        if(SD.exists(irlCfgName)) {
+            haveConfigFile = (configFile = SD.open(irlCfgName, "r"));
+        }
+    } else {
+        if(SPIFFS.exists(irlCfgName)) {
+            haveConfigFile = (configFile = SPIFFS.open(irlCfgName, "r"));
+        } 
+    }
+
+    if(haveConfigFile) {
+        StaticJsonDocument<512> json;
+        if(!deserializeJson(json, configFile)) {
+            if(!CopyCheckValidNumParm(json["lock"], temp, sizeof(temp), 0, 1, 0)) {
+                irLocked = (atoi(temp) > 0);
+            }
+        } 
+        configFile.close();
+    }
+
+    // Do not write a default file, use pre-set value
+
+    prevSavedIRL = irLocked;
+
+    return true;
+}
+
+void saveIRLock(bool useCache)
+{
+    const char *funcName = "saveIRLock";
+    char buf[6];
+    StaticJsonDocument<512> json;
+
+    if(useCache && (prevSavedIRL == irLocked)) {
+        #ifdef FC_DBG
+        Serial.printf("%s: Prev. saved irl identical, not writing\n", funcName);
+        #endif
+        return;
+    }
+
+    if(!haveFS && !configOnSD) {
+        Serial.printf("%s: %s\n", funcName, fsNoAvail);
+        return;
+    }
+
+    #ifdef FC_DBG
+    Serial.printf("%s: Writing to %s\n", funcName, configOnSD ? "SD" : "flash FS");
+    #endif
+
+    sprintf(buf, "%d", irLocked ? 1 : 0);
+    json["lock"] = (char *)buf;
+
+    File configFile = configOnSD ? SD.open(irlCfgName, FILE_WRITE) : SPIFFS.open(irlCfgName, FILE_WRITE);
+
+    #ifdef FC_DBG
+    serializeJson(json, Serial);
+    Serial.println(F(" "));
+    #endif
+
+    if(configFile) {
+        serializeJson(json, configFile);
+        configFile.close();
+        prevSavedIRL = irLocked;
+    } else {
+        Serial.printf("%s: %s\n", funcName, failFileWrite);
+    }
+}
 
 /*
  * Load custom IR config
@@ -789,10 +972,12 @@ void copySettings()
 
     if(configOnSD || !FlashROMode) {
         #ifdef FC_DBG
-        Serial.println(F("copySettings: Copying vol/IR settings to other medium"));
+        Serial.println(F("copySettings: Copying vol/speed/IR/etc settings to other medium"));
         #endif
         saveCurVolume(false);
         saveCurSpeed(false);
+        saveBLLevel(false);
+        saveIRLock(false);
         saveIRKeys();
     }
 
@@ -1071,7 +1256,7 @@ void doCopyAudioFiles()
     if(!copy_audio_files()) {
         // If copy fails, re-format flash FS
         formatFlashFS();            // Format
-        rewriteSecondarySettings(); // Re-write alarm/ip/vol settings
+        rewriteSecondarySettings(); // Re-write ip/vol/speed/ir/etc settings
         #ifdef FC_DBG 
         Serial.println("Re-writing general settings");
         #endif
@@ -1211,7 +1396,7 @@ void formatFlashFS()
     SPIFFS.format();
 }
 
-// Re-write IP/alarm/vol settings
+// Re-write IP/speed/vol/etc settings
 // Used during audio file installation when flash FS needs
 // to be re-formatted.
 void rewriteSecondarySettings()
@@ -1223,23 +1408,14 @@ void rewriteSecondarySettings()
     #endif
     writeIpSettings();
 
-    // Create current volume settings on flash FS
+    // Create current settings on flash FS
     // regardless of SD-option
     configOnSD = false;
        
-    #ifdef FC_DBG
-    Serial.println("Re-writing volume");
-    #endif
     saveCurVolume(false);
-
-    #ifdef FC_DBG
-    Serial.println("Re-writing speed");
-    #endif
     saveCurSpeed(false);
-
-    #ifdef FC_DBG
-    Serial.println("Re-writing IR settings");
-    #endif
+    saveBLLevel(false);
+    saveIRLock(false);
     saveIRKeys();
     
     configOnSD = oldconfigOnSD;

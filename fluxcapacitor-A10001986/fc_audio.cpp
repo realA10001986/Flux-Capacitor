@@ -2,7 +2,7 @@
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
- * https://github.com/realA10001986/Flux-Capacitor-A10001986
+ * https://github.com/realA10001986/Flux-Capacitor
  *
  * Sound handling
  *
@@ -857,6 +857,7 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
     if(flags & PA_ISFLUX) {
         if(!playFLUX)
             return;
+        startFluxTimer();
     }
 
     if(flags & PA_INTRMUS) {
