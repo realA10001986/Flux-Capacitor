@@ -173,7 +173,7 @@ You can have your FC ignore IR commands by entering #70 followed by OK. After th
     </tr>
     <tr>
      <td align="left">*70&#9166;</td>
-     <td align="left">Disable/Enable IR remote commands</td>
+     <td align="left"><a href="#locking-ir-control">Disable/Enable</a> IR remote commands</td>
     </tr>
     <tr>
      <td align="left">*50&#9166; - *59&#9166;</td>
