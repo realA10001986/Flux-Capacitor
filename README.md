@@ -1,6 +1,6 @@
 # Firmware for Flux-Capacitor
 
-This repository holds the most current firmware for CircuitSetup's wonderful ESP32-based Flux Capacitor.
+This repository holds the most current firmware for CircuitSetup's wonderful Flux Capacitor kit.
 
 The hardware is (or will be) available [here](https://circuitsetup.us) and is built around a NodeMCU ESP32-S dev board.
 
