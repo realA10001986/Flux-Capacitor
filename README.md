@@ -431,11 +431,11 @@ Check this if your FC has a pot for chasing speed selection and you want to use 
 
 ##### &#9654; TCD connected by wire
 
-Check this if you have a Time Circuits Display and connected it by wire. Note that you can only connect *either* a button *or* the TCD to the "time travel" connector on the FC, but not both.
+Check this if you have a Time Circuits Display connected by wire. Note that you can only connect *either* a button *or* the TCD to the "time travel" connector on the FC, but not both.
 
 ##### &#9654; Use 'panel light' for box lights
 
-Normally, [box lights]() are connected to the "External LED" connectors, and the [IR feedback LED]() to the "Panel Light" connector. Check this option if your box lights are instead connected to the "Panel Light" connector. This option, in essence, swaps the "external LED" and "Panel light" connector purposes.
+Normally, [box lights](#box-lighting) are connected to the "External LED" connectors, and the [IR feedback LED](#ir-remote-control) to the "Panel Light" connector (GND/S). Check this option if your box lights are instead connected to the "Panel Light" connector. This option, in essence, swaps the "external LED" and "Panel light" connector purposes.
 
 #### Network settings
 
