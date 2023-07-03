@@ -172,10 +172,6 @@ You can have your FC ignore IR commands by entering #70 followed by OK. After th
      <td align="left">Reset chase speed to default</td>
     </tr>
     <tr>
-     <td align="left">*70&#9166;</td>
-     <td align="left"><a href="#locking-ir-control">Disable/Enable</a> IR remote commands</td>
-    </tr>
-    <tr>
      <td align="left">*50&#9166; - *59&#9166;</td>
      <td align="left"><a href="#the-music-player">Music Player</a>: Select music folder</td>
     </tr>
@@ -194,6 +190,10 @@ You can have your FC ignore IR commands by entering #70 followed by OK. After th
     <tr>
      <td align="left">*888xxx&#9166;</td>
      <td align="left"><a href="#the-music-player">Music Player</a>: Go to song xxx</td>
+    </tr>
+    <tr>
+     <td align="left">*70&#9166;</td>
+     <td align="left"><a href="#locking-ir-control">Disable/Enable</a> IR remote commands</td>
     </tr>
     <tr>
      <td align="left">*80&#9166;</td>
