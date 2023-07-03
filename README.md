@@ -452,7 +452,7 @@ If this is checked, volume and speed settings, as well as learned IR codes are s
     </tr>
  <tr>
      <td align="left">&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
-     <td align="left">Error: Audio files <a href="#audio-file-installation">not installed</a>a></td>
+     <td align="left">Error: Audio files <a href="#audio-file-installation">not installed</a></td>
     </tr>
  <tr>
      <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
