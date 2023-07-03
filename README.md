@@ -201,6 +201,17 @@ If no key is pressed for 10 seconds, the learning process aborts, as does briefl
     </tr>
 </table>
 
+## The Flux sound
+
+By default, the FC plays a "flux" sound continously.
+
+The flux sound can be permanently disabled, permanently enabled, or enabled for 30 or 60 seconds
+
+- upon triggering a time travel,
+- after switching on the FC.
+
+The different modes are selected by typing *00 (disabled), *01 (enabled), *02 (enabled for 30 secs) or *03 (enabled for 60 secs), followed by OK. The power-up default is selected in the Config Portal.
+
 ## Time travel
 
 To travel through time, type "0" on the remote control. The flux capacitor will play its time travel sequence.
@@ -356,9 +367,9 @@ Clicking this (and saying "yes" in the confirmation dialog) erases the WiFi conf
 
 #### Basic settings
 
-##### &#9654; Play continuous flux sound
+##### &#9654; Default flux sound mode
 
-With this option you can enable or disable the "flux" sound played continously.
+Selects the power-up "flux" sound mode. "Auto: xx secs" enables the beep for xx seconds after triggering a time travel, and upon power-on. Can be changed at any time by typing *00 (off), *01 (on), *02 (Auto 30secs) or *03 (Auto 60secs) followed by OK.
 
 ##### &#9654; Play time travel sounds
 
