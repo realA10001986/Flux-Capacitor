@@ -297,14 +297,12 @@ These sounds can be substituted by your own sound files on a FAT32-formatted SD 
 Your replacements need to be put in the root (top-most) directory of the SD card, be in mp3 format (128kbps max) and named as follows:
 - "0.mp3" through "9.mp3", "dot.mp3": Numbers for IP address read-out.
 - "flux.mp3". The standard flux sound, played continously.
-- "alarm.mp3". Played when the alarm sounds (triggered by a TCD).
+- "alarm.mp3". Played when the alarm sounds (triggered by a Ime Circuits Display via MQTT).
 
 The following sounds are time-sync'd to display action. If you decide to substitute these with your own, be prepared to lose synchronicity:
 - "travelstart.mp3". Played when a time travel starts.
 - "timetravel.mp3". Played when re-entry of a time travel takes place.
 - "startup.mp3". Played when the Flux Capacitor is connected to power and finished booting
-
-If you intend to use the very same SD card that you used for installing the default sound files, please remove the files from the sound-pack from the SD card first.
 
 ### Additional Custom Sounds
 
