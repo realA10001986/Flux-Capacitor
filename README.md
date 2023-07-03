@@ -70,15 +70,21 @@ The main control device, however, is the IR remote control.
 
 ### IR remote control
 
-Your FC should have an IR remote control included. This remote works out-of-the-box and needs no setup. If you don't have a remote, you can have your FC learn the codes of an IR remote control.
+Your FC should have an IR remote control included. This remote works out-of-the-box and needs no setup. 
 
-To start the learning process, hold the Time Travel button for a few seconds, until the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Then press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then press "1", wait for the acknowledgement, and so on. The order of keys is 0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - \* - \# - Arrow up - Arrow down - Arrow left - Arrow right - OK. 
+| ![Default IR remote control](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/dc32787d-de83-4be4-9df8-7442bf623284) |
+|:--:| 
+| *The default IR remote control* |
 
-If your remote control lacks the \* (starts command sequence) and \# (aborts command sequence) keys, you can use any other key, of course. \* could be "menu" or "setup", \# could be "exit" or "return".
+This remote is sold as part of a kit for Arduino and is reasonably priced.
+
+Alternatively, you can have your FC learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, expecially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards, that remote is of that type and cannot be used.
+
+To start the learning process, hold the Time Travel button for a few seconds, until the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Then press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then press "1", wait for the acknowledgement, and so on. The order of keys is ```0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - \* - \# - Arrow up - Arrow down - Arrow left - Arrow right - OK``` 
+
+If your remote control lacks the \* (starts command sequence) and \# (aborts command sequence) keys, you can use any other key, of course. \* could be eg. "menu" or "setup", \# could be "exit" or "return".
 
 If no key is pressed for 10 seconds, the learning process aborts, as does briefly pressing the Time Travel button. In thoses cases, the keys already learned are forgotten and nothing is saved.
-
-Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls send keys repeatedly and/or might send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards, that remote is of that type and cannot be used.
 
 ### IR remote reference
 
