@@ -88,6 +88,10 @@ If your remote control lacks the \* (starts command sequence) and \# (aborts com
 
 If no key is pressed for 10 seconds, the learning process aborts, as does briefly pressing the Time Travel button. In thoses cases, the keys already learned are forgotten and nothing is saved.
 
+### Locking IR control
+
+You can have your FC ignore IR commands by entering #70 followed by OK. After this sequence the FC will ignore all IR commands until *70OK is entered again. The purpose of this function is to enable you to use the same IR control for your FC and other props (such as SID).
+
 ### IR remote reference
 
 <table>
@@ -159,7 +163,7 @@ If no key is pressed for 10 seconds, the learning process aborts, as does briefl
      <td align="left">*03&#9166;</td>
      <td align="left">Enable <a href="#the-flux-sound">flux sound</a>  (60 seconds)</td>
     </tr>
- <tr>
+    <tr>
      <td align="left">*10&#9166; - *14&#9166;</td>
      <td align="left">Set minimum box light level</td>
     </tr>
@@ -168,8 +172,12 @@ If no key is pressed for 10 seconds, the learning process aborts, as does briefl
      <td align="left">Reset chase speed to default</td>
     </tr>
     <tr>
+     <td align="left">*70&#9166;</td>
+     <td align="left">Disable/Enable IR remote commands</td>
+    </tr>
+    <tr>
      <td align="left">*50&#9166; - *59&#9166;</td>
-     <td align="left">Music Player: Select music folder</td>
+     <td align="left"><a href="#the-music-player">Music Player</a>: Select music folder</td>
     </tr>
     <tr>
      <td align="left">*222&#9166;</td>
