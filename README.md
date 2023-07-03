@@ -433,26 +433,26 @@ If this is checked, volume and speed settings, as well as learned IR codes are s
     </tr>
  <tr>
      <td align="left">&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
-     <td align="left">Error: Audio files not installed</td>
+     <td align="left">Error: Audio files <a href="#audio-file-installation">not installed</a>a></td>
     </tr>
  <tr>
      <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
-     <td align="left">Error: Bad IR input</td>
+     <td align="left">Error: Unknown/illegal input from remote control</td>
     </tr>
  <tr>
      <td align="left">&#9675; &#9675; &#9675; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9675; &#9675; &#9675;<br>&#8635;</td>
-     <td align="left">Alarm (from TCD)</td>
+     <td align="left"><a href="#receive-commands-from-time-circuits-display">Alarm</a> (from TCD via MQTT)</td>
     </tr>
 <tr>
      <td align="left">&#9675; &#9675; &#9675; &#9675; &#9675; &#9675; (1000ms)<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679; (1000ms)<br>&#9675; &#9675; &#9675; &#9675; &#9675; &#9675; (1000ms)<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679; (1000ms)</td>
-     <td align="left">IR Learning: Start</td>
+     <td align="left"><a href="#ir-remote-control">IR Learning</a>: Start</td>
     </tr>
 <tr>
      <td align="left">&#9679; &#9679; &#9675; &#9675; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9675; &#9675; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
-     <td align="left">IR Learning: Next</td>
+     <td align="left"><a href="#ir-remote-control">IR Learning</a>: Next</td>
     </tr>
 <tr>
      <td align="left">&#9675; &#9675; &#9675; &#9675; &#9675; &#9675; (500ms)<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679; (500ms)<br>&#9675; &#9675; &#9675; &#9675; &#9675; &#9675; (500ms)<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679; (500ms)</td>
-     <td align="left">IR Learning: Done</td>
+     <td align="left"><a href="#ir-remote-control">IR Learning</a>: Done</td>
     </tr>
 </table>
