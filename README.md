@@ -102,6 +102,8 @@ If your remote control lacks the \* (starts command sequence) and \# (aborts com
 
 If no key is pressed for 10 seconds, the learning process aborts, as does briefly pressing the Time Travel button. In thoses cases, the keys already learned are forgotten and nothing is saved.
 
+Each time you press a (recognized) key on the remote, an optional IR feedback LED will briefly light up. This LED is supposed to be connected to the "Panel Light" connector (GND and S pins), or - if so [configured](-use-panel-light-for-box-lights) - to one of the "external LED" connectors. 
+
 ### Locking IR control
 
 You can have your FC ignore IR commands by entering #70 followed by OK. After this sequence the FC will ignore all IR commands until *70OK is entered again. The purpose of this function is to enable you to use the same IR control for your FC and other props (such as SID).
@@ -245,6 +247,14 @@ The flux sound can be permanently disabled, permanently enabled, or enabled for 
 - after switching on the FC.
 
 The different modes are selected by typing *00 (disabled), *01 (enabled), *02 (enabled for 30 secs) or *03 (enabled for 60 secs), followed by OK. The power-up default is selected in the [Config Portal](#appendix-a-the-config-portal).
+
+## Box lighting
+
+The FC features connectors for box lights, ie LEDs that light up the inside of the FC during the time travel sequence. Those should be installed, they are essential part of the time travel sequence. 
+
+In normal operation, those LEDs are off. You can, however, configure a minimum box light level to light up the box a little bit if you find it too dark. This level can be chosen out of five, by entering *10 through *14 followed by OK.
+
+I used four pieces of 3W High-Power KEYES LED modules, mounted in the four corners of the main box. Since those draw quite much power, they are connected to the power supply directly, only their PWD input is wired the FC PCB, to be exact to the "+" pin of the "external LED" connectors (or "S" pin of the "Panel light connector. if so [configured](#-use-panel-light-for-box-lights)).
 
 ## Time travel
 
