@@ -252,7 +252,7 @@ The TCD can be connected to your Flux Capacitor in two ways
     </tr>
 </table>
 
-2) Via MQTT. Configure both the FC as well as the TCD to connect to the same broker; On the TCD, make sure that the *Send commands for external props* option is checked. No further configuration is required.
+2) Via [MQTT](#home-assistant--mqtt). Configure both the FC as well as the TCD to connect to the same broker; On the TCD, make sure that the *Send commands for external props* option is checked. No further configuration is required.
 
 In both cases, time travels initiated on the TCD will run in sync on the FC and the TCD.
 
@@ -316,7 +316,7 @@ The FC supports the MQTT protocol version 3.1.1 for the following features:
 
 ### Control the FC via MQTT
 
-The FC can - to a limited extent - be controlled through messages sent to topic **bttf/fc/cmd**. Support commands are
+The FC can - to a some extent - be controlled through messages sent to topic **bttf/fc/cmd**. Support commands are
 - TIMETRAVEL: Start a [time travel](#time-travel)
 - FLUX_OFF: Disables the [flux sound](#the-flux-sound)
 - FLUX_ON: Enables the [flux sound](#the-flux-sound)
