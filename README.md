@@ -435,7 +435,7 @@ Check this if you have a Time Circuits Display and connected it by wire. Note th
 
 ##### &#9654; Use 'panel light' for box lights
 
-Check this if your box lights are connected to the "Panel Light" connector on your FC control board. This option, in essence, swaps the "external LED" and "Panel light" connector purposes.
+Normally, [box lights]() are connected to the "External LED" connectors, and the [IR feedback LED]() to the "Panel Light" connector. Check this option if your box lights are instead connected to the "Panel Light" connector. This option, in essence, swaps the "external LED" and "Panel light" connector purposes.
 
 #### Network settings
 
