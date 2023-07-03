@@ -80,7 +80,9 @@ This remote is sold as part of a kit for Arduino and is reasonably priced.
 
 Alternatively, you can have your FC learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, expecially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards, that remote is of that type and cannot be used.
 
-To start the learning process, hold the Time Travel button for a few seconds, until the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Then press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then press "1", wait for the acknowledgement, and so on. The order of keys is ```0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - \* - \# - Arrow up - Arrow down - Arrow left - Arrow right - OK``` 
+To start the learning process, hold the Time Travel button for a few seconds, until the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Then press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then press "1", wait for the acknowledgement, and so on. Enter your keys in the following order:
+
+```0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - \* - \# - Arrow up - Arrow down - Arrow left - Arrow right - OK``` 
 
 If your remote control lacks the \* (starts command sequence) and \# (aborts command sequence) keys, you can use any other key, of course. \* could be eg. "menu" or "setup", \# could be "exit" or "return".
 
@@ -134,64 +136,68 @@ If no key is pressed for 10 seconds, the learning process aborts, as does briefl
      <td align="center" colspan="2">IR remote reference: Special sequences<br>(&#9166; = OK key)</td>
     </tr>
   <tr>
-     <td align="center">*0&#9166;</td>
-     <td align="center">Select original chase sequence</td>
+     <td align="left">*0&#9166;</td>
+     <td align="left">Select original chase sequence</td>
     </tr>
    <tr>
-     <td align="center">*1&#9166; - *9&#9166;</td>
-     <td align="center">Select chase sequences 1-9</td>
+     <td align="left">*1&#9166; - *9&#9166;</td>
+     <td align="left">Select chase sequences 1-9</td>
     </tr>
     <tr>
-     <td align="center">*00&#9166;</td>
-     <td align="center">Disable flux sound</td>
+     <td align="left">*00&#9166;</td>
+     <td align="left">Disable flux sound</td>
     </tr>
    <tr>
-     <td align="center">*01&#9166;</td>
-     <td align="center">Enable flux sound</td>
+     <td align="left">*01&#9166;</td>
+     <td align="left">Enable flux sound</td>
     </tr>
    <tr>
-     <td align="center">*10&#9166;</td>
-     <td align="center">Toggle usage of volume knob</td>
-    </tr>
-   <tr>
-     <td align="center">*11&#9166;</td>
-     <td align="center">Toggle usage of speed knob</td>
+     <td align="left">*10&#9166; - *14&#9166;</td>
+     <td align="left">Set minimum box light level</td>
     </tr>
      <tr>
-     <td align="center">*20&#9166;</td>
-     <td align="center">Reset chase speed to default</td>
+     <td align="left">*20&#9166;</td>
+     <td align="left">Reset chase speed to default</td>
     </tr>
     <tr>
-     <td align="center">*50&#9166; - *59&#9166;</td>
-     <td align="center">Music Player: Select music folder</td>
+     <td align="left">*50&#9166; - *59&#9166;</td>
+     <td align="left">Music Player: Select music folder</td>
     </tr>
     <tr>
-     <td align="center">*222&#9166;</td>
-     <td align="center"><a href="#the-music-player">Music Player</a>: Shuffle off</td>
+     <td align="left">*222&#9166;</td>
+     <td align="left"><a href="#the-music-player">Music Player</a>: Shuffle off</td>
     </tr>
     <tr>
-     <td align="center">*555&#9166;</td>
-     <td align="center"><a href="#the-music-player">Music Player</a>: Shuffle on</td>
+     <td align="left">*555&#9166;</td>
+     <td align="left"><a href="#the-music-player">Music Player</a>: Shuffle on</td>
     </tr> 
     <tr>
-     <td align="center">*888&#9166;</td>
-     <td align="center"><a href="#the-music-player">Music Player</a>: Go to song 0</td>
+     <td align="left">*888&#9166;</td>
+     <td align="left"><a href="#the-music-player">Music Player</a>: Go to song 0</td>
     </tr>
     <tr>
-     <td align="center">*888xxx&#9166;</td>
-     <td align="center"><a href="#the-music-player">Music Player</a>: Go to song xxx</td>
+     <td align="left">*888xxx&#9166;</td>
+     <td align="left"><a href="#the-music-player">Music Player</a>: Go to song xxx</td>
+    </tr>
+    <tr>
+     <td align="left">*80&#9166;</td>
+     <td align="left">Toggle usage of volume knob</td>
+    </tr>
+   <tr>
+     <td align="left">*81&#9166;</td>
+     <td align="left">Toggle usage of speed knob</td>
     </tr>
      <tr>
-     <td align="center">*90&#9166;</td>
-     <td align="center">Say current IP address</td>
+     <td align="left">*90&#9166;</td>
+     <td align="left">Say current IP address</td>
     </tr>
     <tr>
-     <td align="center">*64738&#9166;</td>
-     <td align="center">Reboot the device</td>
+     <td align="left">*64738&#9166;</td>
+     <td align="left">Reboot the device</td>
     </tr>
     <tr>
-     <td align="center">*123456&#9166;</td>
-     <td align="center">Delete static IP address</td>
+     <td align="left">*123456&#9166;</td>
+     <td align="left">Delete static IP address</td>
     </tr>
 </table>
 
