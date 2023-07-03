@@ -82,7 +82,7 @@ Alternatively, you can have your FC learn the codes of another IR remote control
 
 To start the learning process, hold the Time Travel button for a few seconds, until the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Then press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then press "1", wait for the acknowledgement, and so on. Enter your keys in the following order:
 
-```0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - \* - \# - Arrow up - Arrow down - Arrow left - Arrow right - OK``` 
+```0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - * - # - Arrow up - Arrow down - Arrow left - Arrow right - OK``` 
 
 If your remote control lacks the \* (starts command sequence) and \# (aborts command sequence) keys, you can use any other key, of course. \* could be eg. "menu" or "setup", \# could be "exit" or "return".
 
