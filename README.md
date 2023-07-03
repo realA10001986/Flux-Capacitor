@@ -90,7 +90,7 @@ Your FC should have an IR remote control included. This remote works out-of-the-
 |:--:| 
 | *The default IR remote control* |
 
-This remote is sold as part of a kit for Arduino and is reasonably priced.
+This remote is also sold as part of a kit for Arduino and is reasonably priced.
 
 Alternatively, you can have your FC learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, expecially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards, that remote is of that type and cannot be used.
 
