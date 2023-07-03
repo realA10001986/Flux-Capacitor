@@ -6,7 +6,7 @@ The hardware is (or will be) available [here](https://circuitsetup.us) and is bu
 
 Features include
 - movie-accurate default flux sequence, plus 9 alternative flux sequences
-- [Time Travel](#time-travel) function, triggered by button, TCD or via MQTT
+- [Time Travel](#time-travel) function, triggered by button, [Time Circuits Display](https://github.com/realA10001986/Time-Circuits-Display/) or via [MQTT](#home-assistant--mqtt)
 - [IR remote controlled](#ir-remote-control); can learn keys from custom remote
 - [Music player](#the-music-player): Play mp3 files located on an SD card
 - [Home Assistant](#home-assistant--mqtt) (MQTT 3.1.1) support
