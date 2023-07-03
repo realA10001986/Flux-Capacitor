@@ -145,13 +145,21 @@ If no key is pressed for 10 seconds, the learning process aborts, as does briefl
     </tr>
     <tr>
      <td align="left">*00&#9166;</td>
-     <td align="left">Disable flux sound</td>
+     <td align="left">Disable <a href="#the-flux-sound">flux sound</a></td>
     </tr>
    <tr>
      <td align="left">*01&#9166;</td>
-     <td align="left">Enable flux sound</td>
+     <td align="left">Enable <a href="#the-flux-sound">flux sound</a></td>
+    </tr>
+    <tr>
+     <td align="left">*02&#9166;</td>
+     <td align="left">Enable <a href="#the-flux-sound">flux sound</a>  (30 seconds)</td>
     </tr>
    <tr>
+     <td align="left">*03&#9166;</td>
+     <td align="left">Enable <a href="#the-flux-sound">flux sound</a>  (60 seconds)</td>
+    </tr>
+ <tr>
      <td align="left">*10&#9166; - *14&#9166;</td>
      <td align="left">Set minimum box light level</td>
     </tr>
