@@ -317,15 +317,17 @@ The FC supports the MQTT protocol version 3.1.1 for the following features:
 ### Control the FC via MQTT
 
 The FC can - to a limited extent - be controlled through messages sent to topic **bttf/fc/cmd**. Support commands are
-- TIMETRAVEL: Start a time travel
-- FLUX_ON: Enables the flux sound
-- FLUX_OFF: Disables the flux sound
-- MP_PLAY: Starts the Music Player
-- MP_STOP: Stops the Music Player
+- TIMETRAVEL: Start a [time travel](#time-travel)
+- FLUX_OFF: Disables the [flux sound](#the-flux-sound)
+- FLUX_ON: Enables the [flux sound](#the-flux-sound)
+- FLUX_30: Enables the [flux sound](#the-flux-sound) for 30 seconds
+- FLUX_60 Enables the [flux sound](#the-flux-sound) for 60 seconds
+- MP_PLAY: Starts the [Music Player](#the-music-player)
+- MP_STOP: Stops the [Music Player](#the-music-player)
 - MP_NEXT: Jump to next song
 - MP_PREV: Jump to previous song
-- MP_SHUFFLE_ON: Enables shuffle mode in Music Player
-- MP_SHUFFLE_OFF: Disables shuffle mode in Music Player
+- MP_SHUFFLE_ON: Enables shuffle mode in [Music Player](#the-music-player)
+- MP_SHUFFLE_OFF: Disables shuffle mode in [Music Player](#the-music-player)
 
 ### Receive commands from Time Circuits Display
 
