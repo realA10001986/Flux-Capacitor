@@ -218,7 +218,7 @@ The flux sound can be permanently disabled, permanently enabled, or enabled for 
 - upon triggering a time travel,
 - after switching on the FC.
 
-The different modes are selected by typing *00 (disabled), *01 (enabled), *02 (enabled for 30 secs) or *03 (enabled for 60 secs), followed by OK. The power-up default is selected in the Config Portal.
+The different modes are selected by typing *00 (disabled), *01 (enabled), *02 (enabled for 30 secs) or *03 (enabled for 60 secs), followed by OK. The power-up default is selected in the [Config Portal](#appendix-a-the-config-portal).
 
 ## Time travel
 
@@ -226,7 +226,7 @@ To travel through time, type "0" on the remote control. The flux capacitor will 
 
 You can also connect a physical button to your FC; the button must shorten "GPIO" and "3.3V" on the "Time Travel" connector. Pressing this button briefly will trigger a time travel.
 
-Other ways of triggering a time travel are available if a Time Circuits Display is available.
+Other ways of triggering a time travel are available if a Time Circuits Display is connected.
 
 ### Connecting a Time Circuits Display
 
