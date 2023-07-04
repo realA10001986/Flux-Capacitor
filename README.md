@@ -433,7 +433,7 @@ Check this if your FC has a pot for chasing speed selection and you want to use 
 
 Check this if you have a Time Circuits Display connected by wire. Note that you can only connect *either* a button *or* the TCD to the "time travel" connector on the FC, but not both.
 
-Note that the process of [learning keys from an IR remote control]() requires this option to be unchecked.
+Note that the process of [learning keys from an IR remote control](#ir-remote-control) requires this option to be unchecked. After learning keys is done, you can, of course, check this option again.
 
 ##### &#9654; Use 'panel light' for box lights
 
