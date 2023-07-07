@@ -85,9 +85,25 @@
 
 /*  Changelog
  *   
+ *  2023/07/07 (A10001986)
+ *    - Add "BTTF Network" (aka "BTTFN") support: TCD controls other props, such as FC
+ *      or SID, wirelessy. Used here for time travel synchronisation and TCD's "Alarm" 
+ *      feature. Only needs IP address (not hostname!) of TCD to be entered in CP. 
+ *      Either MQTT or BTTFN is used for time travel synchronisation/alarm; if the TCD is 
+ *      configured to use MQTT and the "Send commands to other props" option is checked, 
+ *      it will not send notifications via BTTFN.
+ *      BTTFN allows wireless communication without a broker (such as with MQTT), and
+ *      also works when TCD acts as WiFi access point for FC and other props. Therefore,
+ *      it is ideal for car setups.
+ *    - Add "screen saver": Deactivate all LEDs after a configurable number of minutes
+ *      of inactivity. TT button press, IR control key, time travel deactivates screen
+ *      saver. (If IR is locked, only '#' key will deactivate ss.)
+ *    - Change "minimum box light level" levels.
+ *  2023/07/04 (A10001986)
+ *    - Minor fixes
  *  2023/07/03 (A10001986)
  *    - Add "minimum box light level": Box lights will always be at that minimum 
- *      level in order to bring some light into the box. 5 Level available, chosen
+ *      level in order to bring some light into the box. 5 Levels available, chosen
  *      by *10 through *14 followed by OK.
  *    - Add flux sound modes 2 and 3 (30/60 seconds after power-up and time travel,
  *      like TCD's beep modes)
@@ -169,6 +185,8 @@
 
 void setup()
 {
+    powerupMillis = millis();
+    
     Serial.begin(115200);
     Serial.println();
 
@@ -184,7 +202,6 @@ void loop()
     main_loop();
     audio_loop();
     wifi_loop();
-    #ifdef HAVEBTTFN_TEST
+    audio_loop();
     bttfn_loop();
-    #endif
 }

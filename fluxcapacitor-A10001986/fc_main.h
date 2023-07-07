@@ -40,19 +40,25 @@
 #define FC_SPD_MIN 500   // 5000ms
 #define FC_SPD_IDLE 20
 
+extern unsigned long powerupMillis;
+
 extern uint16_t minBLL;
 extern uint16_t lastIRspeed;
 extern bool     irLocked;
+
+extern bool TCDconnected;
 
 extern bool TTrunning;
 extern int  playFLUX;
 extern bool IRLearning;
 
+extern bool networkTimeTravel;
+extern bool networkTCDTT;
+extern bool networkReentry;
+extern bool networkAlarm;
+
 #ifdef FC_HAVEMQTT
-extern bool mqttTimeTravel;
-extern bool mqttTCDTT;
-extern bool mqttReentry;
-extern bool mqttAlarm;
+extern bool ignoreMQTTFromTCD;
 #endif
 
 void main_boot();
@@ -70,8 +76,8 @@ void startFluxTimer();
 
 void mydelay(unsigned long mydel, bool withIR);
 
-#ifdef HAVEBTTFN_TEST
+void prepareTT();
+
 void bttfn_loop();
-#endif
 
 #endif

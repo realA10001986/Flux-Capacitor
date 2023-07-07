@@ -11,8 +11,8 @@
 #define _FC_GLOBAL_H
 
 // Version strings.
-#define FC_VERSION       "V1.0"
-#define FC_VERSION_EXTRA "JUL032023"
+#define FC_VERSION       "V0.31"
+#define FC_VERSION_EXTRA "JUL072023"
 
 #define FC_DBG              // debug output on Serial
 
@@ -78,14 +78,14 @@
 // Center LED
 #define LED_PWM_PIN       17
 
-// Panel LED (unused)
+// Panel LED (unused as such)
 #define PANEL_LED         14
 
-// IR Remote
+// IR Remote input
 #define IRREMOTE_PIN      27
 
-// IR feedback
-#define IR_FB_PIN         14    // TODO, should become 12
+// IR feedback LED
+#define IR_FB_PIN         14    // maybe put that on 12
 
 // Time Travel button (or TCD input trigger)
 #define TT_IN_PIN         13
@@ -106,9 +106,5 @@
 
 // analog input, for volume   
 #define VOLUME_PIN        35    // Board Rev 1.3
-
-
-// TEST
-//#define HAVEBTTFN_TEST
 
 #endif

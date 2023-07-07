@@ -305,6 +305,7 @@ static bool read_settings(File configFile)
 
         wd |= CopyCheckValidNumParm(json["playFLUXsnd"], settings.playFLUXsnd, sizeof(settings.playFLUXsnd), 0, 3, DEF_PLAY_FLUX_SND);
         wd |= CopyCheckValidNumParm(json["playTTsnds"], settings.playTTsnds, sizeof(settings.playTTsnds), 0, 1, DEF_PLAY_TT_SND);
+        wd |= CopyCheckValidNumParm(json["ssTimer"], settings.ssTimer, sizeof(settings.ssTimer), 0, 999, DEF_SS_TIMER);
         
         wd |= CopyCheckValidNumParm(json["useVknob"], settings.useVknob, sizeof(settings.useVknob), 0, 1, DEF_VKNOB);
         wd |= CopyCheckValidNumParm(json["useSknob"], settings.useSknob, sizeof(settings.useSknob), 0, 1, DEF_SKNOB);
@@ -319,7 +320,13 @@ static bool read_settings(File configFile)
         } else wd = true;
         wd |= CopyCheckValidNumParm(json["wifiConRetries"], settings.wifiConRetries, sizeof(settings.wifiConRetries), 1, 15, DEF_WIFI_RETRY);
         wd |= CopyCheckValidNumParm(json["wifiConTimeout"], settings.wifiConTimeout, sizeof(settings.wifiConTimeout), 7, 25, DEF_WIFI_TIMEOUT);
-        
+
+        if(json["tcdIP"]) {
+            memset(settings.tcdIP, 0, sizeof(settings.tcdIP));
+            strncpy(settings.tcdIP, json["tcdIP"], sizeof(settings.tcdIP) - 1);
+        } else wd = true;
+
+        wd |= CopyCheckValidNumParm(json["wait4TCD"], settings.wait4TCD, sizeof(settings.wait4TCD), 0, 1, DEF_WAIT_FOR_TCD);
 
         #ifdef FC_HAVEMQTT
         wd |= CopyCheckValidNumParm(json["useMQTT"], settings.useMQTT, sizeof(settings.useMQTT), 0, 1, 0);
@@ -364,6 +371,8 @@ void write_settings()
 
     json["playFLUXsnd"] = settings.playFLUXsnd;
     json["playTTsnds"] = settings.playTTsnds;
+
+    json["ssTimer"] = settings.ssTimer;
     
     json["useVknob"] = settings.useVknob;
     json["useSknob"] = settings.useSknob;
@@ -374,6 +383,9 @@ void write_settings()
     json["hostName"] = settings.hostName;
     json["wifiConRetries"] = settings.wifiConRetries;
     json["wifiConTimeout"] = settings.wifiConTimeout;
+
+    json["tcdIP"] = settings.tcdIP;
+    json["wait4TCD"] = settings.wait4TCD;
 
     #ifdef FC_HAVEMQTT
     json["useMQTT"] = settings.useMQTT;
@@ -1419,71 +1431,4 @@ void rewriteSecondarySettings()
     saveIRKeys();
     
     configOnSD = oldconfigOnSD;
-}
-
-bool readFileFromSD(const char *fn, uint8_t *buf, int len)
-{
-    size_t bytesr;
-    
-    if(!haveSD)
-        return false;
-
-    File myFile = SD.open(fn, FILE_READ);
-    if(myFile) {
-        bytesr = myFile.read(buf, len);
-        myFile.close();
-        return (bytesr == len);
-    } else
-        return false;
-}
-
-bool writeFileToSD(const char *fn, uint8_t *buf, int len)
-{
-    size_t bytesw;
-    
-    if(!haveSD)
-        return false;
-
-    File myFile = SD.open(fn, FILE_WRITE);
-    if(myFile) {
-        bytesw = myFile.write(buf, len);
-        myFile.close();
-        return (bytesw == len);
-    } else
-        return false;
-}
-
-bool readFileFromFS(const char *fn, uint8_t *buf, int len)
-{
-    size_t bytesr;
-    
-    if(!haveFS)
-        return false;
-
-    if(!SPIFFS.exists(fn))
-        return false;
-
-    File myFile = SPIFFS.open(fn, FILE_READ);
-    if(myFile) {
-        bytesr = myFile.read(buf, len);
-        myFile.close();
-        return (bytesr == len);
-    } else
-        return false;
-}
-
-bool writeFileToFS(const char *fn, uint8_t *buf, int len)
-{
-    size_t bytesw;
-    
-    if(!haveFS)
-        return false;
-
-    File myFile = SPIFFS.open(fn, FILE_WRITE);
-    if(myFile) {
-        bytesw = myFile.write(buf, len);
-        myFile.close();
-        return (bytesw == len);
-    } else
-        return false;
 }
