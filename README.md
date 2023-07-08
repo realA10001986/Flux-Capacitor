@@ -489,7 +489,7 @@ If other props are connected, they might bring their own time travel sound effec
 
 If you want to have your FC to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the IP address of the TCD here. Do NOT enter a host name here.
 
-If you connect your FC to the TCD-AP, The TCD's IP address is 192.168.4.1.
+If you connect your FC to the TCD-AP, the TCD's IP address is 192.168.4.1.
 
 ##### &#9654; Wait for TCD-WiFi
 
