@@ -11,6 +11,7 @@ Features include
 - [IR remote controlled](#ir-remote-control); can learn keys from custom remote
 - [Music player](#the-music-player): Play mp3 files located on an SD card
 - [Home Assistant](#home-assistant--mqtt) (MQTT 3.1.1) support
+- Wireless communication with Time Circuits Display for time travel sequence and TCD-Alarm
 - [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player
 - Advanced network-accessible [Config Portal](#the-config-portal) for setup with mDNS support for easy access (http://flux.local, hostname configurable)
 - Built-in installer for default audio files in addition to OTA firmware updates
@@ -61,12 +62,12 @@ If your FC, along with a TCD, is mounted in a car, the following network configu
   - enter *192.168.4.1* into the field *IP address of TCD*
   - check the option *Wait for TCD-WiFi*
   - click on *Save*.
-- After the FC has restarted, re-enter the FC's Config Portal, and
-  - click on *Configure WiFi*
+- After the FC has restarted, re-enter the FC's Config Portal (while the TCD is powered) and
+  - click on *Configure WiFi*,
   - enter *TCD-AP* into the *SSID* field; leave all other fields empty
   - click on *Save*.
 
-Using this configuration enables the FC to receive notifications about time travel and alarm wirelessly.
+Using this configuration enables the FC to receive notifications about time travel and alarm wirelessly, and to query the TCD for data.
 
 In this setup, in order to access the FC's Config Portal, connect your hand held or computer to the TCD's AP ("TCD-AP"), and direct your browser to http://flux.local ; if that does not work, go to the TCD's keypad menu, press ENTER until "BTTFN CLIENTS" is shown, hold ENTER, and look for the FC's IP address there; then direct your browser to that IP by using the URL http://a.b.c.d (a-d being the IP address displayed on the TCD display).
 
@@ -433,11 +434,20 @@ Clicking this (and saying "yes" in the confirmation dialog) erases the WiFi conf
 
 Selects the power-up "flux" sound mode. "Auto: xx secs" enables the beep for xx seconds after triggering a time travel, and upon power-on. Can be changed at any time by typing *00 (off), *01 (on), *02 (Auto 30secs) or *03 (Auto 60secs) followed by OK.
 
-##### &#9654; Play time travel sounds
+##### &#9654; Screen saver timer
 
-If other props are connected, they might bring their own time travel sound effects. In this case, you can uncheck this to disable the Flux Capacitor's own time travel sounds. Note that this only covers sounds played during time travel, not other sound effects.
+Enter the number of minutes until the Screen Saver should become active when the FC is idle.
 
+The Screen Saver, when active, disables all LEDs, until 
+- a key on the IR remote control is pressed; if IR is locked, only the # key deactivates the Screen Saver;
+- the time travel button is briefly pressed,
+- a time travel event is triggered from a connected TCD (wire or wirelessly)
+ 
 #### Hardware configuration settings
+
+##### &#9654; Use 'panel light' for box lights
+
+Normally, [box lights](#box-lighting) are connected to the "External LED" connectors, and the [IR feedback LED](#ir-remote-control) to the "Panel Light" connector (GND/S). Check this option if your box lights are instead connected to the "Panel Light" connector. This option, in essence, swaps the "external LED" and "Panel light" connector purposes.
 
 ##### &#9654; Use volume knob by default
 
@@ -446,16 +456,6 @@ Check this if your FC has a pot for volume selection and you want to use this po
 ##### &#9654; Use speed knob by default
 
 Check this if your FC has a pot for chasing speed selection and you want to use this pot. Note that if this option is checked, commands regarding chasing speed from the remote control are ignored.
-
-##### &#9654; TCD connected by wire
-
-Check this if you have a Time Circuits Display connected by wire. Note that you can only connect *either* a button *or* the TCD to the "time travel" connector on the FC, but not both.
-
-Note that the process of [learning keys from an IR remote control](#ir-remote-control) requires this option to be unchecked. After learning keys is done, you can, of course, check this option again.
-
-##### &#9654; Use 'panel light' for box lights
-
-Normally, [box lights](#box-lighting) are connected to the "External LED" connectors, and the [IR feedback LED](#ir-remote-control) to the "Panel Light" connector (GND/S). Check this option if your box lights are instead connected to the "Panel Light" connector. This option, in essence, swaps the "external LED" and "Panel light" connector purposes.
 
 #### Network settings
 
@@ -472,6 +472,28 @@ Number of times the firmware tries to reconnect to a WiFi network, before fallin
 ##### &#9654; WiFi connection timeout
 
 Number of seconds before a timeout occurs when connecting to a WiFi network. When a timeout happens, another attempt is made (see immediately above), and if all attempts fail, the device falls back to AP-mode. See [here](#short-summary-of-first-steps)
+
+#### Settings for prop communication/synchronization
+
+##### &#9654; TCD connected by wire
+
+Check this if you have a Time Circuits Display connected by wire. Note that you can only connect *either* a button *or* the TCD to the "time travel" connector on the FC, but not both.
+
+Note that the process of [learning keys from an IR remote control](#ir-remote-control) requires this option to be unchecked. After learning keys is done, you can, of course, check this option again.
+
+##### &#9654; Play time travel sounds
+
+If other props are connected, they might bring their own time travel sound effects. In this case, you can uncheck this to disable the Flux Capacitor's own time travel sounds. Note that this only covers sounds played during time travel, not other sound effects.
+
+##### &#9654; IP address of TCD
+
+If you want to have your FC to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the IP address of the TCD here. Do NOT enter a host name here.
+
+If you connect your FC to the TCD-AP, The TCD's IP address is 192.168.4.1.
+
+##### &#9654; Wait for TCD-WiFi
+
+If you power up the TCD and the FC at the very same time (such as in a car), and your FC is configured to connect the TCD's access point ("TCD-AP"), check this to delay connecting to the TCD (to give it time to boot).
 
 #### Home Assistant / MQTT settings
 
