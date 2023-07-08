@@ -307,9 +307,20 @@ The TCD can be connected to your Flux Capacitor in two ways
     </tr>
 </table>
 
-2) Via [MQTT](#home-assistant--mqtt). Configure both the FC as well as the TCD to connect to the same broker; On the TCD, make sure that the *Send commands for external props* option is checked. No further configuration is required.
+2) Wirelessly via 'BTTF-Network'. In order to connect your FC to the TCD using BTFFN, just enter the TCD's IP address in the *IP address of TCD* field in the FC's Config Portal.
+  
+If you power-up TCD and FC at the same time (such as usually [in a car](#car-setup)), and your FC is connected to the TCD-AP, check *Wait for TCD-WiFi*. This option does not need to be checked if TCD and FC both connect to an existing WiFi network (such as usually at home).
 
-In both cases, time travels initiated on the TCD will run in sync on the FC and the TCD.
+Afterwards, the FC and the TCD can communicate wirelessly and play time travel sequences in sync. Also, the FC will play an alarm-sequence when the TCD's alarm occurs.
+
+You can use BTTF-Network and MQTT at the same time.
+
+3) Via [MQTT](#home-assistant--mqtt). Configure both the FC as well as the TCD to connect to the same broker; On the TCD, make sure that the *Send commands for external props* option is checked. No further configuration is required.
+
+Afterwards, the FC and the TCD can communicate wirelessly and play time travel sequences in sync. Also, the FC will play an alarm-sequence when the TCD's alarm occurs.
+
+You can use MQTT and BTTF-Network at the same time.
+
 
 ## SD card
 
