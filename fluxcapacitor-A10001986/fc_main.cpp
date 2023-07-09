@@ -274,8 +274,6 @@ static void TTKeyHeld();
 static void ssStart();
 static void ssEnd(bool doSound = true);
 static void ssRestartTimer();
-static void nmStart();
-static void nmEnd(bool doSound = true);
 
 static bool contFlux();
 
@@ -477,14 +475,14 @@ void main_loop()
             }
             
             if(IRLearning) {
-                endIRLearn(true);
+                endIRLearn(true); // Turns LEDs on
             }
             
             fcLEDs.off();
             boxLED.setDC(0);
             centerLED.setDC(0);
             
-            // TODO - anything else?
+            // FIXME - anything else?
             
         } else {
             // Power on: 
@@ -499,12 +497,14 @@ void main_loop()
             }
 
             isTTKeyHeld = isTTKeyPressed = false;
+            networkTimeTravel = false;
 
             ssRestartTimer();
+            ssActive = false;
 
             ir_remote.loop();
 
-            // TODO - anything else?
+            // FIXME - anything else?
  
         }
         fpoOld = tcdFPO;
@@ -605,13 +605,13 @@ void main_loop()
                 timeTravel(TCDconnected);
             }
         }
-    }
     
-    // Check for BTTFN/MQTT-induced TT
-    if(networkTimeTravel) {
-        networkTimeTravel = false;
-        ssEnd(false);  // let TT() take care of restarting sound
-        timeTravel(networkTCDTT);
+        // Check for BTTFN/MQTT-induced TT
+        if(networkTimeTravel) {
+            networkTimeTravel = false;
+            ssEnd(false);  // let TT() take care of restarting sound
+            timeTravel(networkTCDTT);
+        }
     }
 
     now = millis();
@@ -916,7 +916,7 @@ void main_loop()
             ssDelay = 10 * 1000;
         } else {
             // NM off: End Screen Saver; reset timeout to old value
-            ssEnd();
+            ssEnd();  // Doesn't do anything if fake power is off
             ssDelay = ssOrigDelay;
         }
         nmOld = tcdNM;
@@ -925,16 +925,20 @@ void main_loop()
     now = millis();
 
     // "Screen saver"
-    if(!ssActive && ssDelay && (now - ssLastActivity > ssDelay)) {
-        ssStart();
+    if(FPBUnitIsOn) {
+        if(!ssActive && ssDelay && (now - ssLastActivity > ssDelay)) {
+            ssStart();
+        }
     }
 
     // Flux auto modes
-    if(fluxTimer && (now - fluxTimerNow > fluxTimeout)) {
-        if(playingFlux) {
-            stopAudio();
+    if(FPBUnitIsOn) {
+        if(fluxTimer && (now - fluxTimerNow > fluxTimeout)) {
+            if(playingFlux) {
+                stopAudio();
+            }
+            fluxTimer = false;
         }
-        fluxTimer = false;
     }
 
     // Save volume 10 seconds after last change
@@ -964,8 +968,10 @@ void main_loop()
     if(!TTrunning && !IRLearning && networkAlarm) {
         networkAlarm = false;
         play_file("/alarm.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
-        if(playFLUX == 1) {
-            append_flux();
+        if(FPBUnitIsOn) {
+            if(playFLUX == 1) {
+                append_flux();
+            }
         }
         fcLEDs.SpecialSignal(FCSEQ_ALARM);
     }
