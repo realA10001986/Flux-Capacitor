@@ -105,6 +105,16 @@ bool networkTCDTT      = false;
 bool networkReentry    = false;
 bool networkAlarm      = false;
 
+static bool useGPSS     = false;
+static bool usingGPSS   = false;
+static int16_t gpsSpeed = -1;
+static int16_t lastGPSspeed = -2;
+
+static bool useNM = false;
+static bool tcdNM = false;
+static bool useFPO = false;
+static bool tcdFPO = false;
+
 #define FLUXM2_SECS  30
 #define FLUXM3_SECS  60
 int                  playFLUX = 1;
@@ -165,7 +175,12 @@ static unsigned long irlchgnow = 0;
 
 static unsigned long ssLastActivity = 0;
 static unsigned long ssDelay = 0;
+static unsigned long ssOrigDelay = 0;
 static bool          ssActive = false;
+
+static bool          nmOld = false;
+static bool          fpoOld = false;
+static bool          FPBUnitIsOn = true;
 
 /*
  * Leave first two columns at 0 here, those will be filled
@@ -235,7 +250,6 @@ static bool          BTTFNPacketDue = false;
 static bool          BTTFNWiFiUp = false;
 static uint8_t       BTTFNfailCount = 0;
 static uint8_t       BTTFUDPHD[4] = { 'B', 'T', 'T', 'F'};
-//static uint8_t       BTTFUDPID[4] = { 0, 0, 0, 0};
 static uint32_t      BTTFUDPID = 0;
 
 
@@ -260,6 +274,8 @@ static void TTKeyHeld();
 static void ssStart();
 static void ssEnd(bool doSound = true);
 static void ssRestartTimer();
+static void nmStart();
+static void nmEnd(bool doSound = true);
 
 static bool contFlux();
 
@@ -297,6 +313,10 @@ void main_setup()
     // Set up options to play/mute sounds
     playFLUX = (int)atoi(settings.playFLUXsnd);
     playTTsounds = ((int)atoi(settings.playTTsnds) > 0);
+
+    useGPSS = ((int)atoi(settings.useGPSS) > 0);
+    useNM = ((int)atoi(settings.useNM) > 0);
+    useFPO = ((int)atoi(settings.useFPO) > 0);
 
     // Initialize flux sound modes
     if(playFLUX >= 3) {
@@ -411,7 +431,7 @@ void main_setup()
 
     bttfn_setup();
 
-    ssDelay = atoi(settings.ssTimer) * 60 * 1000;
+    ssDelay = ssOrigDelay = atoi(settings.ssTimer) * 60 * 1000;
     ssRestartTimer();
 
     #ifdef FC_DBG
@@ -434,6 +454,60 @@ void main_loop()
         if(WiFi.status() == WL_CONNECTED) {
             wifiStartCP();
         }
+    }
+
+    // Follow TCD fake power
+    if(useFPO && (tcdFPO != fpoOld)) {
+        if(tcdFPO) {
+            // Power off:
+            FPBUnitIsOn = false;
+            
+            if(TTrunning) {
+                fcLEDs.setSpeed(TTSSpd);
+            }
+            TTrunning = false;
+            
+            mp_stop();
+            stopAudio();
+            fluxTimer = false;
+
+            if(irFeedBack) {
+                endIRfeedback();
+                irFeedBack = false;
+            }
+            
+            if(IRLearning) {
+                endIRLearn(true);
+            }
+            
+            fcLEDs.off();
+            boxLED.setDC(0);
+            centerLED.setDC(0);
+            
+            // TODO - anything else?
+            
+        } else {
+            // Power on: 
+            FPBUnitIsOn = true;
+            
+            fcLEDs.on();
+            boxLED.setDC(mbllArray[minBLL]);
+
+            if(playFLUX > 0) {
+                play_flux();
+                startFluxTimer();
+            }
+
+            isTTKeyHeld = isTTKeyPressed = false;
+
+            ssRestartTimer();
+
+            ir_remote.loop();
+
+            // TODO - anything else?
+ 
+        }
+        fpoOld = tcdFPO;
     }
     
     // Discard input from IR after 1 minute of inactivity
@@ -465,44 +539,74 @@ void main_loop()
     }
 
     // IR Remote loop
-    if(ir_remote.loop()) {
-        handleIRinput();
+    if(FPBUnitIsOn) {
+        if(ir_remote.loop()) {
+            handleIRinput();
+        }
+    }
+
+    if(FPBUnitIsOn) {
+        if(useGPSS && !TTrunning  && !IRLearning) {
+            if(gpsSpeed >= 0) {
+                usingGPSS = true;
+    
+                // GPS speeds 0-87 translate into fc LED speeds IDLE - 3; 88+ => 2
+                uint16_t temp = (gpsSpeed >= 88) ? 2 : ((87 - gpsSpeed) * (FC_SPD_IDLE-3) / 87) + 3;
+                if(temp != lastGPSspeed) {
+                    fcLEDs.setSpeed(temp);
+                    lastGPSspeed = temp;
+                }
+    
+            } else {
+                if(usingGPSS) {
+                    usingGPSS = false;
+                    lastGPSspeed = -2;
+                    if(!useSKnob) {
+                        fcLEDs.setSpeed(lastIRspeed);
+                    }
+                }
+            }
+        }
     }
     
     // Poll speed pot
-    if(useSKnob) {
-        setPotSpeed();
+    if(FPBUnitIsOn) {
+        if(useSKnob && !usingGPSS) {
+            setPotSpeed();
+        }
     }
 
     // TT button evaluation
-    ttkeyScan();
-    if(isTTKeyHeld) {
-        ssEnd();
-        isTTKeyHeld = isTTKeyPressed = false;
-        if(!TTrunning && !IRLearning) {
-            startIRLearn();
-            #ifdef FC_DBG
-            Serial.println("main_loop: IR learning started");
-            #endif
-        }
-    } else if(isTTKeyPressed) {
-        isTTKeyPressed = false;
-        if(!TCDconnected && ssActive) {
-            // First button press when ss is active only deactivates SS
+    if(FPBUnitIsOn) {
+        ttkeyScan();
+        if(isTTKeyHeld) {
             ssEnd();
-        } else if(IRLearning) {
-            endIRLearn(true);
-            #ifdef FC_DBG
-            Serial.println("main_loop: IR learning aborted");
-            #endif
-        } else {
-            if(TCDconnected) {
-                ssEnd(false);  // let TT() take care of restarting sound
+            isTTKeyHeld = isTTKeyPressed = false;
+            if(!TTrunning && !IRLearning) {
+                startIRLearn();
+                #ifdef FC_DBG
+                Serial.println("main_loop: IR learning started");
+                #endif
             }
-            timeTravel(TCDconnected);
+        } else if(isTTKeyPressed) {
+            isTTKeyPressed = false;
+            if(!TCDconnected && ssActive) {
+                // First button press when ss is active only deactivates SS
+                ssEnd();
+            } else if(IRLearning) {
+                endIRLearn(true);
+                #ifdef FC_DBG
+                Serial.println("main_loop: IR learning aborted");
+                #endif
+            } else {
+                if(TCDconnected) {
+                    ssEnd(false);  // let TT() take care of restarting sound
+                }
+                timeTravel(TCDconnected);
+            }
         }
     }
-
+    
     // Check for BTTFN/MQTT-induced TT
     if(networkTimeTravel) {
         networkTimeTravel = false;
@@ -805,6 +909,19 @@ void main_loop()
         }
     }
 
+    // Follow TCD night mode
+    if(useNM && (tcdNM != nmOld)) {
+        if(tcdNM) {
+            // NM on: Set Screen Saver timeout to 10 seconds
+            ssDelay = 10 * 1000;
+        } else {
+            // NM off: End Screen Saver; reset timeout to old value
+            ssEnd();
+            ssDelay = ssOrigDelay;
+        }
+        nmOld = tcdNM;
+    }
+
     now = millis();
 
     // "Screen saver"
@@ -875,6 +992,7 @@ static void timeTravel(bool TCDtriggered)
     TTrunning = true;
     TTstart = TTfUpdNow = millis();
     TTP0 = true;   // phase 0
+    TTP1 = TTP2 = false;
 
     TTSSpd = tspd = fcLEDs.getSpeed();
 
@@ -1163,14 +1281,16 @@ static void executeIRCmd(int key)
     case 14:                          // arrow left: dec LED speed
         if(irLocked) return;
         if(!useSKnob && !TTrunning) {
-            tempi = fcLEDs.getSpeed();
+            tempi = lastIRspeed;
             if(tempi >= 100) tempi = tempi / 10 * 10;
             if(tempi >= 130)     tempi += 20;
             else if(tempi >= 90) tempi += 10;
             else if(tempi >= 15) tempi += 5;
             else if(tempi >= 1)  tempi++;
             if(tempi > FC_SPD_MIN) tempi = FC_SPD_MIN;
-            fcLEDs.setSpeed(tempi);
+            if(!usingGPSS) {
+                fcLEDs.setSpeed(tempi);
+            }
             lastIRspeed = tempi;
             spdchanged = true;
             spdchgnow = millis();
@@ -1179,14 +1299,16 @@ static void executeIRCmd(int key)
     case 15:                          // arrow right: inc LED speed
         if(irLocked) return;
         if(!useSKnob && !TTrunning) {
-            tempi = fcLEDs.getSpeed();
+            tempi = lastIRspeed;
             if(tempi >= 100) tempi = tempi / 10 * 10;
             if(tempi >= 150)      tempi -= 20;
             else if(tempi >= 100) tempi -= 10;
             else if(tempi >= 20)  tempi -= 5;
             else if(tempi > 1)    tempi--;
             if(tempi < FC_SPD_MAX) tempi = FC_SPD_MAX;
-            fcLEDs.setSpeed(tempi);
+            if(!usingGPSS) {
+                fcLEDs.setSpeed(tempi);
+            }
             lastIRspeed = tempi;
             spdchanged = true;
             spdchgnow = millis();
@@ -1226,7 +1348,9 @@ static void executeIRCmd(int key)
                 case 20:                              // *20 set default speed
                     if(!irLocked) {
                         if(!useSKnob) {
-                            fcLEDs.setSpeed(FC_SPD_IDLE);
+                            if(!usingGPSS) {
+                                fcLEDs.setSpeed(FC_SPD_IDLE);
+                            }
                             lastIRspeed = FC_SPD_IDLE;
                             spdchanged = true;
                             spdchgnow = millis();
@@ -1254,7 +1378,7 @@ static void executeIRCmd(int key)
                 case 81:                              // *81 Toggle knob use for LED speed
                     if(!irLocked) {
                         useSKnob = !useSKnob;
-                        if(!useSKnob) {
+                        if(!useSKnob && !usingGPSS) {
                             fcLEDs.setSpeed(lastIRspeed);
                         }
                     }
@@ -1529,6 +1653,7 @@ static void TTKeyHeld()
 }
 
 // "Screen saver"
+
 static void ssStart()
 {
     if(ssActive)
@@ -1552,6 +1677,9 @@ static void ssRestartTimer()
 
 static void ssEnd(bool doSound)
 {
+    if(!FPBUnitIsOn)
+        return;
+        
     ssRestartTimer();
     
     if(!ssActive)
@@ -1709,7 +1837,7 @@ void bttfn_loop()
         if(!BTTFNWiFiUp && (WiFi.status() == WL_CONNECTED)) {
             BTTFNUpdateNow = 0;
         }
-        if((!BTTFNUpdateNow) || (millis() - BTTFNUpdateNow > 5000)) {
+        if((!BTTFNUpdateNow) || (millis() - BTTFNUpdateNow > 1100)) {
             BTTFNTriggerUpdate();
         }
     }
@@ -1806,8 +1934,22 @@ static void BTTFNCheckPacket()
         // If it's our expected packet, no other is due for now
         BTTFNPacketDue = false;
 
-        // Since we only send a ping for the TCD to see us as
-        // a bttfn client, we don't do anything with the packet.
+        if(BTTFUDPBuf[5] & 0x02) {
+            gpsSpeed = (int16_t)(BTTFUDPBuf[18] | (BTTFUDPBuf[19] << 8));
+            #ifdef FC_DBG
+            Serial.printf("BTTFN: GPS speed %d\n", gpsSpeed);
+            #endif
+        }
+        if(BTTFUDPBuf[5] & 0x10) {
+            tcdNM  = BTTFUDPBuf[26] & 0x01;
+            tcdFPO = BTTFUDPBuf[26] & 0x02;   // 1 means fake power off
+            #ifdef FC_DBG
+            Serial.printf("BTTFN: Night mode is %d, fake power is %d\n", tcdNM, tcdFPO);
+            #endif
+        } else {
+            tcdNM = false;
+            tcdFPO = false;
+        }
     }
 }
 
@@ -1849,7 +1991,7 @@ static void BTTFNSendPacket()
     BTTFUDPBuf[10+12] = 0;
 
     BTTFUDPBuf[4] = BTTFN_VERSION;  // Version
-    BTTFUDPBuf[5] = 0;              // Request do data (ping only)
+    BTTFUDPBuf[5] = 0x12;           // Request GPS speed & nm status
 
     uint8_t a = 0;
     for(int i = 4; i < BTTF_PACKET_SIZE - 1; i++) {

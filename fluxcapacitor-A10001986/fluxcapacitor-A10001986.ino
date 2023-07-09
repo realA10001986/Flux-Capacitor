@@ -85,9 +85,11 @@
 
 /*  Changelog
  *   
+ *  2023/07/09 (A10001986)
+ *    - BTTFN: Add night mode and fake power support (both signalled from TCD)
  *  2023/07/07 (A10001986)
  *    - Add "BTTF Network" (aka "BTTFN") support: TCD controls other props, such as FC
- *      or SID, wirelessy. Used here for time travel synchronisation and TCD's "Alarm" 
+ *      or SID, wirelessly. Used here for time travel synchronisation and TCD's "Alarm" 
  *      feature. Only needs IP address (not hostname!) of TCD to be entered in CP. 
  *      Either MQTT or BTTFN is used for time travel synchronisation/alarm; if the TCD is 
  *      configured to use MQTT and the "Send commands to other props" option is checked, 

@@ -327,6 +327,9 @@ static bool read_settings(File configFile)
         } else wd = true;
 
         wd |= CopyCheckValidNumParm(json["wait4TCD"], settings.wait4TCD, sizeof(settings.wait4TCD), 0, 1, DEF_WAIT_FOR_TCD);
+        wd |= CopyCheckValidNumParm(json["useGPSS"], settings.useGPSS, sizeof(settings.useGPSS), 0, 1, DEF_USE_GPSS);
+        wd |= CopyCheckValidNumParm(json["useNM"], settings.useNM, sizeof(settings.useNM), 0, 1, DEF_USE_NM);
+        wd |= CopyCheckValidNumParm(json["useFPO"], settings.useFPO, sizeof(settings.useFPO), 0, 1, DEF_USE_FPO);
 
         #ifdef FC_HAVEMQTT
         wd |= CopyCheckValidNumParm(json["useMQTT"], settings.useMQTT, sizeof(settings.useMQTT), 0, 1, 0);
@@ -386,6 +389,9 @@ void write_settings()
 
     json["tcdIP"] = settings.tcdIP;
     json["wait4TCD"] = settings.wait4TCD;
+    json["useGPSS"] = settings.useGPSS;
+    json["useNM"] = settings.useNM;
+    json["useFPO"] = settings.useFPO;
 
     #ifdef FC_HAVEMQTT
     json["useMQTT"] = settings.useMQTT;

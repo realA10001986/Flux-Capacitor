@@ -57,10 +57,6 @@ extern bool networkTCDTT;
 extern bool networkReentry;
 extern bool networkAlarm;
 
-#ifdef FC_HAVEMQTT
-extern bool ignoreMQTTFromTCD;
-#endif
-
 void main_boot();
 void main_setup();
 void main_loop();
