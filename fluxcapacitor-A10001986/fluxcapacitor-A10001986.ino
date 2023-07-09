@@ -87,6 +87,7 @@
  *   
  *  2023/07/09 (A10001986)
  *    - BTTFN: Add night mode and fake power support (both signalled from TCD)
+ *    - Allow chase speed to change with GPS speed from TCD (if available)
  *  2023/07/07 (A10001986)
  *    - Add "BTTF Network" (aka "BTTFN") support: TCD controls other props, such as FC
  *      or SID, wirelessly. Used here for time travel synchronisation and TCD's "Alarm" 
