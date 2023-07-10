@@ -12,7 +12,7 @@ Features include
 - [Music player](#the-music-player): Play mp3 files located on an SD card
 - [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player
 - Advanced network-accessible [Config Portal](#the-config-portal) for setup with mDNS support for easy access (http://flux.local, hostname configurable)
-- Wireless communication with Time Circuits Display ("[BTTF-Network](#bttf-network-bttfn)")
+- Wireless communication with Time Circuits Display ("[BTTF-Network](#bttf-network-bttfn)"); used for synchonized time travels, alarm, chase speed, night mode, fake power
 - [Home Assistant](#home-assistant--mqtt) (MQTT 3.1.1) support
 - Built-in installer for default audio files in addition to OTA firmware updates
 
