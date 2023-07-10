@@ -103,6 +103,7 @@ static bool isTTKeyHeld = false;
 bool networkTimeTravel = false;
 bool networkTCDTT      = false;
 bool networkReentry    = false;
+bool networkAbort      = false;
 bool networkAlarm      = false;
 
 static bool useGPSS     = false;
@@ -628,7 +629,7 @@ void main_loop()
 
             if(TTP0) {   // Acceleration - runs for ETTO_LEAD ms
 
-                if(now - TTstart < ETTO_LEAD) {
+                if(!networkAbort && (now - TTstart < ETTO_LEAD)) {
 
                     if(TTFInt && (now - TTfUpdNow >= TTFInt)) {
                         int t = fcLEDs.getSpeed();
@@ -651,14 +652,14 @@ void main_loop()
                     bP1idx = 0;
                     TTstart = now;
                     //TTP1snd = false;
-                    if(playTTsounds) {
+                    if(playTTsounds && !networkAbort) {
                         play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
                     }
                 }
             }
             if(TTP1) {   // Peak/"time tunnel" - ends with pin going LOW or BTTFN/MQTT "REENTRY"
 
-                if( (networkTCDTT && !networkReentry) || (!networkTCDTT && digitalRead(TT_IN_PIN))) 
+                if( (networkTCDTT && (!networkReentry && !networkAbort)) || (!networkTCDTT && digitalRead(TT_IN_PIN))) 
                 {
 
                     int t;
@@ -702,7 +703,9 @@ void main_loop()
                     TTfUpdNow = TTcUpdNow = TTbUpdNow = now;
                     //TTP1snd = false;
                     if(playTTsounds) {
-                        play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
+                        if(!networkAbort) {
+                            play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
+                        }
                         if(playFLUX) {
                             append_flux();
                         }
@@ -721,6 +724,7 @@ void main_loop()
                         TTcUpdNow = now;
                     } else {
                         cDone = true;
+                        centerLED.setDC(0);
                     }
                 }
 
@@ -732,19 +736,21 @@ void main_loop()
                         TTbUpdNow = now;
                     } else {
                         bDone = true;
+                        boxLED.setDC(mbllArray[minBLL]);
                     }
                 }
 
-                if(now - TTfUpdNow >= 250) {
+                if(!fDone && now - TTfUpdNow >= 250) {
                     if((t = fcLEDs.getSpeed()) < TTSSpd) {
                         if(t >= 50)      t += 50;
                         else if(t >= 10) t += 10;
                         else             t++;
                         fcLEDs.setSpeed(t);
+                        TTfUpdNow = now;
                     } else {
                         fDone = true;
+                        fcLEDs.setSpeed(TTSSpd);
                     }
-                    TTfUpdNow = now;
                 }
 
                 if(cDone && bDone && fDone) {
@@ -869,6 +875,7 @@ void main_loop()
                         TTcUpdNow = now;
                     } else {
                         cDone = true;
+                        centerLED.setDC(0);
                     }
                 }
 
@@ -880,19 +887,21 @@ void main_loop()
                         TTbUpdNow = now;
                     } else {
                         bDone = true;
+                        boxLED.setDC(mbllArray[minBLL]);
                     }
                 }
 
-                if(now - TTfUpdNow >= 250) {
+                if(!fDone && now - TTfUpdNow >= 250) {
                     if((t = fcLEDs.getSpeed()) < TTSSpd) {
                         if(t >= 50)      t += 50;
                         else if(t >= 10) t += 10;
                         else             t++;
                         fcLEDs.setSpeed(t);
+                        TTfUpdNow = now;
                     } else {
                         fDone = true;
+                        fcLEDs.setSpeed(TTSSpd);
                     }
-                    TTfUpdNow = now;
                 }
 
                 if(cDone && bDone && fDone) {
@@ -1908,14 +1917,21 @@ static void BTTFNCheckPacket()
                 networkTimeTravel = true;
                 networkTCDTT = true;
                 networkReentry = false;
+                networkAbort = false;
             }
             break;
         case BTTFN_NOT_REENTRY:
-        case BTTFN_NOT_ABORT_TT:
             // Start re-entry (if TT currently running)
             // Ignore command if TCD is connected by wire
             if(!TCDconnected && TTrunning && networkTCDTT) {
                 networkReentry = true;
+            }
+            break;
+        case BTTFN_NOT_ABORT_TT:
+            // Abort TT (if TT currently running)
+            // Ignore command if TCD is connected by wire
+            if(!TCDconnected && TTrunning && networkTCDTT) {
+                networkAbort = true;
             }
             break;
         case BTTFN_NOT_ALARM:

@@ -55,6 +55,7 @@ extern bool IRLearning;
 extern bool networkTimeTravel;
 extern bool networkTCDTT;
 extern bool networkReentry;
+extern bool networkAbort;
 extern bool networkAlarm;
 
 void main_boot();

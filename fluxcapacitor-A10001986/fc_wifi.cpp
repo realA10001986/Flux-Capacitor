@@ -107,6 +107,7 @@ WiFiManagerParameter custom_TCDpresent("TCDpres", "TCD connected by wire (0=no, 
 #else // -------------------- Checkbox hack: --------------
 WiFiManagerParameter custom_TCDpresent("TCDpres", "TCD connected by wire", settings.TCDpresent, 1, "autocomplete='off' title='Check this if you have a Time Circuits Display connected via wire' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
+
 WiFiManagerParameter custom_bttfnHint("<div style='margin:0px 0px 10px 0px;padding:0px'>Wireless communication (BTTF-Network)</div>");
 WiFiManagerParameter custom_tcdIP("tcdIP", "IP address of TCD", settings.tcdIP, 31, "pattern='[0-9.]+' placeholder='Example: 192.168.4.1'");
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
@@ -1267,14 +1268,20 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
                 networkTimeTravel = true;
                 networkTCDTT = true;
                 networkReentry = false;
+                networkAbort = false;
             }
             break;
         case 2:   // Re-entry
-        case 3:   // Abort TT (TCD fake-powered down during TT)
             // Start re-entry (if TT currently running)
             // Ignore command if TCD is connected by wire
             if(!TCDconnected && TTrunning && networkTCDTT) {
                 networkReentry = true;
+            }
+            break;
+        case 3:   // Abort TT (TCD fake-powered down during TT)
+            // Ignore command if TCD is connected by wire
+            if(!TCDconnected && TTrunning && networkTCDTT) {
+                networkAbort = true;
             }
             break;
         case 4:

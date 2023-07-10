@@ -85,6 +85,8 @@
 
 /*  Changelog
  *   
+ *  2023/07/10 (A10001986)
+ *    - BTTFN: Fix for ABORT_TT
  *  2023/07/09 (A10001986)
  *    - BTTFN: Add night mode and fake power support (both signalled from TCD)
  *    - Allow chase speed to change with GPS speed from TCD (if available)
