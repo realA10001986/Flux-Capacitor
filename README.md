@@ -7,12 +7,12 @@ The hardware is (or will be) available [here](https://circuitsetup.us) and is bu
 Features include
 - movie-accurate default flux sequence, plus 9 alternative flux sequences
 - Optional [flux](#the-flux-sound) sound (4 modes)
-- [Time Travel](#time-travel) function, triggered by button, [Time Circuits Display](https://github.com/realA10001986/Time-Circuits-Display/) or via [MQTT](#home-assistant--mqtt)
+- [Time Travel](#time-travel) function, triggered by button, [Time Circuits Display](https://github.com/realA10001986/Time-Circuits-Display/) (TCD) or via [MQTT](#home-assistant--mqtt)
 - [IR remote controlled](#ir-remote-control); can learn keys from custom remote
 - [Music player](#the-music-player): Play mp3 files located on an SD card
-- - [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player
+- [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player
 - Advanced network-accessible [Config Portal](#the-config-portal) for setup with mDNS support for easy access (http://flux.local, hostname configurable)
-- Wireless communication with Time Circuits Display ("BTTF-Network")
+- Wireless communication with Time Circuits Display ("[BTTF-Network](#bttf-network-bttfn)")
 - [Home Assistant](#home-assistant--mqtt) (MQTT 3.1.1) support
 - Built-in installer for default audio files in addition to OTA firmware updates
 
@@ -111,7 +111,11 @@ Your FC should have an IR remote control included. This remote works out-of-the-
 
 This remote is also sold as part of a kit for Arduino and is reasonably priced.
 
-Alternatively, you can have your FC learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, expecially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards, that remote is of that type and cannot be used.
+Each time you press a (recognized) key on the remote, an optional IR feedback LED will briefly light up. This LED is supposed to be connected to the "Panel Light" connector (GND and S pins), or - if so [configured](-use-panel-light-for-box-lights) - to one of the "external LED" connectors. 
+
+### IR learning
+
+You can have your FC learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, expecially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards, that remote is of that type and cannot be used.
 
 First, go to the Config Portal, uncheck *TCD connected by wire* on the Setup page and save. The FC reboots. Afterwards, to start the learning process, hold the Time Travel button for a few seconds, until the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Then press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then press "1", wait for the acknowledgement, and so on. Enter your keys in the following order:
 
@@ -120,8 +124,6 @@ First, go to the Config Portal, uncheck *TCD connected by wire* on the Setup pag
 If your remote control lacks the \* (starts command sequence) and \# (aborts command sequence) keys, you can use any other key, of course. \* could be eg. "menu" or "setup", \# could be "exit" or "return".
 
 If no key is pressed for 10 seconds, the learning process aborts, as does briefly pressing the Time Travel button. In thoses cases, the keys already learned are forgotten and nothing is saved.
-
-Each time you press a (recognized) key on the remote, an optional IR feedback LED will briefly light up. This LED is supposed to be connected to the "Panel Light" connector (GND and S pins), or - if so [configured](-use-panel-light-for-box-lights) - to one of the "external LED" connectors. 
 
 ### Locking IR control
 
@@ -283,9 +285,9 @@ You can also connect a physical button to your FC; the button must shorten "GPIO
 
 Other ways of triggering a time travel are available if a Time Circuits Display is connected.
 
-### Connecting a Time Circuits Display
+## Connecting a Time Circuits Display
 
-#### Connecting TCD by wire
+### Connecting TCD by wire
 
 Connect GND and GPIO on the Flux Capacitor's "Time Travel" connector to the TCD like in the table below:
 
@@ -309,7 +311,7 @@ Connect GND and GPIO on the Flux Capacitor's "Time Travel" connector to the TCD 
 
 Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place.
 
-#### BTTF-Network ("BTTFN")
+### BTTF-Network ("BTTFN")
 
 The TCD can communicate with the FC wirelessly, via WiFi. It can send out information about a time travel and an alarm, and the FC queries the TCD for speed and some other data. Unlike with MQTT, no broker or other third party software is needed.
 
@@ -325,7 +327,7 @@ Afterwards, the FC and the TCD can communicate wirelessly and
 
 You can use BTTF-Network and MQTT at the same time, see immediately below.
 
-#### Home Assistant/MQTT
+### Home Assistant/MQTT
 
 The other way of wireless communication is, of course, [Home Assistant/MQTT](#home-assistant--mqtt).
 
@@ -350,7 +352,7 @@ These sounds can be substituted by your own sound files on a FAT32-formatted SD 
 Your replacements need to be put in the root (top-most) directory of the SD card, be in mp3 format (128kbps max) and named as follows:
 - "0.mp3" through "9.mp3", "dot.mp3": Numbers for IP address read-out.
 - "flux.mp3". The standard flux sound, played continously.
-- "alarm.mp3". Played when the alarm sounds (triggered by a Ime Circuits Display via MQTT).
+- "alarm.mp3". Played when the alarm sounds (triggered by a Time Circuits Display via BTTFN or MQTT).
 
 The following sounds are time-sync'd to display action. If you decide to substitute these with your own, be prepared to lose synchronicity:
 - "travelstart.mp3". Played when a time travel starts.
@@ -501,21 +503,37 @@ Number of seconds before a timeout occurs when connecting to a WiFi network. Whe
 
 Check this if you have a Time Circuits Display connected by wire. Note that you can only connect *either* a button *or* the TCD to the "time travel" connector on the FC, but not both.
 
-Note that the process of [learning keys from an IR remote control](#ir-remote-control) requires this option to be unchecked. After learning keys is done, you can, of course, check this option again.
+Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place.
 
-##### &#9654; Play time travel sounds
-
-If other props are connected, they might bring their own time travel sound effects. In this case, you can uncheck this to disable the Flux Capacitor's own time travel sounds. Note that this only covers sounds played during time travel, not other sound effects.
+Also note that the process of [learning keys from an IR remote control](#ir-remote-control) requires this option to be unchecked. After learning keys is done, you can, of course, check this option again.
 
 ##### &#9654; IP address of TCD
 
 If you want to have your FC to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the IP address of the TCD here. Do NOT enter a host name here.
 
-If you connect your FC to the TCD-AP, the TCD's IP address is 192.168.4.1.
+If you connect your FC to the TCD's access point ("TCD-AP"), the TCD's IP address is 192.168.4.1.
 
 ##### &#9654; Wait for TCD-WiFi
 
 If you power up the TCD and the FC at the very same time (such as in a car), and your FC is configured to connect the TCD's access point ("TCD-AP"), check this to delay connecting to the TCD (to give it time to boot).
+
+##### &#9654; Change chase speed with GPS speed
+
+If your TCD is equipped with a GPS sensor, the FC can adapt its chase speed to current GPS speed. This option selects if GPS speed should be used for chase speed.
+
+While the FC receives GPS speed from the TCD, IR controls for chase speed are not ignored, but only saved.
+
+##### &#9654; Follow TCD night-mode
+
+If this option is checked, and your TCD goes into night mode, the FC will activate the Screen Saver with a very short timeout. 
+
+##### &#9654; Follow TCD fake power
+
+If this option is checked, and your TCD is equipped with a fake power switch, the FC will also fake-power up/down. If fake power is off, no LED is active and the FC will ignore all input from buttons, knobs and the IR control.
+
+##### &#9654; Play time travel sounds
+
+If other props are connected, they might bring their own time travel sound effects. In this case, you can uncheck this to disable the Flux Capacitor's own time travel sounds. Note that this only covers sounds played during time travel, not other sound effects.
 
 #### Home Assistant / MQTT settings
 
