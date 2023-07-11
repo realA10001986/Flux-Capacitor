@@ -494,7 +494,6 @@ void main_loop()
 
             if(playFLUX > 0) {
                 play_flux();
-                startFluxTimer();
             }
 
             isTTKeyHeld = isTTKeyPressed = false;
@@ -977,7 +976,7 @@ void main_loop()
     if(!TTrunning && !IRLearning && networkAlarm) {
         networkAlarm = false;
         play_file("/alarm.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
-        if(FPBUnitIsOn) {
+        if(FPBUnitIsOn && !ssActive) {
             if(playFLUX == 1) {
                 append_flux();
             }
@@ -1708,7 +1707,6 @@ static void ssEnd(bool doSound)
         if(!mpActive) {
             if(playFLUX > 0) {
                 play_flux();
-                startFluxTimer();
             }
         }
     }
