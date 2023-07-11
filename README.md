@@ -462,10 +462,12 @@ Selects the power-up "flux" sound mode. "Auto: xx secs" enables the beep for xx 
 
 Enter the number of minutes until the Screen Saver should become active when the FC is idle.
 
-The Screen Saver, when active, disables all LEDs, until 
+The Screen Saver, when active, stops the flux sound and disables all LEDs, until 
 - a key on the IR remote control is pressed; if IR is [locked](#locking-ir-control), only the # key deactivates the Screen Saver;
 - the time travel button is briefly pressed,
-- a time travel event is triggered from a connected TCD (wire or wirelessly)
+- a time travel event is triggered from a connected TCD (wire or wirelessly).
+
+The music player will continue to run.
  
 #### Hardware configuration settings
 
