@@ -1,4 +1,4 @@
-# Firmware for Flux-Capacitor
+# Firmware for Flux Capacitor
 
 This repository holds the most current firmware for CircuitSetup's wonderful Flux Capacitor kit.
 
