@@ -181,7 +181,7 @@ static bool          ssActive = false;
 
 static bool          nmOld = false;
 static bool          fpoOld = false;
-static bool          FPBUnitIsOn = true;
+bool                 FPBUnitIsOn = true;
 
 /*
  * Leave first two columns at 0 here, those will be filled
@@ -1032,16 +1032,16 @@ static void timeTravel(bool TCDtriggered)
         i++;
     }
     
-    if(TCDtriggered) {    // TCD-triggered TT (GPIO or MQTT-pub) (synced with TCD)
+    if(TCDtriggered) {    // TCD-triggered TT (GPIO, BTTFN, MQTT-pub) (synced with TCD)
         extTT = true;
-        if(TTSSpd > 1) {
+        if(i > 0) {
             TTFInt = ETTO_LEAD / i;
         } else {
             TTFInt = 0;
         }
     } else {              // button/IR/MQTT-cmd triggered TT (stand-alone)
         extTT = false;
-        if(TTSSpd > 1) {
+        if(i > 0) {
             TTFInt = P0_DUR / i;
         } else {
             TTFInt = 0;
@@ -1184,12 +1184,7 @@ static void executeIRCmd(int key)
     unsigned long now = millis();
 
     if(ssActive) {
-        if(irLocked) {
-            if(key == 11) {
-                ssEnd();
-                return;
-            }
-        } else {
+        if(!irLocked || key == 11) {
             ssEnd();
             return;
         }
@@ -1400,7 +1395,7 @@ static void executeIRCmd(int key)
                     break;
                 case 89:
                     if(!irLocked) {
-                        play_file("/fluxing.mp3", PA_INTRMUS|PA_DYNVOL, 1.0);
+                        play_file("/fluxing.mp3", PA_INTRMUS, 1.0);
                         if(contFlux()) {
                             append_flux();
                         }
@@ -1481,7 +1476,13 @@ static void executeIRCmd(int key)
             if(!irLocked) {
                 temp = atoi(inputBuffer);
                 if(!TTrunning) {
-                    switch(temp) {
+                    switch(temp) {                        // Duplicates; for matching TCD
+                    case 0:                               // *000 Disable looped FLUX sound playback
+                    case 1:                               // *001 Enable looped FLUX sound playback
+                    case 2:                               // *002 Enable looped FLUX sound playback for 30 seconds
+                    case 3:                               // *003 Enable looped FLUX sound playback for 60 seconds
+                        setFluxMode(temp);
+                        break;
                     case 222:                             // *222/*555 Disable/enable shuffle
                     case 555:
                         if(haveMusic) {
@@ -1721,7 +1722,7 @@ void prepareTT()
 
     // Start flux sound (if so configured), but 
     // honor the configured timer; we don't know
-    // when the actual tt comes; the TCD will
+    // when (or if) the actual tt comes; the TCD will
     // count up the speed in the meantime, but
     // even the minimum of 30 seconds should always
     // cover the gap.
@@ -1734,6 +1735,8 @@ void prepareTT()
 }
 
 // Flux sound mode
+// Might be called while ss is active (via MQTT)
+// Is never called if fake-powered-off
 void setFluxMode(int mode)
 {
     switch(mode) {
@@ -1745,7 +1748,7 @@ void setFluxMode(int mode)
         fluxTimer = false;
         break;
     case 1:
-        if(!mpActive) {
+        if(!mpActive && !ssActive) {
             append_flux();
         }
         playFLUX = 1;

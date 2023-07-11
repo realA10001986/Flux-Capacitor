@@ -48,6 +48,8 @@ extern bool     irLocked;
 
 extern bool TCDconnected;
 
+extern bool FPBUnitIsOn;
+
 extern bool TTrunning;
 extern int  playFLUX;
 extern bool IRLearning;

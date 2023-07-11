@@ -85,6 +85,8 @@
 
 /*  Changelog
  *   
+ *  2023/07/11 (A10001986)
+ *    - Fix possible div/0
  *  2023/07/10 (A10001986)
  *    - BTTFN: Fix for ABORT_TT
  *  2023/07/09 (A10001986)

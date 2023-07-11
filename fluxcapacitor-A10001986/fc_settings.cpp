@@ -1422,8 +1422,9 @@ void rewriteSecondarySettings()
     bool oldconfigOnSD = configOnSD;
     
     #ifdef FC_DBG
-    Serial.println("Re-writing IP settings");
+    Serial.println("Re-writing secondary settings");
     #endif
+    
     writeIpSettings();
 
     // Create current settings on flash FS

@@ -1295,7 +1295,7 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
         // User commands
 
         // Not taking commands under these circumstances:
-        if(TTrunning || IRLearning)
+        if(TTrunning || IRLearning || !FPBUnitIsOn)
             return;
 
         while(cmdList[i]) {
