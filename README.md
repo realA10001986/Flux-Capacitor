@@ -331,9 +331,9 @@ You can use BTTF-Network and MQTT at the same time, see immediately below.
 
 The other way of wireless communication is, of course, [Home Assistant/MQTT](#home-assistant--mqtt).
 
-If both TCD and FC are connected to the same broker, and the option **Send event notifications** is checked on the TCD's side, the FC will receive information on time travel and alarm and play their sequences in sync with the TCD. Unlike BTTFN, however, no other communication takes place.
+If both TCD and FC are connected to the same broker, and the option *Send event notifications* is checked on the TCD's side, the FC will receive information on time travel and alarm and play their sequences in sync with the TCD. Unlike BTTFN, however, no other communication takes place.
 
-MQTT and BTTFN can co-exist. However, the TCD only sends out time travel and alarm notifications through either MQTT or BTTFN, never both. If you have other MQTT-aware devices listening to the TCD's public topic (bttf/tcd/pub) in order to react to time travel or alarm messages, use MQTT (ie check **Send event notifications**). If only BTTFN-aware devices are to be used, uncheck this option to use BTTFN as it has less latency.
+MQTT and BTTFN can co-exist. However, the TCD only sends out time travel and alarm notifications through either MQTT or BTTFN, never both. If you have other MQTT-aware devices listening to the TCD's public topic (bttf/tcd/pub) in order to react to time travel or alarm messages, use MQTT (ie check *Send event notifications*). If only BTTFN-aware devices are to be used, uncheck this option to use BTTFN as it has less latency.
 
 ## SD card
 
