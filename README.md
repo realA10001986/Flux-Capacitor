@@ -285,55 +285,6 @@ You can also connect a physical button to your FC; the button must shorten "GPIO
 
 Other ways of triggering a time travel are available if a Time Circuits Display is connected.
 
-## Connecting a Time Circuits Display
-
-### Connecting TCD by wire
-
-Connect GND and GPIO on the Flux Capacitor's "Time Travel" connector to the TCD like in the table below:
-
-<table>
-    <tr>
-     <td align="center">Flux Capacitor:<br>"Time Travel" connector</td>
-     <td align="center">TCD control board 1.2</td>
-     <td align="center">TCD control board 1.3</td>
-    </tr>
-   <tr>
-     <td align="center">GND</td>
-     <td align="center">GND of "IO13" connector</td>
-     <td align="center">GND on "Time Travel" connector</td>
-    </tr>
-    <tr>
-     <td align="center">GPIO</td>
-     <td align="center">IO13 of "IO13" connector</td>
-     <td align="center">TT OUT on "Time Travel" connector</td>
-    </tr>
-</table>
-
-Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place.
-
-### BTTF-Network ("BTTFN")
-
-The TCD can communicate with the FC wirelessly, via WiFi. It can send out information about a time travel and an alarm, and the FC queries the TCD for speed and some other data. Unlike with MQTT, no broker or other third party software is needed.
-
-In order to connect your FC to the TCD using BTFFN, just enter the TCD's IP address in the *IP address of TCD* field in the FC's Config Portal. On the TCD, no special configuration is required.
-  
-If you power-up TCD and FC at the same time (such as usually [in a car](#car-setup)), and your FC's WiFi is connected to the TCD's access point ("TCD-AP"), check *Wait for TCD-WiFi*. This option does not need to be checked if TCD and FC both connect to an existing WiFi network (such as usually at home).
-
-Afterwards, the FC and the TCD can communicate wirelessly and 
-- play time travel sequences in sync,
-- both play an alarm-sequence when the TCD's alarm occurs,
-- the FC queries the TCD for GPS speed if desired to adapt chase speed to GPS speed,
-- the FC queries the TCD for fake power and night mode, in order to react accordingly if so configured.
-
-You can use BTTF-Network and MQTT at the same time, see immediately below.
-
-### Home Assistant/MQTT
-
-The other way of wireless communication is, of course, [Home Assistant/MQTT](#home-assistant--mqtt).
-
-If both TCD and FC are connected to the same broker, and the option *Send event notifications* is checked on the TCD's side, the FC will receive information on time travel and alarm and play their sequences in sync with the TCD. Unlike BTTFN, however, no other communication takes place.
-
-MQTT and BTTFN can co-exist. However, the TCD only sends out time travel and alarm notifications through either MQTT or BTTFN, never both. If you have other MQTT-aware devices listening to the TCD's public topic (bttf/tcd/pub) in order to react to time travel or alarm messages, use MQTT (ie check *Send event notifications*). If only BTTFN-aware devices are to be used, uncheck this option to use BTTFN as it has less latency.
 
 ## SD card
 
@@ -386,6 +337,61 @@ Entering \*888 followed by OK re-starts the player at song 000, and \*888xxx (xx
 See [here](#ir-remote-reference) for a list of controls of the music player.
 
 While the music player is playing music, other sound effects are disabled/muted. Initiating a time travel stops the music player. The TCD-triggered alarm will sound as usual and stop the music player.
+
+## Connecting a Time Circuits Display
+
+### Connecting TCD by wire
+
+Connect GND and GPIO on the Flux Capacitor's "Time Travel" connector to the TCD like in the table below:
+
+<table>
+    <tr>
+     <td align="center">Flux Capacitor:<br>"Time Travel" connector</td>
+     <td align="center">TCD control board 1.2</td>
+     <td align="center">TCD control board 1.3</td>
+    </tr>
+   <tr>
+     <td align="center">GND</td>
+     <td align="center">GND of "IO13" connector</td>
+     <td align="center">GND on "Time Travel" connector</td>
+    </tr>
+    <tr>
+     <td align="center">GPIO</td>
+     <td align="center">IO13 of "IO13" connector</td>
+     <td align="center">TT OUT on "Time Travel" connector</td>
+    </tr>
+</table>
+
+Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place.
+
+### BTTF-Network ("BTTFN")
+
+The TCD can communicate with the FC wirelessly, via WiFi. It can send out information about a time travel and an alarm, and the FC queries the TCD for speed and some other data. Unlike with MQTT, no broker or other third party software is needed.
+
+![BTTFN connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/93a9c471-d288-4a8f-87df-506ab8d5e619)
+
+In order to connect your FC to the TCD using BTFFN, just enter the TCD's IP address in the *IP address of TCD* field in the FC's Config Portal. On the TCD, no special configuration is required.
+  
+If you power-up TCD and FC at the same time (such as usually [in a car](#car-setup)), and your FC's WiFi is connected to the TCD's access point ("TCD-AP"), check *Wait for TCD-WiFi*. This option does not need to be checked if TCD and FC both connect to an existing WiFi network (such as usually at home).
+
+Afterwards, the FC and the TCD can communicate wirelessly and 
+- play time travel sequences in sync,
+- both play an alarm-sequence when the TCD's alarm occurs,
+- the FC queries the TCD for GPS speed if desired to adapt chase speed to GPS speed,
+- the FC queries the TCD for fake power and night mode, in order to react accordingly if so configured.
+
+You can use BTTF-Network and MQTT at the same time, see immediately below.
+
+### Home Assistant/MQTT
+
+The other way of wireless communication is, of course, [Home Assistant/MQTT](#home-assistant--mqtt).
+
+If both TCD and FC are connected to the same broker, and the option *Send event notifications* is checked on the TCD's side, the FC will receive information on time travel and alarm and play their sequences in sync with the TCD. Unlike BTTFN, however, no other communication takes place.
+
+![MQTT connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/938c6bdd-f554-4e51-862e-9988e2339222)
+
+MQTT and BTTFN can co-exist. However, the TCD only sends out time travel and alarm notifications through either MQTT or BTTFN, never both. If you have other MQTT-aware devices listening to the TCD's public topic (bttf/tcd/pub) in order to react to time travel or alarm messages, use MQTT (ie check *Send event notifications*). If only BTTFN-aware devices are to be used, uncheck this option to use BTTFN as it has less latency.
+
 
 ## Home Assistant / MQTT
 
