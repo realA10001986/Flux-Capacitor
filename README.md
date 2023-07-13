@@ -283,8 +283,7 @@ To travel through time, type "0" on the remote control. The flux capacitor will 
 
 You can also connect a physical button to your FC; the button must shorten "GPIO" and "3.3V" on the "Time Travel" connector. Pressing this button briefly will trigger a time travel.
 
-Other ways of triggering a time travel are available if a Time Circuits Display is connected.
-
+Other ways of triggering a time travel are available if a [Time Circuits Display is connected](#connecting-a-time-circuits-display).
 
 ## SD card
 
