@@ -127,7 +127,7 @@ If no key is pressed for 10 seconds, the learning process aborts, as does briefl
 
 ### Locking IR control
 
-You can have your FC ignore IR commands by entering #70 followed by OK. After this sequence the FC will ignore all IR commands until *70OK is entered again. The purpose of this function is to enable you to use the same IR control for your FC and other props (such as SID).
+You can have your FC ignore IR commands by entering *70 followed by OK. After this sequence the FC will ignore all IR commands until *70OK is entered again. The purpose of this function is to enable you to use the same IR control for your FC and other props (such as SID).
 
 Note that the status of the IR lock is saved 10 seconds after its last change, and persistent accross reboots.
 
