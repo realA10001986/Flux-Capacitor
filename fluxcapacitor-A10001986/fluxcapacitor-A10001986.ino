@@ -85,6 +85,9 @@
 
 /*  Changelog
  *   
+ *  2023/07/22 (A10001986)
+ *    - BTTFN dev type
+ *    - Minor CP design changes
  *  2023/07/11 (A10001986)
  *    - Fix possible div/0
  *    - Fix alarm vs. screen saver

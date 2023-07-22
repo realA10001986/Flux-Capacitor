@@ -240,6 +240,11 @@ uint16_t lastIRspeed = FC_SPD_IDLE;
 #define BTTFN_NOT_REENTRY  3
 #define BTTFN_NOT_ABORT_TT 4
 #define BTTFN_NOT_ALARM    5
+#define BTTFN_TYPE_ANY     0    // Any, unknown or no device
+#define BTTFN_TYPE_FLUX    1    // Flux Capacitor
+#define BTTFN_TYPE_SID     2    // SID
+#define BTTFN_TYPE_PCG     3    // Plutonium chamber gauge panel
+static const uint8_t BTTFUDPHD[4] = { 'B', 'T', 'T', 'F' };
 static bool          useBTTFN = false;
 static WiFiUDP       bttfUDP;
 static UDP*          fcUDP;
@@ -250,7 +255,6 @@ static unsigned long BTTFNTSRQAge = 0;
 static bool          BTTFNPacketDue = false;
 static bool          BTTFNWiFiUp = false;
 static uint8_t       BTTFNfailCount = 0;
-static uint8_t       BTTFUDPHD[4] = { 'B', 'T', 'T', 'F'};
 static uint32_t      BTTFUDPID = 0;
 
 
@@ -1973,6 +1977,12 @@ static void BTTFNCheckPacket()
             tcdNM = false;
             tcdFPO = false;
         }
+
+        // Eval SID IP from TCD
+        //if(BTTFUDPBuf[5] & 0x20) {
+        //    Serial.printf("SID IP from TCD %d.%d.%d.%d\n", BTTFUDPBuf[27],
+        //          BTTFUDPBuf[28], BTTFUDPBuf[29], BTTFUDPBuf[30]);
+        //}
     }
 }
 
@@ -2013,8 +2023,13 @@ static void BTTFNSendPacket()
     strncpy((char *)BTTFUDPBuf + 10, settings.hostName, 12);
     BTTFUDPBuf[10+12] = 0;
 
+    BTTFUDPBuf[10+13] = BTTFN_TYPE_FLUX;
+
     BTTFUDPBuf[4] = BTTFN_VERSION;  // Version
-    BTTFUDPBuf[5] = 0x12;           // Request GPS speed & nm status
+    BTTFUDPBuf[5] = 0x12;           // Request status and GPS speed
+
+    //BTTFUDPBuf[5] |= 0x20;             // Query SID ID from TCD
+    //BTTFUDPBuf[24] = BTTFN_TYPE_SID;
 
     uint8_t a = 0;
     for(int i = 4; i < BTTF_PACKET_SIZE - 1; i++) {

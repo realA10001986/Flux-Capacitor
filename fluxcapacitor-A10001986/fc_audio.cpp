@@ -819,8 +819,8 @@ void audio_loop()
 static int skipID3(char *buf)
 {
     if(buf[0] == 'I' && buf[1] == 'D' && buf[2] == '3' && 
-       (buf[3] == 0x04 || buf[3] == 0x03 || buf[3] == 0x02) && 
-       buf[4] == 0) {
+       buf[3] >= 0x02 && buf[3] <= 0x04 && buf[4] == 0 &&
+       (!(buf[5] & 0x80))) {
         int32_t pos = ((buf[6] << (24-3)) |
                        (buf[7] << (16-2)) |
                        (buf[8] << (8-1))  |
