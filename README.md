@@ -275,7 +275,7 @@ The FC features connectors for box lights, ie LEDs that light up the inside of t
 
 In normal operation, those LEDs are off. You can, however, configure a minimum box light level to light up the box a little bit if you find it too dark. This level can be chosen out of five, by entering *10 through *14 followed by OK.
 
-I used four pieces of 3W High-Power KEYES LED modules, mounted in the four corners of the main box. Since those draw quite much power, they are connected to the power supply directly, only their PWD input is wired the FC PCB, to be exact to the "+" pin of the "external LED" connectors (or "S" pin of the "Panel light connector. if so [configured](#-use-panel-light-for-box-lights)).
+I used four pieces of 3W High-Power KEYES LED modules, mounted in the four corners of the main box. Since those draw quite much power, they are connected to the power supply directly, only their PWD input is wired the FC PCB, to be exact to the "+" pin of the "external LED" connectors (or "S" pin of the "Panel light connector if so [configured](#-use-panel-light-for-box-lights)).
 
 ## Time travel
 
