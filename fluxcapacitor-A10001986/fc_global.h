@@ -11,8 +11,8 @@
 #define _FC_GLOBAL_H
 
 // Version strings.
-#define FC_VERSION       "V0.35"
-#define FC_VERSION_EXTRA "JUL222023"
+#define FC_VERSION       "V0.36"
+#define FC_VERSION_EXTRA "JUL292023"
 
 #define FC_DBG              // debug output on Serial
 
@@ -41,6 +41,10 @@
 /*************************************************************************
  ***                           Miscellaneous                           ***
  *************************************************************************/
+
+// Uncomment this if using a 1.2 fc control board
+// Comment for all later versions
+#define BOARD_1_2
 
 // Use SPIFFS (if defined) or LittleFS (if undefined; esp32-arduino >= 2.x)
 // For now, I stick with SPIFFS.
@@ -72,20 +76,24 @@
 #define MRESET_PIN        19
 #define SERDATA_PIN       22
 
-// Box LED
+// Box LEDs
 #define BLED_PWM_PIN      2
 
 // Center LED
 #define LED_PWM_PIN       17
 
-// Panel LED (unused as such)
-#define PANEL_LED         14
+// GPIO14 (basically unused)
+#define GPIO_14           14
 
 // IR Remote input
 #define IRREMOTE_PIN      27
 
 // IR feedback LED
-#define IR_FB_PIN         14    // maybe put that on 12
+#ifndef BOARD_1_2
+#define IR_FB_PIN         12
+#else
+#define IR_FB_PIN         14
+#endif
 
 // Time Travel button (or TCD input trigger)
 #define TT_IN_PIN         13
@@ -95,7 +103,7 @@
 #define I2S_LRCLK_PIN     25
 #define I2S_DIN_PIN       33
 
-// SD Card pins - n/a on Rev 1.1 board
+// SD Card pins
 #define SD_CS_PIN          5
 #define SPI_MOSI_PIN      23
 #define SPI_MISO_PIN      16

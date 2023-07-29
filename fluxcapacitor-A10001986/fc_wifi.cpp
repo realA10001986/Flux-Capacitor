@@ -78,9 +78,9 @@ WiFiManagerParameter custom_playFLUXSnd(fluxCustHTML);
 WiFiManagerParameter custom_ssDelay("ssDel", "Screen saver timer (minutes; 0=off)", settings.ssTimer, 3, "type='number' min='0' max='999' autocomplete='off'", WFM_LABEL_BEFORE);
 
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-WiFiManagerParameter custom_swapBL("swapBL", "Use 'panel light' connector for box lights (0=no, 1=yes)", settings.usePLforBL, 1, "autocomplete='off' title='Enable if you want to connect your box lights to the Panel Light connector instead of the Ext.LED connectors'");
+WiFiManagerParameter custom_swapBL("swapBL", "Use GPIO14 connector for box lights (0=no, 1=yes)", settings.usePLforBL, 1, "autocomplete='off' title='Enable if you connected your box lights to the GPIO14 connector instead of the Box LED connectors'");
 #else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_swapBL("swapBL", "Use 'panel light' connector for box lights", settings.usePLforBL, 1, "autocomplete='off' title='Check if you want to connect your box lights to the Panel Light connector  instead of the Ext.LED connectors' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_swapBL("swapBL", "Use GPIO14 connector for box lights", settings.usePLforBL, 1, "autocomplete='off' title='Check if you connected your box lights to the GPIO14 connector instead of the Box LED connectors' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_useVknob("vKnob", "Use volume knob by default (0=off, 1=on)", settings.useVknob, 1, "autocomplete='off' title='Enable to use the volume knob by default, instead of adjusting volume via IR remote control'");

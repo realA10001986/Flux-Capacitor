@@ -100,7 +100,7 @@ static long prev_avg, prev_raw, prev_raw2;
 #define POT_RESOLUTION 9
 
 unsigned long renNow1;
-const char *tcdrdone = "/TCD_DONE.TXT";   // leave this, SD is interchangable this way
+const char *tcdrdone = "/TCD_DONE.TXT";   // leave "TCD", SD is interchangable this way
 
 static int  mp_findMaxNum();
 static bool mp_checkForFile(int num);

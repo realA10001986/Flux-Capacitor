@@ -334,13 +334,13 @@ void main_setup()
         wifiStartCP();
     }
 
-    // Swap box light <> "panel light"
+    // Swap "box light" <> "GPIO14"
     PLforBL = ((int)atoi(settings.usePLforBL) > 0);
 
-    // As long as we "abuse" the PL for the IR feedback,
+    // As long as we "abuse" the GPIO14 for the IR feedback,
     // swap it for box light as well
-    #if IR_FB_PIN == PANEL_LED
-    IRFeedBackPin = PLforBL ? BLED_PWM_PIN : PANEL_LED;
+    #if IR_FB_PIN == GPIO_14
+    IRFeedBackPin = PLforBL ? BLED_PWM_PIN : GPIO_14;
     #endif
 
     // Init IR feedback LED
@@ -351,7 +351,7 @@ void main_setup()
     #ifdef FC_DBG
     Serial.println(F("Booting Box LED"));
     #endif
-    boxLED.begin(BLED_CHANNEL, BLED_FREQ, BLED_RES, PLforBL ? PANEL_LED : 255);
+    boxLED.begin(BLED_CHANNEL, BLED_FREQ, BLED_RES, PLforBL ? GPIO_14 : 255);
     // Set minimum box light level
     boxLED.setDC(mbllArray[minBLL]);
 
@@ -1980,8 +1980,8 @@ static void BTTFNCheckPacket()
 
         // Eval SID IP from TCD
         //if(BTTFUDPBuf[5] & 0x20) {
-        //    Serial.printf("SID IP from TCD %d.%d.%d.%d\n", BTTFUDPBuf[27],
-        //          BTTFUDPBuf[28], BTTFUDPBuf[29], BTTFUDPBuf[30]);
+        //    Serial.printf("SID IP from TCD %d.%d.%d.%d\n", 
+        //        BTTFUDPBuf[27], BTTFUDPBuf[28], BTTFUDPBuf[29], BTTFUDPBuf[30]);
         //}
     }
 }

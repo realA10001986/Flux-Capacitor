@@ -85,6 +85,8 @@
 
 /*  Changelog
  *   
+ *  2023/07/29 (A10001986)
+ *    - Changes for board 1.3
  *  2023/07/22 (A10001986)
  *    - BTTFN dev type
  *    - Minor CP design changes
