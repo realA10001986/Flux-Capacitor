@@ -273,11 +273,11 @@ The different modes are selected by typing *00 (disabled), *01 (enabled), *02 (e
 
 ## Box lighting
 
-The FC features connectors for box lights, ie LEDs that light up the inside of the FC during the time travel sequence. Those should be installed, they are essential part of the time travel sequence. 
+The FC features connectors for box lights, ie LEDs that light up the inside of the FC during the time travel sequence. Those should be installed, they are essential part of the time travel sequence. The kit from CircuitSetup will probably contain suitable high-power LEDs for box lighting, and all four of those need to be connected to the "Box LED" connectors. 
+
+As an alternative, one could use four pieces of 3W High-Power KEYES LED modules and drive them via the GPIO14 connector. As those draw quite much power, their power pins should therefore be connected to the power supply directly, and only the PWD input should be wired to the "IO14" pin of the "GPIO14" connector. If you use the GPIO14 connector for your box LEDs, check [this option](#-use-gpio14-for-box-lights).
 
 In normal operation, those LEDs are off. You can, however, configure a minimum box light level to light up the box a little bit if you find it too dark. This level can be chosen out of five, by entering *10 through *14 followed by OK.
-
-I used four pieces of 3W High-Power KEYES LED modules, mounted in the four corners of the main box. Since those draw quite much power, they are connected to the power supply directly, only their PWD input is wired the FC PCB, to be exact to the "IO14" pin of the "GPIO14" connector, while [this option](#-use-gpio14-for-box-lights) is checked.
 
 ## Time travel
 
@@ -317,7 +317,7 @@ The firmware supports some additional user-provided sound effects, which it will
 
 - "key3.mp3" and/or "key6.mp3": Will be played if you press the "3"/"6" button on your remote
 
-Those files are not provided here. You can use any mp3, with 128kpbs or less.
+Those files are not provided here. You can use any mp3, with a bitrate of 128kpbs or less.
 
 ## The Music Player
 
@@ -392,7 +392,6 @@ If both TCD and FC are connected to the same broker, and the option *Send event 
 ![MQTT connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/938c6bdd-f554-4e51-862e-9988e2339222)
 
 MQTT and BTTFN can co-exist. However, the TCD only sends out time travel and alarm notifications through either MQTT or BTTFN, never both. If you have other MQTT-aware devices listening to the TCD's public topic (bttf/tcd/pub) in order to react to time travel or alarm messages, use MQTT (ie check *Send event notifications*). If only BTTFN-aware devices are to be used, uncheck this option to use BTTFN as it has less latency.
-
 
 ## Home Assistant / MQTT
 
@@ -510,7 +509,7 @@ Number of seconds before a timeout occurs when connecting to a WiFi network. Whe
 
 ##### &#9654; TCD connected by wire
 
-Check this if you have a Time Circuits Display connected by wire. Note that you can only connect *either* a button *or* the TCD to the "time travel" connector on the FC, but not both.
+Check this if you have a Time Circuits Display connected by wire. You can only connect *either* a button *or* the TCD to the "time travel" connector on the FC, but not both.
 
 Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place.
 
