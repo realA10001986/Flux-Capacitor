@@ -111,7 +111,7 @@ Your FC should have an IR remote control included. This remote works out-of-the-
 
 This remote is also sold as part of a kit for Arduino and is reasonably priced.
 
-Each time you press a (recognized) key on the remote, an optional IR feedback LED will briefly light up. This LED is supposed to be connected to the "GPIO14" connector (GND and S pins), or - if so [configured](#-use-speed-knob-by-default) - to one of the "external LED" connectors. 
+Each time you press a (recognized) key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the center LED.
 
 ### IR learning
 
