@@ -111,7 +111,7 @@ Your FC should have an IR remote control included. This remote works out-of-the-
 
 This remote is also sold as part of a kit for Arduino and is reasonably priced.
 
-Each time you press a (recognized) key on the remote, an optional IR feedback LED will briefly light up. This LED is supposed to be connected to the "Panel Light" connector (GND and S pins), or - if so [configured](#-use-speed-knob-by-default) - to one of the "external LED" connectors. 
+Each time you press a (recognized) key on the remote, an optional IR feedback LED will briefly light up. This LED is supposed to be connected to the "GPIO14" connector (GND and S pins), or - if so [configured](#-use-speed-knob-by-default) - to one of the "external LED" connectors. 
 
 ### IR learning
 
@@ -275,7 +275,7 @@ The FC features connectors for box lights, ie LEDs that light up the inside of t
 
 In normal operation, those LEDs are off. You can, however, configure a minimum box light level to light up the box a little bit if you find it too dark. This level can be chosen out of five, by entering *10 through *14 followed by OK.
 
-I used four pieces of 3W High-Power KEYES LED modules, mounted in the four corners of the main box. Since those draw quite much power, they are connected to the power supply directly, only their PWD input is wired the FC PCB, to be exact to the "+" pin of the "external LED" connectors (or "S" pin of the "Panel light connector if so [configured](#-use-panel-light-for-box-lights)).
+I used four pieces of 3W High-Power KEYES LED modules, mounted in the four corners of the main box. Since those draw quite much power, they are connected to the power supply directly, only their PWD input is wired the FC PCB, to be exact to the "+" pin of the "Box LED" connectors (or "IO14" pin of the "GPIO14" connector if so [configured](#-use-gpio14-for-box-lights)).
 
 ## Time travel
 
@@ -476,9 +476,9 @@ The music player will continue to run.
  
 #### Hardware configuration settings
 
-##### &#9654; Use 'panel light' for box lights
+##### &#9654; Use 'GPIO14' for box lights
 
-Normally, [box lights](#box-lighting) are connected to the "External LED" connectors, and the [IR feedback LED](#ir-remote-control) to the "Panel Light" connector (GND/S). Check this option if your box lights are instead connected to the "Panel Light" connector. This option, in essence, swaps the "external LED" and "Panel light" connector purposes.
+Normally, [box lights](#box-lighting) are connected to the "Box LED" connectors. Check this option if your box lights are instead connected to the "GPIO14" connector.
 
 ##### &#9654; Use volume knob by default
 
