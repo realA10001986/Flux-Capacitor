@@ -495,7 +495,7 @@ Check this if your FC has a pot for chasing speed selection and you want to use 
 
 Check this to disable the supplied remote control; the FC will only accept commands from a learned IR remote (if applicable). 
 
-Note that this only disables the supplied remote, unlike IR locking, where IR commands from any known remote are ignored.
+Note that this only disables the supplied remote, unlike [IR locking](#locking-ir-control), where IR commands from any known remote are ignored.
 
 #### Network settings
 
