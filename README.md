@@ -129,9 +129,11 @@ If no key is pressed for 10 seconds, the learning process aborts, as does briefl
 
 ### Locking IR control
 
-You can have your FC ignore IR commands by entering *70 followed by OK. After this sequence the FC will ignore all IR commands until *70OK is entered again. The purpose of this function is to enable you to use the same IR control for your FC and other props (such as SID).
+You can have your FC ignore IR commands from any IR remote control (be it the default supplied one, be it one you had the FC learn) by entering *70 followed by OK. After this sequence the FC will ignore all IR commands until *70OK is entered again. The purpose of this function is to enable you to use the same IR control for your FC and other props (such as SID).
 
 Note that the status of the IR lock is saved 10 seconds after its last change, and persistent accross reboots.
+
+In order to only disable the supplied IR remote control, check the option *Disable supplied IR remote control* in the Config Portal.
 
 ### IR remote reference
 
@@ -488,6 +490,12 @@ Check this if your FC has a pot for volume selection and you want to use this po
 ##### &#9654; Use speed knob by default
 
 Check this if your FC has a pot for chasing speed selection and you want to use this pot. Note that if this option is checked, commands regarding chasing speed from the remote control are ignored.
+
+##### &#9654; Disable supplied IR remote control
+
+Check this to disable the supplied remote control; the FC will only accept commands from a learned IR remote (if applicable). 
+
+Note that this only disables the supplied remote, unlike IR locking, where IR commands from any known remote are ignored.
 
 #### Network settings
 
