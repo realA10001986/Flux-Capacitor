@@ -133,7 +133,7 @@ You can have your FC ignore IR commands from any IR remote control (be it the de
 
 Note that the status of the IR lock is saved 10 seconds after its last change, and persistent accross reboots.
 
-In order to only disable the supplied IR remote control, check the option *Disable supplied IR remote control* in the Config Portal.
+In order to only disable the supplied IR remote control, check the option *Disable supplied IR remote control* in the [Config Portal](#-disable-supplied-ir-remote-control). In that case, any learned remote will still work.
 
 ### IR remote reference
 
