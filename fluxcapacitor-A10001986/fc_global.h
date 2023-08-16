@@ -11,10 +11,10 @@
 #define _FC_GLOBAL_H
 
 // Version strings.
-#define FC_VERSION       "V0.36"
-#define FC_VERSION_EXTRA "JUL292023"
+#define FC_VERSION       "V1.0"
+#define FC_VERSION_EXTRA "AUG142023"
 
-#define FC_DBG              // debug output on Serial
+//#define FC_DBG              // debug output on Serial
 
 /*************************************************************************
  ***                     mDNS (Bonjour) support                        ***
@@ -44,7 +44,7 @@
 
 // Uncomment this if using a 1.2 fc control board
 // Comment for all later versions
-#define BOARD_1_2
+//#define BOARD_1_2
 
 // Use SPIFFS (if defined) or LittleFS (if undefined; esp32-arduino >= 2.x)
 // For now, I stick with SPIFFS.
@@ -82,7 +82,7 @@
 // Center LED
 #define LED_PWM_PIN       17
 
-// GPIO14 (basically unused)
+// GPIO14 (for alternate box lights)
 #define GPIO_14           14
 
 // IR Remote input

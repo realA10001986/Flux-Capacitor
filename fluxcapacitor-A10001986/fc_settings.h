@@ -47,6 +47,7 @@ extern uint8_t musFolderNum;
 #define DEF_SS_TIMER        0     // "Screen saver" timeout in minutes; 0 = ss off
 #define DEF_VKNOB           0     // 0: Don't use knob for audio volume, 1: do
 #define DEF_SKNOB           0     // 0: Don't use knob for chase speed; 1: do
+#define DEF_DISDIR          0     // 0: Do not disable default IR remote control; 1: do
 #define DEF_TCD_PRES        0     // 0: No TCD connected, 1: connected via GPIO
 #define DEF_HOSTNAME        "flux"
 #define DEF_WIFI_RETRY      3     // 1-15; Default: 3 retries
@@ -65,9 +66,11 @@ struct Settings {
     char playFLUXsnd[4]     = MS(DEF_PLAY_FLUX_SND);
     char playTTsnds[4]      = MS(DEF_PLAY_TT_SND);
     char ssTimer[6]         = MS(DEF_SS_TIMER);
-    
+
+    char usePLforBL[4]      = MS(DEF_BLEDSWAP);
     char useVknob[4]        = MS(DEF_VKNOB);
     char useSknob[4]        = MS(DEF_SKNOB);
+    char disDIR[4]          = MS(DEF_DISDIR);
 
     char TCDpresent[4]      = MS(DEF_TCD_PRES);
     
@@ -84,9 +87,7 @@ struct Settings {
     char shuffle[4]         = MS(DEF_SHUFFLE);
     char CfgOnSD[4]         = MS(DEF_CFG_ON_SD);
     char sdFreq[4]          = MS(DEF_SD_FREQ);
-    
-    char usePLforBL[4]      = MS(DEF_BLEDSWAP);
-    
+
 #ifdef FC_HAVEMQTT  
     char useMQTT[4]         = "0";
     char mqttServer[80]     = "";  // ip or domain [:port]  

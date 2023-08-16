@@ -92,6 +92,11 @@ WiFiManagerParameter custom_useSknob("sKnob", "Use speed knob by default (0=off,
 #else // -------------------- Checkbox hack: --------------
 WiFiManagerParameter custom_useSknob("sKnob", "Use speed knob by default", settings.useSknob, 1, "title='Check to use speed knob by default, instead of adjusting speed via IR remote control' type='checkbox'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
+#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
+WiFiManagerParameter custom_disDIR("dDIR", "Disable supplied IR control (0=off, 1=on)", settings.disDIR, 1, "autocomplete='off' title='Set to 1 to disable the supplied IR remote control'");
+#else // -------------------- Checkbox hack: --------------
+WiFiManagerParameter custom_disDIR("dDIR", "Disable supplied IR control", settings.disDIR, 1, "title='Check to disable the supplied IR remote control' type='checkbox'", WFM_LABEL_AFTER);
+#endif // -------------------------------------------------
 
 #if defined(FC_MDNS) || defined(FC_WM_HAS_MDNS)
 #define HNTEXT "Hostname<br><span style='font-size:80%'>The Config Portal is accessible at http://<i>hostname</i>.local<br>(Valid characters: a-z/0-9/-)</span>"
@@ -283,12 +288,12 @@ void wifi_setup()
     wm.setShowStaticFields(true);
     wm.setShowDnsFields(true);
 
-    temp = (int)atoi(settings.wifiConTimeout);
+    temp = atoi(settings.wifiConTimeout);
     if(temp < 7) temp = 7;
     if(temp > 25) temp = 25;
     wm.setConnectTimeout(temp);
 
-    temp = (int)atoi(settings.wifiConRetries);
+    temp = atoi(settings.wifiConRetries);
     if(temp < 1) temp = 1;
     if(temp > 15) temp = 15;
     wm.setConnectRetries(temp);
@@ -302,10 +307,11 @@ void wifi_setup()
     wm.addParameter(&custom_playFLUXSnd);
     wm.addParameter(&custom_ssDelay);
 
-    wm.addParameter(&custom_sectstart);     // 4
+    wm.addParameter(&custom_sectstart);     // 5
     wm.addParameter(&custom_swapBL);
     wm.addParameter(&custom_useVknob);
     wm.addParameter(&custom_useSknob);
+    wm.addParameter(&custom_disDIR);
     
     wm.addParameter(&custom_sectstart);     // 4
     wm.addParameter(&custom_hostName);
@@ -371,7 +377,7 @@ void wifi_setup2()
     wifiConnect(true);
 
 #ifdef FC_HAVEMQTT
-    useMQTT = ((int)atoi(settings.useMQTT) > 0);
+    useMQTT = (atoi(settings.useMQTT) > 0);
     
     if((!settings.mqttServer[0]) || // No server -> no MQTT
        (wifiInAPMode))              // WiFi in AP mode -> no MQTT
@@ -545,12 +551,13 @@ void wifi_loop()
             #ifdef TC_NOCHECKBOXES // --------- Plain text boxes:
 
             mystrcpy(settings.playTTsnds, &custom_playTTSnd);
-            
+
+            mystrcpy(settings.usePLforBL, &custom_swapBL);
             mystrcpy(settings.useVknob, &custom_useVknob);
             mystrcpy(settings.useSknob, &custom_useSknob);
+            mystrcpy(settings.disDIR, &custom_disDIR);
 
             mystrcpy(settings.TCDpresent, &custom_TCDpresent);
-            mystrcpy(settings.usePLforBL, &custom_swapBL);
 
             mystrcpy(settings.wait4TCD, &custom_wait4TCD);
             mystrcpy(settings.useGPSS, &custom_uGPS);
@@ -570,12 +577,13 @@ void wifi_loop()
             #else // -------------------------- Checkboxes:
 
             strcpyCB(settings.playTTsnds, &custom_playTTSnd);
-            
+
+            strcpyCB(settings.usePLforBL, &custom_swapBL);
             strcpyCB(settings.useVknob, &custom_useVknob);
             strcpyCB(settings.useSknob, &custom_useSknob);
+            strcpyCB(settings.disDIR, &custom_disDIR);
 
             strcpyCB(settings.TCDpresent, &custom_TCDpresent);
-            strcpyCB(settings.usePLforBL, &custom_swapBL);
 
             strcpyCB(settings.wait4TCD, &custom_wait4TCD);
             strcpyCB(settings.useGPSS, &custom_uGPS);
@@ -972,12 +980,13 @@ void updateConfigPortalValues()
 
     custom_playFLUXSnd.setValue(settings.playFLUXsnd, 1);
     custom_playTTSnd.setValue(settings.playTTsnds, 1);
-    
+
+    custom_swapBL.setValue(settings.usePLforBL, 1);
     custom_useVknob.setValue(settings.useVknob, 1);
     custom_useSknob.setValue(settings.useSknob, 1);
+    custom_disDIR.setValue(settings.disDIR, 1);
 
     custom_TCDpresent.setValue(settings.TCDpresent, 1);
-    custom_swapBL.setValue(settings.usePLforBL, 1);
 
     custom_wait4TCD.setValue(settings.wait4TCD, 1);
     custom_uGPS.setValue(settings.useGPSS, 1);
@@ -997,13 +1006,14 @@ void updateConfigPortalValues()
 
     setCBVal(&custom_playFLUXSnd, settings.playFLUXsnd);
     setCBVal(&custom_playTTSnd, settings.playTTsnds);
-    
+
+    setCBVal(&custom_swapBL, settings.usePLforBL);
     setCBVal(&custom_useVknob, settings.useVknob);
     setCBVal(&custom_useSknob, settings.useSknob);
+    setCBVal(&custom_disDIR, settings.disDIR);
 
     setCBVal(&custom_TCDpresent, settings.TCDpresent);
-    setCBVal(&custom_swapBL, settings.usePLforBL);
-
+    
     setCBVal(&custom_wait4TCD, settings.wait4TCD);
     setCBVal(&custom_uGPS, settings.useGPSS);
     setCBVal(&custom_uNM, settings.useNM);
@@ -1142,14 +1152,14 @@ static void mystrcpy(char *sv, WiFiManagerParameter *el)
 #ifndef TC_NOCHECKBOXES
 static void strcpyCB(char *sv, WiFiManagerParameter *el)
 {
-    strcpy(sv, ((int)atoi(el->getValue()) > 0) ? "1" : "0");
+    strcpy(sv, (atoi(el->getValue()) > 0) ? "1" : "0");
 }
 
 static void setCBVal(WiFiManagerParameter *el, char *sv)
 {
     const char makeCheck[] = "1' checked a='";
     
-    el->setValue(((int)atoi(sv) > 0) ? makeCheck : "1", 14);
+    el->setValue((atoi(sv) > 0) ? makeCheck : "1", 14);
 }
 #endif
 

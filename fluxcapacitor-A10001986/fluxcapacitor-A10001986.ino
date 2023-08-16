@@ -85,6 +85,8 @@
 
 /*  Changelog
  *   
+ *  2023/08/14 (A10001986) [1.0]
+ *    - Add config option to disable the default IR control
  *  2023/07/29 (A10001986)
  *    - Changes for board 1.3
  *  2023/07/22 (A10001986)

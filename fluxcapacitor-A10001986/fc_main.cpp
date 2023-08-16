@@ -215,6 +215,7 @@ static char          inputBuffer[INPUTLEN_MAX + 2];
 static int           inputIndex = 0;
 static bool          inputRecord = false;
 static unsigned long lastKeyPressed = 0;
+static int           maxIRctrls = NUM_REM_TYPES;
 
 #define IR_FEEDBACK_DUR 300
 static bool          irFeedBack = false;
@@ -314,12 +315,17 @@ void main_setup()
     loadIRLock();
 
     // Set up options to play/mute sounds
-    playFLUX = (int)atoi(settings.playFLUXsnd);
-    playTTsounds = ((int)atoi(settings.playTTsnds) > 0);
+    playFLUX = atoi(settings.playFLUXsnd);
+    playTTsounds = (atoi(settings.playTTsnds) > 0);
 
-    useGPSS = ((int)atoi(settings.useGPSS) > 0);
-    useNM = ((int)atoi(settings.useNM) > 0);
-    useFPO = ((int)atoi(settings.useFPO) > 0);
+    // Other options
+    useGPSS = (atoi(settings.useGPSS) > 0);
+    useNM = (atoi(settings.useNM) > 0);
+    useFPO = (atoi(settings.useFPO) > 0);
+
+    // Option to disable supplied default IR remote
+    if((atoi(settings.disDIR) > 0)) 
+        maxIRctrls--;
 
     // Initialize flux sound modes
     if(playFLUX >= 3) {
@@ -335,7 +341,7 @@ void main_setup()
     }
 
     // Swap "box light" <> "GPIO14"
-    PLforBL = ((int)atoi(settings.usePLforBL) > 0);
+    PLforBL = (atoi(settings.usePLforBL) > 0);
 
     // As long as we "abuse" the GPIO14 for the IR feedback,
     // swap it for box light as well
@@ -357,7 +363,7 @@ void main_setup()
 
     // Determine if Time Circuits Display is connected
     // via wire, and is source of GPIO tt trigger
-    TCDconnected = ((int)atoi(settings.TCDpresent) > 0);
+    TCDconnected = (atoi(settings.TCDpresent) > 0);
 
     // Set up TT button / TCD trigger
     TTKey.attachPress(TTKeyPressed);
@@ -378,7 +384,7 @@ void main_setup()
     }
 
     // Power-up use of speed pot
-    useSKnob = ((int)atoi(settings.useSknob) > 0);
+    useSKnob = (atoi(settings.useSknob) > 0);
     
     // Set resolution for speed pot
     analogReadResolution(POT_RESOLUTION);
@@ -1145,7 +1151,7 @@ static void handleIRinput()
     }
 
     for(i = 0; i < NUM_IR_KEYS; i++) {
-        for(j = 0; j < NUM_REM_TYPES; j++) {
+        for(j = 0; j < maxIRctrls; j++) {
             if(remote_codes[i][j] == myHash) {
                 #ifdef FC_DBG
                 Serial.printf("handleIRinput: key %d\n", i);
@@ -2028,7 +2034,7 @@ static void BTTFNSendPacket()
     BTTFUDPBuf[4] = BTTFN_VERSION;  // Version
     BTTFUDPBuf[5] = 0x12;           // Request status and GPS speed
 
-    //BTTFUDPBuf[5] |= 0x20;             // Query SID ID from TCD
+    //BTTFUDPBuf[5] |= 0x20;             // Query SID IP from TCD
     //BTTFUDPBuf[24] = BTTFN_TYPE_SID;
 
     uint8_t a = 0;

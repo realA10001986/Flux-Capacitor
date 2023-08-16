@@ -126,7 +126,7 @@ void audio_setup()
     audioLogger = &Serial;
     #endif
 
-    useVKnob = ((int)atoi(settings.useVknob) > 0);
+    useVKnob = (atoi(settings.useVknob) > 0);
 
     // Set resolution for volume pot
     analogReadResolution(POT_RESOLUTION);

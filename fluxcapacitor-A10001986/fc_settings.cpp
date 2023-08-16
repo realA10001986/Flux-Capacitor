@@ -306,14 +306,14 @@ static bool read_settings(File configFile)
         wd |= CopyCheckValidNumParm(json["playFLUXsnd"], settings.playFLUXsnd, sizeof(settings.playFLUXsnd), 0, 3, DEF_PLAY_FLUX_SND);
         wd |= CopyCheckValidNumParm(json["playTTsnds"], settings.playTTsnds, sizeof(settings.playTTsnds), 0, 1, DEF_PLAY_TT_SND);
         wd |= CopyCheckValidNumParm(json["ssTimer"], settings.ssTimer, sizeof(settings.ssTimer), 0, 999, DEF_SS_TIMER);
-        
+
+        wd |= CopyCheckValidNumParm(json["usePLforBL"], settings.usePLforBL, sizeof(settings.usePLforBL), 0, 1, DEF_BLEDSWAP);
         wd |= CopyCheckValidNumParm(json["useVknob"], settings.useVknob, sizeof(settings.useVknob), 0, 1, DEF_VKNOB);
         wd |= CopyCheckValidNumParm(json["useSknob"], settings.useSknob, sizeof(settings.useSknob), 0, 1, DEF_SKNOB);
+        wd |= CopyCheckValidNumParm(json["disDIR"], settings.disDIR, sizeof(settings.disDIR), 0, 1, DEF_DISDIR);
 
         wd |= CopyCheckValidNumParm(json["TCDpresent"], settings.TCDpresent, sizeof(settings.TCDpresent), 0, 1, DEF_TCD_PRES);
 
-        wd |= CopyCheckValidNumParm(json["usePLforBL"], settings.usePLforBL, sizeof(settings.usePLforBL), 0, 1, DEF_BLEDSWAP);
-  
         if(json["hostName"]) {
             memset(settings.hostName, 0, sizeof(settings.hostName));
             strncpy(settings.hostName, json["hostName"], sizeof(settings.hostName) - 1);
@@ -376,12 +376,13 @@ void write_settings()
     json["playTTsnds"] = settings.playTTsnds;
 
     json["ssTimer"] = settings.ssTimer;
-    
+
+    json["usePLforBL"] = settings.usePLforBL;
     json["useVknob"] = settings.useVknob;
     json["useSknob"] = settings.useSknob;
+    json["disDIR"] = settings.disDIR;
 
     json["TCDpresent"] = settings.TCDpresent;
-    json["usePLforBL"] = settings.usePLforBL;
     
     json["hostName"] = settings.hostName;
     json["wifiConRetries"] = settings.wifiConRetries;
