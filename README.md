@@ -4,7 +4,7 @@ This repository holds the most current firmware for CircuitSetup's excellent [Fl
 
 ![fMy Flux Capacitor](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/ad197e19-fa48-463a-9231-7e05d6362329)
 
-The kit is (or will be) available [here](https://circuitsetup.us) and is built around a NodeMCU ESP32-S dev board.
+The kit will be/is available [here](https://circuitsetup.us).
 
 Features include
 - movie-accurate default flux sequence, plus 9 alternative flux sequences
@@ -14,7 +14,7 @@ Features include
 - [Music player](#the-music-player): Play mp3 files located on an SD card
 - [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player
 - Advanced network-accessible [Config Portal](#the-config-portal) for setup with mDNS support for easy access (http://flux.local, hostname configurable)
-- Wireless communication with Time Circuits Display ("[BTTF-Network](#bttf-network-bttfn)"); used for synchonized time travels, alarm, chase speed, night mode, fake power
+- Wireless communication ("[BTTF-Network](#bttf-network-bttfn)") with [Time Circuits Display](https://github.com/realA10001986/Time-Circuits-Display/); used for synchonized time travels, alarm, chase speed, night mode, fake power
 - [Home Assistant](#home-assistant--mqtt) (MQTT 3.1.1) support
 - Built-in installer for default audio files in addition to OTA firmware updates
 
@@ -343,7 +343,7 @@ While the music player is playing music, other sound effects are disabled/muted.
 
 ## Connecting a Time Circuits Display
 
-### Connecting TCD by wire
+### Connecting a TCD by wire
 
 Connect GND and GPIO on the Flux Capacitor's "Time Travel" connector to the TCD like in the table below:
 
