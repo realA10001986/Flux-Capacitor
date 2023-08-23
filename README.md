@@ -4,7 +4,7 @@ This repository holds the most current firmware for CircuitSetup's excellent [Fl
 
 ![fMy Flux Capacitor](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/ad197e19-fa48-463a-9231-7e05d6362329)
 
-The kit will be/is available [here](https://circuitsetup.us).
+The kit is available [here](https://circuitsetup.us).
 
 Features include
 - movie-accurate default flux sequence, plus 9 alternative flux sequences
