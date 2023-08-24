@@ -1841,7 +1841,7 @@ static bool contFlux()
 
 void showCopyError()
 {
-    fcLEDs.SpecialSignal(FCSEQ_NOAUDIO);
+    fcLEDs.SpecialSignal(FCSEQ_ERRCOPY);
 }
 
 static void waitAudioDone(bool withIR)
