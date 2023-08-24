@@ -113,8 +113,10 @@ static int16_t lastGPSspeed = -2;
 
 static bool useNM = false;
 static bool tcdNM = false;
+bool        fluxNM = false;
 static bool useFPO = false;
 static bool tcdFPO = false;
+static bool wait4FPOn = false;
 
 #define FLUXM2_SECS  30
 #define FLUXM3_SECS  60
@@ -319,9 +321,11 @@ void main_setup()
     playTTsounds = (atoi(settings.playTTsnds) > 0);
 
     // Other options
+    ssDelay = ssOrigDelay = atoi(settings.ssTimer) * 60 * 1000;    
     useGPSS = (atoi(settings.useGPSS) > 0);
     useNM = (atoi(settings.useNM) > 0);
     useFPO = (atoi(settings.useFPO) > 0);
+    wait4FPOn = (atoi(settings.wait4FPOn) > 0);
 
     // Option to disable supplied default IR remote
     if((atoi(settings.disDIR) > 0)) 
@@ -342,28 +346,25 @@ void main_setup()
 
     // Swap "box light" <> "GPIO14"
     PLforBL = (atoi(settings.usePLforBL) > 0);
-
     // As long as we "abuse" the GPIO14 for the IR feedback,
     // swap it for box light as well
     #if IR_FB_PIN == GPIO_14
     IRFeedBackPin = PLforBL ? BLED_PWM_PIN : GPIO_14;
     #endif
 
+    // Determine if Time Circuits Display is connected
+    // via wire, and is source of GPIO tt trigger
+    TCDconnected = (atoi(settings.TCDpresent) > 0);
+
     // Init IR feedback LED
     pinMode(IRFeedBackPin, OUTPUT);
     digitalWrite(IRFeedBackPin, LOW);
 
-    // Boot remaining display LEDs
+    // Boot remaining display LEDs (but keep them dark)
     #ifdef FC_DBG
     Serial.println(F("Booting Box LED"));
     #endif
     boxLED.begin(BLED_CHANNEL, BLED_FREQ, BLED_RES, PLforBL ? GPIO_14 : 255);
-    // Set minimum box light level
-    boxLED.setDC(mbllArray[minBLL]);
-
-    // Determine if Time Circuits Display is connected
-    // via wire, and is source of GPIO tt trigger
-    TCDconnected = (atoi(settings.TCDpresent) > 0);
 
     // Set up TT button / TCD trigger
     TTKey.attachPress(TTKeyPressed);
@@ -418,7 +419,6 @@ void main_setup()
     }
 
     fcLEDs.stop(true);
-    fcLEDs.on();
 
     // Set FCLeds to default/saved speed
     if(useSKnob) {
@@ -427,22 +427,53 @@ void main_setup()
         fcLEDs.setSpeed(lastIRspeed);
     }
 
-    // Play startup
-    play_file("/startup.mp3", PA_INTRMUS|PA_ALLOWSD, 1.0);
-    if(playFLUX) {
-        append_flux();
-    }
-    fcLEDs.SpecialSignal(FCSEQ_STARTUP);
-    fcLEDs.stop(false);
-    while(!fcLEDs.SpecialDone()) {
-         mydelay(20, false);
-    }
-
+    // Initialize BTTF network
     bttfn_setup();
 
-    ssDelay = ssOrigDelay = atoi(settings.ssTimer) * 60 * 1000;
-    ssRestartTimer();
+    // If "Wait for TCD fake power on" is set,
+    // stay silent and dark
 
+    if(useBTTFN && useFPO && wait4FPOn) {
+
+        FPBUnitIsOn = false;
+        tcdFPO = fpoOld = true;
+            
+        fcLEDs.off();
+        boxLED.setDC(0);
+        centerLED.setDC(0);
+
+        // Light up IR feedback for 500ms
+        startIRfeedback();
+        mydelay(500, false);
+        endIRfeedback();
+
+        Serial.println("Waiting for TCD fake power on");
+
+    } else {
+
+        // Otherwise boot:
+        FPBUnitIsOn = true;
+        
+        fcLEDs.on();
+    
+        // Set minimum box light level
+        boxLED.setDC(mbllArray[minBLL]);
+    
+        // Play startup
+        play_file("/startup.mp3", PA_INTRMUS|PA_ALLOWSD, 1.0);
+        if(playFLUX) {
+            append_flux();
+        }
+        fcLEDs.SpecialSignal(FCSEQ_STARTUP);
+        fcLEDs.stop(false);
+        while(!fcLEDs.SpecialDone()) {
+             mydelay(20, false);
+        }
+
+        ssRestartTimer();
+
+    }
+    
     #ifdef FC_DBG
     Serial.println(F("main_setup() done"));
     #endif
@@ -456,9 +487,11 @@ void main_loop()
 {
     unsigned long now = millis();
 
-    // Deferred WiFi startup ("Wait for TCD" option)
+    // Deferred WiFi startup ("Wait for TCD WiFi" option)
     // This will block!
-    if(!wifiSetupDone && now - powerupMillis > 28000) {
+    // The timeout here is what the TCD needs when it is
+    // in Car Mode (991ENTER).
+    if(!wifiSetupDone && now - powerupMillis > 7000) {
         wifi_setup2();
         if(WiFi.status() == WL_CONNECTED) {
             wifiStartCP();
@@ -502,8 +535,15 @@ void main_loop()
             fcLEDs.on();
             boxLED.setDC(mbllArray[minBLL]);
 
-            if(playFLUX > 0) {
-                play_flux();
+            // Play startup
+            play_file("/startup.mp3", PA_INTRMUS|PA_ALLOWSD, 1.0);
+            if(playFLUX) {
+                append_flux();
+            }
+            fcLEDs.SpecialSignal(FCSEQ_STARTUP);
+            fcLEDs.stop(false);
+            while(!fcLEDs.SpecialDone()) {
+                 mydelay(20, false);
             }
 
             isTTKeyHeld = isTTKeyPressed = false;
@@ -520,14 +560,14 @@ void main_loop()
         fpoOld = tcdFPO;
     }
     
-    // Discard input from IR after 1 minute of inactivity
-    if(now - lastKeyPressed >= 1*60*1000) {
+    // Discard (incomlete) input from IR after 30 seconds of inactivity
+    if(now - lastKeyPressed >= 30*1000) {
         inputBuffer[0] = '\0';
         inputIndex = 0;
         inputRecord = false;
     }
 
-    // IR feedback
+    // IR feedback timeout
     if(irFeedBack && now - irFeedBackNow > IR_FEEDBACK_DUR) {
         endIRfeedback();
         irFeedBack = false;
@@ -932,10 +972,12 @@ void main_loop()
         if(tcdNM) {
             // NM on: Set Screen Saver timeout to 10 seconds
             ssDelay = 10 * 1000;
+            fluxNM = true;
         } else {
             // NM off: End Screen Saver; reset timeout to old value
             ssEnd();  // Doesn't do anything if fake power is off
             ssDelay = ssOrigDelay;
+            fluxNM = false;
         }
         nmOld = tcdNM;
     }
@@ -944,7 +986,7 @@ void main_loop()
 
     // "Screen saver"
     if(FPBUnitIsOn) {
-        if(!ssActive && ssDelay && (now - ssLastActivity > ssDelay)) {
+        if(!TTrunning && !ssActive && ssDelay && (now - ssLastActivity > ssDelay)) {
             ssStart();
         }
     }
@@ -1797,6 +1839,11 @@ static bool contFlux()
     return false;
 }
 
+void showCopyError()
+{
+    fcLEDs.SpecialSignal(FCSEQ_NOAUDIO);
+}
+
 static void waitAudioDone(bool withIR)
 {
     int timeout = 400;
@@ -1974,8 +2021,8 @@ static void BTTFNCheckPacket()
             #endif
         }
         if(BTTFUDPBuf[5] & 0x10) {
-            tcdNM  = BTTFUDPBuf[26] & 0x01;
-            tcdFPO = BTTFUDPBuf[26] & 0x02;   // 1 means fake power off
+            tcdNM  = (BTTFUDPBuf[26] & 0x01) ? true : false;
+            tcdFPO = (BTTFUDPBuf[26] & 0x02) ? true : false;   // 1 means fake power off
             #ifdef FC_DBG
             Serial.printf("BTTFN: Night mode is %d, fake power is %d\n", tcdNM, tcdFPO);
             #endif

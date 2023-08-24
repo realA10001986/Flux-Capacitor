@@ -58,6 +58,7 @@ extern uint8_t musFolderNum;
 #define DEF_USE_GPSS        0     // 0: Ignore GPS speed; 1: Use it for chase speed
 #define DEF_USE_NM          0     // 0: Ignore TCD night mode; 1: Follow TCD night mode
 #define DEF_USE_FPO         0     // 0: Ignore TCD fake power; 1: Follow TCD fake power
+#define DEF_WAIT_FPO        0     // 0: Don't wait for fake power on during boot, 1: Do
 #define DEF_CFG_ON_SD       1     // Default: Save vol/spd/IR/mbl settings on SD card
 #define DEF_SD_FREQ         0     // SD/SPI frequency: Default 16MHz
 #define DEF_BLEDSWAP        0     // 0: Use box led connectors for box leds; 1: use "panel light" connector (both PWM!)
@@ -83,6 +84,7 @@ struct Settings {
     char useGPSS[4]         = MS(DEF_USE_GPSS);
     char useNM[4]           = MS(DEF_USE_NM);
     char useFPO[4]          = MS(DEF_USE_FPO);
+    char wait4FPOn[4]       = MS(DEF_WAIT_FPO);
 
     char shuffle[4]         = MS(DEF_SHUFFLE);
     char CfgOnSD[4]         = MS(DEF_CFG_ON_SD);

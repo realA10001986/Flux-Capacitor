@@ -61,7 +61,8 @@ class PWMLED {
 #define FCSEQ_LEARNSTART 6
 #define FCSEQ_LEARNNEXT  7
 #define FCSEQ_LEARNDONE  8
-#define FCSEQ_MAX 8
+#define FCSEQ_ERRCOPY    9
+#define FCSEQ_MAX 9
 
 class FCLEDs {
 

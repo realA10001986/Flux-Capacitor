@@ -318,7 +318,7 @@ static bool read_settings(File configFile)
             memset(settings.hostName, 0, sizeof(settings.hostName));
             strncpy(settings.hostName, json["hostName"], sizeof(settings.hostName) - 1);
         } else wd = true;
-        wd |= CopyCheckValidNumParm(json["wifiConRetries"], settings.wifiConRetries, sizeof(settings.wifiConRetries), 1, 15, DEF_WIFI_RETRY);
+        wd |= CopyCheckValidNumParm(json["wifiConRetries"], settings.wifiConRetries, sizeof(settings.wifiConRetries), 1, 10, DEF_WIFI_RETRY);
         wd |= CopyCheckValidNumParm(json["wifiConTimeout"], settings.wifiConTimeout, sizeof(settings.wifiConTimeout), 7, 25, DEF_WIFI_TIMEOUT);
 
         if(json["tcdIP"]) {
@@ -330,6 +330,7 @@ static bool read_settings(File configFile)
         wd |= CopyCheckValidNumParm(json["useGPSS"], settings.useGPSS, sizeof(settings.useGPSS), 0, 1, DEF_USE_GPSS);
         wd |= CopyCheckValidNumParm(json["useNM"], settings.useNM, sizeof(settings.useNM), 0, 1, DEF_USE_NM);
         wd |= CopyCheckValidNumParm(json["useFPO"], settings.useFPO, sizeof(settings.useFPO), 0, 1, DEF_USE_FPO);
+        wd |= CopyCheckValidNumParm(json["wait4FPOn"], settings.wait4FPOn, sizeof(settings.wait4FPOn), 0, 1, DEF_WAIT_FPO);
 
         #ifdef FC_HAVEMQTT
         wd |= CopyCheckValidNumParm(json["useMQTT"], settings.useMQTT, sizeof(settings.useMQTT), 0, 1, 0);
@@ -393,6 +394,7 @@ void write_settings()
     json["useGPSS"] = settings.useGPSS;
     json["useNM"] = settings.useNM;
     json["useFPO"] = settings.useFPO;
+    json["wait4FPOn"] = settings.wait4FPOn;
 
     #ifdef FC_HAVEMQTT
     json["useMQTT"] = settings.useMQTT;
@@ -1281,7 +1283,8 @@ void doCopyAudioFiles()
         #endif
         write_settings();           // Re-write general settings
         if(!copy_audio_files()) {   // Retry copy
-            mydelay(3000, false);
+            showCopyError();
+            mydelay(5000, false);
         } else {
             delIDfile = true;
         }
@@ -1291,9 +1294,9 @@ void doCopyAudioFiles()
 
     if(delIDfile)
         delete_ID_file();
-    
-    mydelay(2000, false);
 
+    mydelay(500, false);
+    
     esp_restart();
 }
 

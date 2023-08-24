@@ -116,9 +116,9 @@ WiFiManagerParameter custom_TCDpresent("TCDpres", "TCD connected by wire", setti
 WiFiManagerParameter custom_bttfnHint("<div style='margin:0px 0px 10px 0px;padding:0px'>Wireless communication (BTTF-Network)</div>");
 WiFiManagerParameter custom_tcdIP("tcdIP", "IP address of TCD", settings.tcdIP, 31, "pattern='[0-9.]+' placeholder='Example: 192.168.4.1'");
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-WiFiManagerParameter custom_wait4TCD("w4TCD", "Wait for TCD-WiFi (0=no, 1=yes)<br><span style='font-size:80%'>Enable this if TCD acts as WiFi-AP for FC, and you power-up TCD and FC simultaneously (as is typical in car setups)</span>", settings.wait4TCD, 1, "autocomplete='off' title='Enable if you power-up TCD and FC simultaneously to delay WiFi-connection to TCD'");
+WiFiManagerParameter custom_wait4TCD("w4TCD", "Wait for TCD-WiFi (0=no, 1=yes)<br><span style='font-size:80%'>Enable this if TCD acts as WiFi-AP for FC, and you power-up TCD and FC simultaneously (as is typical in car setups). TCD needs to be in 'car mode'.</span>", settings.wait4TCD, 1, "autocomplete='off' title='Enable if you power-up TCD and FC simultaneously to delay WiFi-connection to TCD'");
 #else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_wait4TCD("w4TCD", "Wait for TCD-WiFi<br><span style='font-size:80%'>Check this if TCD acts as WiFi-AP for FC, and you power-up TCD and FC simultaneously (as is typical in car setups)</span>", settings.wait4TCD, 1, "autocomplete='off' title='Check if you power-up TCD and SID simultaneously to delay WiFi-connection to TCD' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_wait4TCD("w4TCD", "Wait for TCD-WiFi<br><span style='font-size:80%'>Check this if TCD acts as WiFi-AP for FC, and you power-up TCD and FC simultaneously (as is typical in car setups). TCD needs to be in 'car mode'.</span>", settings.wait4TCD, 1, "autocomplete='off' title='Check if you power-up TCD and SID simultaneously to delay WiFi-connection to TCD' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_uGPS("uGPS", "Change chase speed with GPS speed (0=no, 1=yes)<br><span style='font-size:80%'>GPS speed, if available from TCD, will overrule knob and IR remote</span>", settings.useGPSS, 1, "autocomplete='off'");
@@ -126,14 +126,19 @@ WiFiManagerParameter custom_uGPS("uGPS", "Change chase speed with GPS speed (0=n
 WiFiManagerParameter custom_uGPS("uGPS", "Change chase speed with GPS speed<br><span style='font-size:80%'>GPS speed, if available from TCD, will overrule knob and IR remote</span>", settings.useGPSS, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-WiFiManagerParameter custom_uNM("uNM", "Follow TCD night-mode (0=no, 1=yes)<br><span style='font-size:80%'>If enabled, the Screen Saver will activate when TCD is in night-mode.</span>", settings.useGPSS, 1, "autocomplete='off'");
+WiFiManagerParameter custom_uNM("uNM", "Follow TCD night-mode (0=no, 1=yes)<br><span style='font-size:80%'>If enabled, the Screen Saver will activate when TCD is in night-mode.</span>", settings.useNM, 1, "autocomplete='off'");
 #else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_uNM("uNM", "Follow TCD night-mode<br><span style='font-size:80%'>If checked, the Screen Saver will activate when TCD is in night-mode.</span>", settings.useGPSS, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_uNM("uNM", "Follow TCD night-mode<br><span style='font-size:80%'>If checked, the Screen Saver will activate when TCD is in night-mode.</span>", settings.useNM, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power (0=no, 1=yes)", settings.useGPSS, 1, "autocomplete='off'");
+WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power (0=no, 1=yes)", settings.useFPO, 1, "autocomplete='off'");
 #else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power", settings.useGPSS, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power", settings.useFPO, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
+#endif // -------------------------------------------------
+#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
+WiFiManagerParameter custom_wFPO("wFPO", "Wait for fake power on at boot (0=no, 1=yes)", settings.wait4FPOn, 1, "autocomplete='off'");
+#else // -------------------- Checkbox hack: --------------
+WiFiManagerParameter custom_wFPO("wFPO", "Wait for fake power on at boot", settings.wait4FPOn, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
@@ -321,13 +326,14 @@ void wifi_setup()
     wm.addParameter(&custom_sectstart);     // 2
     wm.addParameter(&custom_TCDpresent);
 
-    wm.addParameter(&custom_sectstart);     // 7
+    wm.addParameter(&custom_sectstart);     // 8
     wm.addParameter(&custom_bttfnHint);
     wm.addParameter(&custom_tcdIP);
     wm.addParameter(&custom_wait4TCD);
     wm.addParameter(&custom_uGPS);
     wm.addParameter(&custom_uNM);
     wm.addParameter(&custom_uFPO);
+    wm.addParameter(&custom_wFPO);
     
     wm.addParameter(&custom_sectstart);     // 2
     wm.addParameter(&custom_playTTSnd);
@@ -563,6 +569,7 @@ void wifi_loop()
             mystrcpy(settings.useGPSS, &custom_uGPS);
             mystrcpy(settings.useNM, &custom_uNM);
             mystrcpy(settings.useFPO, &custom_uFPO);
+            mystrcpy(settings.wait4FPOn, &custom_wFPO);
 
             #ifdef FC_HAVEMQTT
             mystrcpy(settings.useMQTT, &custom_useMQTT);
@@ -589,6 +596,7 @@ void wifi_loop()
             strcpyCB(settings.useGPSS, &custom_uGPS);
             strcpyCB(settings.useNM, &custom_uNM);
             strcpyCB(settings.useFPO, &custom_uFPO);
+            strcpyCB(settings.wait4FPOn, &custom_wFPO);
 
             #ifdef FC_HAVEMQTT
             strcpyCB(settings.useMQTT, &custom_useMQTT);
@@ -992,7 +1000,8 @@ void updateConfigPortalValues()
     custom_uGPS.setValue(settings.useGPSS, 1);
     custom_uNM.setValue(settings.useNM, 1);
     custom_uFPO.setValue(settings.useFPO, 1);
-
+    custom_wFPO.setValue(settings.wait4FPOn, 1);
+    
     #ifdef FC_HAVEMQTT
     custom_useMQTT.setValue(settings.useMQTT, 1);
     #endif
@@ -1018,6 +1027,7 @@ void updateConfigPortalValues()
     setCBVal(&custom_uGPS, settings.useGPSS);
     setCBVal(&custom_uNM, settings.useNM);
     setCBVal(&custom_uFPO, settings.useFPO);
+    setCBVal(&custom_wFPO, settings.wait4FPOn);
 
     #ifdef FC_HAVEMQTT
     setCBVal(&custom_useMQTT, settings.useMQTT);
@@ -1290,6 +1300,7 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
             break;
         case 3:   // Abort TT (TCD fake-powered down during TT)
             // Ignore command if TCD is connected by wire
+            // (mainly because this is no network-triggered TT)
             if(!TCDconnected && TTrunning && networkTCDTT) {
                 networkAbort = true;
             }

@@ -12,9 +12,9 @@
 
 // Version strings.
 #define FC_VERSION       "V1.0"
-#define FC_VERSION_EXTRA "AUG142023"
+#define FC_VERSION_EXTRA "AUG242023"
 
-//#define FC_DBG              // debug output on Serial
+#define FC_DBG              // debug output on Serial
 
 /*************************************************************************
  ***                     mDNS (Bonjour) support                        ***

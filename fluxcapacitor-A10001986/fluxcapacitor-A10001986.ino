@@ -85,6 +85,14 @@
 
 /*  Changelog
  *   
+ *  2023/08/24 (A10001986)
+ *    - Add "Wait for fake power on" option; if set, FC only boots
+ *      after it received a fake-power-on signal from the TCD
+ *      (Needs "Follow fake power" option set)
+ *    - Play startup-sequence on fake-power-on
+ *    - Don't activate ss when tt is running
+ *    - Fix parm handling of FPO and NM in fc_wifi
+ *    - Reduce volume in night mode
  *  2023/08/14 (A10001986) [1.0]
  *    - Add config option to disable the default IR control
  *  2023/07/29 (A10001986)

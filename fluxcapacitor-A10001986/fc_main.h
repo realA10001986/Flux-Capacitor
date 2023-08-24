@@ -49,6 +49,7 @@ extern bool     irLocked;
 extern bool TCDconnected;
 
 extern bool FPBUnitIsOn;
+extern bool fluxNM;
 
 extern bool TTrunning;
 extern int  playFLUX;
@@ -72,6 +73,8 @@ void copyIRarray(uint32_t *irkeys, int index);
 
 void setFluxMode(int mode);
 void startFluxTimer();
+
+void showCopyError();
 
 void mydelay(unsigned long mydel, bool withIR);
 

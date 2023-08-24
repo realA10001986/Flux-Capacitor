@@ -1016,7 +1016,9 @@ static float getVolume()
     if(vol_val == 0.0) return vol_val;
 
     vol_val *= curVolFact;
-    
+
+    if(fluxNM) vol_val *= 0.3;
+      
     // Do not totally mute
     // 0.02 is the lowest audible gain
     if(vol_val < 0.02) vol_val = 0.02;

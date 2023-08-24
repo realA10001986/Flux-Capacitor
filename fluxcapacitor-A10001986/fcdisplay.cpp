@@ -255,6 +255,10 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
           0b000000,  10,
           0b111111,  50, 0b000000,  50,
           0b111111,  50, 0b000000,  50, SS_END
+        },
+        {
+          SS_LOOP,                                      // 9: Error when copying audio files
+          0b110000,  20, 0b000011, 20, SS_END
         }
 };        
 
