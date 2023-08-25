@@ -50,11 +50,11 @@ extern uint8_t musFolderNum;
 #define DEF_DISDIR          0     // 0: Do not disable default IR remote control; 1: do
 #define DEF_TCD_PRES        0     // 0: No TCD connected, 1: connected via GPIO
 #define DEF_HOSTNAME        "flux"
-#define DEF_WIFI_RETRY      3     // 1-15; Default: 3 retries
+#define DEF_WIFI_RETRY      3     // 1-10; Default: 3 retries
 #define DEF_WIFI_TIMEOUT    7     // 7-25; Default: 7 seconds
 #define DEF_SHUFFLE         0     // Music Player: Do not shuffle by default
 #define DEF_TCD_IP          ""    // TCD ip address for networked polling
-#define DEF_WAIT_FOR_TCD    0     // 0: Boot normally  1: Delay WiFi setup for 30 seconds (to wait for TCD if powered up simultaneously)
+#define DEF_WAIT_FOR_TCD    0     // 0: Boot normally  1: Delay WiFi setup for a few seconds (to wait for TCD if powered up simultaneously)
 #define DEF_USE_GPSS        0     // 0: Ignore GPS speed; 1: Use it for chase speed
 #define DEF_USE_NM          0     // 0: Ignore TCD night mode; 1: Follow TCD night mode
 #define DEF_USE_FPO         0     // 0: Ignore TCD fake power; 1: Follow TCD fake power
@@ -80,7 +80,7 @@ struct Settings {
     char wifiConTimeout[4]  = MS(DEF_WIFI_TIMEOUT);
 
     char tcdIP[32]          = DEF_TCD_IP;
-    char wait4TCD[4]        = MS(DEF_WAIT_FOR_TCD);
+    //char wait4TCD[4]        = MS(DEF_WAIT_FOR_TCD);
     char useGPSS[4]         = MS(DEF_USE_GPSS);
     char useNM[4]           = MS(DEF_USE_NM);
     char useFPO[4]          = MS(DEF_USE_FPO);

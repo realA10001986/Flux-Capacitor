@@ -104,7 +104,7 @@ WiFiManagerParameter custom_disDIR("dDIR", "Disable supplied IR control", settin
 #define HNTEXT "Hostname<br><span style='font-size:80%'>(Valid characters: a-z/0-9/-)</span>"
 #endif
 WiFiManagerParameter custom_hostName("hostname", HNTEXT, settings.hostName, 31, "pattern='[A-Za-z0-9-]+' placeholder='Example: fluxcapacitor'");
-WiFiManagerParameter custom_wifiConRetries("wifiret", "WiFi connection attempts (1-15)", settings.wifiConRetries, 2, "type='number' min='1' max='15' autocomplete='off'", WFM_LABEL_BEFORE);
+WiFiManagerParameter custom_wifiConRetries("wifiret", "WiFi connection attempts (1-10)", settings.wifiConRetries, 2, "type='number' min='1' max='10' autocomplete='off'", WFM_LABEL_BEFORE);
 WiFiManagerParameter custom_wifiConTimeout("wificon", "WiFi connection timeout (7-25[seconds])", settings.wifiConTimeout, 2, "type='number' min='7' max='25'");
 
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
@@ -115,11 +115,11 @@ WiFiManagerParameter custom_TCDpresent("TCDpres", "TCD connected by wire", setti
 
 WiFiManagerParameter custom_bttfnHint("<div style='margin:0px 0px 10px 0px;padding:0px'>Wireless communication (BTTF-Network)</div>");
 WiFiManagerParameter custom_tcdIP("tcdIP", "IP address of TCD", settings.tcdIP, 31, "pattern='[0-9.]+' placeholder='Example: 192.168.4.1'");
-#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-WiFiManagerParameter custom_wait4TCD("w4TCD", "Wait for TCD-WiFi (0=no, 1=yes)<br><span style='font-size:80%'>Enable this if TCD acts as WiFi-AP for FC, and you power-up TCD and FC simultaneously (as is typical in car setups). TCD needs to be in 'car mode'.</span>", settings.wait4TCD, 1, "autocomplete='off' title='Enable if you power-up TCD and FC simultaneously to delay WiFi-connection to TCD'");
-#else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_wait4TCD("w4TCD", "Wait for TCD-WiFi<br><span style='font-size:80%'>Check this if TCD acts as WiFi-AP for FC, and you power-up TCD and FC simultaneously (as is typical in car setups). TCD needs to be in 'car mode'.</span>", settings.wait4TCD, 1, "autocomplete='off' title='Check if you power-up TCD and SID simultaneously to delay WiFi-connection to TCD' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
-#endif // -------------------------------------------------
+//#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
+//WiFiManagerParameter custom_wait4TCD("w4TCD", "Wait for TCD-WiFi (0=no, 1=yes)<br><span style='font-size:80%'>Enable this if TCD acts as WiFi-AP for FC, and you power-up TCD and FC simultaneously (as is typical in car setups). TCD needs to be in 'car mode'.</span>", settings.wait4TCD, 1, "autocomplete='off' title='Enable if you power-up TCD and FC simultaneously to delay WiFi-connection to TCD'");
+//#else // -------------------- Checkbox hack: --------------
+//WiFiManagerParameter custom_wait4TCD("w4TCD", "Wait for TCD-WiFi<br><span style='font-size:80%'>Check this if TCD acts as WiFi-AP for FC, and you power-up TCD and FC simultaneously (as is typical in car setups). TCD needs to be in 'car mode'.</span>", settings.wait4TCD, 1, "autocomplete='off' title='Check if you power-up TCD and SID simultaneously to delay WiFi-connection to TCD' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
+//#endif // -------------------------------------------------
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_uGPS("uGPS", "Change chase speed with GPS speed (0=no, 1=yes)<br><span style='font-size:80%'>GPS speed, if available from TCD, will overrule knob and IR remote</span>", settings.useGPSS, 1, "autocomplete='off'");
 #else // -------------------- Checkbox hack: --------------
@@ -261,7 +261,7 @@ static void mqttSubscribe();
  */
 void wifi_setup()
 {
-    int temp;
+    int temp, wifiretry;
 
     // Explicitly set mode, esp allegedly defaults to STA_AP
     WiFi.mode(WIFI_MODE_STA);
@@ -298,10 +298,10 @@ void wifi_setup()
     if(temp > 25) temp = 25;
     wm.setConnectTimeout(temp);
 
-    temp = atoi(settings.wifiConRetries);
-    if(temp < 1) temp = 1;
-    if(temp > 15) temp = 15;
-    wm.setConnectRetries(temp);
+    wifiretry = atoi(settings.wifiConRetries);
+    if(wifiretry < 1) wifiretry = 1;
+    if(wifiretry > 15) wifiretry = 15;
+    wm.setConnectRetries(wifiretry);
 
     wm.setCleanConnect(true);
     //wm.setRemoveDuplicateAPs(false);
@@ -326,10 +326,10 @@ void wifi_setup()
     wm.addParameter(&custom_sectstart);     // 2
     wm.addParameter(&custom_TCDpresent);
 
-    wm.addParameter(&custom_sectstart);     // 8
+    wm.addParameter(&custom_sectstart);     // 7 (8)
     wm.addParameter(&custom_bttfnHint);
     wm.addParameter(&custom_tcdIP);
-    wm.addParameter(&custom_wait4TCD);
+    //wm.addParameter(&custom_wait4TCD);
     wm.addParameter(&custom_uGPS);
     wm.addParameter(&custom_uNM);
     wm.addParameter(&custom_uFPO);
@@ -372,9 +372,25 @@ void wifi_setup()
         setupStaticIP();
     }
 
-    if(!atoi(settings.wait4TCD)) {
-        wifi_setup2();
+    // Find out if we have a configured WiFi network to connect to.
+    // If we detect "TCD-AP" as the SSID, we make sure that we retry
+    // at least 2 times so we have a chance to catch the TCD's AP if 
+    // both are powered up at the same time.
+    {
+        wifi_config_t conf;
+        esp_wifi_get_config(WIFI_IF_STA, &conf);
+        if((conf.sta.ssid[0] != 0)) {
+            if(!strcmp("TCD-AP", (const char *)conf.sta.ssid)) {
+                if(wifiretry < 2) {
+                    wm.setConnectRetries(2);
+                }
+            }
+        }
     }
+    
+    //if(!atoi(settings.wait4TCD)) {
+        wifi_setup2();
+    //}
 }
 
 void wifi_setup2()
@@ -565,7 +581,7 @@ void wifi_loop()
 
             mystrcpy(settings.TCDpresent, &custom_TCDpresent);
 
-            mystrcpy(settings.wait4TCD, &custom_wait4TCD);
+            //mystrcpy(settings.wait4TCD, &custom_wait4TCD);
             mystrcpy(settings.useGPSS, &custom_uGPS);
             mystrcpy(settings.useNM, &custom_uNM);
             mystrcpy(settings.useFPO, &custom_uFPO);
@@ -592,7 +608,7 @@ void wifi_loop()
 
             strcpyCB(settings.TCDpresent, &custom_TCDpresent);
 
-            strcpyCB(settings.wait4TCD, &custom_wait4TCD);
+            //strcpyCB(settings.wait4TCD, &custom_wait4TCD);
             strcpyCB(settings.useGPSS, &custom_uGPS);
             strcpyCB(settings.useNM, &custom_uNM);
             strcpyCB(settings.useFPO, &custom_uFPO);
@@ -996,7 +1012,7 @@ void updateConfigPortalValues()
 
     custom_TCDpresent.setValue(settings.TCDpresent, 1);
 
-    custom_wait4TCD.setValue(settings.wait4TCD, 1);
+    //custom_wait4TCD.setValue(settings.wait4TCD, 1);
     custom_uGPS.setValue(settings.useGPSS, 1);
     custom_uNM.setValue(settings.useNM, 1);
     custom_uFPO.setValue(settings.useFPO, 1);
@@ -1023,7 +1039,7 @@ void updateConfigPortalValues()
 
     setCBVal(&custom_TCDpresent, settings.TCDpresent);
     
-    setCBVal(&custom_wait4TCD, settings.wait4TCD);
+    //setCBVal(&custom_wait4TCD, settings.wait4TCD);
     setCBVal(&custom_uGPS, settings.useGPSS);
     setCBVal(&custom_uNM, settings.useNM);
     setCBVal(&custom_uFPO, settings.useFPO);

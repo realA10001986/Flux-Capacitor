@@ -491,12 +491,15 @@ void main_loop()
     // This will block!
     // The timeout here is what the TCD needs when it is
     // in Car Mode (991ENTER).
-    if(!wifiSetupDone && now - powerupMillis > 7000) {
-        wifi_setup2();
-        if(WiFi.status() == WL_CONNECTED) {
-            wifiStartCP();
-        }
-    }
+    // Now commented out. If the TCD is acting access point for
+    // the FC, it is supposed to be in car mode, which makes it
+    // boot fast enough for the FC to catch it.
+    //if(!wifiSetupDone && now - powerupMillis > 5000) {
+    //    wifi_setup2();
+    //    if(WiFi.status() == WL_CONNECTED) {
+    //        wifiStartCP();
+    //    }
+    //}
 
     // Follow TCD fake power
     if(useFPO && (tcdFPO != fpoOld)) {

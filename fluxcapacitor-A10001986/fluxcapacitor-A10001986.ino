@@ -85,6 +85,16 @@
 
 /*  Changelog
  *   
+ *  2023/08/25 (A10001986)
+ *    - Remove "Wait for TCD WiFi" option - this is not required; if the TCD is acting
+ *      access point, it is supposed to be in car mode, and a delay is not required.
+ *      (Do not let the TCD search for a configured WiFi network and have the FC rely on 
+ *      the TCD falling back to AP mode; this will take long and the FC might time-out 
+ *      unless the FC has a couple of connection retrys and long timeouts configured! 
+ *      Use car mode, or delete the TCD's configured WiFi network if you power up the
+ *      TCD and FC at the same time.)
+ *    - Some code cleanups
+ *    - Restrict WiFi Retrys to 10 (like WiFiManager)
  *  2023/08/24 (A10001986)
  *    - Add "Wait for fake power on" option; if set, FC only boots
  *      after it received a fake-power-on signal from the TCD
