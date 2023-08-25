@@ -55,7 +55,7 @@ If you want your Flux Capacitor to connect to your WiFi network, click on "Confi
 
 If the device is inaccessible as a result of incorrect static IPs, wait until the Flux Capacitor has completed its startup sequence, then type \*123456OK on the IR remote; static IP data will be deleted and the device will return to DHCP.
 
-If you have your FC, along with a Time Circuits Display, mounted in a car, see also [here]().
+If you have your FC, along with a Time Circuits Display, mounted in a car, see also [here](#car-setup).
 
 ### The Config Portal
 
