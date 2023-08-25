@@ -61,7 +61,7 @@ If your FC, along with a [Time Circuits Display](https://github.com/realA1000198
 
 #### TCD
 
-Run your TCD in (*car mode*)[https://github.com/realA10001986/Time-Circuits-Display/blob/main/README.md#car-mode]; disable WiFi power-saving on the TCD by setting *WiFi power save timer (AP-mode)* to 0 (zero).
+Run your TCD in [*car mode*](https://github.com/realA10001986/Time-Circuits-Display/blob/main/README.md#car-mode); disable WiFi power-saving on the TCD by setting *WiFi power save timer (AP-mode)* to 0 (zero).
 
 #### Flux Capacitor
 
