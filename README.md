@@ -547,15 +547,23 @@ If you power up the TCD and the FC at the very same time (such as in a car), and
 
 If your TCD is equipped with a GPS sensor, the FC can adapt its chase speed to current GPS speed. This option selects if GPS speed should be used for chase speed.
 
-While the FC receives GPS speed from the TCD, IR controls for chase speed are not ignored, but only saved.
+While the FC receives GPS speed from the TCD, IR controls for chase speed are not entirely ignored: They have no visual effect, but they are saved.
 
 ##### &#9654; Follow TCD night-mode
 
-If this option is checked, and your TCD goes into night mode, the FC will activate the Screen Saver with a very short timeout. 
+If this option is checked, and your TCD goes into night mode, the FC will activate the Screen Saver with a very short timeout, and reduce its audio volume.
 
 ##### &#9654; Follow TCD fake power
 
 If this option is checked, and your TCD is equipped with a fake power switch, the FC will also fake-power up/down. If fake power is off, no LED is active and the FC will ignore all input from buttons, knobs and the IR control.
+
+##### &#9654; Wait for fake power on at boot
+
+If this option is checked, your FC will stay dark after being powered-on until it receives a "fake power on" signal from the TCD.
+
+If this is unchecked, the FC will power up normally, play it's "startup" sequence, and only then poll for the fake power; if that is off at that point, it will fake-power-down. For a better experience, have this checked when your TCD is equipped with a fake power switch.
+
+For this option to have any effect, the *Follow TCD fake power* option needs to be check as well.
 
 ##### &#9654; Play time travel sounds
 
