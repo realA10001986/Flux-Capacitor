@@ -359,8 +359,6 @@ The TCD can communicate with the FC wirelessly, via WiFi. It can send out inform
 
 In order to connect your FC to the TCD using BTFFN, just enter the TCD's IP address in the *IP address of TCD* field in the FC's Config Portal. On the TCD, no special configuration is required.
   
-If you power-up TCD and FC at the same time (such as usually [in a car](#car-setup)), and your FC's WiFi is connected to the TCD's access point ("TCD-AP"), check *Wait for TCD-WiFi*. This option does not need to be checked if TCD and FC both connect to an existing WiFi network (such as usually at home).
-
 Afterwards, the FC and the TCD can communicate wirelessly and 
 - play time travel sequences in sync,
 - both play an alarm-sequence when the TCD's alarm occurs,
@@ -423,7 +421,6 @@ If your FC, along with a [Time Circuits Display](https://github.com/realA1000198
 
 Enter the Config Portal on the FC (as described above), click on *Setup* and
   - enter *192.168.4.1* into the field *IP address of TCD*
-  - check the option *Wait for TCD-WiFi* if TCD and FC are powered up at the same time (eg ignition or master switch);
   - check the options *Follow TCD fake power* and *Wait for fake power on at boot* if you have a fake power switch for the TCD (like eg TFC switch)
   - click on *Save*.
 
@@ -538,10 +535,6 @@ Also note that the process of [learning keys from an IR remote control](#ir-remo
 If you want to have your FC to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the IP address of the TCD here. Do NOT enter a host name here.
 
 If you connect your FC to the TCD's access point ("TCD-AP"), the TCD's IP address is 192.168.4.1.
-
-##### &#9654; Wait for TCD-WiFi
-
-If you power up the TCD and the FC at the very same time (such as in a car), and your FC is configured to connect the TCD's access point ("TCD-AP"), check this to delay connecting to the TCD (to give it time to boot).
 
 ##### &#9654; Change chase speed with GPS speed
 
