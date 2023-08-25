@@ -59,19 +59,26 @@ If the device is inaccessible as a result of wrong static IPs, wait until the Fl
 
 If your FC, along with a [Time Circuits Display](https://github.com/realA10001986/Time-Circuits-Display/), is mounted in a car, the following network configuration is recommended:
 
-- Run your TCD in AP mode; disable WiFi power-saving on the TCD by setting *WiFi power save timer (AP-mode)* to 0 (zero).
-- Enter the Config Portal on the FC (as described above), click on *Setup* and
+#### TCD
+
+Run your TCD in (*car mode*)[https://github.com/realA10001986/Time-Circuits-Display/blob/main/README.md#car-mode]; disable WiFi power-saving on the TCD by setting *WiFi power save timer (AP-mode)* to 0 (zero).
+
+#### Flux Capacitor
+
+1) Enter the Config Portal on the FC (as described above), click on *Setup* and
   - enter *192.168.4.1* into the field *IP address of TCD*
-  - check the option *Wait for TCD-WiFi*
+  - check the option *Wait for TCD-WiFi* if TCD and FC are powered up at the same time (eg ignition or master switch);
+  - check the options *Follow TCD fake power* and *Wait for fake power on at boot* if you have a fake power switch for the TCD (like eg TFC switch)
   - click on *Save*.
-- After the FC has restarted, re-enter the FC's Config Portal (while the TCD is powered) and
+
+2) After the FC has restarted, re-enter the FC's Config Portal (while the TCD is powered and in *car mode*) and
   - click on *Configure WiFi*,
-  - enter *TCD-AP* into the *SSID* field; leave all other fields empty
+  - enter *TCD-AP* into the *SSID* field; leave all other fields empty,
   - click on *Save*.
 
-Using this configuration enables the FC to receive notifications about time travel and alarm wirelessly, and to query the TCD for data.
+Using this setup enables the FC to receive notifications about time travel and alarm wirelessly, and to query the TCD for data.
 
-In this setup, in order to access the FC's Config Portal, connect your hand held or computer to the TCD's WiFi access point ("TCD-AP"), and direct your browser to http://flux.local ; if that does not work, go to the TCD's keypad menu, press ENTER until "BTTFN CLIENTS" is shown, hold ENTER, and look for the FC's IP address there; then direct your browser to that IP by using the URL http://a.b.c.d (a-d being the IP address displayed on the TCD display).
+In order to access the FC's Config Portal in your car, connect your hand held or computer to the TCD's WiFi access point ("TCD-AP"), and direct your browser to http://flux.local ; if that does not work, go to the TCD's keypad menu, press ENTER until "BTTFN CLIENTS" is shown, hold ENTER, and look for the FC's IP address there; then direct your browser to that IP by using the URL http://a.b.c.d (a-d being the IP address displayed on the TCD display).
 
 ### The Config Portal
 
