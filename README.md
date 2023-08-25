@@ -51,9 +51,9 @@ As long as the device is unconfigured, as is the case with a brand new Flux Capa
 - Connect your computer or handheld device to the WiFi network "FC-AP".
 - Navigate your browser to http://flux.local or http://192.168.4.1 to enter the Config Portal.
  
-If you want your Flux Capacitor to connect to your WiFi network, click on "Configure WiFi". The bare minimum is to select an SSID (WiFi network name) and a WiFi password. Note that the device requests an IP address via DHCP, unless you entered valid data in the fields for static IP addresses (IP, gateway, netmask, DNS). After saving the WiFi network settings, the device reboots and tries to connect to your configured WiFi network. If that fails, it will again start in access point mode.
+If you want your Flux Capacitor to connect to another access point, such as your WiFi network, click on "Configure WiFi". The bare minimum is to select an SSID (WiFi network name) and a WiFi password.
 
-If the device is inaccessible as a result of incorrect static IPs, wait until the Flux Capacitor has completed its startup sequence, then type \*123456OK on the IR remote; static IP data will be deleted and the device will return to DHCP.
+Note that the device requests an IP address via DHCP, unless you entered valid data in the fields for static IP addresses (IP, gateway, netmask, DNS). After saving the WiFi network settings, the device reboots and tries to connect to your configured WiFi network. If that fails, it will again start in access point mode. If the device is inaccessible as a result of incorrect static IPs, wait until the Flux Capacitor has completed its startup sequence, then type \*123456OK on the IR remote; static IP data will be deleted and the device will return to DHCP.
 
 If you have your FC, along with a Time Circuits Display, mounted in a car, see also [here](#car-setup).
 
@@ -400,7 +400,7 @@ The FC can - to a some extent - be controlled through messages sent to topic **b
 
 ### Receive commands from Time Circuits Display
 
-The TCD can trigger a time travel and tell the FC about an alarm by sending messages to topic **bttf/tcd/pub**. The FC receives these commands and reacts accordingly. Note that network traffic has some latency, so timing might not be as exact as a wired connection.
+The TCD can trigger a time travel and tell the FC about an alarm by sending messages to topic **bttf/tcd/pub**. The FC receives these commands and reacts accordingly.
 
 ### Setup
 
@@ -427,13 +427,13 @@ If your FC, along with a [Time Circuits Display](https://github.com/realA1000198
 
 #### Flux Capacitor
 
-1) Enter the Config Portal on the FC (as described above), click on *Setup* and
+Enter the Config Portal on the FC (as described above), click on *Setup* and
   - enter *192.168.4.1* into the field *IP address of TCD*
   - check the option *Wait for TCD-WiFi* if TCD and FC are powered up at the same time (eg ignition or master switch);
   - check the options *Follow TCD fake power* and *Wait for fake power on at boot* if you have a fake power switch for the TCD (like eg TFC switch)
   - click on *Save*.
 
-2) After the FC has restarted, re-enter the FC's Config Portal (while the TCD is powered and in *car mode*) and
+After the FC has restarted, re-enter the FC's Config Portal (while the TCD is powered and in *car mode*) and
   - click on *Configure WiFi*,
   - enter *TCD-AP* into the *SSID* field; leave all other fields empty,
   - click on *Save*.
