@@ -318,6 +318,16 @@ static bool read_settings(File configFile)
             memset(settings.hostName, 0, sizeof(settings.hostName));
             strncpy(settings.hostName, json["hostName"], sizeof(settings.hostName) - 1);
         } else wd = true;
+        if(json["systemID"]) {
+            memset(settings.systemID, 0, sizeof(settings.systemID));
+            strncpy(settings.systemID, json["systemID"], sizeof(settings.systemID) - 1);
+        } else wd = true;
+
+        if(json["appw"]) {
+            memset(settings.appw, 0, sizeof(settings.appw));
+            strncpy(settings.appw, json["appw"], sizeof(settings.appw) - 1);
+        } else wd = true;
+        
         wd |= CopyCheckValidNumParm(json["wifiConRetries"], settings.wifiConRetries, sizeof(settings.wifiConRetries), 1, 10, DEF_WIFI_RETRY);
         wd |= CopyCheckValidNumParm(json["wifiConTimeout"], settings.wifiConTimeout, sizeof(settings.wifiConTimeout), 7, 25, DEF_WIFI_TIMEOUT);
 
@@ -386,6 +396,8 @@ void write_settings()
     json["TCDpresent"] = settings.TCDpresent;
     
     json["hostName"] = settings.hostName;
+    json["systemID"] = settings.systemID;
+    json["appw"] = settings.appw;
     json["wifiConRetries"] = settings.wifiConRetries;
     json["wifiConTimeout"] = settings.wifiConTimeout;
 

@@ -85,6 +85,13 @@
 
 /*  Changelog
  *   
+ *  2023/08/28 (A10001986)
+ *    - Adapt to TCD's WiFi name appendix option
+ *    - Add "AP name appendix" setting; allows unique AP names when running multiple 
+ *      FCs in AP mode in close range. 7 characters, 0-9/a-z/A-Z/- only, will be 
+ *      added to "FC-AP".
+ *    - Add AP password: Allows to configure a WPA2 password for the FC's AP mode
+ *      (empty or 8 characters, 0-9/a-z/A-Z/- only)
  *  2023/08/25 (A10001986)
  *    - Remove "Wait for TCD WiFi" option - this is not required; if the TCD is acting
  *      access point, it is supposed to be in car mode, and a delay is not required.

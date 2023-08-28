@@ -12,7 +12,7 @@
 
 // Version strings.
 #define FC_VERSION       "V1.0"
-#define FC_VERSION_EXTRA "AUG252023"
+#define FC_VERSION_EXTRA "AUG282023"
 
 //#define FC_DBG              // debug output on Serial
 

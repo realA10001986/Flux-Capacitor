@@ -76,10 +76,12 @@ struct Settings {
     char TCDpresent[4]      = MS(DEF_TCD_PRES);
     
     char hostName[32]       = DEF_HOSTNAME;
+    char systemID[8]        = "";
+    char appw[10]           = "";
     char wifiConRetries[4]  = MS(DEF_WIFI_RETRY);
     char wifiConTimeout[4]  = MS(DEF_WIFI_TIMEOUT);
 
-    char tcdIP[32]          = DEF_TCD_IP;
+    char tcdIP[16]          = DEF_TCD_IP;
     //char wait4TCD[4]        = MS(DEF_WAIT_FOR_TCD);
     char useGPSS[4]         = MS(DEF_USE_GPSS);
     char useNM[4]           = MS(DEF_USE_NM);
