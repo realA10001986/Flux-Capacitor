@@ -1577,6 +1577,8 @@ static void executeIRCmd(int key)
                         num = mp_gotonum(num, mpActive);
                     } else if(!strcmp(inputBuffer, "123456")) {
                         deleteIpSettings();               // *123456OK deletes IP settings
+                        settings.appw[0] = 0;             // and clears AP mode WiFi password
+                        write_settings();
                     } else {
                         doBadInp = true;
                     }

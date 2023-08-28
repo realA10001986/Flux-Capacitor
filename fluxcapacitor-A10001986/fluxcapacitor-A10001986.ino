@@ -92,6 +92,8 @@
  *      added to "FC-AP".
  *    - Add AP password: Allows to configure a WPA2 password for the FC's AP mode
  *      (empty or 8 characters, 0-9/a-z/A-Z/- only)
+ *    - *123456OK not only clears static IP config (as before), but also clears AP mode 
+ *      WiFi password.
  *  2023/08/25 (A10001986)
  *    - Remove "Wait for TCD WiFi" option - this is not required; if the TCD is acting
  *      access point, it is supposed to be in car mode, and a delay is not required.
