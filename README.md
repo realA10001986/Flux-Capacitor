@@ -240,7 +240,7 @@ In order to only disable the supplied IR remote control, check the option *Disab
     </tr>
     <tr>
      <td align="left">*123456&#9166;</td>
-     <td align="left">Delete static IP address</td>
+     <td align="left">Delete static IP address and AP WiFI password</td>
     </tr>
 </table>
 
@@ -511,6 +511,16 @@ Note that this only disables the supplied remote, unlike [IR locking](#locking-i
 The device's hostname in the WiFi network. Defaults to 'flux'. This also is the domain name at which the Config Portal is accessible from a browser in the same local network. The URL of the Config Portal then is http://<i>hostname</i>.local (the default is http://flux.local)
 
 If you have more than one Flux Capacitors in your local network, please give them unique hostnames.
+
+##### &#9654; AP Mode: Network name appendix
+
+By default, if the FC creates a WiFi network of its own ("AP-mode"), this network is named "FC-AP". In case you have multiple FCs in your vicinity, you can have a string appended to create a unique network name. If you, for instance, enter "-ABC" here, the WiFi network name will be "FC-AP-ABC". Characters A-Z, a-z, 0-9 and - are allowed.
+
+##### &#9654; AP Mode: WiFi password
+
+By default, and if this field is empty, the FC's own WiFi network ("AP-mode") will be unprotected. If you want to protect your FC access point, enter your password here. It needs to be 8 characters in length and only characters A-Z, a-z, 0-9 and - are allowed.
+
+If you forget this password and are thereby locked out of your FC, enter *123456 followed by OK on the IR remote control; this deletes the WiFi password. Then power-down and power-up your FC and the access point will start unprotected.
 
 ##### &#9654; WiFi connection attempts
 
