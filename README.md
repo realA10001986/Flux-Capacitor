@@ -387,7 +387,7 @@ The FC supports the MQTT protocol version 3.1.1 for the following features:
 
 ### Control the FC via MQTT
 
-The FC can - to a some extent - be controlled through messages sent to topic **bttf/fc/cmd**. Support commands are
+The FC can - to some extent - be controlled through messages sent to topic **bttf/fc/cmd**. Support commands are
 - TIMETRAVEL: Start a [time travel](#time-travel)
 - FLUX_OFF: Disables the [flux sound](#the-flux-sound)
 - FLUX_ON: Enables the [flux sound](#the-flux-sound)
