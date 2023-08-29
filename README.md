@@ -421,12 +421,12 @@ If your FC, along with a [Time Circuits Display](https://github.com/realA1000198
 
 Enter the Config Portal on the FC (as described above), click on *Setup* and
   - enter *192.168.4.1* into the field *IP address of TCD*
-  - check the options *Follow TCD fake power* and *Wait for fake power on at boot* if you have a fake power switch for the TCD (like eg TFC switch)
+  - check the options *Follow TCD fake power* and *Wait for fake power on at boot* if you have a fake power switch for the TCD (like eg a TFC switch)
   - click on *Save*.
 
 After the FC has restarted, re-enter the FC's Config Portal (while the TCD is powered and in *car mode*) and
   - click on *Configure WiFi*,
-  - enter *TCD-AP* into the *SSID* field; leave all other fields empty,
+  - select the TCD's access point name in the list at the top or enter *TCD-AP* into the *SSID* field; if you password-protected your TCD's AP, enter this password in the *password* field. Leave all other fields empty,
   - click on *Save*.
 
 Using this setup enables the FC to receive notifications about time travel and alarm wirelessly, and to query the TCD for data.
