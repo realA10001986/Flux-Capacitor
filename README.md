@@ -441,7 +441,7 @@ In order to access the FC's Config Portal in your car, connect your hand held or
 
 Flash memory has a somewhat limited life-time. It can be written to only between 10.000 and 100.000 times before becoming unreliable. The firmware writes to the internal flash memory when saving settings and other data. Every time you change settings, data is written to flash memory.
 
-In order to reduce the number of write operations and thereby prolong the life of your Flux Capacitor, it is recommended to use a good-quality SD card and to check ["Save volume/speed/IR settings on SD"](#-save-volumespeedir-settings-on-sd) in the Config Portal; alarm and speed settings as well as learned IR codes are then stored on the SD card (which also suffers from wear but is easy to replace). If you want to swap the SD card but preserve your volume/speed/IR settings, go to the Config Portal while the old SD card is still in place, uncheck the *Save volume/speed/IR settings on SD* option, click on Save and wait until the device has rebooted. You can then power down, swap the SD card and power-up again. Then go to the Config Portal, change the option back on and click on Save. Your settings are now on the new SD card.
+In order to reduce the number of write operations and thereby prolong the life of your Flux Capacitor, it is recommended to use a good-quality SD card and to check *[Save volume/speed/IR settings on SD](#-save-volumespeedir-settings-on-sd)* in the Config Portal; alarm and speed settings as well as learned IR codes are then stored on the SD card (which also suffers from wear but is easy to replace). If you want to swap the SD card but preserve your volume/speed/IR settings, go to the Config Portal while the old SD card is still in place, uncheck the *Save volume/speed/IR settings on SD* option, click on Save and wait until the device has rebooted. You can then power down, swap the SD card and power-up again. Then go to the Config Portal, change the option back on and click on Save. Your settings are now on the new SD card.
 
 ## Appendix A: The Config Portal
 
@@ -449,7 +449,7 @@ In order to reduce the number of write operations and thereby prolong the life o
 
 ##### &#9654; Configure WiFi
 
-Clicking this leads to the WiFi configuration page. On that page, you can connect your FC to your WiFi network by selecting/entering the SSID (WiFi network name) as well as a password (WPA2). By default, the FC's IP address is requested via DHCP. However, you can also configure a static IP for the FC by entering the IP, netmask, gateway and DNS server. All four fields must be filled for a valid static IP configuration. If you want to stick to DHCP, leave those four fields empty.
+Clicking this leads to the WiFi configuration page. On that page, you can connect your FC to your WiFi network by selecting/entering the SSID (WiFi network name) as well as a password (WPA2). By default, the FC requests an IP address via DHCP. However, you can also configure a static IP for the FC by entering the IP, netmask, gateway and DNS server. All four fields must be filled for a valid static IP configuration. If you want to stick to DHCP, leave those four fields empty.
 
 Note that this page has nothing to do with Access Point mode; it is strictly for connecting your FC to an existing WiFi network as a client.
 
