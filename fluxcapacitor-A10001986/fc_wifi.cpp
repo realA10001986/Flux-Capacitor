@@ -389,6 +389,9 @@ void wifi_setup()
                     wm.setConnectRetries(2);
                 }
             }
+        } else {
+            // No point in retry when we have no WiFi config'd
+            wm.setConnectRetries(1);
         }
     }
     

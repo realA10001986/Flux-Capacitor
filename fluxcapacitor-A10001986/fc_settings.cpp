@@ -482,7 +482,7 @@ static bool checkValidNumParm(char *text, int lowerLim, int upperLim, int setDef
         }
     }
 
-    i = (int)(atoi(text));
+    i = atoi(text);
 
     if(i < lowerLim) {
         sprintf(text, "%d", lowerLim);

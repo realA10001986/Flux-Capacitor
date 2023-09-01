@@ -85,6 +85,8 @@
 
 /*  Changelog
  *   
+ *  2023/08/31 (A10001986)
+ *    - WiFi connect retry: When no network config'd, set retry to 1
  *  2023/08/28 (A10001986)
  *    - Adapt to TCD's WiFi name appendix option
  *    - Add "AP name appendix" setting; allows unique AP names when running multiple 
