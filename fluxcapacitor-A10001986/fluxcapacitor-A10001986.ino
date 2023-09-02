@@ -85,6 +85,9 @@
 
 /*  Changelog
  *   
+ *  2023/09/02 (A10001986)
+ *    - Handle dynamic ETTO LEAD for BTTFN-triggered time travels
+ *    - Go back to stand-alone mode if BTTFN polling times-out
  *  2023/08/31 (A10001986)
  *    - WiFi connect retry: When no network config'd, set retry to 1
  *  2023/08/28 (A10001986)

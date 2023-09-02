@@ -1331,6 +1331,7 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
                 networkTCDTT = true;
                 networkReentry = false;
                 networkAbort = false;
+                networkLead = ETTO_LEAD;
             }
             break;
         case 2:   // Re-entry

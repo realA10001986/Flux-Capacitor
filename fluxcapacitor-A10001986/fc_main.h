@@ -60,6 +60,7 @@ extern bool networkTCDTT;
 extern bool networkReentry;
 extern bool networkAbort;
 extern bool networkAlarm;
+extern uint16_t networkLead;
 
 void main_boot();
 void main_setup();

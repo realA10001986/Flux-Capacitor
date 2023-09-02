@@ -105,6 +105,7 @@ bool networkTCDTT      = false;
 bool networkReentry    = false;
 bool networkAbort      = false;
 bool networkAlarm      = false;
+uint16_t networkLead   = ETTO_LEAD;
 
 static bool useGPSS     = false;
 static bool usingGPSS   = false;
@@ -131,6 +132,7 @@ static bool          playTTsounds = true;
 bool                 TTrunning = false;  // TT sequence is running
 static bool          extTT = false;      // TT was triggered by TCD
 static unsigned long TTstart = 0;
+static unsigned long P0duration = ETTO_LEAD;
 static bool          TTP0 = false;
 static bool          TTP1 = false;
 static bool          TTP2 = false;
@@ -259,6 +261,8 @@ static bool          BTTFNPacketDue = false;
 static bool          BTTFNWiFiUp = false;
 static uint8_t       BTTFNfailCount = 0;
 static uint32_t      BTTFUDPID = 0;
+static unsigned long lastBTTFNpacket = 0;
+static bool          BTTFNBootTO = false;
 
 
 // Forward declarations ------
@@ -679,9 +683,9 @@ void main_loop()
             // TT triggered by TCD (GPIO or MQTT) ************************************************
             // ***********************************************************************************
 
-            if(TTP0) {   // Acceleration - runs for ETTO_LEAD ms
+            if(TTP0) {   // Acceleration - runs for ETTO_LEAD ms by default
 
-                if(!networkAbort && (now - TTstart < ETTO_LEAD)) {
+                if(!networkAbort && (now - TTstart < P0duration)) {
 
                     if(TTFInt && (now - TTfUpdNow >= TTFInt)) {
                         int t = fcLEDs.getSpeed();
@@ -698,6 +702,10 @@ void main_loop()
                     //}
                              
                 } else {
+
+                    if(fcLEDs.getSpeed() != 2) {
+                        fcLEDs.setSpeed(2);
+                    }
 
                     TTP0 = false;
                     TTP1 = true;
@@ -841,6 +849,10 @@ void main_loop()
                     //}
                              
                 } else {
+
+                    if(fcLEDs.getSpeed() != 2) {
+                        fcLEDs.setSpeed(2);
+                    }
 
                     TTP0 = false;
                     TTP1 = true;
@@ -1004,6 +1016,18 @@ void main_loop()
         }
     }
 
+    // If network is interrupted, return to stand-alone
+    if(useBTTFN) {
+        if( (lastBTTFNpacket && (now - lastBTTFNpacket > 30*1000)) ||
+            (!BTTFNBootTO && !lastBTTFNpacket && (now - powerupMillis > 60*1000)) ) {
+            tcdNM = false;
+            tcdFPO = false;
+            gpsSpeed = -1;
+            lastBTTFNpacket = 0;
+            BTTFNBootTO = true;
+        }
+    }
+
     // Save volume 10 seconds after last change
     if(!TTrunning && volchanged && (now - volchgnow > 10000)) {
         volchanged = false;
@@ -1088,8 +1112,12 @@ static void timeTravel(bool TCDtriggered)
     
     if(TCDtriggered) {    // TCD-triggered TT (GPIO, BTTFN, MQTT-pub) (synced with TCD)
         extTT = true;
+        P0duration = networkLead;
+        #ifdef FC_DBG
+        Serial.printf("P0 duration is %d\n", P0duration);
+        #endif
         if(i > 0) {
-            TTFInt = ETTO_LEAD / i;
+            TTFInt = P0duration / i;
         } else {
             TTFInt = 0;
         }
@@ -1981,6 +2009,7 @@ static void BTTFNCheckPacket()
                 networkTCDTT = true;
                 networkReentry = false;
                 networkAbort = false;
+                networkLead = BTTFUDPBuf[6] | (BTTFUDPBuf[7] << 8);
             }
             break;
         case BTTFN_NOT_REENTRY:
@@ -2021,20 +2050,16 @@ static void BTTFNCheckPacket()
 
         if(BTTFUDPBuf[5] & 0x02) {
             gpsSpeed = (int16_t)(BTTFUDPBuf[18] | (BTTFUDPBuf[19] << 8));
-            #ifdef FC_DBG
-            Serial.printf("BTTFN: GPS speed %d\n", gpsSpeed);
-            #endif
         }
         if(BTTFUDPBuf[5] & 0x10) {
             tcdNM  = (BTTFUDPBuf[26] & 0x01) ? true : false;
             tcdFPO = (BTTFUDPBuf[26] & 0x02) ? true : false;   // 1 means fake power off
-            #ifdef FC_DBG
-            Serial.printf("BTTFN: Night mode is %d, fake power is %d\n", tcdNM, tcdFPO);
-            #endif
         } else {
             tcdNM = false;
             tcdFPO = false;
         }
+
+        lastBTTFNpacket = mymillis;
 
         // Eval SID IP from TCD
         //if(BTTFUDPBuf[5] & 0x20) {
