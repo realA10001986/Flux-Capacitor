@@ -277,7 +277,7 @@ static void endIRfeedback();
 static uint16_t getRawSpeed();
 static void     setPotSpeed();
 
-static void timeTravel(bool TCDtriggered);
+static void timeTravel(bool TCDtriggered, uint16_t P0Dur);
 
 static void ttkeyScan();
 static void TTKeyPressed();
@@ -659,7 +659,7 @@ void main_loop()
                 if(TCDconnected) {
                     ssEnd(false);  // let TT() take care of restarting sound
                 }
-                timeTravel(TCDconnected);
+                timeTravel(TCDconnected, ETTO_LEAD);
             }
         }
     
@@ -667,7 +667,7 @@ void main_loop()
         if(networkTimeTravel) {
             networkTimeTravel = false;
             ssEnd(false);  // let TT() take care of restarting sound
-            timeTravel(networkTCDTT);
+            timeTravel(networkTCDTT, networkLead);
         }
     }
 
@@ -1068,7 +1068,7 @@ void main_loop()
  * Time travel
  */
 
-static void timeTravel(bool TCDtriggered)
+static void timeTravel(bool TCDtriggered, uint16_t P0Dur)
 {
     int i = 0, tspd;
     
@@ -1112,7 +1112,7 @@ static void timeTravel(bool TCDtriggered)
     
     if(TCDtriggered) {    // TCD-triggered TT (GPIO, BTTFN, MQTT-pub) (synced with TCD)
         extTT = true;
-        P0duration = networkLead;
+        P0duration = P0Dur;
         #ifdef FC_DBG
         Serial.printf("P0 duration is %d\n", P0duration);
         #endif
@@ -1290,7 +1290,7 @@ static void executeIRCmd(int key)
     switch(key) {
     case 0:                           // 0: time travel
         if(irLocked) return;
-        timeTravel(false);
+        timeTravel(false, ETTO_LEAD);
         break;
     case 1:                           // 1:
         if(irLocked) return;
