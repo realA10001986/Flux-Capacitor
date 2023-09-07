@@ -3,6 +3,7 @@
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
+ * http://fc.backtothefutu.re
  *
  * Global definitions
  */
@@ -11,8 +12,8 @@
 #define _FC_GLOBAL_H
 
 // Version strings.
-#define FC_VERSION       "V1.02"
-#define FC_VERSION_EXTRA "SEP022023"
+#define FC_VERSION       "V1.03"
+#define FC_VERSION_EXTRA "SEP072023"
 
 //#define FC_DBG              // debug output on Serial
 
@@ -51,6 +52,8 @@
 #define USE_SPIFFS
 
 // External time travel lead time, as defined by TCD firmware
+// If FC is connected by wire, the option "Signal Time Travel without 5s 
+// lead" on the TCD must NOT be set.
 #define ETTO_LEAD 5000
 
 /*************************************************************************

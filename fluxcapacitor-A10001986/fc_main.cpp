@@ -3,6 +3,7 @@
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
+ * http://fc.backtothefutu.re
  *
  * Main controller
  *
@@ -680,7 +681,7 @@ void main_loop()
         if(extTT) {
 
             // ***********************************************************************************
-            // TT triggered by TCD (GPIO or MQTT) ************************************************
+            // TT triggered by TCD (BTTFN, GPIO or MQTT) *****************************************
             // ***********************************************************************************
 
             if(TTP0) {   // Acceleration - runs for ETTO_LEAD ms by default

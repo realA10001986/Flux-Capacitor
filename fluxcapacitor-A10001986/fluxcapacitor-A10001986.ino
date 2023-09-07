@@ -3,6 +3,7 @@
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
+ * http://fc.backtothefutu.re
  *
  * License: MIT
  * 
@@ -85,6 +86,8 @@
 
 /*  Changelog
  *   
+ *  2023/09/07 (A10001986)
+ *    - Fix links
  *  2023/09/02 (A10001986)
  *    - Handle dynamic ETTO LEAD for BTTFN-triggered time travels
  *    - Go back to stand-alone mode if BTTFN polling times-out
