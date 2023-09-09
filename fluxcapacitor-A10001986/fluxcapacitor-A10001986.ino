@@ -87,6 +87,7 @@
 /*  Changelog
  *   
  *  2023/09/09 (A10001986)
+ *    - Switch to LittleFS by default
  *    - *654321OK lets FC forget learned IR remote control
  *    - Remove "Wait for TCD fake power on" option; is now implied
  *    - Save current idle pattern to SD for persistence
