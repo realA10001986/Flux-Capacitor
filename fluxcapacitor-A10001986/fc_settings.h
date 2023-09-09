@@ -123,6 +123,9 @@ void saveCurSpeed(bool useCache = true);
 bool loadBLLevel();
 void saveBLLevel(bool useCache = true);
 
+bool loadIdlePat();
+void saveIdlePat(bool useCache = true);
+
 bool loadIRLock();
 void saveIRLock(bool useCache = true);
 

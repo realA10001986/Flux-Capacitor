@@ -75,6 +75,9 @@ static uint16_t prevSavedSpd = 999;
 /* Cache for mbll */
 static uint16_t prevSavedBLL = 0;
 
+/* Cache for idle pattern */
+static uint8_t prevSavedIM = 0;
+
 /* Cache for IR lock */
 static bool prevSavedIRL = 0;
 
@@ -107,6 +110,7 @@ static const char *ipCfgName  = "/fcipcfg.json";    // IP config (flash)
 static const char *irUCfgName = "/fcirkeys.txt";    // IR keys (user-created) (SD)
 static const char *irCfgName  = "/fcirkeys.json";   // IR keys (system-created) (flash/SD)
 static const char *irlCfgName = "/fcirlcfg.json";   // IR lock (flash/SD)
+static const char *ipaCfgName = "/fcipat.json";     // Idle pattern (SD only)
 
 static const char *jsonNames[NUM_IR_KEYS] = {
         "key0", "key1", "key2", "key3", "key4", 
@@ -148,6 +152,7 @@ void settings_setup()
 {
     const char *funcName = "settings_setup";
     bool writedefault = false;
+    bool SDres = false;
 
     #ifdef FC_DBG
     Serial.printf("%s: Mounting flash FS... ", funcName);
@@ -214,11 +219,14 @@ void settings_setup()
     Serial.printf("%s: Mounting SD... ", funcName);
     #endif
 
-    if(!SD.begin(SD_CS_PIN, SPI, sdfreq)) {
+    if(!(SDres = SD.begin(SD_CS_PIN, SPI, sdfreq))) {
+        #ifdef FC_DBG
+        Serial.printf("Retrying at 25Mhz... ");
+        #endif
+        SDres = SD.begin(SD_CS_PIN, SPI, 25000000);
+    }
 
-        Serial.println(F("no SD card found"));
-
-    } else {
+    if(SDres) {
 
         #ifdef FC_DBG
         Serial.println(F("ok"));
@@ -233,6 +241,10 @@ void settings_setup()
 
         haveSD = ((cardType != CARD_NONE) && (cardType != CARD_UNKNOWN));
 
+    } else {
+      
+        Serial.println(F("no SD card found"));
+        
     }
 
     if(haveSD) {
@@ -534,15 +546,16 @@ static bool checkValidNumParmF(char *text, float lowerLim, float upperLim, float
     return false;
 }
 
-static bool openCfgFileRead(const char *fn, File& f)
+static bool openCfgFileRead(const char *fn, File& f, bool SDonly = false)
 {
-    bool haveConfigFile;
+    bool haveConfigFile = false;
     
-    if(configOnSD) {
+    if(configOnSD || SDonly) {
         if(SD.exists(fn)) {
             haveConfigFile = (f = SD.open(fn, "r"));
         }
-    } else {
+    } 
+    if(!haveConfigFile) {
         if(SPIFFS.exists(fn)) {
             haveConfigFile = (f = SPIFFS.open(fn, "r"));
         }
@@ -551,11 +564,11 @@ static bool openCfgFileRead(const char *fn, File& f)
     return haveConfigFile;
 }
 
-static bool openCfgFileWrite(const char *fn, File& f)
+static bool openCfgFileWrite(const char *fn, File& f, bool SDonly = false)
 {
     bool haveConfigFile;
     
-    if(configOnSD) {
+    if(configOnSD || SDonly) {
         haveConfigFile = (f = SD.open(fn, FILE_WRITE));
     } else {
         haveConfigFile = (f = SPIFFS.open(fn, FILE_WRITE));
@@ -791,6 +804,79 @@ void saveBLLevel(bool useCache)
         Serial.printf("%s: %s\n", funcName, failFileWrite);
     }
 }
+
+/*
+ *  Load/save the idle pattern (SD only)
+ */
+
+bool loadIdlePat()
+{
+    const char *funcName = "loadIdlePat";
+    char temp[6];
+    File configFile;
+
+    if(!haveSD) {
+        #ifdef FC_DBG
+        Serial.printf("%s: %s\n", funcName, fsNoAvail);
+        #endif
+        return false;
+    }
+
+    if(openCfgFileRead(ipaCfgName, configFile, true)) {
+        StaticJsonDocument<512> json;
+        if(!deserializeJson(json, configFile)) {
+            if(!CopyCheckValidNumParm(json["pattern"], temp, sizeof(temp), 0, 9, 0)) {
+                fluxPat = (uint8_t)atoi(temp);
+            }
+        } 
+        configFile.close();
+    }
+
+    // Do not write a default file, use pre-set value
+
+    prevSavedIM = fluxPat;
+
+    return true;
+}
+
+void saveIdlePat(bool useCache)
+{
+    const char *funcName = "saveIdlePat";
+    char buf[6];
+    File configFile;
+    StaticJsonDocument<512> json;
+
+    if(useCache && (prevSavedIM == fluxPat)) {
+        #ifdef FC_DBG
+        Serial.printf("%s: Prev. saved IM identical, not writing\n", funcName);
+        #endif
+        return;
+    }
+
+    if(!haveSD) {
+        #ifdef FC_DBG
+        Serial.printf("%s: %s\n", funcName, fsNoAvail);
+        #endif
+        return;
+    }
+
+    sprintf(buf, "%d", fluxPat);
+    json["pattern"] = (char *)buf;
+
+    #ifdef FC_DBG
+    serializeJson(json, Serial);
+    Serial.println(F(" "));
+    #endif
+
+    if(openCfgFileWrite(ipaCfgName, configFile, true)) {
+        serializeJson(json, configFile);
+        configFile.close();
+        prevSavedIM = fluxPat;
+    } else {
+        Serial.printf("%s: %s\n", funcName, failFileWrite);
+    }
+}
+
 
 /*
  *  Load/save the IR lock status

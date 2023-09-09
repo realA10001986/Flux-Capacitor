@@ -127,6 +127,8 @@ static bool          fluxTimer = false;
 static unsigned long fluxTimerNow = 0;
 static unsigned long fluxTimeout = FLUXM2_SECS * 1000;
 
+uint8_t fluxPat = 0;
+
 static bool          playTTsounds = true;
 
 // Time travel status flags etc.
@@ -176,6 +178,8 @@ static bool          spdchanged = false;
 static unsigned long spdchgnow = 0;
 static bool          bllchanged = false;
 static unsigned long bllchgnow = 0;
+static bool          ipachanged = false;
+static unsigned long ipachgnow = 0;
 static bool          irlchanged = false;
 static unsigned long irlchgnow = 0;
 
@@ -319,6 +323,7 @@ void main_setup()
     // Load settings
     loadCurSpeed();
     loadBLLevel();
+    loadIdlePat();
     loadIRLock();
 
     // Set up options to play/mute sounds
@@ -424,6 +429,7 @@ void main_setup()
     }
 
     fcLEDs.stop(true);
+    fcLEDs.setSequence(fluxPat);
 
     // Set FCLeds to default/saved speed
     if(useSKnob) {
@@ -1029,28 +1035,36 @@ void main_loop()
         }
     }
 
-    // Save volume 10 seconds after last change
-    if(!TTrunning && volchanged && (now - volchgnow > 10000)) {
-        volchanged = false;
-        saveCurVolume();
-    }
-
-    // Save speed 10 seconds after last change
-    if(!TTrunning && spdchanged && (now - spdchgnow > 10000)) {
-        spdchanged = false;
-        saveCurSpeed();
-    }
-
-    // Save mbll 10 seconds after last change
-    if(!TTrunning && bllchanged && (now - bllchgnow > 10000)) {
-        bllchanged = false;
-        saveBLLevel();
-    }
-
-    // Save irlock 10 seconds after last change
-    if(!TTrunning && irlchanged && (now - irlchgnow > 10000)) {
-        irlchanged = false;
-        saveIRLock();
+    if(!TTrunning) {
+        // Save volume 10 seconds after last change
+        if(volchanged && (now - volchgnow > 10000)) {
+            volchanged = false;
+            saveCurVolume();
+        }
+    
+        // Save speed 10 seconds after last change
+        if(spdchanged && (now - spdchgnow > 10000)) {
+            spdchanged = false;
+            saveCurSpeed();
+        }
+    
+        // Save mbll 10 seconds after last change
+        if(bllchanged && (now - bllchgnow > 10000)) {
+            bllchanged = false;
+            saveBLLevel();
+        }
+    
+        // Save idle pattern 10 seconds after last change
+        if(ipachanged && (now - ipachgnow > 10000)) {
+            ipachanged = false;
+            saveIdlePat();
+        }
+    
+        // Save irlock 10 seconds after last change
+        if(irlchanged && (now - irlchgnow > 10000)) {
+            irlchanged = false;
+            saveIRLock();
+        }
     }
 
     if(!TTrunning && !IRLearning && networkAlarm) {
@@ -1411,7 +1425,10 @@ static void executeIRCmd(int key)
         switch(strlen(inputBuffer)) {
         case 1:
             if(!irLocked) {
-                fcLEDs.setSequence(atoi(inputBuffer));
+                fluxPat = atoi(inputBuffer);
+                fcLEDs.setSequence(fluxPat);
+                ipachanged = true;
+                ipachgnow = millis();
             }
             break;
         case 2:

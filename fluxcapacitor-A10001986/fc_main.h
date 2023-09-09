@@ -52,6 +52,8 @@ extern bool TCDconnected;
 extern bool FPBUnitIsOn;
 extern bool fluxNM;
 
+extern uint8_t fluxPat;
+
 extern bool TTrunning;
 extern int  playFLUX;
 extern bool IRLearning;
