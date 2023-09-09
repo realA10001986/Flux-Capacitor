@@ -115,7 +115,7 @@ If your remote control lacks the \* (starts command sequence) and \# (aborts com
 
 If no key is pressed for 10 seconds, the learning process aborts, as does briefly pressing the Time Travel button. In thoses cases, the keys already learned are forgotten and nothing is saved.
 
-To make the FC forget a learned IR remote control, type *654321 followed by ENTER.
+To make the FC forget a learned IR remote control, type *654321 followed by OK.
 
 ### Locking IR control
 
