@@ -353,7 +353,7 @@ static bool read_settings(File configFile)
         wd |= CopyCheckValidNumParm(json["useGPSS"], settings.useGPSS, sizeof(settings.useGPSS), 0, 1, DEF_USE_GPSS);
         wd |= CopyCheckValidNumParm(json["useNM"], settings.useNM, sizeof(settings.useNM), 0, 1, DEF_USE_NM);
         wd |= CopyCheckValidNumParm(json["useFPO"], settings.useFPO, sizeof(settings.useFPO), 0, 1, DEF_USE_FPO);
-        wd |= CopyCheckValidNumParm(json["wait4FPOn"], settings.wait4FPOn, sizeof(settings.wait4FPOn), 0, 1, DEF_WAIT_FPO);
+        //wd |= CopyCheckValidNumParm(json["wait4FPOn"], settings.wait4FPOn, sizeof(settings.wait4FPOn), 0, 1, DEF_WAIT_FPO);
 
         #ifdef FC_HAVEMQTT
         wd |= CopyCheckValidNumParm(json["useMQTT"], settings.useMQTT, sizeof(settings.useMQTT), 0, 1, 0);
@@ -419,7 +419,7 @@ void write_settings()
     json["useGPSS"] = settings.useGPSS;
     json["useNM"] = settings.useNM;
     json["useFPO"] = settings.useFPO;
-    json["wait4FPOn"] = settings.wait4FPOn;
+    //json["wait4FPOn"] = settings.wait4FPOn;
 
     #ifdef FC_HAVEMQTT
     json["useMQTT"] = settings.useMQTT;
@@ -1047,6 +1047,18 @@ bool saveIRKeys()
     }
     
     return true;
+}
+
+void deleteIRKeys()
+{
+    if(!haveFS && !configOnSD)
+        return;
+
+    if(configOnSD) {
+        SD.remove(irCfgName);
+    } else {
+        SPIFFS.remove(irCfgName);
+    }
 }
 
 /* Copy volume/IR settings from/to SD if user

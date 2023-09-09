@@ -138,11 +138,11 @@ WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power (0=no, 1=yes)", 
 #else // -------------------- Checkbox hack: --------------
 WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power", settings.useFPO, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
-#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-WiFiManagerParameter custom_wFPO("wFPO", "Wait for fake power on at boot (0=no, 1=yes)", settings.wait4FPOn, 1, "autocomplete='off'");
-#else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_wFPO("wFPO", "Wait for fake power on at boot", settings.wait4FPOn, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
-#endif // -------------------------------------------------
+//#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
+//WiFiManagerParameter custom_wFPO("wFPO", "Wait for fake power on at boot (0=no, 1=yes)", settings.wait4FPOn, 1, "autocomplete='off'");
+//#else // -------------------- Checkbox hack: --------------
+//WiFiManagerParameter custom_wFPO("wFPO", "Wait for fake power on at boot", settings.wait4FPOn, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
+//#endif // -------------------------------------------------
 
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds (0=no, 1=yes)", settings.playTTsnds, 1, "autocomplete='off' title='Enable to have the device play time travel sounds. Disable if other props provide time travel sound.'");
@@ -168,9 +168,9 @@ WiFiManagerParameter custom_shuffle("musShu", "Shuffle at startup", settings.shu
 #endif // -------------------------------------------------
 
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save volume/speed/IR settings on SD (0=no, 1=yes)<br><span style='font-size:80%'>Enable this to avoid flash wear</span>", settings.CfgOnSD, 1, "autocomplete='off'");
+WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save secondary settings on SD (0=no, 1=yes)<br><span style='font-size:80%'>Enable this to avoid flash wear; settings for volume, chase speed, IR, box light level will be saved to SD.</span>", settings.CfgOnSD, 1, "autocomplete='off'");
 #else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save volume/speed/IR settings on SD<br><span style='font-size:80%'>Check this to avoid flash wear</span>", settings.CfgOnSD, 1, "autocomplete='off' type='checkbox' style='margin-top:5px'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save secondary settings on SD<br><span style='font-size:80%'>Check this to avoid flash wear; settings for volume, chase speed, IR, box light level will be saved to SD.</span>", settings.CfgOnSD, 1, "autocomplete='off' type='checkbox' style='margin-top:5px'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 //#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 //WiFiManagerParameter custom_sdFrq("sdFrq", "SD clock speed (0=16Mhz, 1=4Mhz)<br><span style='font-size:80%'>Slower access might help in case of problems with SD cards</span>", settings.sdFreq, 1, "autocomplete='off'");
@@ -338,7 +338,7 @@ void wifi_setup()
     wm.addParameter(&custom_uGPS);
     wm.addParameter(&custom_uNM);
     wm.addParameter(&custom_uFPO);
-    wm.addParameter(&custom_wFPO);
+    //wm.addParameter(&custom_wFPO);
     
     wm.addParameter(&custom_sectstart);     // 2
     wm.addParameter(&custom_playTTSnd);
@@ -602,7 +602,7 @@ void wifi_loop()
             mystrcpy(settings.useGPSS, &custom_uGPS);
             mystrcpy(settings.useNM, &custom_uNM);
             mystrcpy(settings.useFPO, &custom_uFPO);
-            mystrcpy(settings.wait4FPOn, &custom_wFPO);
+            //mystrcpy(settings.wait4FPOn, &custom_wFPO);
 
             #ifdef FC_HAVEMQTT
             mystrcpy(settings.useMQTT, &custom_useMQTT);
@@ -629,7 +629,7 @@ void wifi_loop()
             strcpyCB(settings.useGPSS, &custom_uGPS);
             strcpyCB(settings.useNM, &custom_uNM);
             strcpyCB(settings.useFPO, &custom_uFPO);
-            strcpyCB(settings.wait4FPOn, &custom_wFPO);
+            //strcpyCB(settings.wait4FPOn, &custom_wFPO);
 
             #ifdef FC_HAVEMQTT
             strcpyCB(settings.useMQTT, &custom_useMQTT);
@@ -1043,7 +1043,7 @@ void updateConfigPortalValues()
     custom_uGPS.setValue(settings.useGPSS, 1);
     custom_uNM.setValue(settings.useNM, 1);
     custom_uFPO.setValue(settings.useFPO, 1);
-    custom_wFPO.setValue(settings.wait4FPOn, 1);
+    //custom_wFPO.setValue(settings.wait4FPOn, 1);
     
     #ifdef FC_HAVEMQTT
     custom_useMQTT.setValue(settings.useMQTT, 1);
@@ -1070,7 +1070,7 @@ void updateConfigPortalValues()
     setCBVal(&custom_uGPS, settings.useGPSS);
     setCBVal(&custom_uNM, settings.useNM);
     setCBVal(&custom_uFPO, settings.useFPO);
-    setCBVal(&custom_wFPO, settings.wait4FPOn);
+    //setCBVal(&custom_wFPO, settings.wait4FPOn);
 
     #ifdef FC_HAVEMQTT
     setCBVal(&custom_useMQTT, settings.useMQTT);

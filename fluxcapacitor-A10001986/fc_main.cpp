@@ -118,7 +118,7 @@ static bool tcdNM = false;
 bool        fluxNM = false;
 static bool useFPO = false;
 static bool tcdFPO = false;
-static bool wait4FPOn = false;
+static bool wait4FPOn = true;
 
 #define FLUXM2_SECS  30
 #define FLUXM3_SECS  60
@@ -441,10 +441,10 @@ void main_setup()
     // Initialize BTTF network
     bttfn_setup();
 
-    // If "Wait for TCD fake power on" is set,
+    // If "Follow TCD fake power" is set,
     // stay silent and dark
 
-    if(useBTTFN && useFPO && wait4FPOn) {
+    if(useBTTFN && useFPO && wait4FPOn && (WiFi.status() == WL_CONNECTED)) {
 
         FPBUnitIsOn = false;
         tcdFPO = fpoOld = true;
@@ -1625,6 +1625,11 @@ static void executeIRCmd(int key)
                         deleteIpSettings();               // *123456OK deletes IP settings
                         settings.appw[0] = 0;             // and clears AP mode WiFi password
                         write_settings();
+                    } else if(!strcmp(inputBuffer, "654321")) {
+                        deleteIRKeys();                   // *654321OK deletes learned IR remote
+                        for(int i = 0; i < NUM_IR_KEYS; i++) {
+                            remote_codes[i][1] = 0;
+                        }
                     } else {
                         doBadInp = true;
                     }
