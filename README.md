@@ -246,6 +246,10 @@ In order to only disable the supplied IR remote control, check the option *Disab
      <td align="left">*123456&#9166;</td>
      <td align="left">Delete static IP address and AP WiFI password</td>
     </tr>
+   <tr>
+     <td align="left">*654321&#9166;</td>
+     <td align="left">Forget learned IR remote control</td>
+    </tr>
 </table>
 
 [Here](https://github.com/realA10001986/Flux-Capacitor/blob/main/CheatSheet.pdf) is a cheat sheet for printing or screen-use. (Note that MacOS' preview application has a bug that scrambles the links in the document. Acrobat Reader does it correctly.)
@@ -425,7 +429,7 @@ If your FC, along with a [Time Circuits Display](https://github.com/realA1000198
 
 Enter the Config Portal on the FC (as described above), click on *Setup* and
   - enter *192.168.4.1* into the field *IP address of TCD*
-  - check the options *Follow TCD fake power* and *Wait for fake power on at boot* if you have a fake power switch for the TCD (like eg a TFC switch)
+  - check the option *Follow TCD fake power* if you have a fake power switch for the TCD (like eg a TFC switch)
   - click on *Save*.
 
 After the FC has restarted, re-enter the FC's Config Portal (while the TCD is powered and in *car mode*) and
@@ -565,14 +569,6 @@ If this option is checked, and your TCD goes into night mode, the FC will activa
 ##### &#9654; Follow TCD fake power
 
 If this option is checked, and your TCD is equipped with a fake power switch, the FC will also fake-power up/down. If fake power is off, no LED is active and the FC will ignore all input from buttons, knobs and the IR control.
-
-##### &#9654; Wait for fake power on at boot
-
-If this option is checked, your FC will stay dark after being powered-on until it receives a "fake power on" signal from the TCD.
-
-If this is unchecked, the FC will power up normally, play it's "startup" sequence, and only then poll for the fake power; if that is off at that point, it will fake-power-down. For a better experience, have this checked when your TCD is equipped with a fake power switch.
-
-For this option to have any effect, the *Follow TCD fake power* option needs to be check as well.
 
 ##### &#9654; Play time travel sounds
 
