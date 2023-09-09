@@ -90,6 +90,7 @@
  *    - Save current idle pattern to SD for persistence
  *      (only if changed via IR, not MQTT)
  *    - If SD mount fails at 16Mhz, retry at 25Mhz
+ *    - If specific config file not found on SD, read from FlashFS
  *  2023/09/07 (A10001986)
  *    - Fix links
  *  2023/09/02 (A10001986)
