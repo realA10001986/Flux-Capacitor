@@ -15,7 +15,7 @@
 #define FC_VERSION       "V1.05"
 #define FC_VERSION_EXTRA "SEP092023"
 
-//#define FC_DBG              // debug output on Serial
+#define FC_DBG              // debug output on Serial
 
 /*************************************************************************
  ***                     mDNS (Bonjour) support                        ***
@@ -48,8 +48,7 @@
 //#define BOARD_1_2
 
 // Use SPIFFS (if defined) or LittleFS (if undefined; esp32-arduino >= 2.x)
-// For now, I stick with SPIFFS.
-#define USE_SPIFFS
+//#define USE_SPIFFS
 
 // External time travel lead time, as defined by TCD firmware
 // If FC is connected by wire, the option "Signal Time Travel without 5s 
