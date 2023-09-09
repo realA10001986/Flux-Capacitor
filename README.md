@@ -115,6 +115,8 @@ If your remote control lacks the \* (starts command sequence) and \# (aborts com
 
 If no key is pressed for 10 seconds, the learning process aborts, as does briefly pressing the Time Travel button. In thoses cases, the keys already learned are forgotten and nothing is saved.
 
+To make the FC forget a learned IR remote control, type *654321 followed by ENTER.
+
 ### Locking IR control
 
 You can have your FC ignore IR commands from any IR remote control (be it the default supplied one, be it one you had the FC learn) by entering *70 followed by OK. After this sequence the FC will ignore all IR commands until *70OK is entered again. The purpose of this function is to enable you to use the same IR control for your FC and other props (such as SID).
