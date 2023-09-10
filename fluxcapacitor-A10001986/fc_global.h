@@ -12,8 +12,8 @@
 #define _FC_GLOBAL_H
 
 // Version strings.
-#define FC_VERSION       "V1.05"
-#define FC_VERSION_EXTRA "SEP092023"
+#define FC_VERSION       "V1.06"
+#define FC_VERSION_EXTRA "SEP102023"
 
 //#define FC_DBG              // debug output on Serial
 

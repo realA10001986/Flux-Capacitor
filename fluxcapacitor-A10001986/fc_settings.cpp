@@ -555,7 +555,7 @@ static bool openCfgFileRead(const char *fn, File& f, bool SDonly = false)
             haveConfigFile = (f = SD.open(fn, "r"));
         }
     } 
-    if(!haveConfigFile && !SDonly) {
+    if(!haveConfigFile && !SDonly && haveFS) {
         if(SPIFFS.exists(fn)) {
             haveConfigFile = (f = SPIFFS.open(fn, "r"));
         }
