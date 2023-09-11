@@ -52,7 +52,7 @@
 #define JSON_SIZE 1600
 
 /* If SPIFFS/LittleFS is mounted */
-static bool haveFS = false;
+bool haveFS = false;
 
 /* If a SD card is found */
 bool haveSD = false;
@@ -137,6 +137,8 @@ static bool loadIRKeys();
 static void open_and_copy(const char *fn, int& haveErr);
 static bool filecopy(File source, File dest);
 static bool check_if_default_audio_present();
+
+static void formatFlashFS();
 
 static bool CopyIPParm(const char *json, char *text, uint8_t psize);
 
@@ -453,7 +455,7 @@ void write_settings()
 
 bool checkConfigExists()
 {
-    return FlashROMode ? SD.exists(cfgName) : SPIFFS.exists(cfgName);
+    return FlashROMode ? SD.exists(cfgName) : (haveFS && SPIFFS.exists(cfgName));
 }
 
 
@@ -570,7 +572,7 @@ static bool openCfgFileWrite(const char *fn, File& f, bool SDonly = false)
     
     if(configOnSD || SDonly) {
         haveConfigFile = (f = SD.open(fn, FILE_WRITE));
-    } else {
+    } else if(haveFS) {
         haveConfigFile = (f = SPIFFS.open(fn, FILE_WRITE));
     }
 
@@ -1051,12 +1053,9 @@ bool saveIRKeys()
 
 void deleteIRKeys()
 {
-    if(!haveFS && !configOnSD)
-        return;
-
     if(configOnSD) {
         SD.remove(irCfgName);
-    } else {
+    } else if(haveFS) {
         SPIFFS.remove(irCfgName);
     }
 }
@@ -1258,16 +1257,13 @@ void writeIpSettings()
 
 void deleteIpSettings()
 {
-    if(!haveFS && !FlashROMode)
-        return;
-
     #ifdef FC_DBG
     Serial.println(F("deleteIpSettings: Deleting ip config"));
     #endif
 
     if(FlashROMode) {
         SD.remove(ipCfgName);
-    } else {
+    } else if(haveFS) {
         SPIFFS.remove(ipCfgName);
     }
 }
@@ -1455,7 +1451,7 @@ bool audio_files_present()
     File file;
     size_t ts;
     
-    if(FlashROMode)
+    if(FlashROMode || !haveFS)
         return true;
 
     if(!SPIFFS.exists(audioFiles[SND_KEY_IDX]))
@@ -1491,7 +1487,7 @@ void delete_ID_file()
  * Various helpers
  */
 
-void formatFlashFS()
+static void formatFlashFS()
 {
     #ifdef FC_DBG
     Serial.println(F("Formatting flash FS"));

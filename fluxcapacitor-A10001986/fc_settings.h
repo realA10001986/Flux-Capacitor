@@ -33,6 +33,7 @@
 #ifndef _FC_SETTINGS_H
 #define _FC_SETTINGS_H
 
+extern bool haveFS;
 extern bool haveSD;
 extern bool FlashROMode;
 
@@ -148,8 +149,6 @@ bool check_allow_CPA();
 void delete_ID_file();
 
 bool audio_files_present();
-
-void formatFlashFS();
 
 void rewriteSecondarySettings();
 

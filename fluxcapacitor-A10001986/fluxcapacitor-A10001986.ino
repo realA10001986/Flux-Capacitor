@@ -86,6 +86,8 @@
 
 /*  Changelog
  *   
+ *  2023/09/11 (A10001986)
+ *    - Guard SPIFFS/LittleFS calls with FS check
  *  2023/09/10 (A10001986)
  *    - If specific config file not found on SD, read from FlashFS - but only
  *      if it is mounted.
