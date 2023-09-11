@@ -107,7 +107,7 @@ Each time you press a (recognized) key on the remote, an IR feedback LED will br
 
 You can have your FC learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, expecially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards, that remote is of that type and cannot be used.
 
-First, go to the Config Portal, uncheck *TCD connected by wire* on the Setup page and save. The FC reboots. Afterwards, to start the learning process, hold the Time Travel button for a few seconds, until the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Then press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then press "1", wait for the acknowledgement, and so on. Enter your keys in the following order:
+First, go to the Config Portal, uncheck **_TCD connected by wire_** on the Setup page and save. The FC reboots. Afterwards, to start the learning process, hold the Time Travel button for a few seconds, until the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Then press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then press "1", wait for the acknowledgement, and so on. Enter your keys in the following order:
 
 ```0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - * - # - Arrow up - Arrow down - Arrow left - Arrow right - OK``` 
 
@@ -123,7 +123,7 @@ You can have your FC ignore IR commands from any IR remote control (be it the de
 
 Note that the status of the IR lock is saved 10 seconds after its last change, and persistent accross reboots.
 
-In order to only disable the supplied IR remote control, check the option *Disable supplied IR remote control* in the [Config Portal](#-disable-supplied-ir-remote-control). In that case, any learned remote will still work.
+In order to only disable the supplied IR remote control, check the option **_Disable supplied IR remote control_** in the [Config Portal](#-disable-supplied-ir-remote-control). In that case, any learned remote will still work.
 
 ### IR remote reference
 
@@ -367,7 +367,7 @@ The TCD can communicate with the FC wirelessly, via WiFi. It can send out inform
 
 ![BTTFN connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/93a9c471-d288-4a8f-87df-506ab8d5e619)
 
-In order to connect your FC to the TCD using BTFFN, just enter the TCD's IP address in the *IP address of TCD* field in the FC's Config Portal. On the TCD, no special configuration is required.
+In order to connect your FC to the TCD using BTFFN, just enter the TCD's IP address in the **_IP address of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required.
   
 Afterwards, the FC and the TCD can communicate wirelessly and 
 - play time travel sequences in sync,
@@ -381,11 +381,11 @@ You can use BTTF-Network and MQTT at the same time, see immediately below.
 
 The other way of wireless communication is, of course, [Home Assistant/MQTT](#home-assistant--mqtt).
 
-If both TCD and FC are connected to the same broker, and the option *Send event notifications* is checked on the TCD's side, the FC will receive information on time travel and alarm and play their sequences in sync with the TCD. Unlike BTTFN, however, no other communication takes place.
+If both TCD and FC are connected to the same broker, and the option **_Send event notifications_** is checked on the TCD's side, the FC will receive information on time travel and alarm and play their sequences in sync with the TCD. Unlike BTTFN, however, no other communication takes place.
 
 ![MQTT connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/938c6bdd-f554-4e51-862e-9988e2339222)
 
-MQTT and BTTFN can co-exist. However, the TCD only sends out time travel and alarm notifications through either MQTT or BTTFN, never both. If you have other MQTT-aware devices listening to the TCD's public topic (bttf/tcd/pub) in order to react to time travel or alarm messages, use MQTT (ie check *Send event notifications*). If only BTTFN-aware devices are to be used, uncheck this option to use BTTFN as it has less latency.
+MQTT and BTTFN can co-exist. However, the TCD only sends out time travel and alarm notifications through either MQTT or BTTFN, never both. If you have other MQTT-aware devices listening to the TCD's public topic (bttf/tcd/pub) in order to react to time travel or alarm messages, use MQTT (ie check **_Send event notifications_**). If only BTTFN-aware devices are to be used, uncheck this option to use BTTFN as it has less latency.
 
 ## Home Assistant / MQTT
 
@@ -425,13 +425,13 @@ If your FC, along with a [Time Circuits Display](https://github.com/realA1000198
 #### TCD
 
 - Run your TCD in [*car mode*](https://github.com/realA10001986/Time-Circuits-Display/blob/main/README.md#car-mode);
-- disable WiFi power-saving on the TCD by setting *WiFi power save timer (AP-mode)* to 0 (zero).
+- disable WiFi power-saving on the TCD by setting **_WiFi power save timer (AP-mode)_** to 0 (zero).
 
 #### Flux Capacitor
 
 Enter the Config Portal on the FC (as described above), click on *Setup* and
-  - enter *192.168.4.1* into the field *IP address of TCD*
-  - check the option *Follow TCD fake power* if you have a fake power switch for the TCD (like eg a TFC switch)
+  - enter *192.168.4.1* into the field **_IP address of TCD_**
+  - check the option **_Follow TCD fake power_** if you have a fake power switch for the TCD (like eg a TFC switch)
   - click on *Save*.
 
 After the FC has restarted, re-enter the FC's Config Portal (while the TCD is powered and in *car mode*) and
@@ -447,7 +447,7 @@ In order to access the FC's Config Portal in your car, connect your hand held or
 
 Flash memory has a somewhat limited life-time. It can be written to only between 10.000 and 100.000 times before becoming unreliable. The firmware writes to the internal flash memory when saving settings and other data. Every time you change settings, data is written to flash memory.
 
-In order to reduce the number of write operations and thereby prolong the life of your Flux Capacitor, it is recommended to use a good-quality SD card and to check *[Save volume/speed/IR settings on SD](#-save-volumespeedir-settings-on-sd)* in the Config Portal; alarm and speed settings as well as learned IR codes are then stored on the SD card (which also suffers from wear but is easy to replace). If you want to swap the SD card but preserve your volume/speed/IR settings, go to the Config Portal while the old SD card is still in place, uncheck the *Save volume/speed/IR settings on SD* option, click on Save and wait until the device has rebooted. You can then power down, swap the SD card and power-up again. Then go to the Config Portal, change the option back on and click on Save. Your settings are now on the new SD card.
+In order to reduce the number of write operations and thereby prolong the life of your Flux Capacitor, it is recommended to use a good-quality SD card and to check **_[Save secondary settings on SD](#-save-volumespeedir-settings-on-sd)_** in the Config Portal; alarm and speed settings as well as learned IR codes are then stored on the SD card (which also suffers from wear but is easy to replace). If you want to swap the SD card but preserve your volume/speed/IR settings, go to the Config Portal while the old SD card is still in place, uncheck the **_Save secondary settings on SD_** option, click on Save and wait until the device has rebooted. You can then power down, swap the SD card and power-up again. Then go to the Config Portal, change the option back on and click on Save. Your settings are now on the new SD card.
 
 ## Appendix A: The Config Portal
 
