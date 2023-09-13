@@ -46,6 +46,7 @@ extern uint8_t musFolderNum;
 
 #define DEF_PLAY_FLUX_SND   1     // 1: Play "flux" sound permantly, 0: Do not
 #define DEF_PLAY_TT_SND     1     // 1: Play time travel sounds (0: Do not; for use with external equipment)
+#define DEF_STTBL_ANIM      0     // 1: Skip box light animation in tt; 0: Play anim
 #define DEF_SS_TIMER        0     // "Screen saver" timeout in minutes; 0 = ss off
 #define DEF_VKNOB           0     // 0: Don't use knob for audio volume, 1: do
 #define DEF_SKNOB           0     // 0: Don't use knob for chase speed; 1: do
@@ -68,6 +69,7 @@ extern uint8_t musFolderNum;
 struct Settings {
     char playFLUXsnd[4]     = MS(DEF_PLAY_FLUX_SND);
     char playTTsnds[4]      = MS(DEF_PLAY_TT_SND);
+    char skipTTBLAnim[4]    = MS(DEF_STTBL_ANIM);
     char ssTimer[6]         = MS(DEF_SS_TIMER);
 
     char usePLforBL[4]      = MS(DEF_BLEDSWAP);

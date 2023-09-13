@@ -149,6 +149,11 @@ WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds (0=no, 
 #else // -------------------- Checkbox hack: --------------
 WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds", settings.playTTsnds, 1, "autocomplete='off' title='Check to have the device play time travel sounds. Uncheck if other props provide time travel sound.' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
+#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
+WiFiManagerParameter custom_sTTBLA("sTTBL", "Skip Box Light animation (0=no, 1=yes)", settings.skipTTBLAnim, 1, "autocomplete='off' title='Enable to skip the box light animation and just plainly switch it on during time travel'");
+#else // -------------------- Checkbox hack: --------------
+WiFiManagerParameter custom_sTTBLA("sTTBL", "Skip Box Light animation", settings.skipTTBLAnim, 1, "autocomplete='off' title='Check to skip the box light animation and just plainly switch it on during time travel' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
+#endif // -------------------------------------------------
 
 #ifdef FC_HAVEMQTT
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
@@ -340,8 +345,9 @@ void wifi_setup()
     wm.addParameter(&custom_uFPO);
     //wm.addParameter(&custom_wFPO);
     
-    wm.addParameter(&custom_sectstart);     // 2
+    wm.addParameter(&custom_sectstart);     // 3
     wm.addParameter(&custom_playTTSnd);
+    wm.addParameter(&custom_sTTBLA);
 
     #ifdef FC_HAVEMQTT
     wm.addParameter(&custom_sectstart);     // 4
@@ -590,6 +596,7 @@ void wifi_loop()
             #ifdef TC_NOCHECKBOXES // --------- Plain text boxes:
 
             mystrcpy(settings.playTTsnds, &custom_playTTSnd);
+            mystrcpy(settings.skipTTBLAnim, &custom_sTTBLA);
 
             mystrcpy(settings.usePLforBL, &custom_swapBL);
             mystrcpy(settings.useVknob, &custom_useVknob);
@@ -617,6 +624,7 @@ void wifi_loop()
             #else // -------------------------- Checkboxes:
 
             strcpyCB(settings.playTTsnds, &custom_playTTSnd);
+            strcpyCB(settings.skipTTBLAnim, &custom_sTTBLA);
 
             strcpyCB(settings.usePLforBL, &custom_swapBL);
             strcpyCB(settings.useVknob, &custom_useVknob);
@@ -1031,6 +1039,7 @@ void updateConfigPortalValues()
 
     custom_playFLUXSnd.setValue(settings.playFLUXsnd, 1);
     custom_playTTSnd.setValue(settings.playTTsnds, 1);
+    custom_sTTBLA.setValue(settings.skipTTBLAnim, 1);
 
     custom_swapBL.setValue(settings.usePLforBL, 1);
     custom_useVknob.setValue(settings.useVknob, 1);
@@ -1058,6 +1067,7 @@ void updateConfigPortalValues()
 
     setCBVal(&custom_playFLUXSnd, settings.playFLUXsnd);
     setCBVal(&custom_playTTSnd, settings.playTTsnds);
+    setCBVal(&custom_sTTBLA, settings.skipTTBLAnim);
 
     setCBVal(&custom_swapBL, settings.usePLforBL);
     setCBVal(&custom_useVknob, settings.useVknob);

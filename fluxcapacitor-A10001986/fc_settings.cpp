@@ -320,6 +320,7 @@ static bool read_settings(File configFile)
 
         wd |= CopyCheckValidNumParm(json["playFLUXsnd"], settings.playFLUXsnd, sizeof(settings.playFLUXsnd), 0, 3, DEF_PLAY_FLUX_SND);
         wd |= CopyCheckValidNumParm(json["playTTsnds"], settings.playTTsnds, sizeof(settings.playTTsnds), 0, 1, DEF_PLAY_TT_SND);
+        wd |= CopyCheckValidNumParm(json["skipTTBLAnim"], settings.skipTTBLAnim, sizeof(settings.skipTTBLAnim), 0, 1, DEF_STTBL_ANIM);
         wd |= CopyCheckValidNumParm(json["ssTimer"], settings.ssTimer, sizeof(settings.ssTimer), 0, 999, DEF_SS_TIMER);
 
         wd |= CopyCheckValidNumParm(json["usePLforBL"], settings.usePLforBL, sizeof(settings.usePLforBL), 0, 1, DEF_BLEDSWAP);
@@ -400,6 +401,7 @@ void write_settings()
 
     json["playFLUXsnd"] = settings.playFLUXsnd;
     json["playTTsnds"] = settings.playTTsnds;
+    json["skipTTBLAnim"] = settings.skipTTBLAnim;
 
     json["ssTimer"] = settings.ssTimer;
 
@@ -1073,7 +1075,7 @@ void copySettings()
 
     if(configOnSD || !FlashROMode) {
         #ifdef FC_DBG
-        Serial.println(F("copySettings: Copying vol/speed/IR/etc settings to other medium"));
+        Serial.println(F("copySettings: Copying secondary settings to other medium"));
         #endif
         saveCurVolume(false);
         saveCurSpeed(false);
@@ -1386,17 +1388,8 @@ bool copy_audio_files()
         return false;
     }
 
-    // Signal somehow
-    //start_file_copy();
-
     for(i = 0; i < NUM_AUDIOFILES - 1; i++) {
         open_and_copy(audioFiles[i], haveErr);
-    }
-
-    if(haveErr) {
-        //file_copy_error();
-    } else {
-        //file_copy_done();
     }
 
     return (haveErr == 0);
@@ -1440,7 +1433,6 @@ static bool filecopy(File source, File dest)
             Serial.println(F("filecopy: Error writing data"));
             return false;
         }
-        //file_copy_progress();
     }
 
     return true;

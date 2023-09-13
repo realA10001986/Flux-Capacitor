@@ -120,6 +120,8 @@ static bool useFPO = false;
 static bool tcdFPO = false;
 static bool wait4FPOn = true;
 
+static bool skipttblanim = false;
+
 #define FLUXM2_SECS  30
 #define FLUXM3_SECS  60
 int                  playFLUX = 1;
@@ -336,6 +338,8 @@ void main_setup()
     useNM = (atoi(settings.useNM) > 0);
     useFPO = (atoi(settings.useFPO) > 0);
     wait4FPOn = (atoi(settings.wait4FPOn) > 0);
+    
+    skipttblanim = (atoi(settings.skipTTBLAnim) > 0);
 
     // Option to disable supplied default IR remote
     if((atoi(settings.disDIR) > 0)) 
@@ -497,20 +501,6 @@ void main_setup()
 void main_loop()
 {
     unsigned long now = millis();
-
-    // Deferred WiFi startup ("Wait for TCD WiFi" option)
-    // This will block!
-    // The timeout here is what the TCD needs when it is
-    // in Car Mode (991ENTER).
-    // Now commented out. If the TCD is acting access point for
-    // the FC, it is supposed to be in car mode, which makes it
-    // boot fast enough for the FC to catch it.
-    //if(!wifiSetupDone && now - powerupMillis > 5000) {
-    //    wifi_setup2();
-    //    if(WiFi.status() == WL_CONNECTED) {
-    //        wifiStartCP();
-    //    }
-    //}
 
     // Follow TCD fake power
     if(useFPO && (tcdFPO != fpoOld)) {
@@ -737,25 +727,33 @@ void main_loop()
                         centerLED.setDC(t);
                     }
 
-                    if(bP1Seq[bP1idx] >= 0) {
-                        if(now - TTstart > bP1Seq[bP1idx]) {
-                            boxLED.setDC(bP1Seq[bP1idx+1]);
-                            bP1idx += 2;
-                        }
-                        TTbUpdNow = now;
-                    } else if(now - TTstart < 4800) {
-                        if(now - TTbUpdNow > 20) {
-                            t = (esp_random() % 255) & 0b11000111;
-                            boxLED.setDC(t);
+                    if(!skipttblanim) {
+                        if(bP1Seq[bP1idx] >= 0) {
+                            if(now - TTstart > bP1Seq[bP1idx]) {
+                                boxLED.setDC(bP1Seq[bP1idx+1]);
+                                bP1idx += 2;
+                            }
                             TTbUpdNow = now;
+                        } else if(now - TTstart < 4800) {
+                            if(now - TTbUpdNow > 20) {
+                                t = (esp_random() % 255) & 0b11000111;
+                                boxLED.setDC(t);
+                                TTbUpdNow = now;
+                            }
+                        } else if(now - TTstart < 5500) {
+                            t = boxLED.getDC();
+                            if(t) boxLED.setDC(0);
+                        } else if((t = boxLED.getDC()) < 255) {
+                            t += 1;
+                            if(t > 255) t = 255;
+                            boxLED.setDC(t);
                         }
-                    } else if(now - TTstart < 5500) {
-                        t = boxLED.getDC();
-                        if(t) boxLED.setDC(0);
-                    } else if((t = boxLED.getDC()) < 255) {
-                        t += 1;
-                        if(t > 255) t = 255;
-                        boxLED.setDC(t);
+                    } else {
+                        if((t = boxLED.getDC()) < 255) {
+                            t += 1;
+                            if(t > 255) t = 255;
+                            boxLED.setDC(t);
+                        }
                     }
 
                     if(fcLEDs.getSpeed() != 2) {
@@ -884,25 +882,33 @@ void main_loop()
                         centerLED.setDC(t);
                     }
 
-                    if(bP1Seq[bP1idx] >= 0) {
-                        if(now - TTstart > bP1Seq[bP1idx]) {
-                            boxLED.setDC(bP1Seq[bP1idx+1]);
-                            bP1idx += 2;
-                        }
-                        TTbUpdNow = now;
-                    } else if(now - TTstart < 4800) {
-                        if(now - TTbUpdNow > 20) {
-                            t = (esp_random() % 255) & 0b11000111;
-                            boxLED.setDC(t);
+                    if(!skipttblanim) {
+                        if(bP1Seq[bP1idx] >= 0) {
+                            if(now - TTstart > bP1Seq[bP1idx]) {
+                                boxLED.setDC(bP1Seq[bP1idx+1]);
+                                bP1idx += 2;
+                            }
                             TTbUpdNow = now;
+                        } else if(now - TTstart < 4800) {
+                            if(now - TTbUpdNow > 20) {
+                                t = (esp_random() % 255) & 0b11000111;
+                                boxLED.setDC(t);
+                                TTbUpdNow = now;
+                            }
+                        } else if(now - TTstart < 5500) {
+                            t = boxLED.getDC();
+                            if(t) boxLED.setDC(0);
+                        } else if((t = boxLED.getDC()) < 255) {
+                            t += 1;
+                            if(t > 255) t = 255;
+                            boxLED.setDC(t);
                         }
-                    } else if(now - TTstart < 5500) {
-                        t = boxLED.getDC();
-                        if(t) boxLED.setDC(0);
-                    } else if((t = boxLED.getDC()) < 255) {
-                        t += 1;
-                        if(t > 255) t = 255;
-                        boxLED.setDC(t);
+                    } else {
+                        if((t = boxLED.getDC()) < 255) {
+                            t += 1;
+                            if(t > 255) t = 255;
+                            boxLED.setDC(t);
+                        }
                     }
 
                     if(fcLEDs.getSpeed() != 2) {
