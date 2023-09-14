@@ -101,7 +101,7 @@ Your FC should have an IR remote control included. This remote works out-of-the-
 
 This remote is also sold as part of a kit for Arduino and is reasonably priced.
 
-Each time you press a (recognized) key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the center LED.
+Each time you press a (recognized) key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the bright center LED.
 
 ### IR learning
 
@@ -269,15 +269,15 @@ The different modes are selected by typing *00 (disabled), *01 (enabled), *02 (e
 
 ## Box lighting
 
-The FC features connectors for box lights, ie LEDs that light up the inside of the FC during the time travel sequence. Those should be installed, they are essential part of the time travel sequence. The kit from CircuitSetup will probably contain suitable high-power LEDs for box lighting, and all four of those need to be connected to the "Box LED" connectors. 
+The FC features connectors for box lights, ie LEDs that light up the inside of the FC during the time travel sequence. Those should be installed, they are essential part of the time travel sequence. The kit from CircuitSetup contains suitable high-power LEDs for box lighting, and all four of those need to be connected to the "Box LED" connectors. 
 
-As an alternative, one could use four pieces of 3W High-Power KEYES LED modules and drive them via the GPIO14 connector. As those draw quite much power, their power pins should therefore be connected to the power supply directly, and only the PWD input should be wired to the "IO14" pin of the "GPIO14" connector. If you use the GPIO14 connector for your box LEDs, check [this option](#-use-gpio14-for-box-lights).
+As an alternative, one could use four pieces of 3W High-Power KEYES LED modules and drive them via the GPIO14 connector. As those draw quite much power, their power pins should therefore be connected to the power supply directly, and only the PWD input should be wired to the "IO14" pin of the "GPIO14" connector. If you use the GPIO14 connector for your box LEDs, check [this option](#-use-gpio14-for-box-lights) in the Config Portal.
 
 In normal operation, those LEDs are off. You can, however, configure a minimum box light level to light up the box a little bit if you find it too dark. This level can be chosen out of five, by entering *10 through *14 followed by OK.
 
 ## Time travel
 
-To travel through time, type "0" on the remote control. The flux capacitor will play its time travel sequence.
+To travel through time, type "0" on the remote control. The Flux Capacitor will play its time travel sequence.
 
 You can also connect a physical button to your FC; the button must shorten "GPIO" and "3.3V" on the "Time Travel" connector. Pressing this button briefly will trigger a time travel.
 
@@ -298,9 +298,9 @@ The provided audio files ("sound-pack") are, after [proper installation](#audio-
 These sounds can be substituted by your own sound files on a FAT32-formatted SD card. These files will be played back directly from the SD card during operation, so the SD card has to remain in the slot. The built-in [Audio file installer](#audio-file-installation) cannot be used to replace default sounds in the device's flash memory with custom sounds.
 
 Your replacements need to be put in the root (top-most) directory of the SD card, be in mp3 format (128kbps max) and named as follows:
+- "flux.mp3". The standard flux sound, played continously;
+- "alarm.mp3". Played when the alarm sounds (triggered by a Time Circuits Display via BTTFN or MQTT);
 - "0.mp3" through "9.mp3", "dot.mp3": Numbers for IP address read-out.
-- "flux.mp3". The standard flux sound, played continously.
-- "alarm.mp3". Played when the alarm sounds (triggered by a Time Circuits Display via BTTFN or MQTT).
 
 The following sounds are time-sync'd to display action. If you decide to substitute these with your own, be prepared to lose synchronicity:
 - "travelstart.mp3". Played when a time travel starts.
@@ -311,7 +311,7 @@ The following sounds are time-sync'd to display action. If you decide to substit
 
 The firmware supports some additional user-provided sound effects, which it will load from the SD card. If the respective file is present, it will be used. If that file is absent, no sound will be played.
 
-- "key3.mp3" and/or "key6.mp3": Will be played if you press the "3"/"6" button on your remote
+- "key3.mp3" and/or "key6.mp3": Will be played if you press the "3"/"6" button on your remote.
 
 Those files are not provided here. You can use any mp3, with a bitrate of 128kpbs or less.
 
@@ -424,7 +424,7 @@ If your FC, along with a [Time Circuits Display](https://github.com/realA1000198
 
 #### TCD
 
-- Run your TCD in [*car mode*](https://github.com/realA10001986/Time-Circuits-Display/blob/main/README.md#car-mode);
+- Run your TCD in [*car mode*](https://tcd.backtothefutu.re/#car-mode);
 - disable WiFi power-saving on the TCD by setting **_WiFi power save timer (AP-mode)_** to 0 (zero).
 
 #### Flux Capacitor
@@ -575,6 +575,10 @@ If this option is checked, and your TCD is equipped with a fake power switch, th
 ##### &#9654; Play time travel sounds
 
 If other props are connected, they might bring their own time travel sound effects. In this case, you can uncheck this to disable the Flux Capacitor's own time travel sounds. Note that this only covers sounds played during time travel, not other sound effects.
+
+##### &#9654; Skip Box Light animation
+
+Normally, the Box LEDs flash during the time travel sequence. If you prefer to instead have them constantly on during a time travel, check this option.
 
 #### Home Assistant / MQTT settings
 
