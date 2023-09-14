@@ -418,7 +418,7 @@ Limitations: MQTT Protocol version 3.1.1; TLS/SSL not supported; ".local" domain
 
 ## Car setup
 
-If your FC, along with a [Time Circuits Display](https://github.com/realA10001986/Time-Circuits-Display/), is mounted in a car, the following network configuration is recommended:
+If your FC, along with a [Time Circuits Display](https://tcd.backtothefutu.re/), is mounted in a car, the following network configuration is recommended:
 
 #### TCD
 
