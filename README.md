@@ -99,8 +99,6 @@ Your FC should have an IR remote control included. This remote works out-of-the-
 |:--:| 
 | *The default IR remote control* |
 
-This remote is also sold as part of a kit for Arduino and is reasonably priced.
-
 Each time you press a (recognized) key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the bright center LED.
 
 ### IR learning
@@ -121,7 +119,7 @@ To make the FC forget a learned IR remote control, type *654321 followed by OK.
 
 You can have your FC ignore IR commands from any IR remote control (be it the default supplied one, be it one you had the FC learn) by entering *70 followed by OK. After this sequence the FC will ignore all IR commands until *70OK is entered again. The purpose of this function is to enable you to use the same IR control for your FC and other props (such as SID).
 
-Note that the status of the IR lock is saved 10 seconds after its last change, and persistent accross reboots.
+Note that the status of the IR lock is saved 10 seconds after its last change, and is persistent accross reboots.
 
 In order to only disable the supplied IR remote control, check the option **_Disable supplied IR remote control_** in the [Config Portal](#-disable-supplied-ir-remote-control). In that case, any learned remote will still work.
 
