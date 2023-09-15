@@ -93,7 +93,7 @@ The main control device, however, is the IR remote control.
 
 ### IR remote control
 
-Your FC should have an IR remote control included. This remote works out-of-the-box and needs no setup. 
+Your FC kit includes an IR remote control. This remote works out-of-the-box and needs no setup. 
 
 | ![Default IR remote control](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/dc32787d-de83-4be4-9df8-7442bf623284) |
 |:--:| 
