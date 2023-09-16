@@ -279,7 +279,7 @@ void settings_setup()
         write_settings();
     }
 
-    // Determine if volume/ir settings are to be stored on SD
+    // Determine if secondary settings are to be stored on SD
     configOnSD = (haveSD && ((settings.CfgOnSD[0] != '0') || FlashROMode));
 
     // Load user-config's and learned IR keys

@@ -51,28 +51,13 @@ class AudioFileSourceSDLoop : public AudioFileSourceLoop
     virtual bool open(const char *filename) override;
 };
 
-#ifdef USE_SPIFFS   // ------------------------------
-
-class AudioFileSourceSPIFFSLoop : public AudioFileSourceLoop
+class AudioFileSourceFSLoop : public AudioFileSourceLoop
 {
   public:
-    AudioFileSourceSPIFFSLoop();
-    AudioFileSourceSPIFFSLoop(const char *filename);
+    AudioFileSourceFSLoop();
+    AudioFileSourceFSLoop(const char *filename);
     
     virtual bool open(const char *filename) override;
 };
-
-#else
-
-class AudioFileSourceLittleFSLoop : public AudioFileSourceLoop
-{
-  public:
-    AudioFileSourceLittleFSLoop();
-    AudioFileSourceLittleFSLoop(const char *filename);
-    
-    virtual bool open(const char *filename) override;
-};
-
-#endif
 
 #endif

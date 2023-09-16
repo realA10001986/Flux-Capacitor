@@ -85,7 +85,11 @@
  */
 
 /*  Changelog
- *   
+ *
+ *  2023/09/16 (A10001986)
+ *    - Simplify SPIFFS/LittleFS code paths in audio
+ *  2023/09/13 (A10001986)
+ *    - Add option to skip box light animation during tt
  *  2023/09/11 (A10001986)
  *    - Guard SPIFFS/LittleFS calls with FS check
  *  2023/09/10 (A10001986)

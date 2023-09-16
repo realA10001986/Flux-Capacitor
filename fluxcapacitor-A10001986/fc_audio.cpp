@@ -48,12 +48,7 @@
 
 static AudioGeneratorMP3 *mp3;
 
-#ifdef USE_SPIFFS
-static AudioFileSourceSPIFFSLoop *myFS0L;
-#else
-static AudioFileSourceLittleFSLoop *myFS0L;
-#endif
-
+static AudioFileSourceFSLoop *myFS0L;
 static AudioFileSourceSDLoop *mySD0L;
 
 static AudioOutputI2S *out;
@@ -139,11 +134,7 @@ void audio_setup()
 
     mp3  = new AudioGeneratorMP3();
 
-    #ifdef USE_SPIFFS
-    myFS0L = new AudioFileSourceSPIFFSLoop();
-    #else
-    myFS0L = new AudioFileSourceLittleFSLoop();
-    #endif
+    myFS0L = new AudioFileSourceFSLoop();
 
     if(haveSD) {
         mySD0L = new AudioFileSourceSDLoop();
@@ -901,7 +892,7 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
     #ifdef USE_SPIFFS
       else if(haveFS && SPIFFS.exists(audio_file) && myFS0L->open(audio_file))
     #else    
-      else if(myFS0L->open(audio_file))
+      else if(haveFS && myFS0L->open(audio_file))
     #endif
     {
         myFS0L->setPlayLoop((flags & PA_LOOP));

@@ -89,18 +89,20 @@ bool AudioFileSourceSDLoop::open(const char *filename)
     return f;
 }
 
-#ifdef USE_SPIFFS   // ------------------------------
+// FlashFS -------------------------------------------
 
-AudioFileSourceSPIFFSLoop::AudioFileSourceSPIFFSLoop()
+AudioFileSourceFSLoop::AudioFileSourceFSLoop()
 {
 }
 
-AudioFileSourceSPIFFSLoop::AudioFileSourceSPIFFSLoop(const char *filename)
+AudioFileSourceFSLoop::AudioFileSourceFSLoop(const char *filename)
 {
     open(filename);
 }
 
-bool AudioFileSourceSPIFFSLoop::open(const char *filename)
+#ifdef USE_SPIFFS   // ------------------------------
+
+bool AudioFileSourceFSLoop::open(const char *filename)
 {
     f = SPIFFS.open(filename, FILE_READ);
     return f;
@@ -108,19 +110,10 @@ bool AudioFileSourceSPIFFSLoop::open(const char *filename)
 
 #else   // -----------------------------------------
 
-AudioFileSourceLittleFSLoop::AudioFileSourceLittleFSLoop()
-{
-}
-
-AudioFileSourceLittleFSLoop::AudioFileSourceLittleFSLoop(const char *filename)
-{
-    open(filename);
-}
-
-bool AudioFileSourceLittleFSLoop::open(const char *filename)
+bool AudioFileSourceFSLoop::open(const char *filename)
 {
     f = LittleFS.open(filename, FILE_READ);
     return f;
 }
 
-#endif
+#endif  // -----------------------------------------
