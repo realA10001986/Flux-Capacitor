@@ -170,85 +170,85 @@ In order to only disable the supplied IR remote control, check the option **_Dis
     <tr>
      <td align="center" colspan="2">IR remote reference: Special sequences<br>(&#9166; = OK key)</td>
     </tr>
-  <tr>
-     <td align="left">*0&#9166;</td>
+    <tr>
      <td align="left">Select original chase sequence</td>
+     <td align="left">*0&#9166;</td>
     </tr>
-   <tr>
-     <td align="left">*1&#9166; - *9&#9166;</td>
+    <tr>
      <td align="left">Select chase sequences 1-9</td>
+     <td align="left">*1&#9166; - *9&#9166;</td>
     </tr>
     <tr>
-     <td align="left">*00&#9166;</td>
      <td align="left">Disable <a href="#the-flux-sound">flux sound</a></td>
+     <td align="left">*00&#9166;</td>
     </tr>
-   <tr>
-     <td align="left">*01&#9166;</td>
+    <tr>
      <td align="left">Enable <a href="#the-flux-sound">flux sound</a></td>
+     <td align="left">*01&#9166;</td>
     </tr>
     <tr>
-     <td align="left">*02&#9166;</td>
      <td align="left">Enable <a href="#the-flux-sound">flux sound</a>  (30 seconds)</td>
-    </tr>
-   <tr>
-     <td align="left">*03&#9166;</td>
-     <td align="left">Enable <a href="#the-flux-sound">flux sound</a>  (60 seconds)</td>
+     <td align="left">*02&#9166;</td>
     </tr>
     <tr>
-     <td align="left">*10&#9166; - *14&#9166;</td>
+     <td align="left">Enable <a href="#the-flux-sound">flux sound</a>  (60 seconds)</td>
+     <td align="left">*03&#9166;</td>
+    </tr>
+    <tr>
      <td align="left">Set minimum box light level</td>
+     <td align="left">*10&#9166; - *14&#9166;</td>
     </tr>
      <tr>
-     <td align="left">*20&#9166;</td>
      <td align="left">Reset chase speed to default</td>
+     <td align="left">*20&#9166;</td>
     </tr>
     <tr>
-     <td align="left">*50&#9166; - *59&#9166;</td>
      <td align="left"><a href="#the-music-player">Music Player</a>: Select music folder</td>
+     <td align="left">*50&#9166; - *59&#9166;</td>
     </tr>
     <tr>
-     <td align="left">*222&#9166;</td>
      <td align="left"><a href="#the-music-player">Music Player</a>: Shuffle off</td>
+     <td align="left">*222&#9166;</td>
     </tr>
     <tr>
-     <td align="left">*555&#9166;</td>
      <td align="left"><a href="#the-music-player">Music Player</a>: Shuffle on</td>
+     <td align="left">*555&#9166;</td>
     </tr> 
     <tr>
-     <td align="left">*888&#9166;</td>
      <td align="left"><a href="#the-music-player">Music Player</a>: Go to song 0</td>
+     <td align="left">*888&#9166;</td>
     </tr>
     <tr>
-     <td align="left">*888xxx&#9166;</td>
      <td align="left"><a href="#the-music-player">Music Player</a>: Go to song xxx</td>
+     <td align="left">*888xxx&#9166;</td>
     </tr>
     <tr>
-     <td align="left">*70&#9166;</td>
      <td align="left"><a href="#locking-ir-control">Disable/Enable</a> IR remote commands</td>
+     <td align="left">*70&#9166;</td>
     </tr>
     <tr>
-     <td align="left">*80&#9166;</td>
      <td align="left">Toggle usage of volume knob</td>
+     <td align="left">*80&#9166;</td>
     </tr>
-   <tr>
-     <td align="left">*81&#9166;</td>
+    <tr>
      <td align="left">Toggle usage of speed knob</td>
+     <td align="left">*81&#9166;</td>
     </tr>
-     <tr>
-     <td align="left">*90&#9166;</td>
+    <tr>
      <td align="left">Say current IP address</td>
+     <td align="left">*90&#9166;</td>
     </tr>
     <tr>
-     <td align="left">*64738&#9166;</td>
      <td align="left">Reboot the device</td>
+     <td align="left">*64738&#9166;</td>
     </tr>
     <tr>
-     <td align="left">*123456&#9166;</td>
      <td align="left">Delete static IP address and AP WiFI password</td>
+     <td align="left">*123456&#9166;</td>
     </tr>
-   <tr>
-     <td align="left">*654321&#9166;</td>
+    <tr>
      <td align="left">Forget learned IR remote control</td>
+     <td align="left">*654321&#9166;</td>
     </tr>
 </table>
 
