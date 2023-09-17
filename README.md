@@ -365,7 +365,7 @@ The TCD can communicate with the FC wirelessly, via WiFi. It can send out inform
 
 ![BTTFN connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/93a9c471-d288-4a8f-87df-506ab8d5e619)
 
-In order to connect your FC to the TCD using BTFFN, just enter the TCD's IP address in the **_IP address of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required.
+In order to connect your FC to the TCD using BTTFN, just enter the TCD's IP address in the **_IP address of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required.
   
 Afterwards, the FC and the TCD can communicate wirelessly and 
 - play time travel sequences in sync,
