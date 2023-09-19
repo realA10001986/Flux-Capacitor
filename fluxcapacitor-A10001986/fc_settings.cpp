@@ -289,7 +289,6 @@ void settings_setup()
     if(haveFS && haveSD && !FlashROMode) {
         allowCPA = check_if_default_audio_present();
     }
-
 }
 
 static bool read_settings(File configFile)
@@ -1300,6 +1299,7 @@ static bool check_if_default_audio_present()
       712515,                               // flux (loop) 
       57259,                                // startup
       46392, SND_KEY_LEN,                   // timetravel, travelstart
+      65230,                                // alarm
       36989,                                // fluxing
       43153,                                // renaming
       42212                                 // installing (not copied)

@@ -12,8 +12,8 @@
 #define _FC_GLOBAL_H
 
 // Version strings.
-#define FC_VERSION       "V1.09"
-#define FC_VERSION_EXTRA "SEP162023"
+#define FC_VERSION       "V1.010"
+#define FC_VERSION_EXTRA "SEP192023"
 
 //#define FC_DBG              // debug output on Serial
 
@@ -43,7 +43,7 @@
  ***                           Miscellaneous                           ***
  *************************************************************************/
 
-// Uncomment this if using a 1.2 fc control board
+// Uncomment this if using a FC control board v1.2
 // Comment for all later versions
 //#define BOARD_1_2
 
@@ -84,7 +84,7 @@
 // Center LED
 #define LED_PWM_PIN       17
 
-// GPIO14 (for alternate box lights)
+// GPIO14 (for alternative box lights)
 #define GPIO_14           14
 
 // IR Remote input
@@ -97,7 +97,7 @@
 #define IR_FB_PIN         14
 #endif
 
-// Time Travel button (or TCD input trigger)
+// Time Travel button (or TCD tt trigger input)
 #define TT_IN_PIN         13
 
 // I2S audio pins

@@ -86,6 +86,8 @@
 
 /*  Changelog
  *
+ *  2023/09/19 (A10001986)
+ *    - Fix audio file installer
  *  2023/09/16 (A10001986)
  *    - Simplify SPIFFS/LittleFS code paths in audio
  *  2023/09/13 (A10001986)
