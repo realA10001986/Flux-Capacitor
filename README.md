@@ -89,7 +89,7 @@ There are various options to control the Flux Capacitor:
 
 For the options to trigger a time travel, see [here](#time-travel).
 
-The main control device, however, is the IR remote control.
+The main control device is the supplied IR remote control. If a TCD is connected through [BTTF-Network](#bttf-network-bttfn), the FC can also be controlled through the TCD's keypad.
 
 ### IR remote control
 
@@ -127,21 +127,21 @@ In order to only disable the supplied IR remote control, check the option **_Dis
 
 <table>
     <tr>
-     <td align="center" colspan="3">IR remote reference: Single key actions</td>
+     <td align="center" colspan="3">IR remote reference: Single key actions<br>[Code on TCD keypad]</td>
     </tr>
     <tr>
      <td align="center">1<br>-</td>
-     <td align="center">2<br><a href="#the-music-player">Music Player</a>: Previous song</td>
-     <td align="center">3<br><a href="#additional-custom-sounds">Play "key3.mp3"</a></td>
+     <td align="center">2<br><a href="#the-music-player">Music Player</a>: Previous song<br>[3002]</td>
+     <td align="center">3<br><a href="#additional-custom-sounds">Play "key3.mp3"<br>[3003]</a></td>
     </tr>
     <tr>
      <td align="center">4<br>-</td>
-     <td align="center">5<br><a href="#the-music-player">Music Player</a>: Play/Stop</a></td>
-     <td align="center">6<br><a href="#additional-custom-sounds">Play "key6.mp3"</a></td>
+     <td align="center">5<br><a href="#the-music-player">Music Player</a>: Play/Stop<br>[3005]</a></td>
+     <td align="center">6<br><a href="#additional-custom-sounds">Play "key6.mp3"<br>[3006]</a></td>
     </tr>
     <tr>
      <td align="center">7<br>-</td>
-     <td align="center">8<br><a href="#the-music-player">Music Player</a>: Next song</td>
+     <td align="center">8<br><a href="#the-music-player">Music Player</a>: Next song<br>[3008]</td>
      <td align="center">9<br>-</td>
     </tr>
     <tr>
@@ -168,55 +168,55 @@ In order to only disable the supplied IR remote control, check the option **_Dis
 
 <table>
     <tr>
-     <td align="center" colspan="2">IR remote reference: Special sequences<br>(&#9166; = OK key)</td>
+     <td align="center" colspan="2">IR remote reference: Special sequences<br>(&#9166; = OK key)<br>[Code on TCD keypad]</td>
     </tr>
     <tr>
      <td align="left">Select original chase sequence</td>
-     <td align="left">*0&#9166;</td>
+     <td align="left">*10&#9166; [3010]</td>
     </tr>
     <tr>
      <td align="left">Select chase sequences 1-9</td>
-     <td align="left">*1&#9166; - *9&#9166;</td>
+     <td align="left">*11&#9166; - *19&#9166; [3011-3019]</td>
     </tr>
     <tr>
      <td align="left">Disable <a href="#the-flux-sound">flux sound</a></td>
-     <td align="left">*00&#9166;</td>
+     <td align="left">*20&#9166; [3020]</td>
     </tr>
     <tr>
      <td align="left">Enable <a href="#the-flux-sound">flux sound</a></td>
-     <td align="left">*01&#9166;</td>
+     <td align="left">*21&#9166; [3021]</td>
     </tr>
     <tr>
      <td align="left">Enable <a href="#the-flux-sound">flux sound</a>  (30 seconds)</td>
-     <td align="left">*02&#9166;</td>
+     <td align="left">*22&#9166; [3022]</td>
     </tr>
     <tr>
      <td align="left">Enable <a href="#the-flux-sound">flux sound</a>  (60 seconds)</td>
-     <td align="left">*03&#9166;</td>
+     <td align="left">*23&#9166; [3023]</td>
     </tr>
     <tr>
      <td align="left">Set minimum box light level</td>
-     <td align="left">*10&#9166; - *14&#9166;</td>
+     <td align="left">*30&#9166; - *34&#9166; [3030-3034]</td>
     </tr>
      <tr>
      <td align="left">Reset chase speed to default</td>
-     <td align="left">*20&#9166;</td>
+     <td align="left">*40&#9166; [3040]</td>
     </tr>
     <tr>
      <td align="left"><a href="#the-music-player">Music Player</a>: Select music folder</td>
-     <td align="left">*50&#9166; - *59&#9166;</td>
+     <td align="left">*50&#9166; - *59&#9166; [3050-3059]</td>
     </tr>
     <tr>
      <td align="left"><a href="#the-music-player">Music Player</a>: Shuffle off</td>
-     <td align="left">*222&#9166;</td>
+     <td align="left">*222&#9166; [3222]</td>
     </tr>
     <tr>
      <td align="left"><a href="#the-music-player">Music Player</a>: Shuffle on</td>
-     <td align="left">*555&#9166;</td>
+     <td align="left">*555&#9166; [3555]</td>
     </tr> 
     <tr>
      <td align="left"><a href="#the-music-player">Music Player</a>: Go to song 0</td>
-     <td align="left">*888&#9166;</td>
+     <td align="left">*888&#9166; [3888]</td>
     </tr>
     <tr>
      <td align="left"><a href="#the-music-player">Music Player</a>: Go to song xxx</td>
@@ -224,19 +224,19 @@ In order to only disable the supplied IR remote control, check the option **_Dis
     </tr>
     <tr>
      <td align="left"><a href="#locking-ir-control">Disable/Enable</a> IR remote commands</td>
-     <td align="left">*70&#9166;</td>
+     <td align="left">*70&#9166; [3070]</td>
     </tr>
     <tr>
      <td align="left">Toggle usage of volume knob</td>
-     <td align="left">*80&#9166;</td>
+     <td align="left">*80&#9166; [3080]</td>
     </tr>
     <tr>
      <td align="left">Toggle usage of speed knob</td>
-     <td align="left">*81&#9166;</td>
+     <td align="left">*81&#9166; [3081]</td>
     </tr>
     <tr>
      <td align="left">Say current IP address</td>
-     <td align="left">*90&#9166;</td>
+     <td align="left">*90&#9166; [3090]</td>
     </tr>
     <tr>
      <td align="left">Reboot the device</td>
@@ -251,6 +251,8 @@ In order to only disable the supplied IR remote control, check the option **_Dis
      <td align="left">*654321&#9166;</td>
     </tr>
 </table>
+
+Numbers in brackets are the code to be entered on the TCD keypad if a TCD is connected via [BTTF-Network](#bttf-network-bttfn).
 
 [Here](https://github.com/realA10001986/Flux-Capacitor/blob/main/CheatSheet.pdf) is a cheat sheet for printing or screen-use. (Note that MacOS' preview application has a bug that scrambles the links in the document. Acrobat Reader does it correctly.)
 
@@ -361,7 +363,7 @@ Note that a wired connection only allows for synchronized time travel sequences,
 
 ### BTTF-Network ("BTTFN")
 
-The TCD can communicate with the FC wirelessly, via WiFi. It can send out information about a time travel and an alarm, and the FC queries the TCD for speed and some other data. Unlike with MQTT, no broker or other third party software is needed.
+The TCD can communicate with the FC wirelessly, via WiFi. It can send out information about a time travel and an alarm, and the FC queries the TCD for speed and some other data. Furthermore, the TCD's keypad can be used to remote control the FC. Unlike with MQTT, no broker or other third party software is needed.
 
 ![BTTFN connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/93a9c471-d288-4a8f-87df-506ab8d5e619)
 
@@ -370,6 +372,7 @@ In order to connect your FC to the TCD using BTTFN, just enter the TCD's IP addr
 Afterwards, the FC and the TCD can communicate wirelessly and 
 - play time travel sequences in sync,
 - both play an alarm-sequence when the TCD's alarm occurs,
+- the FC can be remote controlled through the TCD's keypad (command codes 3xxx),
 - the FC queries the TCD for GPS speed if desired to adapt chase speed to GPS speed,
 - the FC queries the TCD for fake power and night mode, in order to react accordingly if so configured.
 
