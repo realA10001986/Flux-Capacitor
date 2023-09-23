@@ -125,8 +125,6 @@ In order to only disable the supplied IR remote control, check the option **_Dis
 
 ### IR remote reference
 
-Numbers in brackets are the code to be entered on the TCD keypad if a TCD is connected via [BTTF-Network](#bttf-network-bttfn).
-
 <table>
     <tr>
      <td align="center" colspan="3">IR remote reference: Single key actions<br>[Code on TCD keypad]</td>
@@ -168,11 +166,13 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     </tr>
 </table>
 
+Numbers in brackets are the code to be entered on the TCD keypad if a TCD is connected via [BTTF-Network](#bttf-network-bttfn).
+
 <table>
     <tr>
-     <td align="center" colspan="3">IR remote reference: Special sequences<br>(&#9166; = OK key)</td>
+     <td align="center" colspan="3">IR/TCD remote reference: Special sequences<br>(&#9166; = OK key)</td>
     </tr>
-   <tr><td>Function</td><td>IR sequence</td><td>Code on TCD keypad</td></tr>tr>
+   <tr><td>Function</td><td>IR sequence</td><td>Code on TCD keypad</td></tr>
     <tr>
      <td align="left">Select original chase sequence</td>
      <td align="left">*10&#9166;</td><td>3010</td>
