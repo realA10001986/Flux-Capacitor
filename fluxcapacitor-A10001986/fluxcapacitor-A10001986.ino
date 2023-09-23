@@ -86,6 +86,10 @@
 
 /*  Changelog
  *
+ *  2023/09/23 (A10001986)
+ *    - Add remote control facility through TCD keypad (requires BTTFN connection 
+ *      with TCD). Commands for FC are 3000-3999.
+ *    - Change some IR command sequences
  *  2023/09/19 (A10001986)
  *    - Fix audio file installer
  *  2023/09/16 (A10001986)

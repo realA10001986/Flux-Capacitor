@@ -252,6 +252,10 @@ uint16_t lastIRspeed = FC_SPD_IDLE;
 #define BTTFN_NOT_REENTRY  3
 #define BTTFN_NOT_ABORT_TT 4
 #define BTTFN_NOT_ALARM    5
+#define BTTFN_NOT_REFILL   6
+#define BTTFN_NOT_FLUX_CMD 7
+#define BTTFN_NOT_SID_CMD  8
+#define BTTFN_NOT_PCG_CMD  9
 #define BTTFN_TYPE_ANY     0    // Any, unknown or no device
 #define BTTFN_TYPE_FLUX    1    // Flux Capacitor
 #define BTTFN_TYPE_SID     2    // SID
@@ -271,13 +275,18 @@ static uint32_t      BTTFUDPID = 0;
 static unsigned long lastBTTFNpacket = 0;
 static bool          BTTFNBootTO = false;
 
+static int      iCmdIdx = 0;
+static int      oCmdIdx = 0;
+static uint16_t commandQueue[16] = { 0 };
 
 // Forward declarations ------
 
 static void startIRLearn();
 static void endIRLearn(bool restore);
 static void handleIRinput();
-static void executeIRCmd(int command);
+static void handleIRKey(int command);
+static void handleRemoteCommand();
+static bool execute(bool isIR);
 static void startIRfeedback();
 static void endIRfeedback();
 
@@ -597,6 +606,7 @@ void main_loop()
         if(ir_remote.loop()) {
             handleIRinput();
         }
+        handleRemoteCommand();
     }
 
     if(FPBUnitIsOn) {
@@ -1250,7 +1260,7 @@ static void handleIRinput()
                 #ifdef FC_DBG
                 Serial.printf("handleIRinput: key %d\n", i);
                 #endif
-                executeIRCmd(i);
+                handleIRKey(i);
                 done = true;
                 break;
             }
@@ -1279,9 +1289,64 @@ static uint8_t read2digs(uint8_t idx)
     return ((inputBuffer[idx] - '0') * 10) + (inputBuffer[idx+1] - '0');
 }
 
-static void executeIRCmd(int key)
+static void doKey1()
 {
-    uint16_t temp;
+}
+static void doKey2()
+{
+    if((!TTrunning || !playTTsounds) && haveMusic) {
+        mp_prev(mpActive);
+    }
+}
+static void doKey3()
+{
+    if(!TTrunning) {
+        play_file("/key3.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
+        if(contFlux()) {
+            append_flux();
+        }
+    }
+}
+static void doKey4()
+{
+}
+static void doKey5()
+{
+    if(haveMusic) {
+        if(mpActive) {
+            mp_stop();
+            if(contFlux()) {
+                play_flux();
+            }
+        } else {
+            if(!TTrunning || !playTTsounds) mp_play();
+        }
+    }
+}
+static void doKey6()
+{
+    if(!TTrunning) {
+        play_file("/key6.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
+        if(contFlux()) {
+            append_flux();
+        }
+    }
+}
+static void doKey7()
+{
+}
+static void doKey8()
+{
+    if((!TTrunning || !playTTsounds) && haveMusic) {
+        mp_next(mpActive);
+    }
+}
+static void doKey9()
+{
+}
+
+static void handleIRKey(int key)
+{
     int16_t tempi;
     bool doBadInp = false;
     unsigned long now = millis();
@@ -1315,58 +1380,39 @@ static void executeIRCmd(int key)
         break;
     case 1:                           // 1:
         if(irLocked) return;
+        doKey1();
         break;
     case 2:                           // 2: MusicPlayer: prev
         if(irLocked) return;
-        if((!TTrunning || !playTTsounds) && haveMusic) {
-            mp_prev(mpActive);
-        }
+        doKey2();
         break;
     case 3:                           // 3: Play key3.mp3
         if(irLocked) return;
-        if(!TTrunning) {
-            play_file("/key3.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
-            if(contFlux()) {
-                append_flux();
-            }
-        }
+        doKey3();
         break;
     case 4:                           // 4:
         if(irLocked) return;
+        doKey4();
         break;
     case 5:                           // 5: MusicPlayer: start/stop
         if(irLocked) return;
-        if(haveMusic) {
-            if(mpActive) {
-                mp_stop();
-                if(contFlux()) {
-                    play_flux();
-                }
-            } else {
-                if(!TTrunning || !playTTsounds) mp_play();
-            }
-        }
+        doKey5();
         break;
     case 6:                           // 6: Play key6.mp3
         if(irLocked) return;
-        if(!TTrunning) {
-            play_file("/key6.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
-            if(contFlux()) {
-                append_flux();
-            }
-        }
+        doKey6();
         break;
     case 7:                           // 7:
         if(irLocked) return;
+        doKey7();
         break;
     case 8:                           // 8: MusicPlayer: next
         if(irLocked) return;
-        if((!TTrunning || !playTTsounds) && haveMusic) {
-            mp_next(mpActive);
-        } 
+        doKey8();
         break;
     case 9:                           // 9:
         if(irLocked) return;
+        doKey9();
         break;
     case 10:                          // * - start code input
         clearInpBuf();
@@ -1428,226 +1474,7 @@ static void executeIRCmd(int key)
         }
         break;
     case 16:                          // ENTER: Execute code command
-        switch(strlen(inputBuffer)) {
-        case 1:
-            if(!irLocked) {
-                fluxPat = atoi(inputBuffer);
-                fcLEDs.setSequence(fluxPat);
-                ipachanged = true;
-                ipachgnow = millis();
-            }
-            break;
-        case 2:
-            temp = atoi(inputBuffer);
-            if(!TTrunning) {
-                switch(temp) {
-                case 0:                               // *00 Disable looped FLUX sound playback
-                case 1:                               // *01 Enable looped FLUX sound playback
-                case 2:                               // *02 Enable looped FLUX sound playback for 30 seconds
-                case 3:                               // *03 Enable looped FLUX sound playback for 60 seconds
-                    if(!irLocked) {
-                        setFluxMode(temp);
-                    }
-                    break;
-                case 10:                              // *10 - *14: Set minimum box light level
-                case 11:
-                case 12:
-                case 13:
-                case 14:
-                    if(!irLocked) {
-                        minBLL = temp - 10;
-                        boxLED.setDC(mbllArray[minBLL]);
-                        bllchanged = true;
-                        bllchgnow = millis();
-                    }
-                    break;
-                case 20:                              // *20 set default speed
-                    if(!irLocked) {
-                        if(!useSKnob) {
-                            if(!usingGPSS) {
-                                fcLEDs.setSpeed(FC_SPD_IDLE);
-                            }
-                            lastIRspeed = FC_SPD_IDLE;
-                            spdchanged = true;
-                            spdchgnow = millis();
-                        }
-                    }
-                    break;
-                case 70:                              // *70 lock/unlock ir
-                    irLocked = !irLocked;
-                    irlchanged = true;
-                    irlchgnow = millis();
-                    if(!irLocked) {
-                        startIRfeedback();
-                        irFeedBack = true;
-                        irFeedBackNow = now;
-                    }
-                    break;
-                case 71:
-                    // Taken by SID IR lock sequence
-                    break;
-                case 80:                              // *80 Toggle knob use for volume
-                    if(!irLocked) {
-                        useVKnob = !useVKnob;
-                    }
-                    break;
-                case 81:                              // *81 Toggle knob use for LED speed
-                    if(!irLocked) {
-                        useSKnob = !useSKnob;
-                        if(!useSKnob && !usingGPSS) {
-                            fcLEDs.setSpeed(lastIRspeed);
-                        }
-                    }
-                    break;
-                case 89:
-                    if(!irLocked) {
-                        play_file("/fluxing.mp3", PA_INTRMUS, 1.0);
-                        if(contFlux()) {
-                            append_flux();
-                        }
-                    }
-                    break;
-                case 90:                              // *90 say IP address
-                    if(!irLocked) {
-                        uint8_t a, b, c, d;
-                        bool wasActive = false;
-                        char ipbuf[16];
-                        char numfname[8] = "/x.mp3";
-                        if(haveMusic && mpActive) {
-                            mp_stop();
-                            wasActive = true;
-                        } else if(playingFlux) {
-                            wasActive = true;
-                        }
-                        stopAudio();
-                        wifi_getIP(a, b, c, d);
-                        sprintf(ipbuf, "%d.%d.%d.%d", a, b, c, d);
-                        numfname[1] = ipbuf[0];
-                        play_file(numfname, PA_INTRMUS|PA_ALLOWSD);
-                        for(int i = 1; i < strlen(ipbuf); i++) {
-                            if(ipbuf[i] == '.') {
-                                append_file("/dot.mp3", PA_INTRMUS|PA_ALLOWSD);
-                            } else {
-                                numfname[1] = ipbuf[i];
-                                append_file(numfname, PA_INTRMUS|PA_ALLOWSD);
-                            }
-                            while(append_pending()) {
-                                mydelay(10, false);
-                            }
-                        }
-                        waitAudioDone(false);
-                        if(wasActive && contFlux()) play_flux();
-                        ir_remote.loop(); // Flush IR afterwards
-                    }
-                    break;
-                default:                              // *50 - *59 Set music folder number
-                    if(!irLocked) {
-                        if(inputBuffer[0] == '5' && haveSD) {
-                            if(inputBuffer[1] - '0' != musFolderNum) {
-                                bool wasActive = false;
-                                bool waitShown = false;
-                                musFolderNum = (int)inputBuffer[1] - '0';
-                                // Initializing the MP can take a while;
-                                // need to stop all audio before calling
-                                // mp_init()
-                                if(haveMusic && mpActive) {
-                                    mp_stop();
-                                    wasActive = true;
-                                } else if(playingFlux) {
-                                    wasActive = true;
-                                }
-                                stopAudio();
-                                if(mp_checkForFolder(musFolderNum) == -1) {
-                                    showWaitSequence();
-                                    waitShown = true;
-                                    play_file("/renaming.mp3", PA_INTRMUS|PA_ALLOWSD);
-                                    waitAudioDone(false);
-                                }
-                                saveMusFoldNum();
-                                mp_init(false);
-                                if(waitShown) {
-                                    fcLEDs.SpecialSignal(0);
-                                }
-                                if(wasActive && contFlux()) play_flux();
-                                ir_remote.loop(); // Flush IR afterwards
-                            }
-                        } else {
-                            doBadInp = true;
-                        }
-                    }
-                }
-            }
-            break;
-        case 3:
-            if(!irLocked) {
-                temp = atoi(inputBuffer);
-                if(!TTrunning) {
-                    switch(temp) {                        // Duplicates; for matching TCD
-                    case 0:                               // *000 Disable looped FLUX sound playback
-                    case 1:                               // *001 Enable looped FLUX sound playback
-                    case 2:                               // *002 Enable looped FLUX sound playback for 30 seconds
-                    case 3:                               // *003 Enable looped FLUX sound playback for 60 seconds
-                        setFluxMode(temp);
-                        break;
-                    case 222:                             // *222/*555 Disable/enable shuffle
-                    case 555:
-                        if(haveMusic) {
-                            mp_makeShuffle((temp == 555));
-                        }
-                        break;
-                    case 888:                             // *888 go to song #0
-                        if(haveMusic) {
-                            mp_gotonum(0, mpActive);
-                        }
-                        break;
-                    default:
-                        doBadInp = true;
-                    }
-                }
-            }
-            break;
-        case 5:
-            if(!irLocked) {
-                if(!strcmp(inputBuffer, "64738")) {
-                    fcLEDs.off();
-                    boxLED.setDC(0);
-                    centerLED.setDC(0);
-                    endIRfeedback();
-                    mp_stop();
-                    stopAudio();
-                    delay(50);
-                    esp_restart();
-                }
-                doBadInp = true;
-            }
-            break;
-        case 6:
-            if(!irLocked) {
-                if(!TTrunning) {                          // *888xxx go to song #xxx
-                    if(haveMusic && !strncmp(inputBuffer, "888", 3)) {
-                        uint16_t num = ((inputBuffer[3] - '0') * 100) + read2digs(4);
-                        num = mp_gotonum(num, mpActive);
-                    } else if(!strcmp(inputBuffer, "123456")) {
-                        deleteIpSettings();               // *123456OK deletes IP settings
-                        settings.appw[0] = 0;             // and clears AP mode WiFi password
-                        write_settings();
-                    } else if(!strcmp(inputBuffer, "654321")) {
-                        deleteIRKeys();                   // *654321OK deletes learned IR remote
-                        for(int i = 0; i < NUM_IR_KEYS; i++) {
-                            remote_codes[i][1] = 0;
-                        }
-                    } else {
-                        doBadInp = true;
-                    }
-                }
-            }
-            break;
-        default:
-            if(!irLocked) {
-                doBadInp = true;
-            }
-        }
-        clearInpBuf();
+        doBadInp = execute(true);
         break;
     default:
         if(!irLocked) {
@@ -1658,6 +1485,320 @@ static void executeIRCmd(int key)
     if(!TTrunning && doBadInp) {
         fcLEDs.SpecialSignal(FCSEQ_BADINP);
     }
+}
+
+static void handleRemoteCommand()
+{
+    uint16_t command = commandQueue[oCmdIdx];
+
+    if(!command)
+        return;
+
+    oCmdIdx++;
+    oCmdIdx &= 0x0f;
+
+    if(command > 999)
+        return;
+
+    if(ssActive) {
+        ssEnd();
+    }
+    ssRestartTimer();
+    lastKeyPressed = millis();
+
+    // Some translation
+    if(command < 10) {
+      
+        // <10 are translated to direct-key-actions.
+        switch(command) {
+        case 1:
+            doKey1();
+            break;
+        case 2:
+            doKey2();
+            break;
+        case 3:
+            doKey3();
+            break;
+        case 4:
+            doKey4();
+            break;
+        case 5:
+            doKey5();
+            break;
+        case 6:
+            doKey6();
+            break;
+        case 7:
+            doKey7();
+            break;
+        case 8:
+            doKey8();
+            break;
+        case 9:
+            doKey9();
+            break;
+        }
+
+        return;
+        
+    } else if(command < 100) {
+      
+        sprintf(inputBuffer, "%02d", command);
+        
+    } else {
+      
+        sprintf(inputBuffer, "%03d", command);
+        
+    }
+
+    execute(false);
+}
+
+static bool execute(bool isIR)
+{
+    bool doBadInp = false;
+    bool isIRLocked = isIR ? irLocked : false;
+    uint16_t temp;
+    unsigned long now = millis();
+
+    switch(strlen(inputBuffer)) {
+    case 1:
+        if(!isIRLocked) {
+            fluxPat = inputBuffer[0] - '0';       // *0-*9 Set idle pattern (deprecated)
+            fcLEDs.setSequence(fluxPat);
+            ipachanged = true;
+            ipachgnow = now;
+        }
+        break;
+    case 2:
+        temp = atoi(inputBuffer);
+        if(temp >= 10 && temp <= 19) {            // *10-*19 Set idle pattern
+            if(!isIRLocked) {
+                fluxPat = atoi(inputBuffer) - 10;
+                fcLEDs.setSequence(fluxPat);
+                ipachanged = true;
+                ipachgnow = now;
+            }
+        } else {
+            switch(temp) {
+            case 0:                               // *00 Disable looped FLUX sound playback
+            case 1:                               // *01 Enable looped FLUX sound playback
+            case 2:                               // *02 Enable looped FLUX sound playback for 30 seconds
+            case 3:                               // *03 Enable looped FLUX sound playback for 60 seconds
+                if(!TTrunning && !isIRLocked) {
+                    setFluxMode(temp);
+                }
+                break;
+            case 20:                              // *20-*23 like *00-*03 (for TCD-remote control)
+            case 21:
+            case 22:
+            case 23:
+                if(!TTrunning && !isIRLocked) {
+                    setFluxMode(temp - 20);
+                }
+                break;
+            case 30:                              // *30 - *34: Set minimum box light level
+            case 31:
+            case 32:
+            case 33:
+            case 34:
+                if(!TTrunning && !isIRLocked) {
+                    minBLL = temp - 10;
+                    boxLED.setDC(mbllArray[minBLL]);
+                    bllchanged = true;
+                    bllchgnow = now;
+                }
+                break;
+            case 40:                              // *40 set default speed
+                if(!TTrunning && !isIRLocked) {
+                    if(!useSKnob) {
+                        if(!usingGPSS) {
+                            fcLEDs.setSpeed(FC_SPD_IDLE);
+                        }
+                        lastIRspeed = FC_SPD_IDLE;
+                        spdchanged = true;
+                        spdchgnow = now;
+                    }
+                }
+                break;
+            case 70:                              // *70 lock/unlock ir
+                irLocked = !irLocked;
+                irlchanged = true;
+                irlchgnow = now;
+                if(!TTrunning && !irLocked) {
+                    startIRfeedback();
+                    irFeedBack = true;
+                    irFeedBackNow = now;
+                }
+                break;
+            case 71:
+                // Taken by SID IR lock sequence
+                break;
+            case 80:                              // *80 Toggle knob use for volume
+                if(!TTrunning && !isIRLocked) {
+                    useVKnob = !useVKnob;
+                }
+                break;
+            case 81:                              // *81 Toggle knob use for LED speed
+                if(!TTrunning && !isIRLocked) {
+                    useSKnob = !useSKnob;
+                    if(!useSKnob && !usingGPSS) {
+                        fcLEDs.setSpeed(lastIRspeed);
+                    }
+                }
+                break;
+            case 89:
+                if(!TTrunning && !isIRLocked) {
+                    play_file("/fluxing.mp3", PA_INTRMUS, 1.0);
+                    if(contFlux()) {
+                        append_flux();
+                    }
+                }
+                break;
+            case 90:                              // *90 say IP address
+                if(!TTrunning && !isIRLocked) {
+                    uint8_t a, b, c, d;
+                    bool wasActive = false;
+                    char ipbuf[16];
+                    char numfname[8] = "/x.mp3";
+                    if(haveMusic && mpActive) {
+                        mp_stop();
+                        wasActive = true;
+                    } else if(playingFlux) {
+                        wasActive = true;
+                    }
+                    stopAudio();
+                    wifi_getIP(a, b, c, d);
+                    sprintf(ipbuf, "%d.%d.%d.%d", a, b, c, d);
+                    numfname[1] = ipbuf[0];
+                    play_file(numfname, PA_INTRMUS|PA_ALLOWSD);
+                    for(int i = 1; i < strlen(ipbuf); i++) {
+                        if(ipbuf[i] == '.') {
+                            append_file("/dot.mp3", PA_INTRMUS|PA_ALLOWSD);
+                        } else {
+                            numfname[1] = ipbuf[i];
+                            append_file(numfname, PA_INTRMUS|PA_ALLOWSD);
+                        }
+                        while(append_pending()) {
+                            mydelay(10, false);
+                        }
+                    }
+                    waitAudioDone(false);
+                    if(wasActive && contFlux()) play_flux();
+                    ir_remote.loop(); // Flush IR afterwards
+                }
+                break;
+            default:                              // *50 - *59 Set music folder number
+                if(!TTrunning && !isIRLocked) {
+                    if(inputBuffer[0] == '5' && haveSD) {
+                        if(inputBuffer[1] - '0' != musFolderNum) {
+                            bool wasActive = false;
+                            bool waitShown = false;
+                            musFolderNum = (int)inputBuffer[1] - '0';
+                            // Initializing the MP can take a while;
+                            // need to stop all audio before calling
+                            // mp_init()
+                            if(haveMusic && mpActive) {
+                                mp_stop();
+                                wasActive = true;
+                            } else if(playingFlux) {
+                                wasActive = true;
+                            }
+                            stopAudio();
+                            if(mp_checkForFolder(musFolderNum) == -1) {
+                                showWaitSequence();
+                                waitShown = true;
+                                play_file("/renaming.mp3", PA_INTRMUS|PA_ALLOWSD);
+                                waitAudioDone(false);
+                            }
+                            saveMusFoldNum();
+                            mp_init(false);
+                            if(waitShown) {
+                                fcLEDs.SpecialSignal(0);
+                            }
+                            if(wasActive && contFlux()) play_flux();
+                            ir_remote.loop(); // Flush IR afterwards
+                        }
+                    } else {
+                        doBadInp = true;
+                    }
+                }
+            }
+        }
+        break;
+    case 3:
+        if(!isIRLocked) {
+            temp = atoi(inputBuffer);
+            if(!TTrunning) {
+                switch(temp) {                        // Duplicates; for matching TCD
+                case 0:                               // *000 Disable looped FLUX sound playback
+                case 1:                               // *001 Enable looped FLUX sound playback
+                case 2:                               // *002 Enable looped FLUX sound playback for 30 seconds
+                case 3:                               // *003 Enable looped FLUX sound playback for 60 seconds
+                    setFluxMode(temp);
+                    break;
+                case 222:                             // *222/*555 Disable/enable shuffle
+                case 555:
+                    if(haveMusic) {
+                        mp_makeShuffle((temp == 555));
+                    }
+                    break;
+                case 888:                             // *888 go to song #0
+                    if(haveMusic) {
+                        mp_gotonum(0, mpActive);
+                    }
+                    break;
+                default:
+                    doBadInp = true;
+                }
+            }
+        }
+        break;
+    case 5:
+        if(!isIRLocked) {
+            if(!strcmp(inputBuffer, "64738")) {
+                fcLEDs.off();
+                boxLED.setDC(0);
+                centerLED.setDC(0);
+                endIRfeedback();
+                mp_stop();
+                stopAudio();
+                delay(50);
+                esp_restart();
+            }
+            doBadInp = true;
+        }
+        break;
+    case 6:
+        if(!isIRLocked) {
+            if(!TTrunning) {                          // *888xxx go to song #xxx
+                if(haveMusic && !strncmp(inputBuffer, "888", 3)) {
+                    uint16_t num = ((inputBuffer[3] - '0') * 100) + read2digs(4);
+                    num = mp_gotonum(num, mpActive);
+                } else if(!strcmp(inputBuffer, "123456")) {
+                    deleteIpSettings();               // *123456OK deletes IP settings
+                    settings.appw[0] = 0;             // and clears AP mode WiFi password
+                    write_settings();
+                } else if(!strcmp(inputBuffer, "654321")) {
+                    deleteIRKeys();                   // *654321OK deletes learned IR remote
+                    for(int i = 0; i < NUM_IR_KEYS; i++) {
+                        remote_codes[i][1] = 0;
+                    }
+                } else {
+                    doBadInp = true;
+                }
+            }
+        }
+        break;
+    default:
+        if(!isIRLocked) {
+            doBadInp = true;
+        }
+    }
+    clearInpBuf();
+
+    return doBadInp;
 }
 
 /*
@@ -1948,6 +2089,15 @@ void mydelay(unsigned long mydel, bool withIR)
  * BTTF network communication
  */
 
+static void addCmdQueue(uint16_t command)
+{
+    if(!command) return;
+
+    commandQueue[iCmdIdx] = command;
+    iCmdIdx++;
+    iCmdIdx &= 0x0f;
+}
+
 static void bttfn_setup()
 {
     useBTTFN = false;
@@ -2058,6 +2208,9 @@ static void BTTFNCheckPacket()
         case BTTFN_NOT_ALARM:
             networkAlarm = true;
             // Eval this at our convenience
+            break;
+        case BTTFN_NOT_FLUX_CMD:
+            addCmdQueue(BTTFUDPBuf[6] | (BTTFUDPBuf[7] << 8));
             break;
         }
       
