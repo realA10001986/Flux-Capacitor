@@ -71,14 +71,14 @@ void main_loop();
 
 void showWaitSequence();
 void endWaitSequence();
+void showCopyError();
+void allOff();
 
 void populateIRarray(uint32_t *irkeys, int index);
 void copyIRarray(uint32_t *irkeys, int index);
 
 void setFluxMode(int mode);
 void startFluxTimer();
-
-void showCopyError();
 
 void mydelay(unsigned long mydel, bool withIR);
 

@@ -318,16 +318,12 @@ static bool read_settings(File configFile)
     if(!error) {
 
         wd |= CopyCheckValidNumParm(json["playFLUXsnd"], settings.playFLUXsnd, sizeof(settings.playFLUXsnd), 0, 3, DEF_PLAY_FLUX_SND);
-        wd |= CopyCheckValidNumParm(json["playTTsnds"], settings.playTTsnds, sizeof(settings.playTTsnds), 0, 1, DEF_PLAY_TT_SND);
-        wd |= CopyCheckValidNumParm(json["skipTTBLAnim"], settings.skipTTBLAnim, sizeof(settings.skipTTBLAnim), 0, 1, DEF_STTBL_ANIM);
         wd |= CopyCheckValidNumParm(json["ssTimer"], settings.ssTimer, sizeof(settings.ssTimer), 0, 999, DEF_SS_TIMER);
 
         wd |= CopyCheckValidNumParm(json["usePLforBL"], settings.usePLforBL, sizeof(settings.usePLforBL), 0, 1, DEF_BLEDSWAP);
         wd |= CopyCheckValidNumParm(json["useVknob"], settings.useVknob, sizeof(settings.useVknob), 0, 1, DEF_VKNOB);
         wd |= CopyCheckValidNumParm(json["useSknob"], settings.useSknob, sizeof(settings.useSknob), 0, 1, DEF_SKNOB);
         wd |= CopyCheckValidNumParm(json["disDIR"], settings.disDIR, sizeof(settings.disDIR), 0, 1, DEF_DISDIR);
-
-        wd |= CopyCheckValidNumParm(json["TCDpresent"], settings.TCDpresent, sizeof(settings.TCDpresent), 0, 1, DEF_TCD_PRES);
 
         if(json["hostName"]) {
             memset(settings.hostName, 0, sizeof(settings.hostName));
@@ -346,16 +342,22 @@ static bool read_settings(File configFile)
         wd |= CopyCheckValidNumParm(json["wifiConRetries"], settings.wifiConRetries, sizeof(settings.wifiConRetries), 1, 10, DEF_WIFI_RETRY);
         wd |= CopyCheckValidNumParm(json["wifiConTimeout"], settings.wifiConTimeout, sizeof(settings.wifiConTimeout), 7, 25, DEF_WIFI_TIMEOUT);
 
+        wd |= CopyCheckValidNumParm(json["TCDpresent"], settings.TCDpresent, sizeof(settings.TCDpresent), 0, 1, DEF_TCD_PRES);
+        wd |= CopyCheckValidNumParm(json["noETTOLead"], settings.noETTOLead, sizeof(settings.noETTOLead), 0, 1, DEF_NO_ETTO_LEAD);
+
         if(json["tcdIP"]) {
             memset(settings.tcdIP, 0, sizeof(settings.tcdIP));
             strncpy(settings.tcdIP, json["tcdIP"], sizeof(settings.tcdIP) - 1);
         } else wd = true;
-
         //wd |= CopyCheckValidNumParm(json["wait4TCD"], settings.wait4TCD, sizeof(settings.wait4TCD), 0, 1, DEF_WAIT_FOR_TCD);
         wd |= CopyCheckValidNumParm(json["useGPSS"], settings.useGPSS, sizeof(settings.useGPSS), 0, 1, DEF_USE_GPSS);
         wd |= CopyCheckValidNumParm(json["useNM"], settings.useNM, sizeof(settings.useNM), 0, 1, DEF_USE_NM);
         wd |= CopyCheckValidNumParm(json["useFPO"], settings.useFPO, sizeof(settings.useFPO), 0, 1, DEF_USE_FPO);
         //wd |= CopyCheckValidNumParm(json["wait4FPOn"], settings.wait4FPOn, sizeof(settings.wait4FPOn), 0, 1, DEF_WAIT_FPO);
+
+        wd |= CopyCheckValidNumParm(json["playTTsnds"], settings.playTTsnds, sizeof(settings.playTTsnds), 0, 1, DEF_PLAY_TT_SND);
+        wd |= CopyCheckValidNumParm(json["skipTTBLAnim"], settings.skipTTBLAnim, sizeof(settings.skipTTBLAnim), 0, 1, DEF_STTBL_ANIM);
+        wd |= CopyCheckValidNumParm(json["playALsnd"], settings.playALsnd, sizeof(settings.playALsnd), 0, 1, DEF_PLAY_ALM_SND);
 
         #ifdef FC_HAVEMQTT
         wd |= CopyCheckValidNumParm(json["useMQTT"], settings.useMQTT, sizeof(settings.useMQTT), 0, 1, 0);
@@ -399,9 +401,6 @@ void write_settings()
     #endif
 
     json["playFLUXsnd"] = settings.playFLUXsnd;
-    json["playTTsnds"] = settings.playTTsnds;
-    json["skipTTBLAnim"] = settings.skipTTBLAnim;
-
     json["ssTimer"] = settings.ssTimer;
 
     json["usePLforBL"] = settings.usePLforBL;
@@ -409,20 +408,25 @@ void write_settings()
     json["useSknob"] = settings.useSknob;
     json["disDIR"] = settings.disDIR;
 
-    json["TCDpresent"] = settings.TCDpresent;
-    
     json["hostName"] = settings.hostName;
     json["systemID"] = settings.systemID;
     json["appw"] = settings.appw;
     json["wifiConRetries"] = settings.wifiConRetries;
     json["wifiConTimeout"] = settings.wifiConTimeout;
 
+    json["TCDpresent"] = settings.TCDpresent;
+    json["noETTOLead"] = settings.noETTOLead;
+    
     json["tcdIP"] = settings.tcdIP;
     //json["wait4TCD"] = settings.wait4TCD;
     json["useGPSS"] = settings.useGPSS;
     json["useNM"] = settings.useNM;
     json["useFPO"] = settings.useFPO;
     //json["wait4FPOn"] = settings.wait4FPOn;
+
+    json["playTTsnds"] = settings.playTTsnds;
+    json["skipTTBLAnim"] = settings.skipTTBLAnim;
+    json["playALsnd"] = settings.playALsnd;
 
     #ifdef FC_HAVEMQTT
     json["useMQTT"] = settings.useMQTT;

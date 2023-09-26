@@ -172,7 +172,8 @@ static const int16_t bP1Seq[] = {
 #define P2_DUR          3000    // re-entry phase (unused)
 #define TT_SNDLAT        400    // DO NOT CHANGE (latency for sound/mp3)
 
-bool  TCDconnected = false;
+bool         TCDconnected = false;
+static bool  noETTOLead = false;
 
 static bool          volchanged = false;
 static unsigned long volchgnow = 0;
@@ -378,6 +379,7 @@ void main_setup()
     // Determine if Time Circuits Display is connected
     // via wire, and is source of GPIO tt trigger
     TCDconnected = (atoi(settings.TCDpresent) > 0);
+    noETTOLead = (atoi(settings.noETTOLead) > 0);
 
     // Init IR feedback LED
     pinMode(IRFeedBackPin, OUTPUT);
@@ -610,7 +612,7 @@ void main_loop()
     }
 
     if(FPBUnitIsOn) {
-        if(useGPSS && !TTrunning  && !IRLearning) {
+        if(useGPSS && !TTrunning && !IRLearning) {
             if(gpsSpeed >= 0) {
                 usingGPSS = true;
     
@@ -641,7 +643,7 @@ void main_loop()
     }
 
     // TT button evaluation
-    if(FPBUnitIsOn) {
+    if(FPBUnitIsOn && !TTrunning) {
         ttkeyScan();
         if(isTTKeyHeld) {
             ssEnd();
@@ -666,7 +668,7 @@ void main_loop()
                 if(TCDconnected) {
                     ssEnd(false);  // let TT() take care of restarting sound
                 }
-                timeTravel(TCDconnected, ETTO_LEAD);
+                timeTravel(TCDconnected, noETTOLead ? 0 : ETTO_LEAD);
             }
         }
     
@@ -702,11 +704,6 @@ void main_loop()
                         fcLEDs.setSpeed(t);
                         TTfUpdNow = now;
                     }
-                    
-                    //if(playTTsounds && !TTP1snd && (now - TTstart < (P0_DUR - TT_SNDLAT))) {
-                    //    play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
-                    //    TTP1snd = true;
-                    //}
                              
                 } else {
 
@@ -718,7 +715,6 @@ void main_loop()
                     TTP1 = true;
                     bP1idx = 0;
                     TTstart = now;
-                    //TTP1snd = false;
                     if(playTTsounds && !networkAbort) {
                         play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
                     }
@@ -776,7 +772,6 @@ void main_loop()
                     TTP2 = true;
                     cDone = bDone = fDone = false;
                     TTfUpdNow = TTcUpdNow = TTbUpdNow = now;
-                    //TTP1snd = false;
                     if(playTTsounds) {
                         if(!networkAbort) {
                             play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
@@ -833,7 +828,7 @@ void main_loop()
                     // At very end:
                     TTP2 = false;
                     TTrunning = false;
-                    isTTKeyPressed = false;
+                    isTTKeyHeld = isTTKeyPressed = false;
                     ssRestartTimer();
 
                 }
@@ -857,11 +852,6 @@ void main_loop()
                         fcLEDs.setSpeed(t);
                         TTfUpdNow = now;
                     }
-                    
-                    //if(playTTsounds && !TTP1snd && (now - TTstart < (P0_DUR - TT_SNDLAT))) {
-                    //    play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
-                    //    TTP1snd = true;
-                    //}
                              
                 } else {
 
@@ -873,7 +863,6 @@ void main_loop()
                     TTP1 = true;
                     TTstart = now;
                     bP1idx = 0;
-                    //TTP1snd = false;
                     if(playTTsounds) {
                         play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
                     }
@@ -924,14 +913,6 @@ void main_loop()
                     if(fcLEDs.getSpeed() != 2) {
                         fcLEDs.setSpeed(2);
                     }
-
-                    //if(playTTsounds && !TTP1snd && (now - TTstart < (P1_DUR - TT_SNDLAT))) {
-                    //    play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
-                    //    if(playFLUX) {
-                    //        append_flux();
-                    //    }
-                    //    TTP1snd = true;
-                    //}
                     
                 } else {
 
@@ -940,7 +921,6 @@ void main_loop()
                     TTP2 = true;
                     cDone = bDone = fDone = false;
                     TTfUpdNow = TTcUpdNow = TTbUpdNow = now;
-                    //TTP1snd = false;
                     if(playTTsounds) {
                         play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
                         if(playFLUX) {
@@ -996,7 +976,7 @@ void main_loop()
                     // At very end:
                     TTP2 = false;
                     TTrunning = false;
-                    isTTKeyPressed = false;
+                    isTTKeyHeld = isTTKeyPressed = false;
                     ssRestartTimer();
 
                 }
@@ -1083,12 +1063,14 @@ void main_loop()
         }
     }
 
-    if(!TTrunning && !IRLearning && networkAlarm) {
+    if(networkAlarm && !TTrunning && !IRLearning) {
         networkAlarm = false;
-        play_file("/alarm.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
-        if(FPBUnitIsOn && !ssActive) {
-            if(playFLUX == 1) {
-                append_flux();
+        if(atoi(settings.playALsnd) > 0) {
+            play_file("/alarm.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
+            if(FPBUnitIsOn && !ssActive) {
+                if(playFLUX == 1) {
+                    append_flux();
+                }
             }
         }
         fcLEDs.SpecialSignal(FCSEQ_ALARM);
@@ -1893,6 +1875,18 @@ void endWaitSequence()
     fcLEDs.SpecialSignal(0);
 }
 
+void showCopyError()
+{
+    fcLEDs.SpecialSignal(FCSEQ_ERRCOPY);
+}
+
+void allOff()
+{
+    fcLEDs.off();
+    centerLED.setDC(0);
+    boxLED.setDC(0);
+}
+
 void populateIRarray(uint32_t *irkeys, int index)
 {
     for(int i = 0; i < NUM_IR_KEYS; i++) {
@@ -1960,7 +1954,7 @@ static void ssEnd(bool doSound)
 
     if(doSound) {
         if(!mpActive) {
-            if(playFLUX > 0) {
+            if(playFLUX == 1) {
                 play_flux();
             }
         }
@@ -2040,11 +2034,6 @@ static bool contFlux()
     }
 
     return false;
-}
-
-void showCopyError()
-{
-    fcLEDs.SpecialSignal(FCSEQ_ERRCOPY);
 }
 
 static void waitAudioDone(bool withIR)

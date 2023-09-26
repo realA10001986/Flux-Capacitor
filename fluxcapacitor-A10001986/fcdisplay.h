@@ -5,7 +5,7 @@
  * https://github.com/realA10001986/Flux-Capacitor
  * http://fc.backtothefutu.re
  *
- * FCDisplay Class: Handles the FC LEDs
+ * FCDisplay: Handles the FC LEDs
  *
  * -------------------------------------------------------------------
  * License: MIT
@@ -33,6 +33,9 @@
 #ifndef _FCDISPLAY_H
 #define _FCDISPLAY_H
 
+/*
+ * PWM LED class for Center and Box LEDs
+ */
 
 class PWMLED {
 
@@ -63,7 +66,11 @@ class PWMLED {
 #define FCSEQ_LEARNNEXT  7
 #define FCSEQ_LEARNDONE  8
 #define FCSEQ_ERRCOPY    9
-#define FCSEQ_MAX 9
+#define FCSEQ_MAX        FCSEQ_ERRCOPY
+
+/*
+ * FC LEDs class
+ */
 
 class FCLEDs {
 

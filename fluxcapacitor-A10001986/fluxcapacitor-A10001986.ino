@@ -86,6 +86,15 @@
 
 /*  Changelog
  *
+ *  2023/09/26 (A10001986)
+ *    - Make TCD-alarm sound optional
+ *    - Clean up options
+ *    - Fix TT button scan during TT
+ *    - SS only starts flux sound if to be played permanently
+ *    - Mute sound and clear display when Config Portal settings are saved
+ *  2023/09/25 (A10001986)
+ *    - Add option to handle TT triggers from wired TCD without 5s lead. Respective
+ *      options on TCD and external props must be set identically.
  *  2023/09/23 (A10001986)
  *    - Add remote control facility through TCD keypad (requires BTTFN connection 
  *      with TCD). Commands for FC are 3000-3999.

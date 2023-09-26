@@ -5,7 +5,7 @@
  * https://github.com/realA10001986/Flux-Capacitor
  * http://fc.backtothefutu.re
  *
- * FCDisplay Classes: Handles the FC LEDs
+ * FCDisplay: Handles the FC LEDs
  *
  * -------------------------------------------------------------------
  * License: MIT
@@ -36,8 +36,9 @@
 
 #include "fcdisplay.h"
 
-
-// PWM LED class for Center and Box LEDs
+/*
+ * PWM LED class for Center and Box LEDs
+ */
 
 // Store basic config data
 PWMLED::PWMLED(uint8_t pwm_pin)
@@ -75,8 +76,9 @@ uint32_t PWMLED::getDC()
     return _curDutyCycle;
 }
 
-
-// FC LEDs class
+/*
+ * FC LEDs class
+ */
 
 #define TMR_TIME      0.01    // 0.01s = 10ms
 #define TMR_PRESCALE  80
@@ -228,7 +230,7 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
           0b100000, 100, 0b000000, 100, SS_END
         },
         {
-          SS_ONESHOT,                                   // 5: Alarm (MQTT)
+          SS_ONESHOT,                                   // 5: Alarm (BTTFN/MQTT)
           0b000111,  50, 
           0b111000,  50,
           0b000111,  50, 
@@ -283,7 +285,7 @@ static void IRAM_ATTR FCLEDTimer_ISR()
      
      if(_specialsig) {
       
-        // Sepcial sequence for signalling
+        // Special sequence for signalling
         if(_specialticks == 0) {
             if(_specialArray[_specialsignum][_specialidx] == SS_END) {
                  if(_specialOS) {

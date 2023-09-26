@@ -115,6 +115,11 @@ WiFiManagerParameter custom_TCDpresent("TCDpres", "TCD connected by wire (0=no, 
 #else // -------------------- Checkbox hack: --------------
 WiFiManagerParameter custom_TCDpresent("TCDpres", "TCD connected by wire", settings.TCDpresent, 1, "autocomplete='off' title='Check this if you have a Time Circuits Display connected via wire' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
+#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
+WiFiManagerParameter custom_noETTOL("uEtNL", "TCD signals Time Travel without 5s lead (0=no, 1=yes)", settings.noETTOLead, 1, "autocomplete='off'");
+#else // -------------------- Checkbox hack: --------------
+WiFiManagerParameter custom_noETTOL("uEtNL", "TCD signals Time Travel without 5s lead", settings.noETTOLead, 1, "autocomplete='off' type='checkbox' class='mt5' style='margin-left:20px'", WFM_LABEL_AFTER);
+#endif // -------------------------------------------------
 
 WiFiManagerParameter custom_bttfnHint("<div style='margin:0px 0px 10px 0px;padding:0px'>Wireless communication (BTTF-Network)</div>");
 WiFiManagerParameter custom_tcdIP("tcdIP", "IP address of TCD", settings.tcdIP, 15, "pattern='[0-9\\.]+' placeholder='Example: 192.168.4.1'");
@@ -153,6 +158,11 @@ WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds", setti
 WiFiManagerParameter custom_sTTBLA("sTTBL", "Skip Box Light animation (0=no, 1=yes)", settings.skipTTBLAnim, 1, "autocomplete='off' title='Enable to skip the box light animation and just plainly switch it on during time travel'");
 #else // -------------------- Checkbox hack: --------------
 WiFiManagerParameter custom_sTTBLA("sTTBL", "Skip Box Light animation", settings.skipTTBLAnim, 1, "autocomplete='off' title='Check to skip the box light animation and just plainly switch it on during time travel' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
+#endif // -------------------------------------------------
+#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
+WiFiManagerParameter custom_playALSnd("plyALS", "Play TCD-alarm sounds (0=no, 1=yes)", settings.playALsnd, 1, "autocomplete='off' title='Enable to have the device play a sound then the TCD alarm sounds.'");
+#else // -------------------- Checkbox hack: --------------
+WiFiManagerParameter custom_playALSnd("plyALS", "Play TCD-alarm sound", settings.playALsnd, 1, "autocomplete='off' title='Check to have the device play a sound then the TCD alarm sounds.' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 
 #ifdef FC_HAVEMQTT
@@ -333,8 +343,9 @@ void wifi_setup()
     wm.addParameter(&custom_wifiConRetries);
     wm.addParameter(&custom_wifiConTimeout);
 
-    wm.addParameter(&custom_sectstart);     // 2
+    wm.addParameter(&custom_sectstart);     // 3
     wm.addParameter(&custom_TCDpresent);
+    wm.addParameter(&custom_noETTOL);
 
     wm.addParameter(&custom_sectstart);     // 7 (8)
     wm.addParameter(&custom_bttfnHint);
@@ -345,9 +356,10 @@ void wifi_setup()
     wm.addParameter(&custom_uFPO);
     //wm.addParameter(&custom_wFPO);
     
-    wm.addParameter(&custom_sectstart);     // 3
+    wm.addParameter(&custom_sectstart);     // 4
     wm.addParameter(&custom_playTTSnd);
     wm.addParameter(&custom_sTTBLA);
+    wm.addParameter(&custom_playALSnd);
 
     #ifdef FC_HAVEMQTT
     wm.addParameter(&custom_sectstart);     // 4
@@ -595,21 +607,23 @@ void wifi_loop()
             
             #ifdef TC_NOCHECKBOXES // --------- Plain text boxes:
 
-            mystrcpy(settings.playTTsnds, &custom_playTTSnd);
-            mystrcpy(settings.skipTTBLAnim, &custom_sTTBLA);
-
             mystrcpy(settings.usePLforBL, &custom_swapBL);
             mystrcpy(settings.useVknob, &custom_useVknob);
             mystrcpy(settings.useSknob, &custom_useSknob);
             mystrcpy(settings.disDIR, &custom_disDIR);
 
             mystrcpy(settings.TCDpresent, &custom_TCDpresent);
+            mystrcpy(settings.noETTOLead, &custom_noETTOL);
 
             //mystrcpy(settings.wait4TCD, &custom_wait4TCD);
             mystrcpy(settings.useGPSS, &custom_uGPS);
             mystrcpy(settings.useNM, &custom_uNM);
             mystrcpy(settings.useFPO, &custom_uFPO);
             //mystrcpy(settings.wait4FPOn, &custom_wFPO);
+
+            mystrcpy(settings.playTTsnds, &custom_playTTSnd);
+            mystrcpy(settings.skipTTBLAnim, &custom_sTTBLA);
+            mystrcpy(settings.playALsnd, &custom_playALSnd);
 
             #ifdef FC_HAVEMQTT
             mystrcpy(settings.useMQTT, &custom_useMQTT);
@@ -623,21 +637,23 @@ void wifi_loop()
 
             #else // -------------------------- Checkboxes:
 
-            strcpyCB(settings.playTTsnds, &custom_playTTSnd);
-            strcpyCB(settings.skipTTBLAnim, &custom_sTTBLA);
-
             strcpyCB(settings.usePLforBL, &custom_swapBL);
             strcpyCB(settings.useVknob, &custom_useVknob);
             strcpyCB(settings.useSknob, &custom_useSknob);
             strcpyCB(settings.disDIR, &custom_disDIR);
 
             strcpyCB(settings.TCDpresent, &custom_TCDpresent);
+            strcpyCB(settings.noETTOLead, &custom_noETTOL);
 
             //strcpyCB(settings.wait4TCD, &custom_wait4TCD);
             strcpyCB(settings.useGPSS, &custom_uGPS);
             strcpyCB(settings.useNM, &custom_uNM);
             strcpyCB(settings.useFPO, &custom_uFPO);
             //strcpyCB(settings.wait4FPOn, &custom_wFPO);
+
+            strcpyCB(settings.playTTsnds, &custom_playTTSnd);
+            strcpyCB(settings.skipTTBLAnim, &custom_sTTBLA);
+            strcpyCB(settings.playALsnd, &custom_playALSnd);
 
             #ifdef FC_HAVEMQTT
             strcpyCB(settings.useMQTT, &custom_useMQTT);
@@ -667,6 +683,9 @@ void wifi_loop()
         shouldSaveConfig = 0;
 
         // Reset esp32 to load new settings
+
+        stopAudio();
+        allOff();
 
         #ifdef FC_DBG
         Serial.println(F("Config Portal: Restarting ESP...."));
@@ -1037,9 +1056,7 @@ void updateConfigPortalValues()
 
     #ifdef TC_NOCHECKBOXES  // Standard text boxes: -------
 
-    custom_playFLUXSnd.setValue(settings.playFLUXsnd, 1);
-    custom_playTTSnd.setValue(settings.playTTsnds, 1);
-    custom_sTTBLA.setValue(settings.skipTTBLAnim, 1);
+    custom_playFLUXSnd.setValue(settings.playFLUXsnd, 1);   
 
     custom_swapBL.setValue(settings.usePLforBL, 1);
     custom_useVknob.setValue(settings.useVknob, 1);
@@ -1047,12 +1064,17 @@ void updateConfigPortalValues()
     custom_disDIR.setValue(settings.disDIR, 1);
 
     custom_TCDpresent.setValue(settings.TCDpresent, 1);
+    custom_noETTOL.setValue(settings.noETTOLead, 1);
 
     //custom_wait4TCD.setValue(settings.wait4TCD, 1);
     custom_uGPS.setValue(settings.useGPSS, 1);
     custom_uNM.setValue(settings.useNM, 1);
     custom_uFPO.setValue(settings.useFPO, 1);
     //custom_wFPO.setValue(settings.wait4FPOn, 1);
+
+    custom_playTTSnd.setValue(settings.playTTsnds, 1);
+    custom_sTTBLA.setValue(settings.skipTTBLAnim, 1);
+    custom_playALSnd.setValue(settings.playALsnd, 1);
     
     #ifdef FC_HAVEMQTT
     custom_useMQTT.setValue(settings.useMQTT, 1);
@@ -1066,8 +1088,6 @@ void updateConfigPortalValues()
     #else   // For checkbox hack --------------------------
 
     setCBVal(&custom_playFLUXSnd, settings.playFLUXsnd);
-    setCBVal(&custom_playTTSnd, settings.playTTsnds);
-    setCBVal(&custom_sTTBLA, settings.skipTTBLAnim);
 
     setCBVal(&custom_swapBL, settings.usePLforBL);
     setCBVal(&custom_useVknob, settings.useVknob);
@@ -1075,12 +1095,17 @@ void updateConfigPortalValues()
     setCBVal(&custom_disDIR, settings.disDIR);
 
     setCBVal(&custom_TCDpresent, settings.TCDpresent);
+    setCBVal(&custom_noETTOL, settings.noETTOLead);
     
     //setCBVal(&custom_wait4TCD, settings.wait4TCD);
     setCBVal(&custom_uGPS, settings.useGPSS);
     setCBVal(&custom_uNM, settings.useNM);
     setCBVal(&custom_uFPO, settings.useFPO);
     //setCBVal(&custom_wFPO, settings.wait4FPOn);
+
+    setCBVal(&custom_playTTSnd, settings.playTTsnds);
+    setCBVal(&custom_sTTBLA, settings.skipTTBLAnim);
+    setCBVal(&custom_playALSnd, settings.playALsnd);
 
     #ifdef FC_HAVEMQTT
     setCBVal(&custom_useMQTT, settings.useMQTT);
