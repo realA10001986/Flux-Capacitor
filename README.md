@@ -586,6 +586,10 @@ If other props are connected, they might bring their own time travel sound effec
 
 Normally, the Box LEDs flash during the time travel sequence. If you prefer to instead have them constantly on during a time travel, check this option.
 
+##### &#9654; Play TCD-alarm sounds
+
+If a TCD is connected via BTTFN or MQTT, the FC visually signals when the TCD's alarm sounds. If you want the FC to play an alarm sound, check this option.
+
 #### Home Assistant / MQTT settings
 
 ##### &#9654; Use Home Assistant (MQTT 3.1.1)
