@@ -123,11 +123,11 @@ Note that the status of the IR lock is saved 10 seconds after its last change, a
 
 In order to only disable the supplied IR remote control, check the option **_Disable supplied IR remote control_** in the [Config Portal](#-disable-supplied-ir-remote-control). In that case, any learned remote will still work.
 
-### IR remote reference
+### Remote control reference
 
 <table>
     <tr>
-     <td align="center" colspan="3">IR remote reference: Single key actions<br>[Code on TCD keypad]</td>
+     <td align="center" colspan="3">Single key actions<br>[Code on TCD keypad]</td>
     </tr>
     <tr>
      <td align="center">1<br>-</td>
@@ -170,9 +170,9 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
 
 <table>
     <tr>
-     <td align="center" colspan="3">IR/TCD remote reference: Special sequences<br>(&#9166; = OK key)</td>
+     <td align="center" colspan="3">Special sequences<br>(&#9166; = OK key)</td>
     </tr>
-   <tr><td>Function</td><td>IR sequence</td><td>Code on TCD</td></tr>
+   <tr><td>Function</td><td>Code on IR</td><td>Code on TCD</td></tr>
     <tr>
      <td align="left">Select original chase sequence</td>
      <td align="left">*10&#9166;</td><td>3010</td>
@@ -360,7 +360,9 @@ Connect GND and GPIO on the Flux Capacitor's "Time Travel" connector to the TCD 
     </tr>
 </table>
 
-Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place.
+Next, head to the Config Portal and set the ooption **_TCD connected by wire_**. On the TCD, the option "Control props connected by wire" must be set.
+
+Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place. Therefore I strongly recommend a wireless BTTFN connection, see immediately below.
 
 ### BTTF-Network ("BTTFN")
 
@@ -553,6 +555,14 @@ Check this if you have a Time Circuits Display connected by wire. You can only c
 Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place.
 
 Also note that the process of [learning keys from an IR remote control](#ir-remote-control) requires this option to be unchecked. After learning keys is done, you can, of course, check this option again.
+
+Do NOT check this option if your TCD is connected wirelessly (BTTFN, MQTT).
+
+##### &#9654; TCD signals Time Travel without 5s lead
+
+Usually, the TCD signals a time travel with a 5 seconds lead, in order to give a prop a chance to play an acceletation sequence before the actual time travel takes place. Since this 5 second lead is unique to CircuitSetup props, and people sometimes want to connect third party props to the TCD, the TCD has the option of skipping this 5 seconds lead. That that is the case, and your Flux Capacitor is connected by wire, you need to set this option.
+
+If your FC is connected wirelessly, this option has no effect.
 
 ##### &#9654; IP address of TCD
 
