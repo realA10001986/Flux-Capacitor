@@ -4,7 +4,7 @@ This repository holds the most current firmware for CircuitSetup's excellent [Fl
 
 The kit is available [here](https://circuitsetup.us).
 
-![fMy Flux Capacitor](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/ad197e19-fa48-463a-9231-7e05d6362329)
+![My Flux Capacitor](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/0754e0c0-e545-4122-8edf-0f7add41cd73)
 
 Features include
 - movie-accurate default flux sequence, plus 9 alternative flux sequences
@@ -95,7 +95,7 @@ The main control device is the supplied IR remote control. If a TCD is connected
 
 Your FC kit includes an IR remote control. This remote works out-of-the-box and needs no setup. 
 
-| ![Default IR remote control](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/dc32787d-de83-4be4-9df8-7442bf623284) |
+| ![Default IR remote control](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/e9ccbb0a-c808-444f-9faa-505c972731b8) |
 |:--:| 
 | *The default IR remote control* |
 
