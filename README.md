@@ -250,7 +250,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     </tr>
     <tr>
      <td align="left">Delete static IP address and AP WiFI password</td>
-     <td align="left">*123456&#9166;</td><td>3123456/td>
+     <td align="left">*123456&#9166;</td><td>3123456</td>
     </tr>
     <tr>
      <td align="left">Forget learned IR remote control</td>
