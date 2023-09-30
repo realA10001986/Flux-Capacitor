@@ -246,7 +246,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     </tr>
     <tr>
      <td align="left">Reboot the device</td>
-     <td align="left">*64738&#9166;</td><td>3064728</td>
+     <td align="left">*64738&#9166;</td><td>3064738</td>
     </tr>
     <tr>
      <td align="left">Delete static IP address and AP WiFI password</td>
