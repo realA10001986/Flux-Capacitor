@@ -278,7 +278,7 @@ static bool          BTTFNBootTO = false;
 
 static int      iCmdIdx = 0;
 static int      oCmdIdx = 0;
-static uint16_t commandQueue[16] = { 0 };
+static uint32_t commandQueue[16] = { 0 };
 
 // Forward declarations ------
 
@@ -648,7 +648,7 @@ void main_loop()
         if(isTTKeyHeld) {
             ssEnd();
             isTTKeyHeld = isTTKeyPressed = false;
-            if(!TTrunning && !IRLearning) {
+            if(!IRLearning) {
                 startIRLearn();
                 #ifdef FC_DBG
                 Serial.println("main_loop: IR learning started");
@@ -1471,16 +1471,14 @@ static void handleIRKey(int key)
 
 static void handleRemoteCommand()
 {
-    uint16_t command = commandQueue[oCmdIdx];
+    uint32_t command = commandQueue[oCmdIdx];
 
     if(!command)
         return;
 
+    commandQueue[oCmdIdx] = 0;
     oCmdIdx++;
     oCmdIdx &= 0x0f;
-
-    if(command > 999)
-        return;
 
     if(ssActive) {
         ssEnd();
@@ -1528,10 +1526,18 @@ static void handleRemoteCommand()
       
         sprintf(inputBuffer, "%02d", command);
         
-    } else {
+    } else if(command < 1000) {
       
         sprintf(inputBuffer, "%03d", command);
         
+    } else if(command < 100000) {
+
+        sprintf(inputBuffer, "%05d", command);
+        
+    } else {
+      
+        sprintf(inputBuffer, "%06d", command);
+
     }
 
     execute(false);
@@ -1641,14 +1647,14 @@ static bool execute(bool isIR)
             case 90:                              // *90 say IP address
                 if(!TTrunning && !isIRLocked) {
                     uint8_t a, b, c, d;
-                    bool wasActive = false;
+                    bool wasActiveM = false, wasActiveF = false;
                     char ipbuf[16];
                     char numfname[8] = "/x.mp3";
                     if(haveMusic && mpActive) {
                         mp_stop();
-                        wasActive = true;
+                        wasActiveM = true;
                     } else if(playingFlux) {
-                        wasActive = true;
+                        wasActiveF = true;
                     }
                     stopAudio();
                     wifi_getIP(a, b, c, d);
@@ -1667,7 +1673,8 @@ static bool execute(bool isIR)
                         }
                     }
                     waitAudioDone(false);
-                    if(wasActive && contFlux()) play_flux();
+                    if(wasActiveF && contFlux()) play_flux();
+                    else if(wasActiveM)          mp_play();
                     ir_remote.loop(); // Flush IR afterwards
                 }
                 break;
@@ -1683,7 +1690,6 @@ static bool execute(bool isIR)
                             // mp_init()
                             if(haveMusic && mpActive) {
                                 mp_stop();
-                                wasActive = true;
                             } else if(playingFlux) {
                                 wasActive = true;
                             }
@@ -1740,9 +1746,7 @@ static bool execute(bool isIR)
     case 5:
         if(!isIRLocked) {
             if(!strcmp(inputBuffer, "64738")) {
-                fcLEDs.off();
-                boxLED.setDC(0);
-                centerLED.setDC(0);
+                allOff();
                 endIRfeedback();
                 mp_stop();
                 stopAudio();
@@ -2078,7 +2082,7 @@ void mydelay(unsigned long mydel, bool withIR)
  * BTTF network communication
  */
 
-static void addCmdQueue(uint16_t command)
+static void addCmdQueue(uint32_t command)
 {
     if(!command) return;
 
@@ -2199,7 +2203,8 @@ static void BTTFNCheckPacket()
             // Eval this at our convenience
             break;
         case BTTFN_NOT_FLUX_CMD:
-            addCmdQueue(BTTFUDPBuf[6] | (BTTFUDPBuf[7] << 8));
+            addCmdQueue( BTTFUDPBuf[6] | (BTTFUDPBuf[7] << 8) |
+                        (BTTFUDPBuf[8] | (BTTFUDPBuf[9] << 8)) << 16);
             break;
         }
       

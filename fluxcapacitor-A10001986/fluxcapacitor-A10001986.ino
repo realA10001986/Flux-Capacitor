@@ -86,6 +86,9 @@
 
 /*  Changelog
  *
+ *  2023/09/30 (A10001986)
+ *    - Extend remote commands to 32 bit
+ *    - Fix ring buffer handling for remote commands
  *  2023/09/26 (A10001986)
  *    - Make TCD-alarm sound optional
  *    - Clean up options
