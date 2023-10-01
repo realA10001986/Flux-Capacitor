@@ -71,7 +71,7 @@ If the operating system on your handheld or computer supports Bonjour (a.k.a. "m
 
 If that fails, the way to enter the Config Portal depends on whether the device is in access point mode or not. 
 - If it is in access point mode (and your handheld/computer is connected to the WiFi network "FC-AP"), navigate your browser to http://192.168.4.1 
-- Otherwise type *90 followed by OK on the remote control and listen, the IP address will be read out loud.
+- Otherwise type *90 followed by OK on the remote control and listen, the IP address will be spoken out loud.
 
 In the main menu, click on "Setup" to configure your Flux Capacitor.
 
