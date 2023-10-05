@@ -1,10 +1,10 @@
 # Firmware for Flux Capacitor
 
-This repository holds the most current firmware for CircuitSetup's excellent [Flux Capacitor kit](https://circuitsetup.us/product-category/back-to-the-future-props/).
+This repository holds the most current firmware for CircuitSetup's excellent [Flux Capacitor kit](https://circuitsetup.us/product-category/back-to-the-future-props/). The "Flux Capacitor" is key to time travel in the movies "Back to the Future".
 
 The kit is available [here](https://circuitsetup.us/product-category/back-to-the-future-props/).
 
-Here is my FC, built using this kit:
+Here is my FC, built around this kit:
 
 ![My Flux Capacitor](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/0754e0c0-e545-4122-8edf-0f7add41cd73)
 
