@@ -3,7 +3,7 @@
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
- * http://fc.backtothefutu.re
+ * https://fc.backtothefutu.re
  *
  * WiFi and Config Portal handling
  *
@@ -129,9 +129,9 @@ WiFiManagerParameter custom_tcdIP("tcdIP", "IP address of TCD", settings.tcdIP, 
 //WiFiManagerParameter custom_wait4TCD("w4TCD", "Wait for TCD-WiFi<br><span style='font-size:80%'>Check this if TCD acts as WiFi-AP for FC, and you power-up TCD and FC simultaneously (as is typical in car setups). TCD needs to be in 'car mode'.</span>", settings.wait4TCD, 1, "autocomplete='off' title='Check if you power-up TCD and SID simultaneously to delay WiFi-connection to TCD' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
 //#endif // -------------------------------------------------
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-WiFiManagerParameter custom_uGPS("uGPS", "Change chase speed with GPS speed (0=no, 1=yes)<br><span style='font-size:80%'>GPS speed, if available from TCD, will overrule knob and IR remote</span>", settings.useGPSS, 1, "autocomplete='off'");
+WiFiManagerParameter custom_uGPS("uGPS", "Adapt chase speed to GPS speed (0=no, 1=yes)<br><span style='font-size:80%'>GPS speed, if available from TCD, will overrule knob and IR remote</span>", settings.useGPSS, 1, "autocomplete='off'");
 #else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_uGPS("uGPS", "Change chase speed with GPS speed<br><span style='font-size:80%'>GPS speed, if available from TCD, will overrule knob and IR remote</span>", settings.useGPSS, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_uGPS("uGPS", "Adapt chase speed to GPS speed<br><span style='font-size:80%'>GPS speed, if available from TCD, will overrule knob and IR remote</span>", settings.useGPSS, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_uNM("uNM", "Follow TCD night-mode (0=no, 1=yes)<br><span style='font-size:80%'>If enabled, the Screen Saver will activate when TCD is in night-mode.</span>", settings.useNM, 1, "autocomplete='off'");
@@ -183,9 +183,9 @@ WiFiManagerParameter custom_shuffle("musShu", "Shuffle at startup", settings.shu
 #endif // -------------------------------------------------
 
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save secondary settings on SD (0=no, 1=yes)<br><span style='font-size:80%'>Enable this to avoid flash wear; settings for volume, chase speed, IR, box light level will be saved to SD.</span>", settings.CfgOnSD, 1, "autocomplete='off'");
+WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save secondary settings on SD (0=no, 1=yes)<br><span style='font-size:80%'>Enable this to avoid flash wear</span>", settings.CfgOnSD, 1, "autocomplete='off'");
 #else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save secondary settings on SD<br><span style='font-size:80%'>Check this to avoid flash wear; settings for volume, chase speed, IR, box light level will be saved to SD.</span>", settings.CfgOnSD, 1, "autocomplete='off' type='checkbox' style='margin-top:5px'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save secondary settings on SD<br><span style='font-size:80%'>Check this to avoid flash wear</span>", settings.CfgOnSD, 1, "autocomplete='off' type='checkbox' style='margin-top:5px'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 //#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 //WiFiManagerParameter custom_sdFrq("sdFrq", "SD clock speed (0=16Mhz, 1=4Mhz)<br><span style='font-size:80%'>Slower access might help in case of problems with SD cards</span>", settings.sdFreq, 1, "autocomplete='off'");
@@ -347,7 +347,7 @@ void wifi_setup()
     wm.addParameter(&custom_TCDpresent);
     wm.addParameter(&custom_noETTOL);
 
-    wm.addParameter(&custom_sectstart);     // 7 (8)
+    wm.addParameter(&custom_sectstart);     // 6 (8)
     wm.addParameter(&custom_bttfnHint);
     wm.addParameter(&custom_tcdIP);
     //wm.addParameter(&custom_wait4TCD);
@@ -765,7 +765,7 @@ static void wifiConnect(bool deferConfigPortal)
         //WiFi.setSleep(true);
 
         // Disable modem sleep, don't want delays accessing the CP or
-        // with MQTT.
+        // with BTTFN/MQTT.
         WiFi.setSleep(false);
 
         // Set transmit power to max; we might be connecting as STA after
@@ -919,7 +919,7 @@ static void saveParamsCallback()
 }
 
 // This is called before a firmware updated is initiated.
-// Disable WiFi-off-timers.
+// Disable WiFi-off-timers, switch off audio, show "wait"
 static void preUpdateCallback()
 {
     wifiAPOffDelay = 0;
@@ -1321,6 +1321,7 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
       "REENTRY",          // 2
       "ABORT_TT",         // 3
       "ALARM",            // 4
+      "WAKEUP",           // 5
       NULL
     };
 
@@ -1387,6 +1388,11 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
         case 4:
             networkAlarm = true;
             // Eval this at our convenience
+            break;
+        case 5:
+            if(!TTrunning && !IRLearning) {
+                wakeup();
+            }
             break;
         }
        

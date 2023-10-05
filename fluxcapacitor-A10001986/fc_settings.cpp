@@ -3,7 +3,7 @@
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
- * http://fc.backtothefutu.re
+ * https://fc.backtothefutu.re
  *
  * Settings & file handling
  * 
@@ -87,29 +87,29 @@ bool FlashROMode = false;
 #define NUM_AUDIOFILES 11+8
 #define SND_KEY_IDX  11+3
 static const char *audioFiles[NUM_AUDIOFILES] = {
-      "/0.mp3\0", "/1.mp3\0", "/2.mp3\0", "/3.mp3\0", "/4.mp3\0", 
-      "/5.mp3\0", "/6.mp3\0", "/7.mp3\0", "/8.mp3\0", "/9.mp3\0", 
-      "/dot.mp3\0", 
-      "/flux.mp3\0",
-      "/startup.mp3\0",
-      "/timetravel.mp3\0",
-      "/travelstart.mp3\0",
-      "/alarm.mp3\0",
-      "/fluxing.mp3\0",
-      "/renaming.mp3\0",
-      "/installing.mp3\0"
+      "/0.mp3", "/1.mp3", "/2.mp3", "/3.mp3", "/4.mp3", 
+      "/5.mp3", "/6.mp3", "/7.mp3", "/8.mp3", "/9.mp3", 
+      "/dot.mp3", 
+      "/flux.mp3",
+      "/startup.mp3",
+      "/timetravel.mp3",
+      "/travelstart.mp3",
+      "/alarm.mp3",
+      "/fluxing.mp3",
+      "/renaming.mp3",
+      "/installing.mp3"
 };
 static const char *IDFN = "/FC_def_snd.txt";
 
 static const char *cfgName    = "/fcconfig.json";   // Main config (flash)
+static const char *ipCfgName  = "/fcipcfg.json";    // IP config (flash)
 static const char *volCfgName = "/fcvolcfg.json";   // Volume config (flash/SD)
 static const char *spdCfgName = "/fcspdcfg.json";   // Speed config (flash/SD)
 static const char *bllCfgName = "/fcbllcfg.json";   // Minimum box light level config (flash/SD)
-static const char *musCfgName = "/fcmcfg.json";     // Music config (SD)
-static const char *ipCfgName  = "/fcipcfg.json";    // IP config (flash)
-static const char *irUCfgName = "/fcirkeys.txt";    // IR keys (user-created) (SD)
 static const char *irCfgName  = "/fcirkeys.json";   // IR keys (system-created) (flash/SD)
 static const char *irlCfgName = "/fcirlcfg.json";   // IR lock (flash/SD)
+static const char *musCfgName = "/fcmcfg.json";     // Music config (SD)
+static const char *irUCfgName = "/fcirkeys.txt";    // IR keys (user-created) (SD)
 static const char *ipaCfgName = "/fcipat.json";     // Idle pattern (SD only)
 
 static const char *jsonNames[NUM_IR_KEYS] = {
@@ -121,7 +121,7 @@ static const char *jsonNames[NUM_IR_KEYS] = {
         "keyOK" 
     };
 
-static const char *fsNoAvail = "File System not available";
+static const char *fsNoAvail = "Filesystem not available";
 static const char *badConfig = "Settings bad/missing/incomplete; writing new file";
 static const char *failFileWrite = "Failed to open file for writing";
 
@@ -590,12 +590,16 @@ static bool openCfgFileWrite(const char *fn, File& f, bool SDonly = false)
 
 bool loadCurVolume()
 {
+    #ifdef FC_DBG
     const char *funcName = "loadCurVolume";
+    #endif
     char temp[6];
     File configFile;
 
     if(!haveFS && !configOnSD) {
+        #ifdef FC_DBG
         Serial.printf("%s: %s\n", funcName, fsNoAvail);
+        #endif
         return false;
     }
 
@@ -666,12 +670,16 @@ void saveCurVolume(bool useCache)
 
 bool loadCurSpeed()
 {
+    #ifdef FC_DBG
     const char *funcName = "loadCurSpeed";
+    #endif
     char temp[6];
     File configFile;
 
     if(!haveFS && !configOnSD) {
+        #ifdef FC_DBG
         Serial.printf("%s: %s\n", funcName, fsNoAvail);
+        #endif
         return false;
     }
 
@@ -742,12 +750,16 @@ void saveCurSpeed(bool useCache)
 
 bool loadBLLevel()
 {
+    #ifdef FC_DBG
     const char *funcName = "loadBLLevel";
+    #endif
     char temp[6];
     File configFile;
 
     if(!haveFS && !configOnSD) {
+        #ifdef FC_DBG
         Serial.printf("%s: %s\n", funcName, fsNoAvail);
+        #endif
         return false;
     }
 
@@ -818,7 +830,9 @@ void saveBLLevel(bool useCache)
 
 bool loadIdlePat()
 {
+    #ifdef FC_DBG
     const char *funcName = "loadIdlePat";
+    #endif
     char temp[6];
     File configFile;
 
@@ -891,12 +905,16 @@ void saveIdlePat(bool useCache)
 
 bool loadIRLock()
 {
+    #ifdef FC_DBG
     const char *funcName = "loadIRLock";
+    #endif
     char temp[6];
     File configFile;
 
     if(!haveFS && !configOnSD) {
+        #ifdef FC_DBG
         Serial.printf("%s: %s\n", funcName, fsNoAvail);
+        #endif
         return false;
     }
 
@@ -930,7 +948,7 @@ void saveIRLock(bool useCache)
 
     if(useCache && (prevSavedIRL == irLocked)) {
         #ifdef FC_DBG
-        Serial.printf("%s: Prev. saved irl identical, not writing\n", funcName);
+        Serial.printf("%s: Prev. saved irLock identical, not writing\n", funcName);
         #endif
         return;
     }
@@ -1007,7 +1025,9 @@ static bool loadIRKeys()
             if(configFile) {
                 loadIRkeysFromFile(configFile, 0);
             } else {
+                #ifdef FC_DBG
                 Serial.printf("%s not found on SD card\n", irUCfgName);
+                #endif
             }
         }
     }
@@ -1065,7 +1085,7 @@ void deleteIRKeys()
     }
 }
 
-/* Copy volume/IR settings from/to SD if user
+/* Copy secondary settings from/to SD if user
  * changed "save to SD"-option in CP
  */
 
@@ -1360,7 +1380,7 @@ void doCopyAudioFiles()
     if(!copy_audio_files()) {
         // If copy fails, re-format flash FS
         formatFlashFS();            // Format
-        rewriteSecondarySettings(); // Re-write ip/vol/speed/ir/etc settings
+        rewriteSecondarySettings(); // Re-write secondary settings
         #ifdef FC_DBG 
         Serial.println("Re-writing general settings");
         #endif

@@ -3,7 +3,7 @@
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
- * http://fc.backtothefutu.re
+ * https://fc.backtothefutu.re
  *
  * Main controller
  *
@@ -83,6 +83,7 @@ void startFluxTimer();
 void mydelay(unsigned long mydel, bool withIR);
 
 void prepareTT();
+void wakeup();
 
 void bttfn_loop();
 

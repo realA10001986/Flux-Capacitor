@@ -3,7 +3,7 @@
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
- * http://fc.backtothefutu.re
+ * https://fc.backtothefutu.re
  *
  * Main controller
  *
@@ -91,7 +91,7 @@ FCLEDs fcLEDs(1, SHIFT_CLK_PIN, REG_CLK_PIN, SERDATA_PIN, MRESET_PIN);
 
 // The tt button / TCD tt trigger
 static FCButton TTKey = FCButton(TT_IN_PIN,
-    false,    // Button is active HIGH
+    false,    // Button/Trigger is active HIGH
     false     // Disable internal pull-up resistor
 );
 
@@ -257,10 +257,11 @@ uint16_t lastIRspeed = FC_SPD_IDLE;
 #define BTTFN_NOT_FLUX_CMD 7
 #define BTTFN_NOT_SID_CMD  8
 #define BTTFN_NOT_PCG_CMD  9
+#define BTTFN_NOT_WAKEUP   10
 #define BTTFN_TYPE_ANY     0    // Any, unknown or no device
 #define BTTFN_TYPE_FLUX    1    // Flux Capacitor
 #define BTTFN_TYPE_SID     2    // SID
-#define BTTFN_TYPE_PCG     3    // Plutonium chamber gauge panel
+#define BTTFN_TYPE_PCG     3    // Plutonium gauge panel
 static const uint8_t BTTFUDPHD[4] = { 'B', 'T', 'T', 'F' };
 static bool          useBTTFN = false;
 static WiFiUDP       bttfUDP;
@@ -406,7 +407,7 @@ void main_setup()
         TTKey.setPressTicks(50);
         TTKey.setLongPressTicks(100000);
         // Long press ignored when TCD is connected
-        // IRLearning only possible if TCD is not connected!
+        // IRLearning only possible if "TCD connected by wire" unset.
     }
 
     // Power-up use of speed pot
@@ -1971,14 +1972,34 @@ void prepareTT()
 {
     ssEnd(false);
 
-    // Start flux sound (if so configured), but 
-    // honor the configured timer; we don't know
+    // Start flux sound (if so configured; we check
+    // playTTsounds and not playFlux, since we expect
+    // a timetravel, part of which is the flux sound), 
+    // but honor the configured timer; we don't know
     // when (or if) the actual tt comes; the TCD will
     // count up the speed in the meantime, but
     // even the minimum of 30 seconds should always
     // cover the gap.
     if(playTTsounds) {
         if(mp_stop() || !playingFlux) {
+           play_flux();
+        }
+        startFluxTimer();
+    }
+}
+
+// Wakeup: Sent by TCD upon entering dest date,
+// return from tt, triggering delayed tt via ETT
+// For audio-visually synchronized behavior
+void wakeup()
+{
+    // End screen saver
+    ssEnd(false);
+
+    // Start flux sound (if so configured)
+    // unless mp is active
+    if(!mpActive && playFLUX) {
+        if(!playingFlux) {
            play_flux();
         }
         startFluxTimer();
@@ -2171,7 +2192,9 @@ static void BTTFNCheckPacket()
             // sound (if to be played)
             // We don't ignore this if TCD is connected by wire,
             // because this signal does not come via wire.
-            prepareTT();
+            if(!TTrunning && !IRLearning) {
+                prepareTT();
+            }
             break;
         case BTTFN_NOT_TT:
             // Trigger Time Travel (if not running already)
@@ -2205,6 +2228,11 @@ static void BTTFNCheckPacket()
         case BTTFN_NOT_FLUX_CMD:
             addCmdQueue( BTTFUDPBuf[6] | (BTTFUDPBuf[7] << 8) |
                         (BTTFUDPBuf[8] | (BTTFUDPBuf[9] << 8)) << 16);
+            break;
+        case BTTFN_NOT_WAKEUP:
+            if(!TTrunning && !IRLearning) {
+                wakeup();
+            }
             break;
         }
       
