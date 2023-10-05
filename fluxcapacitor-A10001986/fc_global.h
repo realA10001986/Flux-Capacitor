@@ -3,7 +3,7 @@
  * CircuitSetup.us Flux Capacitor
  * (C) 2023 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
- * http://fc.backtothefutu.re
+ * https://fc.backtothefutu.re
  *
  * Global definitions
  */
@@ -12,8 +12,8 @@
 #define _FC_GLOBAL_H
 
 // Version strings.
-#define FC_VERSION       "V1.14"
-#define FC_VERSION_EXTRA "SEP302023"
+#define FC_VERSION       "V1.15"
+#define FC_VERSION_EXTRA "OCT052023"
 
 //#define FC_DBG              // debug output on Serial
 
@@ -51,8 +51,9 @@
 //#define USE_SPIFFS
 
 // External time travel lead time, as defined by TCD firmware
-// If FC is connected by wire, the option "Signal Time Travel without 5s 
-// lead" on the TCD must NOT be set.
+// If FC is connected by wire, and the option "Signal Time Travel without 5s 
+// lead" is set on the TCD, the FC option "TCD signals without lead" must
+// be set, too.
 #define ETTO_LEAD 5000
 
 /*************************************************************************
@@ -114,7 +115,7 @@
 // analog input pin, used for Speed
 #define SPEED_PIN         32   
 
-// analog input, for volume   
-#define VOLUME_PIN        35    // Board Rev 1.3
+// analog input, for volume (control board v1.3+)
+#define VOLUME_PIN        35    
 
 #endif
