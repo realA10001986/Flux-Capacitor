@@ -583,6 +583,8 @@ If this option is checked, and your TCD goes into night mode, the FC will activa
 
 If this option is checked, and your TCD is equipped with a fake power switch, the FC will also fake-power up/down. If fake power is off, no LED is active and the FC will ignore all input from buttons, knobs and the IR control.
 
+#### Audio-visual options
+
 ##### &#9654; Play time travel sounds
 
 If other props are connected, they might bring their own time travel sound effects. In this case, you can uncheck this to disable the Flux Capacitor's own time travel sounds. Note that this only covers sounds played during time travel, not other sound effects.
