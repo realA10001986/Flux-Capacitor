@@ -349,11 +349,9 @@ static bool read_settings(File configFile)
             memset(settings.tcdIP, 0, sizeof(settings.tcdIP));
             strncpy(settings.tcdIP, json["tcdIP"], sizeof(settings.tcdIP) - 1);
         } else wd = true;
-        //wd |= CopyCheckValidNumParm(json["wait4TCD"], settings.wait4TCD, sizeof(settings.wait4TCD), 0, 1, DEF_WAIT_FOR_TCD);
         wd |= CopyCheckValidNumParm(json["useGPSS"], settings.useGPSS, sizeof(settings.useGPSS), 0, 1, DEF_USE_GPSS);
         wd |= CopyCheckValidNumParm(json["useNM"], settings.useNM, sizeof(settings.useNM), 0, 1, DEF_USE_NM);
         wd |= CopyCheckValidNumParm(json["useFPO"], settings.useFPO, sizeof(settings.useFPO), 0, 1, DEF_USE_FPO);
-        //wd |= CopyCheckValidNumParm(json["wait4FPOn"], settings.wait4FPOn, sizeof(settings.wait4FPOn), 0, 1, DEF_WAIT_FPO);
 
         wd |= CopyCheckValidNumParm(json["playTTsnds"], settings.playTTsnds, sizeof(settings.playTTsnds), 0, 1, DEF_PLAY_TT_SND);
         wd |= CopyCheckValidNumParm(json["skipTTBLAnim"], settings.skipTTBLAnim, sizeof(settings.skipTTBLAnim), 0, 1, DEF_STTBL_ANIM);
@@ -418,11 +416,9 @@ void write_settings()
     json["noETTOLead"] = settings.noETTOLead;
     
     json["tcdIP"] = settings.tcdIP;
-    //json["wait4TCD"] = settings.wait4TCD;
     json["useGPSS"] = settings.useGPSS;
     json["useNM"] = settings.useNM;
     json["useFPO"] = settings.useFPO;
-    //json["wait4FPOn"] = settings.wait4FPOn;
 
     json["playTTsnds"] = settings.playTTsnds;
     json["skipTTBLAnim"] = settings.skipTTBLAnim;
