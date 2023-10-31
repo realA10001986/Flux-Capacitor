@@ -12,8 +12,8 @@
 #define _FC_GLOBAL_H
 
 // Version strings.
-#define FC_VERSION       "V1.15"
-#define FC_VERSION_EXTRA "OCT052023"
+#define FC_VERSION       "V1.17"
+#define FC_VERSION_EXTRA "OCT312023"
 
 //#define FC_DBG              // debug output on Serial
 
@@ -55,6 +55,9 @@
 // lead" is set on the TCD, the FC option "TCD signals without lead" must
 // be set, too.
 #define ETTO_LEAD 5000
+
+// Uncomment to include BTTFN discover support (multicast)
+#define BTTFN_MC
 
 /*************************************************************************
  ***                  esp32-arduino version detection                  ***

@@ -60,11 +60,9 @@ extern uint8_t musFolderNum;
 #define DEF_NO_ETTO_LEAD    0     // Default: 0: TCD signals TT with ETTO_LEAD lead time; 1 without
 
 #define DEF_TCD_IP          ""    // TCD ip address for networked polling
-#define DEF_WAIT_FOR_TCD    0     // 0: Boot normally  1: Delay WiFi setup for a few seconds (to wait for TCD if powered up simultaneously)
 #define DEF_USE_GPSS        0     // 0: Ignore GPS speed; 1: Use it for chase speed
 #define DEF_USE_NM          0     // 0: Ignore TCD night mode; 1: Follow TCD night mode
 #define DEF_USE_FPO         0     // 0: Ignore TCD fake power; 1: Follow TCD fake power
-#define DEF_WAIT_FPO        1     // 0: Don't wait for fake power on during boot, 1: Do
 
 #define DEF_PLAY_TT_SND     1     // 1: Play time travel sounds (0: Do not; for use with external equipment)
 #define DEF_STTBL_ANIM      0     // 1: Skip box light animation in tt; 0: Play anim
@@ -95,11 +93,9 @@ struct Settings {
     char noETTOLead[4]      = MS(DEF_NO_ETTO_LEAD);
 
     char tcdIP[16]          = DEF_TCD_IP;
-    //char wait4TCD[4]        = MS(DEF_WAIT_FOR_TCD);
     char useGPSS[4]         = MS(DEF_USE_GPSS);
     char useNM[4]           = MS(DEF_USE_NM);
     char useFPO[4]          = MS(DEF_USE_FPO);
-    char wait4FPOn[4]       = MS(DEF_WAIT_FPO);
         
     char playTTsnds[4]      = MS(DEF_PLAY_TT_SND);
     char skipTTBLAnim[4]    = MS(DEF_STTBL_ANIM); 

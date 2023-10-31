@@ -93,6 +93,7 @@ WiFiManagerParameter custom_useSknob("sKnob", "Use speed knob by default (0=off,
 #else // -------------------- Checkbox hack: --------------
 WiFiManagerParameter custom_useSknob("sKnob", "Use speed knob by default", settings.useSknob, 1, "title='Check to use speed knob by default, instead of adjusting speed via IR remote control' type='checkbox'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
+
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_disDIR("dDIR", "Disable supplied IR control (0=off, 1=on)", settings.disDIR, 1, "autocomplete='off' title='Set to 1 to disable the supplied IR remote control'");
 #else // -------------------- Checkbox hack: --------------
@@ -118,16 +119,15 @@ WiFiManagerParameter custom_TCDpresent("TCDpres", "TCD connected by wire", setti
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_noETTOL("uEtNL", "TCD signals Time Travel without 5s lead (0=no, 1=yes)", settings.noETTOLead, 1, "autocomplete='off'");
 #else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_noETTOL("uEtNL", "TCD signals Time Travel without 5s lead", settings.noETTOLead, 1, "autocomplete='off' type='checkbox' class='mt5' style='margin-left:20px'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_noETTOL("uEtNL", "TCD signals Time Travel without 5s lead", settings.noETTOLead, 1, "autocomplete='off' type='checkbox' class='mt5' style='margin-left:20px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 
 WiFiManagerParameter custom_bttfnHint("<div style='margin:0px 0px 10px 0px;padding:0px'>Wireless communication (BTTF-Network)</div>");
-WiFiManagerParameter custom_tcdIP("tcdIP", "IP address of TCD", settings.tcdIP, 15, "pattern='[0-9\\.]+' placeholder='Example: 192.168.4.1'");
-//#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-//WiFiManagerParameter custom_wait4TCD("w4TCD", "Wait for TCD-WiFi (0=no, 1=yes)<br><span style='font-size:80%'>Enable this if TCD acts as WiFi-AP for FC, and you power-up TCD and FC simultaneously (as is typical in car setups). TCD needs to be in 'car mode'.</span>", settings.wait4TCD, 1, "autocomplete='off' title='Enable if you power-up TCD and FC simultaneously to delay WiFi-connection to TCD'");
-//#else // -------------------- Checkbox hack: --------------
-//WiFiManagerParameter custom_wait4TCD("w4TCD", "Wait for TCD-WiFi<br><span style='font-size:80%'>Check this if TCD acts as WiFi-AP for FC, and you power-up TCD and FC simultaneously (as is typical in car setups). TCD needs to be in 'car mode'.</span>", settings.wait4TCD, 1, "autocomplete='off' title='Check if you power-up TCD and SID simultaneously to delay WiFi-connection to TCD' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
-//#endif // -------------------------------------------------
+#ifdef BTTFN_MC
+WiFiManagerParameter custom_tcdIP("tcdIP", "IP address or hostname of TCD", settings.tcdIP, 63, "pattern='(^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$)|([A-Za-z0-9\\-]+)' placeholder='Example: 192.168.4.1'");
+#else
+WiFiManagerParameter custom_tcdIP("tcdIP", "IP address of TCD", settings.tcdIP, 63, "pattern='^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$' placeholder='Example: 192.168.4.1'");
+#endif
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_uGPS("uGPS", "Adapt chase speed to GPS speed (0=no, 1=yes)<br><span style='font-size:80%'>GPS speed, if available from TCD, will overrule knob and IR remote</span>", settings.useGPSS, 1, "autocomplete='off'");
 #else // -------------------- Checkbox hack: --------------
@@ -143,11 +143,6 @@ WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power (0=no, 1=yes)", 
 #else // -------------------- Checkbox hack: --------------
 WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power", settings.useFPO, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
-//#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-//WiFiManagerParameter custom_wFPO("wFPO", "Wait for fake power on at boot (0=no, 1=yes)", settings.wait4FPOn, 1, "autocomplete='off'");
-//#else // -------------------- Checkbox hack: --------------
-//WiFiManagerParameter custom_wFPO("wFPO", "Wait for fake power on at boot", settings.wait4FPOn, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
-//#endif // -------------------------------------------------
 
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds (0=no, 1=yes)", settings.playTTsnds, 1, "autocomplete='off' title='Enable to have the device play time travel sounds. Disable if other props provide time travel sound.'");
@@ -157,12 +152,12 @@ WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds", setti
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_sTTBLA("sTTBL", "Skip Box Light animation (0=no, 1=yes)", settings.skipTTBLAnim, 1, "autocomplete='off' title='Enable to skip the box light animation and just plainly switch it on during time travel'");
 #else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_sTTBLA("sTTBL", "Skip Box Light animation", settings.skipTTBLAnim, 1, "autocomplete='off' title='Check to skip the box light animation and just plainly switch it on during time travel' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_sTTBLA("sTTBL", "Skip Box Light animation", settings.skipTTBLAnim, 1, "autocomplete='off' title='Check to skip the box light animation and just plainly switch it on during time travel' type='checkbox'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_playALSnd("plyALS", "Play TCD-alarm sounds (0=no, 1=yes)", settings.playALsnd, 1, "autocomplete='off' title='Enable to have the device play a sound then the TCD alarm sounds.'");
 #else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_playALSnd("plyALS", "Play TCD-alarm sound", settings.playALsnd, 1, "autocomplete='off' title='Check to have the device play a sound then the TCD alarm sounds.' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_playALSnd("plyALS", "Play TCD-alarm sound", settings.playALsnd, 1, "autocomplete='off' title='Check to have the device play a sound then the TCD alarm sounds.' type='checkbox'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 
 #ifdef FC_HAVEMQTT
@@ -350,11 +345,9 @@ void wifi_setup()
     wm.addParameter(&custom_sectstart);     // 6 (8)
     wm.addParameter(&custom_bttfnHint);
     wm.addParameter(&custom_tcdIP);
-    //wm.addParameter(&custom_wait4TCD);
     wm.addParameter(&custom_uGPS);
     wm.addParameter(&custom_uNM);
     wm.addParameter(&custom_uFPO);
-    //wm.addParameter(&custom_wFPO);
     
     wm.addParameter(&custom_sectstart);     // 4
     wm.addParameter(&custom_playTTSnd);
@@ -414,9 +407,7 @@ void wifi_setup()
         }
     }
     
-    //if(!atoi(settings.wait4TCD)) {
-        wifi_setup2();
-    //}
+    wifi_setup2();
 }
 
 void wifi_setup2()
@@ -599,6 +590,10 @@ void wifi_loop()
             mystrcpy(settings.wifiConTimeout, &custom_wifiConTimeout);
 
             strcpytrim(settings.tcdIP, custom_tcdIP.getValue());
+            if(strlen(settings.tcdIP) > 0) {
+                char *s = settings.tcdIP;
+                for ( ; *s; ++s) *s = tolower(*s);
+            }
 
             #ifdef FC_HAVEMQTT
             strcpytrim(settings.mqttServer, custom_mqttServer.getValue());
@@ -615,11 +610,9 @@ void wifi_loop()
             mystrcpy(settings.TCDpresent, &custom_TCDpresent);
             mystrcpy(settings.noETTOLead, &custom_noETTOL);
 
-            //mystrcpy(settings.wait4TCD, &custom_wait4TCD);
             mystrcpy(settings.useGPSS, &custom_uGPS);
             mystrcpy(settings.useNM, &custom_uNM);
             mystrcpy(settings.useFPO, &custom_uFPO);
-            //mystrcpy(settings.wait4FPOn, &custom_wFPO);
 
             mystrcpy(settings.playTTsnds, &custom_playTTSnd);
             mystrcpy(settings.skipTTBLAnim, &custom_sTTBLA);
@@ -645,11 +638,9 @@ void wifi_loop()
             strcpyCB(settings.TCDpresent, &custom_TCDpresent);
             strcpyCB(settings.noETTOLead, &custom_noETTOL);
 
-            //strcpyCB(settings.wait4TCD, &custom_wait4TCD);
             strcpyCB(settings.useGPSS, &custom_uGPS);
             strcpyCB(settings.useNM, &custom_uNM);
             strcpyCB(settings.useFPO, &custom_uFPO);
-            //strcpyCB(settings.wait4FPOn, &custom_wFPO);
 
             strcpyCB(settings.playTTsnds, &custom_playTTSnd);
             strcpyCB(settings.skipTTBLAnim, &custom_sTTBLA);
@@ -1047,7 +1038,7 @@ void updateConfigPortalValues()
     custom_wifiConTimeout.setValue(settings.wifiConTimeout, 2);
     custom_wifiConRetries.setValue(settings.wifiConRetries, 2);
 
-    custom_tcdIP.setValue(settings.tcdIP, 15);
+    custom_tcdIP.setValue(settings.tcdIP, 63);
 
     #ifdef FC_HAVEMQTT
     custom_mqttServer.setValue(settings.mqttServer, 79);
@@ -1066,11 +1057,9 @@ void updateConfigPortalValues()
     custom_TCDpresent.setValue(settings.TCDpresent, 1);
     custom_noETTOL.setValue(settings.noETTOLead, 1);
 
-    //custom_wait4TCD.setValue(settings.wait4TCD, 1);
     custom_uGPS.setValue(settings.useGPSS, 1);
     custom_uNM.setValue(settings.useNM, 1);
     custom_uFPO.setValue(settings.useFPO, 1);
-    //custom_wFPO.setValue(settings.wait4FPOn, 1);
 
     custom_playTTSnd.setValue(settings.playTTsnds, 1);
     custom_sTTBLA.setValue(settings.skipTTBLAnim, 1);
@@ -1097,11 +1086,9 @@ void updateConfigPortalValues()
     setCBVal(&custom_TCDpresent, settings.TCDpresent);
     setCBVal(&custom_noETTOL, settings.noETTOLead);
     
-    //setCBVal(&custom_wait4TCD, settings.wait4TCD);
     setCBVal(&custom_uGPS, settings.useGPSS);
     setCBVal(&custom_uNM, settings.useNM);
     setCBVal(&custom_uFPO, settings.useFPO);
-    //setCBVal(&custom_wFPO, settings.wait4FPOn);
 
     setCBVal(&custom_playTTSnd, settings.playTTsnds);
     setCBVal(&custom_sTTBLA, settings.skipTTBLAnim);

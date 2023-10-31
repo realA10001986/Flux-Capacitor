@@ -86,6 +86,11 @@
 
 /*  Changelog
  *
+ *  2023/10/31 (A10001986)
+ *    - BTTFN: User can now enter TCD's hostname instead of IP address. If hostname
+ *      is given, TCD must be on same local network. Uses multicast, not DNS.
+ *  2023/10/29 (A10001986)
+ *    - Remove unneeded stuff
  *  2023/10/05 (A10001986)
  *    - Add support for "wakeup" command (BTTFN/MQTT)
  *  2023/09/30 (A10001986)

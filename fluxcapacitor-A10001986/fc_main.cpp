@@ -118,7 +118,6 @@ static bool tcdNM = false;
 bool        fluxNM = false;
 static bool useFPO = false;
 static bool tcdFPO = false;
-static bool wait4FPOn = true;
 
 static bool skipttblanim = false;
 
@@ -276,6 +275,11 @@ static uint8_t       BTTFNfailCount = 0;
 static uint32_t      BTTFUDPID = 0;
 static unsigned long lastBTTFNpacket = 0;
 static bool          BTTFNBootTO = false;
+static bool          haveTCDIP = false;
+static IPAddress     bttfnTcdIP;
+#ifdef BTTFN_MC
+static uint32_t      tcdHostNameHash = 0;
+#endif  
 
 static int      iCmdIdx = 0;
 static int      oCmdIdx = 0;
@@ -348,7 +352,6 @@ void main_setup()
     useGPSS = (atoi(settings.useGPSS) > 0);
     useNM = (atoi(settings.useNM) > 0);
     useFPO = (atoi(settings.useFPO) > 0);
-    wait4FPOn = (atoi(settings.wait4FPOn) > 0);
     
     skipttblanim = (atoi(settings.skipTTBLAnim) > 0);
 
@@ -460,7 +463,7 @@ void main_setup()
     // If "Follow TCD fake power" is set,
     // stay silent and dark
 
-    if(useBTTFN && useFPO && wait4FPOn && (WiFi.status() == WL_CONNECTED)) {
+    if(useBTTFN && useFPO && (WiFi.status() == WL_CONNECTED)) {
 
         FPBUnitIsOn = false;
         tcdFPO = fpoOld = true;
@@ -2116,12 +2119,28 @@ static void bttfn_setup()
 {
     useBTTFN = false;
 
-    if(isIp(settings.tcdIP)) {
-        fcUDP = &bttfUDP;
-        fcUDP->begin(BTTF_DEFAULT_LOCAL_PORT);
-        BTTFNfailCount = 0;
-        useBTTFN = true;
+    // string empty? Disable BTTFN.
+    if(!settings.tcdIP[0])
+        return;
+
+    haveTCDIP = isIp(settings.tcdIP);
+    
+    if(!haveTCDIP) {
+        #ifdef BTTFN_MC
+        tcdHostNameHash = 0;
+        unsigned char *s = (unsigned char *)settings.tcdIP;
+        for ( ; *s; ++s) tcdHostNameHash = 37 * tcdHostNameHash + tolower(*s);
+        #else
+        return;
+        #endif
+    } else {
+        bttfnTcdIP.fromString(settings.tcdIP);
     }
+    
+    fcUDP = &bttfUDP;
+    fcUDP->begin(BTTF_DEFAULT_LOCAL_PORT);
+    BTTFNfailCount = 0;
+    useBTTFN = true;
 }
 
 void bttfn_loop()
@@ -2157,7 +2176,7 @@ static void BTTFNCheckPacket()
                 // the first 10 timeouts, after that
                 // the new request is only triggered
                 // in greater intervals via bttfn_loop().
-                if(BTTFNfailCount < 10) {
+                if(haveTCDIP && BTTFNfailCount < 10) {
                     BTTFNfailCount++;
                     BTTFNUpdateNow = 0;
                 }
@@ -2252,6 +2271,22 @@ static void BTTFNCheckPacket()
         // If it's our expected packet, no other is due for now
         BTTFNPacketDue = false;
 
+        #ifdef BTTFN_MC
+        if(BTTFUDPBuf[5] & 0x80) {
+            if(!haveTCDIP) {
+                bttfnTcdIP = fcUDP->remoteIP();
+                haveTCDIP = true;
+                #ifdef FC_DBG
+                Serial.printf("Discovered TCD IP %d.%d.%d.%d\n", bttfnTcdIP[0], bttfnTcdIP[1], bttfnTcdIP[2], bttfnTcdIP[3]);
+                #endif
+            } else {
+                #ifdef FC_DBG
+                Serial.println("Internal error - received unexpected DISCOVER response");
+                #endif
+            }
+        }
+        #endif
+
         if(BTTFUDPBuf[5] & 0x02) {
             gpsSpeed = (int16_t)(BTTFUDPBuf[18] | (BTTFUDPBuf[19] << 8));
         }
@@ -2318,13 +2353,31 @@ static void BTTFNSendPacket()
     //BTTFUDPBuf[5] |= 0x20;             // Query SID IP from TCD
     //BTTFUDPBuf[24] = BTTFN_TYPE_SID;
 
+    #ifdef BTTFN_MC
+    if(!haveTCDIP) {
+        BTTFUDPBuf[5] |= 0x80;
+        memcpy(BTTFUDPBuf + 31, (void *)&tcdHostNameHash, 4);
+    }
+    #endif
+
     uint8_t a = 0;
     for(int i = 4; i < BTTF_PACKET_SIZE - 1; i++) {
         a += BTTFUDPBuf[i] ^ 0x55;
     }
     BTTFUDPBuf[BTTF_PACKET_SIZE - 1] = a;
-    
-    fcUDP->beginPacket(settings.tcdIP, BTTF_DEFAULT_LOCAL_PORT);
+
+    #ifdef BTTFN_MC
+    if(haveTCDIP) {
+    #endif  
+        fcUDP->beginPacket(bttfnTcdIP, BTTF_DEFAULT_LOCAL_PORT);
+    #ifdef BTTFN_MC    
+    } else {
+        #ifdef SID_DBG
+        Serial.printf("Sending multicast (hostname hash %x)\n", tcdHostNameHash);
+        #endif
+        fcUDP->beginPacket("224.0.0.224", BTTF_DEFAULT_LOCAL_PORT + 1);
+    }
+    #endif
     fcUDP->write(BTTFUDPBuf, BTTF_PACKET_SIZE);
     fcUDP->endPacket();
 }
