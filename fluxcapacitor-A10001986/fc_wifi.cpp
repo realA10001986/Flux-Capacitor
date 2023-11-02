@@ -485,6 +485,12 @@ void wifi_setup2()
     }
 #endif
 
+    // Start the Config Portal. A WiFiScan does not
+    // disturb anything at this point hopefully.
+    if(WiFi.status() == WL_CONNECTED) {
+        wifiStartCP();
+    }
+
     wifiSetupDone = true;
 }
 
@@ -666,6 +672,8 @@ void wifi_loop()
 
         }
 
+        stopAudio();
+
         // Write settings if requested, or no settings file exists
         if(shouldSaveConfig > 1 || !checkConfigExists()) {
             write_settings();
@@ -674,8 +682,6 @@ void wifi_loop()
         shouldSaveConfig = 0;
 
         // Reset esp32 to load new settings
-
-        stopAudio();
         allOff();
 
         #ifdef FC_DBG
