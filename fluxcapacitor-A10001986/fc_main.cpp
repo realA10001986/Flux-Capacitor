@@ -366,11 +366,7 @@ void main_setup()
     } else if(playFLUX == 2) 
         fluxTimeout = FLUXM2_SECS*1000;
     
-    // Start the Config Portal. A WiFiScan does not
-    // disturb anything at this point.
-    if(WiFi.status() == WL_CONNECTED) {
-        wifiStartCP();
-    }
+    // [formerly started CP here]
 
     // Swap "box light" <> "GPIO14"
     PLforBL = (atoi(settings.usePLforBL) > 0);
@@ -459,6 +455,7 @@ void main_setup()
 
     // Initialize BTTF network
     bttfn_setup();
+    bttfn_loop();
 
     // If "Follow TCD fake power" is set,
     // stay silent and dark
