@@ -32,6 +32,13 @@
 
 #include "fc_global.h"
 
+#define ARDUINOJSON_USE_LONG_LONG 0
+#define ARDUINOJSON_USE_DOUBLE 0
+#define ARDUINOJSON_ENABLE_ARDUINO_STRING 0
+#define ARDUINOJSON_ENABLE_ARDUINO_STREAM 0
+#define ARDUINOJSON_ENABLE_STD_STREAM 0
+#define ARDUINOJSON_ENABLE_STD_STRING 0
+#define ARDUINOJSON_ENABLE_NAN 0
 #include <ArduinoJson.h>  // https://github.com/bblanchon/ArduinoJson
 #include <SD.h>
 #include <SPI.h>
@@ -142,6 +149,11 @@ static void formatFlashFS();
 
 static bool CopyIPParm(const char *json, char *text, uint8_t psize);
 
+static DeserializationError readJSONCfgFile(JsonDocument& json, File& configFile, const char *funcName);
+static bool writeJSONCfgFile(const JsonDocument& json, const char *fn, bool useSD, const char *funcName);
+static bool writeFileToSD(const char *fn, uint8_t *buf, int len);
+static bool writeFileToFS(const char *fn, uint8_t *buf, int len);
+
 /*
  * settings_setup()
  * 
@@ -184,6 +196,8 @@ void settings_setup()
       
         #ifdef FC_DBG
         Serial.println(F("ok, loading settings"));
+        int tBytes = SPIFFS.totalBytes(); int uBytes = SPIFFS.usedBytes();
+        Serial-printf("FlashFS: %d total, %d used\n", tBytes, uBytes);
         #endif
         
         if(SPIFFS.exists(cfgName)) {
@@ -291,6 +305,24 @@ void settings_setup()
     }
 }
 
+void unmount_fs()
+{
+    if(haveFS) {
+        SPIFFS.end();
+        #ifdef TC_DBG
+        Serial.println(F("Unmounted Flash FS"));
+        #endif
+        haveFS = false;
+    }
+    if(haveSD) {
+        SD.end();
+        #ifdef TC_DBG
+        Serial.println(F("Unmounted SD card"));
+        #endif
+        haveSD = false;
+    }
+}
+
 static bool read_settings(File configFile)
 {
     const char *funcName = "read_settings";
@@ -299,7 +331,7 @@ static bool read_settings(File configFile)
     //StaticJsonDocument<JSON_SIZE> json;
     DynamicJsonDocument json(JSON_SIZE);
     
-    DeserializationError error = deserializeJson(json, configFile);
+    DeserializationError error = readJSONCfgFile(json, configFile, funcName);
 
     jsonSize = json.memoryUsage();
     if(jsonSize > JSON_SIZE) {
@@ -311,8 +343,6 @@ static bool read_settings(File configFile)
           Serial.printf("%s: WARNING: JSON_SIZE needs to be adapted **************\n", funcName);
     }
     Serial.printf("%s: Size of document: %d (JSON_SIZE %d)\n", funcName, jsonSize, JSON_SIZE);
-    serializeJson(json, Serial);
-    Serial.println(F(" "));
     #endif
 
     if(!error) {
@@ -398,60 +428,44 @@ void write_settings()
     Serial.printf("%s: Writing config file\n", funcName);
     #endif
 
-    json["playFLUXsnd"] = settings.playFLUXsnd;
-    json["ssTimer"] = settings.ssTimer;
+    json["playFLUXsnd"] = (const char *)settings.playFLUXsnd;
+    json["ssTimer"] = (const char *)settings.ssTimer;
 
-    json["usePLforBL"] = settings.usePLforBL;
-    json["useVknob"] = settings.useVknob;
-    json["useSknob"] = settings.useSknob;
-    json["disDIR"] = settings.disDIR;
+    json["usePLforBL"] = (const char *)settings.usePLforBL;
+    json["useVknob"] = (const char *)settings.useVknob;
+    json["useSknob"] = (const char *)settings.useSknob;
+    json["disDIR"] = (const char *)settings.disDIR;
 
-    json["hostName"] = settings.hostName;
-    json["systemID"] = settings.systemID;
-    json["appw"] = settings.appw;
-    json["wifiConRetries"] = settings.wifiConRetries;
-    json["wifiConTimeout"] = settings.wifiConTimeout;
+    json["hostName"] = (const char *)settings.hostName;
+    json["systemID"] = (const char *)settings.systemID;
+    json["appw"] = (const char *)settings.appw;
+    json["wifiConRetries"] = (const char *)settings.wifiConRetries;
+    json["wifiConTimeout"] = (const char *)settings.wifiConTimeout;
 
-    json["TCDpresent"] = settings.TCDpresent;
-    json["noETTOLead"] = settings.noETTOLead;
+    json["TCDpresent"] = (const char *)settings.TCDpresent;
+    json["noETTOLead"] = (const char *)settings.noETTOLead;
     
-    json["tcdIP"] = settings.tcdIP;
-    json["useGPSS"] = settings.useGPSS;
-    json["useNM"] = settings.useNM;
-    json["useFPO"] = settings.useFPO;
+    json["tcdIP"] = (const char *)settings.tcdIP;
+    json["useGPSS"] = (const char *)settings.useGPSS;
+    json["useNM"] = (const char *)settings.useNM;
+    json["useFPO"] = (const char *)settings.useFPO;
 
-    json["playTTsnds"] = settings.playTTsnds;
-    json["skipTTBLAnim"] = settings.skipTTBLAnim;
-    json["playALsnd"] = settings.playALsnd;
+    json["playTTsnds"] = (const char *)settings.playTTsnds;
+    json["skipTTBLAnim"] = (const char *)settings.skipTTBLAnim;
+    json["playALsnd"] = (const char *)settings.playALsnd;
 
     #ifdef FC_HAVEMQTT
-    json["useMQTT"] = settings.useMQTT;
-    json["mqttServer"] = settings.mqttServer;
-    json["mqttUser"] = settings.mqttUser;
+    json["useMQTT"] = (const char *)settings.useMQTT;
+    json["mqttServer"] = (const char *)settings.mqttServer;
+    json["mqttUser"] = (const char *)settings.mqttUser;
     #endif
 
-    json["shuffle"] = settings.shuffle;
+    json["shuffle"] = (const char *)settings.shuffle;
     
-    json["CfgOnSD"] = settings.CfgOnSD;
-    //json["sdFreq"] = settings.sdFreq;
+    json["CfgOnSD"] = (const char *)settings.CfgOnSD;
+    //json["sdFreq"] = (const char *)settings.sdFreq;
 
-    File configFile = FlashROMode ? SD.open(cfgName, FILE_WRITE) : SPIFFS.open(cfgName, FILE_WRITE);
-
-    if(configFile) {
-
-        #ifdef FC_DBG
-        serializeJson(json, Serial);
-        Serial.println(F(" "));
-        #endif
-        
-        serializeJson(json, configFile);
-        configFile.close();
-
-    } else {
-
-        Serial.printf("%s: %s\n", funcName, failFileWrite);
-
-    }
+    writeJSONCfgFile(json, cfgName, FlashROMode, funcName);
 }
 
 bool checkConfigExists()
@@ -567,28 +581,13 @@ static bool openCfgFileRead(const char *fn, File& f, bool SDonly = false)
     return haveConfigFile;
 }
 
-static bool openCfgFileWrite(const char *fn, File& f, bool SDonly = false)
-{
-    bool haveConfigFile;
-    
-    if(configOnSD || SDonly) {
-        haveConfigFile = (f = SD.open(fn, FILE_WRITE));
-    } else if(haveFS) {
-        haveConfigFile = (f = SPIFFS.open(fn, FILE_WRITE));
-    }
-
-    return haveConfigFile;
-}
-
 /*
  *  Load/save the Volume
  */
 
 bool loadCurVolume()
 {
-    #ifdef FC_DBG
     const char *funcName = "loadCurVolume";
-    #endif
     char temp[6];
     File configFile;
 
@@ -605,7 +604,8 @@ bool loadCurVolume()
 
     if(openCfgFileRead(volCfgName, configFile)) {
         StaticJsonDocument<512> json;
-        if(!deserializeJson(json, configFile)) {
+        //if(!deserializeJson(json, configFile)) {
+        if(!readJSONCfgFile(json, configFile, funcName)) {
             if(!CopyCheckValidNumParm(json["volume"], temp, sizeof(temp), 0, 19, DEFAULT_VOLUME)) {
                 curSoftVol = atoi(temp);
             }
@@ -624,7 +624,6 @@ void saveCurVolume(bool useCache)
 {
     const char *funcName = "saveCurVolume";
     char buf[6];
-    File configFile;
     StaticJsonDocument<512> json;
 
     if(useCache && (prevSavedVol == curSoftVol)) {
@@ -639,24 +638,11 @@ void saveCurVolume(bool useCache)
         return;
     }
 
-    #ifdef FC_DBG
-    Serial.printf("%s: Writing to %s\n", funcName, configOnSD ? "SD" : "flash FS");
-    #endif
-
     sprintf(buf, "%d", curSoftVol);
-    json["volume"] = (char *)buf;
+    json["volume"] = (const char *)buf;
 
-    #ifdef FC_DBG
-    serializeJson(json, Serial);
-    Serial.println(F(" "));
-    #endif
-
-    if(openCfgFileWrite(volCfgName, configFile)) {
-        serializeJson(json, configFile);
-        configFile.close();
+    if(writeJSONCfgFile(json, volCfgName, configOnSD, funcName)) {
         prevSavedVol = curSoftVol;
-    } else {
-        Serial.printf("%s: %s\n", funcName, failFileWrite);
     }
 }
 
@@ -666,9 +652,7 @@ void saveCurVolume(bool useCache)
 
 bool loadCurSpeed()
 {
-    #ifdef FC_DBG
     const char *funcName = "loadCurSpeed";
-    #endif
     char temp[6];
     File configFile;
 
@@ -685,7 +669,8 @@ bool loadCurSpeed()
 
     if(openCfgFileRead(spdCfgName, configFile)) {
         StaticJsonDocument<512> json;
-        if(!deserializeJson(json, configFile)) {
+        //if(!deserializeJson(json, configFile)) {
+        if(!readJSONCfgFile(json, configFile, funcName)) {
             if(!CopyCheckValidNumParm(json["speed"], temp, sizeof(temp), FC_SPD_MAX, FC_SPD_MIN, FC_SPD_IDLE)) {
                 lastIRspeed = atoi(temp);
             }
@@ -704,7 +689,6 @@ void saveCurSpeed(bool useCache)
 {
     const char *funcName = "saveCurSpeed";
     char buf[6];
-    File configFile;
     StaticJsonDocument<512> json;
 
     if(useCache && (prevSavedSpd == lastIRspeed)) {
@@ -719,24 +703,11 @@ void saveCurSpeed(bool useCache)
         return;
     }
 
-    #ifdef FC_DBG
-    Serial.printf("%s: Writing to %s\n", funcName, configOnSD ? "SD" : "flash FS");
-    #endif
-
     sprintf(buf, "%d", lastIRspeed);
-    json["speed"] = (char *)buf;
+    json["speed"] = (const char *)buf;
 
-    #ifdef FC_DBG
-    serializeJson(json, Serial);
-    Serial.println(F(" "));
-    #endif
-
-    if(openCfgFileWrite(spdCfgName, configFile)) {
-        serializeJson(json, configFile);
-        configFile.close();
+    if(writeJSONCfgFile(json, spdCfgName, configOnSD, funcName)) {
         prevSavedSpd = lastIRspeed;
-    } else {
-        Serial.printf("%s: %s\n", funcName, failFileWrite);
     }
 }
 
@@ -746,9 +717,7 @@ void saveCurSpeed(bool useCache)
 
 bool loadBLLevel()
 {
-    #ifdef FC_DBG
     const char *funcName = "loadBLLevel";
-    #endif
     char temp[6];
     File configFile;
 
@@ -765,7 +734,8 @@ bool loadBLLevel()
 
     if(openCfgFileRead(bllCfgName, configFile)) {
         StaticJsonDocument<512> json;
-        if(!deserializeJson(json, configFile)) {
+        //if(!deserializeJson(json, configFile)) {
+        if(!readJSONCfgFile(json, configFile, funcName)) {
             if(!CopyCheckValidNumParm(json["mbll"], temp, sizeof(temp), 0, 4, 0)) {
                 minBLL = atoi(temp);
             }
@@ -784,7 +754,6 @@ void saveBLLevel(bool useCache)
 {
     const char *funcName = "saveBLLevel";
     char buf[6];
-    File configFile;
     StaticJsonDocument<512> json;
 
     if(useCache && (prevSavedBLL == minBLL)) {
@@ -799,24 +768,11 @@ void saveBLLevel(bool useCache)
         return;
     }
 
-    #ifdef FC_DBG
-    Serial.printf("%s: Writing to %s\n", funcName, configOnSD ? "SD" : "flash FS");
-    #endif
-
     sprintf(buf, "%d", minBLL);
-    json["mbll"] = (char *)buf;
+    json["mbll"] = (const char *)buf;
 
-    #ifdef FC_DBG
-    serializeJson(json, Serial);
-    Serial.println(F(" "));
-    #endif
-
-    if(openCfgFileWrite(bllCfgName, configFile)) {
-        serializeJson(json, configFile);
-        configFile.close();
+    if(writeJSONCfgFile(json, bllCfgName, configOnSD, funcName)) {
         prevSavedBLL = minBLL;
-    } else {
-        Serial.printf("%s: %s\n", funcName, failFileWrite);
     }
 }
 
@@ -826,9 +782,7 @@ void saveBLLevel(bool useCache)
 
 bool loadIdlePat()
 {
-    #ifdef FC_DBG
     const char *funcName = "loadIdlePat";
-    #endif
     char temp[6];
     File configFile;
 
@@ -841,7 +795,8 @@ bool loadIdlePat()
 
     if(openCfgFileRead(ipaCfgName, configFile, true)) {
         StaticJsonDocument<512> json;
-        if(!deserializeJson(json, configFile)) {
+        //if(!deserializeJson(json, configFile)) {
+        if(!readJSONCfgFile(json, configFile, funcName)) {
             if(!CopyCheckValidNumParm(json["pattern"], temp, sizeof(temp), 0, 9, 0)) {
                 fluxPat = (uint8_t)atoi(temp);
             }
@@ -860,7 +815,6 @@ void saveIdlePat(bool useCache)
 {
     const char *funcName = "saveIdlePat";
     char buf[6];
-    File configFile;
     StaticJsonDocument<512> json;
 
     if(useCache && (prevSavedIM == fluxPat)) {
@@ -878,19 +832,10 @@ void saveIdlePat(bool useCache)
     }
 
     sprintf(buf, "%d", fluxPat);
-    json["pattern"] = (char *)buf;
+    json["pattern"] = (const char *)buf;
 
-    #ifdef FC_DBG
-    serializeJson(json, Serial);
-    Serial.println(F(" "));
-    #endif
-
-    if(openCfgFileWrite(ipaCfgName, configFile, true)) {
-        serializeJson(json, configFile);
-        configFile.close();
+    if(writeJSONCfgFile(json, ipaCfgName, true, funcName)) {
         prevSavedIM = fluxPat;
-    } else {
-        Serial.printf("%s: %s\n", funcName, failFileWrite);
     }
 }
 
@@ -901,9 +846,7 @@ void saveIdlePat(bool useCache)
 
 bool loadIRLock()
 {
-    #ifdef FC_DBG
     const char *funcName = "loadIRLock";
-    #endif
     char temp[6];
     File configFile;
 
@@ -920,7 +863,8 @@ bool loadIRLock()
 
     if(openCfgFileRead(irlCfgName, configFile)) {
         StaticJsonDocument<512> json;
-        if(!deserializeJson(json, configFile)) {
+        //if(!deserializeJson(json, configFile)) {
+        if(!readJSONCfgFile(json, configFile, funcName)) {
             if(!CopyCheckValidNumParm(json["lock"], temp, sizeof(temp), 0, 1, 0)) {
                 irLocked = (atoi(temp) > 0);
             }
@@ -939,7 +883,6 @@ void saveIRLock(bool useCache)
 {
     const char *funcName = "saveIRLock";
     char buf[6];
-    File configFile;
     StaticJsonDocument<512> json;
 
     if(useCache && (prevSavedIRL == irLocked)) {
@@ -954,24 +897,11 @@ void saveIRLock(bool useCache)
         return;
     }
 
-    #ifdef FC_DBG
-    Serial.printf("%s: Writing to %s\n", funcName, configOnSD ? "SD" : "flash FS");
-    #endif
-
     sprintf(buf, "%d", irLocked ? 1 : 0);
-    json["lock"] = (char *)buf;
+    json["lock"] = (const char *)buf;
 
-    #ifdef FC_DBG
-    serializeJson(json, Serial);
-    Serial.println(F(" "));
-    #endif
-
-    if(openCfgFileWrite(irlCfgName, configFile)) {
-        serializeJson(json, configFile);
-        configFile.close();
+    if(writeJSONCfgFile(json, irlCfgName, configOnSD, funcName)) {
         prevSavedIRL = irLocked;
-    } else {
-        Serial.printf("%s: %s\n", funcName, failFileWrite);
     }
 }
 
@@ -981,10 +911,12 @@ void saveIRLock(bool useCache)
 
 static bool loadIRkeysFromFile(File configFile, int index)
 {
-    StaticJsonDocument<1024> json;
-    DeserializationError err = deserializeJson(json, configFile);
     uint32_t ir_keys[NUM_IR_KEYS];
+    StaticJsonDocument<1024> json;
 
+    //DeserializationError err = deserializeJson(json, configFile);
+    DeserializationError err = readJSONCfgFile(json, configFile, "loadIRkeysFromFile");
+    
     if(!err) {
         size_t jsonSize = json.memoryUsage();
         int j = 0;
@@ -1043,7 +975,6 @@ static bool loadIRKeys()
 bool saveIRKeys()
 {
     StaticJsonDocument<1024> json;
-    File configFile;
     uint32_t ir_keys[NUM_IR_KEYS];
     char buf[12];
 
@@ -1054,20 +985,10 @@ bool saveIRKeys()
 
     for(int i = 0; i < NUM_IR_KEYS; i++) {
         sprintf(buf, "0x%08x", ir_keys[i]);
-        json[(const char *)jsonNames[i]] = buf;
+        json[(const char *)jsonNames[i]] = buf;    // no const cast, needs to be copied
     }
 
-    #ifdef FC_DBG
-    serializeJson(json, Serial);
-    Serial.println(F(" "));
-    #endif
-
-    if(openCfgFileWrite(irCfgName, configFile)) {
-        serializeJson(json, configFile);
-        configFile.close();
-    } else {
-        Serial.printf("saveIRKeys: %s\n", failFileWrite);
-    }
+    writeJSONCfgFile(json, irCfgName, configOnSD, "saveIRKeys");
     
     return true;
 }
@@ -1123,7 +1044,8 @@ bool loadMusFoldNum()
         File configFile = SD.open(musCfgName, "r");
         if(configFile) {
             StaticJsonDocument<512> json;
-            if(!deserializeJson(json, configFile)) {
+            //if(!deserializeJson(json, configFile)) {
+            if(!readJSONCfgFile(json, configFile, "loadMusFoldNum")) {
                 if(!CopyCheckValidNumParm(json["folder"], temp, sizeof(temp), 0, 9, 0)) {
                     musFolderNum = atoi(temp);
                     writedefault = false;
@@ -1152,16 +1074,9 @@ void saveMusFoldNum()
         return;
 
     sprintf(buf, "%1d", musFolderNum);
-    json["folder"] = buf;
-    
-    File configFile = SD.open(musCfgName, FILE_WRITE);
+    json["folder"] = (const char *)buf;
 
-    if(configFile) {
-        serializeJson(json, configFile);
-        configFile.close();
-    } else {
-        Serial.printf("%s: %s\n", funcName, failFileWrite);
-    }
+    writeJSONCfgFile(json, musCfgName, true, funcName);
 }
 
 /*
@@ -1184,12 +1099,8 @@ bool loadIpSettings()
         if(configFile) {
 
             StaticJsonDocument<512> json;
-            DeserializationError error = deserializeJson(json, configFile);
-
-            #ifdef FC_DBG
-            serializeJson(json, Serial);
-            Serial.println(F(" "));
-            #endif
+            //DeserializationError error = deserializeJson(json, configFile);
+            DeserializationError error = readJSONCfgFile(json, configFile, "loadIpSettings");
 
             if(!error) {
 
@@ -1251,29 +1162,13 @@ void writeIpSettings()
 
     if(strlen(ipsettings.ip) == 0)
         return;
-
-    #ifdef FC_DBG
-    Serial.println(F("writeIpSettings: Writing file"));
-    #endif
     
-    json["IpAddress"] = ipsettings.ip;
-    json["Gateway"] = ipsettings.gateway;
-    json["Netmask"] = ipsettings.netmask;
-    json["DNS"] = ipsettings.dns;
+    json["IpAddress"] = (const char *)ipsettings.ip;
+    json["Gateway"]   = (const char *)ipsettings.gateway;
+    json["Netmask"]   = (const char *)ipsettings.netmask;
+    json["DNS"]       = (const char *)ipsettings.dns;
 
-    File configFile = FlashROMode ? SD.open(ipCfgName, FILE_WRITE) : SPIFFS.open(ipCfgName, FILE_WRITE);
-
-    #ifdef FC_DBG
-    serializeJson(json, Serial);
-    Serial.println(F(" "));
-    #endif
-
-    if(configFile) {
-        serializeJson(json, configFile);
-        configFile.close();
-    } else {
-        Serial.printf("writeIpSettings: %s\n", failFileWrite);
-    }
+    writeJSONCfgFile(json, ipCfgName, FlashROMode, "writeIpSettings");
 }
 
 void deleteIpSettings()
@@ -1395,6 +1290,9 @@ void doCopyAudioFiles()
         delete_ID_file();
 
     mydelay(500, false);
+
+    unmount_fs();
+    delay(500);
     
     esp_restart();
 }
@@ -1410,6 +1308,7 @@ bool copy_audio_files()
 
     for(i = 0; i < NUM_AUDIOFILES - 1; i++) {
         open_and_copy(audioFiles[i], haveErr);
+        if(haveErr) break;
     }
 
     return (haveErr == 0);
@@ -1531,4 +1430,96 @@ void rewriteSecondarySettings()
     saveIRKeys();
     
     configOnSD = oldconfigOnSD;
+}
+
+static DeserializationError readJSONCfgFile(JsonDocument& json, File& configFile, const char *funcName)
+{
+    char *buf = NULL;
+    size_t bufSize = configFile.size();
+    DeserializationError ret;
+
+    if(!(buf = (char *)malloc(bufSize + 1))) {
+        Serial.printf("%s: Buffer allocation failed (%d)\n", funcName, bufSize);
+        return DeserializationError::NoMemory;
+    }
+
+    memset(buf, 0, bufSize + 1);
+
+    configFile.read((uint8_t *)buf, bufSize);
+
+    #ifdef FC_DBG
+    Serial.println((const char *)buf);
+    #endif
+    
+    ret = deserializeJson(json, buf);
+
+    free(buf);
+
+    return ret;
+}
+
+static bool writeJSONCfgFile(const JsonDocument& json, const char *fn, bool useSD, const char *funcName)
+{
+    char *buf;
+    size_t bufSize = measureJson(json);
+    bool success = false;
+
+    if(!(buf = (char *)malloc(bufSize + 1))) {
+        Serial.printf("%s: Buffer allocation failed (%d)\n", funcName, bufSize);
+        return false;
+    }
+
+    memset(buf, 0, bufSize + 1);
+    serializeJson(json, buf, bufSize);
+
+    #ifdef FC_DBG
+    Serial.printf("Writing %s to %s\n", fn, useSD ? "SD" : "FS");
+    Serial.println((const char *)buf);
+    #endif
+
+    if(useSD) {
+        success = writeFileToSD(fn, (uint8_t *)buf, (int)bufSize);
+    } else {
+        success = writeFileToFS(fn, (uint8_t *)buf, (int)bufSize);
+    }
+
+    free(buf);
+
+    if(!success) {
+        Serial.printf("%s: %s\n", funcName, failFileWrite);
+    }
+
+    return success;
+}
+
+static bool writeFileToSD(const char *fn, uint8_t *buf, int len)
+{
+    size_t bytesw;
+    
+    if(!haveSD)
+        return false;
+
+    File myFile = SD.open(fn, FILE_WRITE);
+    if(myFile) {
+        bytesw = myFile.write(buf, len);
+        myFile.close();
+        return (bytesw == len);
+    } else
+        return false;
+}
+
+static bool writeFileToFS(const char *fn, uint8_t *buf, int len)
+{
+    size_t bytesw;
+    
+    if(!haveFS)
+        return false;
+
+    File myFile = SPIFFS.open(fn, FILE_WRITE);
+    if(myFile) {
+        bytesw = myFile.write(buf, len);
+        myFile.close();
+        return (bytesw == len);
+    } else
+        return false;
 }

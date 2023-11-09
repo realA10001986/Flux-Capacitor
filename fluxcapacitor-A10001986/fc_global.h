@@ -12,8 +12,8 @@
 #define _FC_GLOBAL_H
 
 // Version strings.
-#define FC_VERSION       "V1.18"
-#define FC_VERSION_EXTRA "NOV022023"
+#define FC_VERSION       "V1.19"
+#define FC_VERSION_EXTRA "NOV062023"
 
 //#define FC_DBG              // debug output on Serial
 
@@ -26,6 +26,9 @@
 // <hostname> is configurable in the Config Portal
 // This needs to be commented if WiFiManager provides mDNS
 #define FC_MDNS
+
+// Uncomment when using WiFiManager 2.0.17 or later
+//#define WIFIMANAGER_2_0_17
 
 // Uncomment this if WiFiManager has mDNS enabled
 //#define FC_WM_HAS_MDNS          
@@ -43,10 +46,6 @@
  ***                           Miscellaneous                           ***
  *************************************************************************/
 
-// Uncomment this if using a FC control board v1.2
-// Comment for all later versions
-//#define BOARD_1_2
-
 // Use SPIFFS (if defined) or LittleFS (if undefined; esp32-arduino >= 2.x)
 //#define USE_SPIFFS
 
@@ -58,6 +57,10 @@
 
 // Uncomment to include BTTFN discover support (multicast)
 #define BTTFN_MC
+
+// Uncomment this if using a FC control board v1.2
+// Comment for all later versions
+//#define BOARD_1_2
 
 /*************************************************************************
  ***                  esp32-arduino version detection                  ***

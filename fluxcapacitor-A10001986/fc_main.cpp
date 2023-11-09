@@ -1751,7 +1751,8 @@ static bool execute(bool isIR)
                 endIRfeedback();
                 mp_stop();
                 stopAudio();
-                delay(50);
+                unmount_fs();
+                delay(500);
                 esp_restart();
             }
             doBadInp = true;
