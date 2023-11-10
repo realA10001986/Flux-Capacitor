@@ -375,7 +375,7 @@ Note that the TCD's firmware must be up to date for BTTFN. You can use [this](ht
 
 ![BTTFN connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/89ecaca0-a627-4a8a-a253-3d72c6132da3)
 
-In order to connect your FC to the TCD using BTTFN, just enter the TCD's IP address or hostname in the **_IP address or hostname of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required. Note that you need TCD firmware 2.9.99 or later for using a hostname; previous versions only work with an IP address.
+In order to connect your FC to the TCD using BTTFN, just enter the TCD's IP address or hostname in the **_IP address or hostname of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required. Note that you need TCD firmware 2.9.1 or later for using a hostname; previous versions only work with an IP address.
   
 Afterwards, the FC and the TCD can communicate wirelessly and 
 - play time travel sequences in sync,
