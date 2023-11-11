@@ -12,7 +12,7 @@ Features include
 - movie-accurate default flux sequence, plus 9 alternative flux sequences
 - Optional [flux](#the-flux-sound) sound (4 modes)
 - [Time Travel](#time-travel) function, triggered by button, [Time Circuits Display](https://tcd.backtothefutu.re) (TCD) or via [MQTT](#home-assistant--mqtt)
-- [IR remote controlled](#ir-remote-control); can learn keys from custom remote
+- [IR remote controlled](#ir-remote-control); can learn keys from third-party remote
 - [Music player](#the-music-player): Play mp3 files located on an SD card
 - [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player
 - Advanced network-accessible [Config Portal](#the-config-portal) for setup with mDNS support for easy access (http://flux.local, hostname configurable)
