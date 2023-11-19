@@ -110,8 +110,11 @@ uint16_t networkLead   = ETTO_LEAD;
 
 static bool useGPSS     = false;
 static bool usingGPSS   = false;
-static int16_t gpsSpeed = -1;
-static int16_t lastGPSspeed = -2;
+static int16_t gpsSpeed       = -1;
+static int16_t lastGPSspeed   = -2;
+static int16_t targetGPSSpeed = -2;
+static int16_t usedGPSSpeed   = 0;
+static unsigned long lastGPSchange = 0;
 
 static bool useNM = false;
 static bool tcdNM = false;
@@ -300,6 +303,7 @@ static uint16_t getRawSpeed();
 static void     setPotSpeed();
 
 static void timeTravel(bool TCDtriggered, uint16_t P0Dur);
+static int convertGPSSpeed(int16_t spd);
 
 static void ttkeyScan();
 static void TTKeyPressed();
@@ -612,24 +616,48 @@ void main_loop()
         handleRemoteCommand();
     }
 
-    if(FPBUnitIsOn) {
-        if(useGPSS && !TTrunning && !IRLearning) {
-            if(gpsSpeed >= 0) {
-                usingGPSS = true;
-    
-                // GPS speeds 0-87 translate into fc LED speeds IDLE - 3; 88+ => 2
-                uint16_t temp = (gpsSpeed >= 88) ? 2 : ((87 - gpsSpeed) * (FC_SPD_IDLE-3) / 87) + 3;
-                if(temp != lastGPSspeed) {
-                    fcLEDs.setSpeed(temp);
-                    lastGPSspeed = temp;
+    if(FPBUnitIsOn && useGPSS) {
+      
+        if(gpsSpeed >= 0) {
+          
+            usingGPSS = true;
+
+            if(gpsSpeed != targetGPSSpeed) {
+                targetGPSSpeed = gpsSpeed;
+                wakeup();
+            }
+
+            if(now - lastGPSchange > 200) {
+              
+                if(usedGPSSpeed != targetGPSSpeed) {
+                    if(abs(usedGPSSpeed - targetGPSSpeed) > 5) {
+                        usedGPSSpeed = (usedGPSSpeed + targetGPSSpeed) / 2;
+                    } else {
+                        usedGPSSpeed = targetGPSSpeed;
+                    }
                 }
-    
-            } else {
-                if(usingGPSS) {
-                    usingGPSS = false;
-                    lastGPSspeed = -2;
-                    if(!useSKnob) {
+                
+                if(!TTrunning) {
+                    uint16_t temp = convertGPSSpeed(usedGPSSpeed);
+                    if(temp != lastGPSspeed) {
+                        fcLEDs.setSpeed(temp);
+                        lastGPSspeed = temp;
+                    }
+                }
+
+                lastGPSchange = now;
+            }
+
+        } else {
+            if(usingGPSS) {
+                usingGPSS = false;
+                lastGPSspeed = targetGPSSpeed = -2;
+                usedGPSSpeed = 0;
+                if(!useSKnob) {
+                    if(!TTrunning) { 
                         fcLEDs.setSpeed(lastIRspeed);
+                    } else {
+                        TTSSpd = lastIRspeed;
                     }
                 }
             }
@@ -773,6 +801,12 @@ void main_loop()
                     TTP2 = true;
                     cDone = bDone = fDone = false;
                     TTfUpdNow = TTcUpdNow = TTbUpdNow = now;
+                    // For GPS and RotEnc, let normal loop take
+                    // care of returning to "current" speed; here
+                    // we only switch down one notch.
+                    if(usingGPSS && gpsSpeed >= 0) {
+                          TTSSpd = 3;
+                    }
                     if(playTTsounds) {
                         if(!networkAbort) {
                             play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
@@ -812,6 +846,7 @@ void main_loop()
                 }
 
                 if(!fDone && now - TTfUpdNow >= 250) {
+
                     if((t = fcLEDs.getSpeed()) < TTSSpd) {
                         if(t >= 50)      t += 50;
                         else if(t >= 10) t += 10;
@@ -1143,6 +1178,12 @@ static void timeTravel(bool TCDtriggered, uint16_t P0Dur)
             TTFInt = 0;
         }
     }
+}
+
+static int convertGPSSpeed(int16_t spd)
+{
+    // GPS speeds 0-87 translate into fc LED speeds IDLE - 3; 88+ => 3 (2 reserved for tt)
+    return (spd >= 88) ? 3 : ((87 - spd) * (FC_SPD_IDLE-3) / 87) + 3;
 }
 
 /*
