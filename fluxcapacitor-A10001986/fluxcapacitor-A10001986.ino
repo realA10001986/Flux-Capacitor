@@ -91,6 +91,9 @@
 
 /*  Changelog
  *
+ *  2023/11/19 (A10001986)
+ *    - Wake up on GPS/RotEnc speed change
+ *    - Soften/smoothen GPS/RotEnc speed/Flux Chase speed changes
  *  2023/11/06 (A10001986)
  *    - Abort audio file installer on first error
  *  2023/11/05 (A10001986)

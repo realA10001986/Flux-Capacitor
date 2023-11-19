@@ -61,6 +61,9 @@ void PWMLED::begin(uint8_t ledChannel, uint32_t freq, uint8_t resolution, uint8_
     // Attach channel to GPIO
     ledcAttachPin(_pwm_pin, _chnl);
 
+    // For 3.x (chnl unused)
+    //ledcAttach(_pwm_pin, _freq, _res);
+
     // Set DC to 0
     setDC(0);
 }
@@ -69,6 +72,7 @@ void PWMLED::setDC(uint32_t dutyCycle)
 {
     _curDutyCycle = dutyCycle;
     ledcWrite(_chnl, dutyCycle);
+    //ledcWrite(_pwm_pin, dutyCycle); // For 3.x
 }
 
 uint32_t PWMLED::getDC()
