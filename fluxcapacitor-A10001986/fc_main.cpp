@@ -2328,6 +2328,7 @@ static void BTTFNCheckPacket()
 
         if(BTTFUDPBuf[5] & 0x02) {
             gpsSpeed = (int16_t)(BTTFUDPBuf[18] | (BTTFUDPBuf[19] << 8));
+            if(gpsSpeed > 88) gpsSpeed = 88;
         }
         if(BTTFUDPBuf[5] & 0x10) {
             tcdNM  = (BTTFUDPBuf[26] & 0x01) ? true : false;
