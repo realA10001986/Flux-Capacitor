@@ -91,6 +91,11 @@
 
 /*  Changelog
  *
+ *  2023/11/20 (A10001986)
+ *    - More enhancements to speed changes
+ *    - Fix: Wake up only if fake power is on
+ *    - Suppress IR while center led is on as it apparently causes erroneous 
+ *      pseudo-transmissions.
  *  2023/11/19 (A10001986)
  *    - Wake up on GPS/RotEnc speed change
  *    - Soften/smoothen GPS/RotEnc speed/Flux Chase speed changes
