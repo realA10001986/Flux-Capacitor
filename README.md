@@ -371,6 +371,10 @@ Note that a wired connection only allows for synchronized time travel sequences,
 
 The TCD can communicate with the FC wirelessly, via WiFi. It can send out information about a time travel and an alarm, and the FC queries the TCD for speed and some other data. Furthermore, the TCD's keypad can be used to remote-control the FC.
 
+| [![Watch the video](https://img.youtube.com/vi/u9oTVXUIOXA/0.jpg)](https://youtu.be/u9oTVXUIOXA) |
+|:--:|
+| Click to watch the video |
+
 Note that the TCD's firmware must be up to date for BTTFN. You can use [this](http://tcd.backtothefutu.re) one or CircuitSetup's release 2.9 or later.
 
 ![BTTFN connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/89ecaca0-a627-4a8a-a253-3d72c6132da3)
