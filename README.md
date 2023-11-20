@@ -571,9 +571,9 @@ If you connect your FC to the TCD's access point ("TCD-AP"), the TCD's IP addres
 
 ##### &#9654; Change chase speed with GPS speed
 
-If your TCD is equipped with a GPS sensor, the FC can adapt its chase speed to current GPS speed. This option selects if GPS speed should be used for chase speed.
+If this option is checked and your TCD is equipped with a GPS sensor or a rotary encoder, the FC will adapt its chase speed to current GPS speed or the reading of the encoder, respectively. 
 
-While the FC receives GPS speed from the TCD, IR controls for chase speed are not entirely ignored: They have no visual effect, but they are saved.
+While the FC receives GPS speed (or the reading from a rotary encoder) from the TCD, IR controls for chase speed are not entirely ignored: They have no visual effect, but they are saved.
 
 ##### &#9654; Follow TCD night-mode
 
