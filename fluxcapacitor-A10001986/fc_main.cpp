@@ -66,10 +66,10 @@ static long prev_avg, prev_raw, prev_raw2;
 #define POT_RESOLUTION 9
 #define POT_GRAN       45
 static const uint16_t potSpeeds[POT_GRAN] = {
-      1,   2,   3,   4,   5,   6,   7,   8,   9,  10,
-     11,  12,  13,  14,  15,  20,  25,  30,  35,  40,
-     45,  50,  55,  60,  65,  70,  75,  80,  85,  90,
-    100, 110, 120, 130, 150, 170, 190, 210, 230, 250, 
+      3,   3,   3,   4,   5,   6,   7,   8,   9,  10,
+     11,  12,  13,  14,  15,  16,  17,  18,  19,  20, 
+     25,  30,  35,  40,  45,  50,  55,  60,  65,  70, 
+     80,  90, 100, 110, 120, 140, 160, 180, 200, 250,
     300, 350, 400, 450, 500
 };
 
@@ -111,9 +111,7 @@ uint16_t networkLead   = ETTO_LEAD;
 static bool useGPSS     = false;
 static bool usingGPSS   = false;
 static int16_t gpsSpeed       = -1;
-static int16_t lastGPSspeed   = -2;
-static int16_t targetGPSSpeed = -2;
-static int16_t usedGPSSpeed   = 0;
+static int16_t oldGpsSpeed    = -2;
 static unsigned long lastGPSchange = 0;
 
 static bool useNM = false;
@@ -236,6 +234,7 @@ static bool          irFeedBack = false;
 static unsigned long irFeedBackNow = 0;
 
 bool                 irLocked = false;
+static bool          noIR = false;      // for temporary disabling IR reception
 
 bool                 IRLearning = false;
 static uint32_t      backupIRcodes[NUM_IR_KEYS];
@@ -528,6 +527,7 @@ void main_loop()
                 fcLEDs.setSpeed(TTSSpd);
             }
             TTrunning = false;
+            noIR = false;
             
             mp_stop();
             stopAudio();
@@ -545,8 +545,6 @@ void main_loop()
             fcLEDs.off();
             boxLED.setDC(0);
             centerLED.setDC(0);
-            
-            // FIXME - anything else?
             
         } else {
             // Power on: 
@@ -573,8 +571,6 @@ void main_loop()
             ssActive = false;
 
             ir_remote.loop();
-
-            // FIXME - anything else?
  
         }
         fpoOld = tcdFPO;
@@ -610,65 +606,61 @@ void main_loop()
 
     // IR Remote loop
     if(FPBUnitIsOn) {
-        if(ir_remote.loop()) {
+        if(!noIR && ir_remote.loop()) {
             handleIRinput();
         }
         handleRemoteCommand();
     }
 
-    if(FPBUnitIsOn && useGPSS) {
-      
+    // Eval GPS/RotEnc speed
+    // We track speed even when off, so we are immediately
+    // up to speed when coming back.
+    if(useGPSS) {
+
         if(gpsSpeed >= 0) {
-          
-            usingGPSS = true;
 
-            if(gpsSpeed != targetGPSSpeed) {
-                targetGPSSpeed = gpsSpeed;
-                wakeup();
-            }
+            if(!TTrunning) {
 
-            if(now - lastGPSchange > 200) {
-              
-                if(usedGPSSpeed != targetGPSSpeed) {
-                    if(abs(usedGPSSpeed - targetGPSSpeed) > 5) {
-                        usedGPSSpeed = (usedGPSSpeed + targetGPSSpeed) / 2;
-                    } else {
-                        usedGPSSpeed = targetGPSSpeed;
-                    }
-                }
+                if(!usingGPSS || (now - lastGPSchange > 200)) {
                 
-                if(!TTrunning) {
-                    uint16_t temp = convertGPSSpeed(usedGPSSpeed);
-                    if(temp != lastGPSspeed) {
-                        fcLEDs.setSpeed(temp);
-                        lastGPSspeed = temp;
+                    uint16_t shouldBe = convertGPSSpeed(gpsSpeed);
+                    uint16_t isNow = fcLEDs.getSpeed();
+                    uint16_t toSet;
+    
+                    if(abs(shouldBe - isNow) > 3) {
+                        toSet = (shouldBe + isNow) / 2;
+                    } else {
+                        toSet = shouldBe;
                     }
+    
+                    if(isNow != toSet) {
+                        fcLEDs.setSpeed(toSet);
+                    }
+
+                    lastGPSchange = now;
                 }
 
-                lastGPSchange = now;
+                usingGPSS = true;
             }
 
-        } else {
-            if(usingGPSS) {
-                usingGPSS = false;
-                lastGPSspeed = targetGPSSpeed = -2;
-                usedGPSSpeed = 0;
-                if(!useSKnob) {
-                    if(!TTrunning) { 
-                        fcLEDs.setSpeed(lastIRspeed);
-                    } else {
-                        TTSSpd = lastIRspeed;
-                    }
+        } else if(usingGPSS) {
+          
+            usingGPSS = false;
+            if(!useSKnob) {
+                if(!TTrunning || (TTP2 && fDone)) {
+                    fcLEDs.setSpeed(lastIRspeed);
+                } else {
+                    TTSSpd = lastIRspeed;
                 }
             }
         }
     }
     
     // Poll speed pot
-    if(FPBUnitIsOn) {
-        if(useSKnob && !usingGPSS) {
-            setPotSpeed();
-        }
+    // We track speed even when off, so we are immediately
+    // up to speed when coming back.
+    if(useSKnob && !usingGPSS) {
+        setPotSpeed();
     }
 
     // TT button evaluation
@@ -744,6 +736,7 @@ void main_loop()
                     TTP1 = true;
                     bP1idx = 0;
                     TTstart = now;
+                    noIR = true;
                     if(playTTsounds && !networkAbort) {
                         play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
                     }
@@ -863,9 +856,11 @@ void main_loop()
 
                     // At very end:
                     TTP2 = false;
+                    noIR = false;
                     TTrunning = false;
                     isTTKeyHeld = isTTKeyPressed = false;
                     ssRestartTimer();
+                    ir_remote.loop();
 
                 }
             }
@@ -897,6 +892,7 @@ void main_loop()
 
                     TTP0 = false;
                     TTP1 = true;
+                    noIR = true;
                     TTstart = now;
                     bP1idx = 0;
                     if(playTTsounds) {
@@ -1011,9 +1007,11 @@ void main_loop()
 
                     // At very end:
                     TTP2 = false;
+                    noIR = false;
                     TTrunning = false;
                     isTTKeyHeld = isTTKeyPressed = false;
                     ssRestartTimer();
+                    ir_remote.loop();
 
                 }
             }
@@ -1034,6 +1032,14 @@ void main_loop()
             fluxNM = false;
         }
         nmOld = tcdNM;
+    }
+
+    // Wake up on GPS/RotEnc speed changes
+    if(gpsSpeed != oldGpsSpeed) {
+        if(FPBUnitIsOn && !TTrunning && !IRLearning && gpsSpeed >= 0) {
+            wakeup();
+        }
+        oldGpsSpeed = gpsSpeed;
     }
 
     now = millis();
@@ -2033,6 +2039,7 @@ void prepareTT()
 // Wakeup: Sent by TCD upon entering dest date,
 // return from tt, triggering delayed tt via ETT
 // For audio-visually synchronized behavior
+// Also called when GPS/RotEnc speed is changed
 void wakeup()
 {
     // End screen saver
