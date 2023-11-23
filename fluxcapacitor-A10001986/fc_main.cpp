@@ -113,6 +113,7 @@ static bool usingGPSS   = false;
 static int16_t gpsSpeed       = -1;
 static int16_t oldGpsSpeed    = -2;
 static unsigned long lastGPSchange = 0;
+static bool spdIsRotEnc = false;
 
 static bool useNM = false;
 static bool tcdNM = false;
@@ -1036,7 +1037,7 @@ void main_loop()
 
     // Wake up on GPS/RotEnc speed changes
     if(gpsSpeed != oldGpsSpeed) {
-        if(FPBUnitIsOn && !TTrunning && !IRLearning && gpsSpeed >= 0) {
+        if(FPBUnitIsOn && !TTrunning && !IRLearning && spdIsRotEnc && gpsSpeed >= 0) {
             wakeup();
         }
         oldGpsSpeed = gpsSpeed;
@@ -2336,6 +2337,7 @@ static void BTTFNCheckPacket()
         if(BTTFUDPBuf[5] & 0x02) {
             gpsSpeed = (int16_t)(BTTFUDPBuf[18] | (BTTFUDPBuf[19] << 8));
             if(gpsSpeed > 88) gpsSpeed = 88;
+            spdIsRotEnc = (BTTFUDPBuf[26] & 0x80) ? true : false;
         }
         if(BTTFUDPBuf[5] & 0x10) {
             tcdNM  = (BTTFUDPBuf[26] & 0x01) ? true : false;
