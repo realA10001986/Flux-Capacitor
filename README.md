@@ -343,7 +343,9 @@ While the music player is playing music, other sound effects are disabled/muted.
 
 ### Connecting a TCD by wire
 
-Connect GND and GPIO on the Flux Capacitor's "Time Travel" connector to the TCD like in the table below:
+Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place. Therefore I strongly recommend a wireless BTTFN connection, see immediately below.
+
+For a connection by wire, connect GND and GPIO on the Flux Capacitor's "Time Travel" connector to the TCD like in the table below:
 
 <table>
     <tr>
@@ -365,7 +367,7 @@ Connect GND and GPIO on the Flux Capacitor's "Time Travel" connector to the TCD 
 
 Next, head to the Config Portal and set the option **_TCD connected by wire_**. On the TCD, the option "Control props connected by wire" must be set.
 
-Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place. Therefore I strongly recommend a wireless BTTFN connection, see immediately below.
+You can connect both the TCD and a button to the TT connector, which might be handy in case you want to have the FC learn an IR remote control without fiddling with cables. But the button should not be pressed when the option **_TCD connected by wire_** is set, as it might yield unwanted results. Also, note that the button connects to IO13 and 3_3V (not GND!).
 
 ### BTTF-Network ("BTTFN")
 
@@ -553,9 +555,9 @@ Number of seconds before a timeout occurs when connecting to a WiFi network. Whe
 
 ##### &#9654; TCD connected by wire
 
-Check this if you have a Time Circuits Display connected by wire. You can only connect *either* a button *or* the TCD to the "time travel" connector on the FC, but not both.
+Check this if you have a Time Circuits Display connected by wire. Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place.
 
-Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place.
+While you can connect both a button and the TCD to the "time travel" connector on the FC, the button should not be pressed when this option is set, as it might yield unwanted effects.
 
 Also note that the process of [learning keys from an IR remote control](#ir-remote-control) requires this option to be unchecked. After learning keys is done, you can, of course, check this option again.
 
