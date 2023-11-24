@@ -359,7 +359,7 @@ For a connection by wire, connect GND and GPIO on the Flux Capacitor's "Time Tra
      <td align="center">GND on "Time Travel" connector</td>
     </tr>
     <tr>
-     <td align="center">GPIO of "Time Travel" connector</td>
+     <td align="center">TT_IN of "Time Travel" connector</td>
      <td align="center">IO14 of "IO14" connector</td>
      <td align="center">TT OUT on "Time Travel" connector</td>
     </tr>
