@@ -324,7 +324,7 @@ static void BTTFNSendPacket();
 
 void main_boot()
 {
-    // Boot center LED here (is some reason on after reset)
+    // Boot center LED here (is for some reason on after reset)
     #ifdef FC_DBG
     Serial.println(F("Booting Center LED"));
     #endif
@@ -394,6 +394,9 @@ void main_setup()
     Serial.println(F("Booting Box LED"));
     #endif
     boxLED.begin(BLED_CHANNEL, BLED_FREQ, BLED_RES, PLforBL ? GPIO_14 : 255);
+
+    // Make sure center LED is off
+    centerLED.setDC(0);
 
     // Set up TT button / TCD trigger
     TTKey.attachPress(TTKeyPressed);

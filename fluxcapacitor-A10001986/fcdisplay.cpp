@@ -199,10 +199,12 @@ static const DRAM_ATTR byte _array9[] = {   // double runner
         0b100001,
         SEQEND
 };
-#define SS_ONESHOT 0xfffe
+static const byte* chaseArrs[10];
+#define SS_ONESHOT 0xfffe   // Always needs to have "all off" as last step
 #define SS_LOOP    0
 #define SS_END     0xffff
 static volatile bool     _specialsig = false;
+static volatile bool     _wasSpecial = false;
 static volatile bool     _specialOS = false;
 static volatile uint8_t  _specialsignum = 0;
 static volatile uint8_t  _specialidx = 0;
@@ -215,6 +217,7 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
           0b111100, SPD, 0b111110, SPD, 0b111111, SPD*2,
           0b111110, SPD, 0b111100, SPD, 0b111000, SPD,
           0b110000, SPD, 0b100000, SPD, SS_END
+          // No "all off" at end, never run when FC chase is off
           #undef SPD
         },
         {                                               // 2: error: no audio files installed (128)
@@ -243,6 +246,7 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
           0b111000,  50,
           0b000111,  50, 
           0b111000,  50,
+          0b000000,   1,
           SS_END
         },
         {
@@ -265,7 +269,7 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
         },
         {
           SS_LOOP,                                      // 9: Error when copying audio files
-          0b110000,  20, 0b000011, 20, SS_END
+          0b110000,  20, 0b000011,  20, SS_END
         }
 };        
 
@@ -291,6 +295,7 @@ static void IRAM_ATTR FCLEDTimer_ISR()
       
         // Special sequence for signalling
         if(_specialticks == 0) {
+            _wasSpecial = true;
             if(_specialArray[_specialsignum][_specialidx] == SS_END) {
                  if(_specialOS) {
                     _specialsig = false; 
@@ -317,9 +322,10 @@ static void IRAM_ATTR FCLEDTimer_ISR()
         const byte *arr;
 
         if(_fcledsoff) {
-            if(_fcledsareoff) return;
+            if(_fcledsareoff && !_wasSpecial) return;
             updateShiftRegister(0);
             _fcledsareoff = true;
+            _wasSpecial = false;
             return;
         }
          
@@ -332,29 +338,7 @@ static void IRAM_ATTR FCLEDTimer_ISR()
         if(_fcstopped)
             return;
 
-        if(_seqType == 0) {
-            arr = _array;
-        } else if(_seqType == 1) {
-            arr = _array1;
-        } else if(_seqType == 2) {
-            arr = _array2;
-        } else if(_seqType == 3) {
-            arr = _array3;
-        } else if(_seqType == 4) {
-            arr = _array4;
-        } else if(_seqType == 5) {
-            arr = _array5;
-        } else if(_seqType == 6) {
-            arr = _array6;
-        } else if(_seqType == 7) {
-            arr = _array7;
-        } else if(_seqType == 8) {
-            arr = _array8;
-        } else if(_seqType == 9) {
-            arr = _array9;
-        } else {
-            arr = _array;
-        }
+        arr = chaseArrs[_seqType];
       
         // Normal sequences
         if(_ticks == 0) {
@@ -393,6 +377,17 @@ void FCLEDs::begin()
     // Switch off
     off();
 
+    chaseArrs[0] = _array;
+    chaseArrs[1] = _array1;
+    chaseArrs[2] = _array2;
+    chaseArrs[3] = _array3;
+    chaseArrs[4] = _array4;
+    chaseArrs[5] = _array5;
+    chaseArrs[6] = _array6;
+    chaseArrs[7] = _array7;
+    chaseArrs[8] = _array8;
+    chaseArrs[9] = _array9;
+    
     // Install & enable timer interrupt
     _FCLTimer_Cfg = timerBegin(_timer_no, TMR_PRESCALE, true);
     timerAttachInterrupt(_FCLTimer_Cfg, &FCLEDTimer_ISR, true);

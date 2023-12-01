@@ -91,6 +91,9 @@
 
 /*  Changelog
  *
+ *  2023/12/01 (A10001986)
+ *    - Fix end of special signal when switched off mid-sequence while FC chase
+ *      is off
  *  2023/11/30 (A10001986)
  *    - Some better sounds
  *  2023/11/22 (A10001986)
