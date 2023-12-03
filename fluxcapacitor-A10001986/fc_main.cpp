@@ -1688,7 +1688,7 @@ static bool execute(bool isIR)
                     }
                 }
                 break;
-            case 89:
+            case 85:
                 if(!TTrunning && !isIRLocked) {
                     play_file("/fluxing.mp3", PA_INTRMUS, 1.0);
                     if(contFlux()) {
