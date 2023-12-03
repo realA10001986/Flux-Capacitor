@@ -1218,7 +1218,7 @@ static bool check_if_default_audio_present()
       57259,                                // startup
       46392, SND_KEY_LEN,                   // timetravel, travelstart
       65230,                                // alarm
-      36989,                                // fluxing
+      60342, // 36989,                      // fluxing
       40593, // 43153,                      // renaming
       32548  // 42212                       // installing (not copied)
     };
