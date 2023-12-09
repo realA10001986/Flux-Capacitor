@@ -64,6 +64,8 @@ extern uint8_t musFolderNum;
 #define DEF_USE_NM          0     // 0: Ignore TCD night mode; 1: Follow TCD night mode
 #define DEF_USE_FPO         0     // 0: Ignore TCD fake power; 1: Follow TCD fake power
 
+#define DEF_BTTFN_TT        1     // 0: '0' on IR remove and TT button trigger stand-alone TT; 1: They trigger BTTFN-wide TT
+
 #define DEF_PLAY_TT_SND     1     // 1: Play time travel sounds (0: Do not; for use with external equipment)
 #define DEF_STTBL_ANIM      0     // 1: Skip box light animation in tt; 0: Play anim
 #define DEF_PLAY_ALM_SND    0     // 1: Play TCD-alarm sound, 0: do not
@@ -96,6 +98,7 @@ struct Settings {
     char useGPSS[4]         = MS(DEF_USE_GPSS);
     char useNM[4]           = MS(DEF_USE_NM);
     char useFPO[4]          = MS(DEF_USE_FPO);
+    char bttfnTT[4]         = MS(DEF_BTTFN_TT);
         
     char playTTsnds[4]      = MS(DEF_PLAY_TT_SND);
     char skipTTBLAnim[4]    = MS(DEF_STTBL_ANIM); 

@@ -121,6 +121,8 @@ bool        fluxNM = false;
 static bool useFPO = false;
 static bool tcdFPO = false;
 
+static bool bttfnTT = true;
+
 static bool skipttblanim = false;
 
 #define FLUXM2_SECS  30
@@ -321,6 +323,7 @@ static void bttfn_setup();
 static void BTTFNCheckPacket();
 static bool BTTFNTriggerUpdate();
 static void BTTFNSendPacket();
+static bool BTTFNTriggerTT();
 
 void main_boot()
 {
@@ -356,6 +359,7 @@ void main_setup()
     useGPSS = (atoi(settings.useGPSS) > 0);
     useNM = (atoi(settings.useNM) > 0);
     useFPO = (atoi(settings.useFPO) > 0);
+    bttfnTT = (atoi(settings.bttfnTT) > 0);
     
     skipttblanim = (atoi(settings.skipTTBLAnim) > 0);
 
@@ -641,6 +645,8 @@ void main_loop()
                         fcLEDs.setSpeed(toSet);
                     }
 
+                    //Serial.printf("%d %d %d (%d)\n", shouldBe, isNow, toSet, gpsSpeed);
+
                     lastGPSchange = now;
                 }
 
@@ -693,7 +699,9 @@ void main_loop()
                 if(TCDconnected) {
                     ssEnd(false);  // let TT() take care of restarting sound
                 }
-                timeTravel(TCDconnected, noETTOLead ? 0 : ETTO_LEAD);
+                if(!bttfnTT || !BTTFNTriggerTT()) {
+                    timeTravel(TCDconnected, noETTOLead ? 0 : ETTO_LEAD);
+                }
             }
         }
     
@@ -1410,7 +1418,9 @@ static void handleIRKey(int key)
     switch(key) {
     case 0:                           // 0: time travel
         if(irLocked) return;
-        timeTravel(false, ETTO_LEAD);
+        if(!bttfnTT || !BTTFNTriggerTT()) {
+            timeTravel(false, ETTO_LEAD);
+        }
         break;
     case 1:                           // 1:
         if(irLocked) return;
@@ -2384,7 +2394,7 @@ static bool BTTFNTriggerUpdate()
 }
 
 static void BTTFNSendPacket()
-{   
+{
     memset(BTTFUDPBuf, 0, BTTF_PACKET_SIZE);
 
     // ID
@@ -2420,7 +2430,7 @@ static void BTTFNSendPacket()
 
     #ifdef BTTFN_MC
     if(haveTCDIP) {
-    #endif  
+    #endif
         fcUDP->beginPacket(bttfnTcdIP, BTTF_DEFAULT_LOCAL_PORT);
     #ifdef BTTFN_MC    
     } else {
@@ -2432,4 +2442,50 @@ static void BTTFNSendPacket()
     #endif
     fcUDP->write(BTTFUDPBuf, BTTF_PACKET_SIZE);
     fcUDP->endPacket();
+}
+
+static bool BTTFNTriggerTT()
+{
+    if(!useBTTFN)
+        return false;
+
+    #ifdef BTTFN_MC
+    if(!haveTCDIP)
+        return false;
+    #endif
+
+    if(WiFi.status() != WL_CONNECTED)
+        return false;
+
+    if(!lastBTTFNpacket)
+        return false;
+
+    if(TCDconnected || TTrunning || IRLearning)
+        return false;
+
+    memset(BTTFUDPBuf, 0, BTTF_PACKET_SIZE);
+
+    // ID
+    memcpy(BTTFUDPBuf, BTTFUDPHD, 4);
+
+    // Tell the TCD about our hostname (0-term., 13 bytes total)
+    strncpy((char *)BTTFUDPBuf + 10, settings.hostName, 12);
+    BTTFUDPBuf[10+12] = 0;
+
+    BTTFUDPBuf[10+13] = BTTFN_TYPE_FLUX;
+
+    BTTFUDPBuf[4] = BTTFN_VERSION;  // Version
+    BTTFUDPBuf[5] = 0x80;           // Trigger BTTFN-wide TT
+
+    uint8_t a = 0;
+    for(int i = 4; i < BTTF_PACKET_SIZE - 1; i++) {
+        a += BTTFUDPBuf[i] ^ 0x55;
+    }
+    BTTFUDPBuf[BTTF_PACKET_SIZE - 1] = a;
+        
+    fcUDP->beginPacket(bttfnTcdIP, BTTF_DEFAULT_LOCAL_PORT);
+    fcUDP->write(BTTFUDPBuf, BTTF_PACKET_SIZE);
+    fcUDP->endPacket();
+
+    return true;
 }

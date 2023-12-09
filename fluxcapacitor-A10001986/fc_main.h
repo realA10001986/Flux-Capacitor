@@ -37,7 +37,7 @@
 #define NUM_IR_KEYS 17
 
 // FC LEDs 
-#define FC_SPD_MAX 1     // 10ms
+#define FC_SPD_MAX 3     // 30ms
 #define FC_SPD_MIN 500   // 5000ms
 #define FC_SPD_IDLE 20
 

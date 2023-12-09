@@ -142,6 +142,11 @@ WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power (0=no, 1=yes)", 
 #else // -------------------- Checkbox hack: --------------
 WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power", settings.useFPO, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
+#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
+WiFiManagerParameter custom_bttfnTT("bttfnTT", "'0' and button trigger BTTFN-wide TT (0=no, 1=yes)<br><span style='font-size:80%'>If enabled, pressing '0' on the IR remote or pressing the Time Travel button triggers a BTTFN-wide TT</span>", settings.bttfnTT, 1, "autocomplete='off'");
+#else // -------------------- Checkbox hack: --------------
+WiFiManagerParameter custom_bttfnTT("bttfnTT", "'0' and button trigger BTTFN-wide TT<br><span style='font-size:80%'>If checked, pressing '0' on the IR remote or pressing the Time Travel button triggers a BTTFN-wide TT</span>", settings.bttfnTT, 1, "autocomplete='off' type='checkbox' style='margin-bottom:0px;'", WFM_LABEL_AFTER);
+#endif // -------------------------------------------------
 
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds (0=no, 1=yes)", settings.playTTsnds, 1, "autocomplete='off' title='Enable to have the device play time travel sounds. Disable if other props provide time travel sound.'");
@@ -346,12 +351,13 @@ void wifi_setup()
     wm.addParameter(&custom_TCDpresent);
     wm.addParameter(&custom_noETTOL);
 
-    wm.addParameter(&custom_sectstart);     // 6 (8)
+    wm.addParameter(&custom_sectstart);     // 7
     wm.addParameter(&custom_bttfnHint);
     wm.addParameter(&custom_tcdIP);
     wm.addParameter(&custom_uGPS);
     wm.addParameter(&custom_uNM);
     wm.addParameter(&custom_uFPO);
+    wm.addParameter(&custom_bttfnTT);
     
     wm.addParameter(&custom_sectstart);     // 4
     wm.addParameter(&custom_playTTSnd);
@@ -623,7 +629,8 @@ void wifi_loop()
             mystrcpy(settings.useGPSS, &custom_uGPS);
             mystrcpy(settings.useNM, &custom_uNM);
             mystrcpy(settings.useFPO, &custom_uFPO);
-
+            mystrcpy(settings.bttfnTT, &custom_bttfnTT);
+            
             mystrcpy(settings.playTTsnds, &custom_playTTSnd);
             mystrcpy(settings.skipTTBLAnim, &custom_sTTBLA);
             mystrcpy(settings.playALsnd, &custom_playALSnd);
@@ -651,6 +658,7 @@ void wifi_loop()
             strcpyCB(settings.useGPSS, &custom_uGPS);
             strcpyCB(settings.useNM, &custom_uNM);
             strcpyCB(settings.useFPO, &custom_uFPO);
+            strcpyCB(settings.bttfnTT, &custom_bttfnTT);
 
             strcpyCB(settings.playTTsnds, &custom_playTTSnd);
             strcpyCB(settings.skipTTBLAnim, &custom_sTTBLA);
@@ -1074,6 +1082,7 @@ void updateConfigPortalValues()
     custom_uGPS.setValue(settings.useGPSS, 1);
     custom_uNM.setValue(settings.useNM, 1);
     custom_uFPO.setValue(settings.useFPO, 1);
+    custom_bttfnTT.setValue(settings.bttfnTT, 1);
 
     custom_playTTSnd.setValue(settings.playTTsnds, 1);
     custom_sTTBLA.setValue(settings.skipTTBLAnim, 1);
@@ -1103,6 +1112,7 @@ void updateConfigPortalValues()
     setCBVal(&custom_uGPS, settings.useGPSS);
     setCBVal(&custom_uNM, settings.useNM);
     setCBVal(&custom_uFPO, settings.useFPO);
+    setCBVal(&custom_bttfnTT, settings.bttfnTT);
 
     setCBVal(&custom_playTTSnd, settings.playTTsnds);
     setCBVal(&custom_sTTBLA, settings.skipTTBLAnim);
