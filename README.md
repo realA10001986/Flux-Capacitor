@@ -589,6 +589,10 @@ If this option is checked, and your TCD goes into night mode, the FC will activa
 
 If this option is checked, and your TCD is equipped with a fake power switch, the FC will also fake-power up/down. If fake power is off, no LED is active and the FC will ignore all input from buttons, knobs and the IR control.
 
+##### &#9654; '0' and button trigger BTTFN-wide TT
+
+If the FC is connected to a TCD through BTTFN, this option allows to trigger a synchronized time travel on all BTTFN-connected devices when pressing "0" on the IR remote control or pressing the Time Travel button, just as if the Time Travel was triggered by the TCD. If this option is unchecked, pressing "0" or the Time Travel button only triggers a Time Travel sequence on the FC.
+
 #### Audio-visual options
 
 ##### &#9654; Play time travel sounds
