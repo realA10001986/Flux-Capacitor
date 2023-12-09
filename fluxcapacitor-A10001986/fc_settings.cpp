@@ -382,6 +382,7 @@ static bool read_settings(File configFile)
         wd |= CopyCheckValidNumParm(json["useGPSS"], settings.useGPSS, sizeof(settings.useGPSS), 0, 1, DEF_USE_GPSS);
         wd |= CopyCheckValidNumParm(json["useNM"], settings.useNM, sizeof(settings.useNM), 0, 1, DEF_USE_NM);
         wd |= CopyCheckValidNumParm(json["useFPO"], settings.useFPO, sizeof(settings.useFPO), 0, 1, DEF_USE_FPO);
+        wd |= CopyCheckValidNumParm(json["bttfnTT"], settings.bttfnTT, sizeof(settings.bttfnTT), 0, 1, DEF_BTTFN_TT);
 
         wd |= CopyCheckValidNumParm(json["playTTsnds"], settings.playTTsnds, sizeof(settings.playTTsnds), 0, 1, DEF_PLAY_TT_SND);
         wd |= CopyCheckValidNumParm(json["skipTTBLAnim"], settings.skipTTBLAnim, sizeof(settings.skipTTBLAnim), 0, 1, DEF_STTBL_ANIM);
@@ -449,6 +450,7 @@ void write_settings()
     json["useGPSS"] = (const char *)settings.useGPSS;
     json["useNM"] = (const char *)settings.useNM;
     json["useFPO"] = (const char *)settings.useFPO;
+    json["bttfnTT"] = (const char *)settings.bttfnTT;
 
     json["playTTsnds"] = (const char *)settings.playTTsnds;
     json["skipTTBLAnim"] = (const char *)settings.skipTTBLAnim;

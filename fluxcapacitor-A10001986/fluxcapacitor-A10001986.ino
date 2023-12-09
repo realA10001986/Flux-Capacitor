@@ -91,6 +91,11 @@
 
 /*  Changelog
  *
+ *  2023/12/09 (A10001986)
+ *    - Limit max chase speed set by IR remote to 3
+ *  2023/12/08 (A10001986)
+ *    - Add option to trigger a BTTFN-wide TT when pressing 0 on the IR remote
+ *      or pressing the TT button (instead of a stand-alone TT).
  *  2023/12/03 (A10001986)
  *    - Yet another sound update
  *  2023/12/01 (A10001986)
