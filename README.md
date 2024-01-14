@@ -1,6 +1,6 @@
 # Firmware for Flux Capacitor
 
-This repository holds the most current firmware for CircuitSetup's excellent [Flux Capacitor Light & Sound Control Board](https://circuitsetup.us/product/flux-capacitor-light-sound-pcb/). The "Flux Capacitor" is key to time travel in the movies "Back to the Future".
+This repository holds the most current firmware for CircuitSetup's excellent [Flux Capacitor Light & Sound Control Board](https://circuitsetup.us/product/flux-capacitor-light-sound-pcb/). The "Flux Capacitor" is key to time travel in the "Back to the Future" movies.
 
 The kit parts are available [here](https://circuitsetup.us/product-category/back-to-the-future-props/).
 
