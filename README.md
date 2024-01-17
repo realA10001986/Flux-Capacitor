@@ -11,12 +11,12 @@ Here is my FC, built around this Control Board and the other parts of the kit (b
 Features include
 - movie-accurate default flux sequence, plus 9 alternative flux sequences
 - Optional [flux](#the-flux-sound) sound (4 modes)
-- [Time Travel](#time-travel) function, triggered by button, [Time Circuits Display](https://tcd.backtothefutu.re) (TCD) or via [MQTT](#home-assistant--mqtt)
+- [Time Travel](#time-travel) function, triggered by button, [Time Circuits Display](https://tcd.out-a-ti.me) (TCD) or via [MQTT](#home-assistant--mqtt)
 - [IR remote controlled](#ir-remote-control); can learn keys from third-party remote
 - [Music player](#the-music-player): Play mp3 files located on an SD card
 - [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player
 - Advanced network-accessible [Config Portal](#the-config-portal) for setup with mDNS support for easy access (http://flux.local, hostname configurable)
-- Wireless communication with [Time Circuits Display](https://tcd.backtothefutu.re) ("[BTTF-Network](#bttf-network-bttfn)"); used for synchonized time travels, alarm, chase speed, night mode, fake power and remote control through TCD keypad
+- Wireless communication with [Time Circuits Display](https://tcd.out-a-ti.me) ("[BTTF-Network](#bttf-network-bttfn)"); used for synchonized time travels, alarm, chase speed, night mode, fake power and remote control through TCD keypad
 - [Home Assistant](#home-assistant--mqtt) (MQTT 3.1.1) support
 - Built-in installer for default audio files in addition to OTA firmware updates
 
@@ -377,7 +377,7 @@ The TCD can communicate with the FC wirelessly, via WiFi. It can send out inform
 |:--:|
 | Click to watch the video |
 
-Note that the TCD's firmware must be up to date for BTTFN. You can use [this](http://tcd.backtothefutu.re) one or CircuitSetup's release 2.9 or later.
+Note that the TCD's firmware must be up to date for BTTFN. You can use [this](http://tcd.out-a-ti.me) one or CircuitSetup's release 2.9 or later.
 
 ![BTTFN connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/89ecaca0-a627-4a8a-a253-3d72c6132da3)
 
@@ -430,11 +430,11 @@ Limitations: MQTT Protocol version 3.1.1; TLS/SSL not supported; ".local" domain
 
 ## Car setup
 
-If your FC, along with a [Time Circuits Display](https://tcd.backtothefutu.re/), is mounted in a car, the following network configuration is recommended:
+If your FC, along with a [Time Circuits Display](https://tcd.out-a-ti.me/), is mounted in a car, the following network configuration is recommended:
 
 #### TCD
 
-- Run your TCD in [*car mode*](https://tcd.backtothefutu.re/#car-mode);
+- Run your TCD in [*car mode*](https://tcd.out-a-ti.me/#car-mode);
 - disable WiFi power-saving on the TCD by setting **_WiFi power save timer (AP-mode)_** to 0 (zero).
 
 #### Flux Capacitor
