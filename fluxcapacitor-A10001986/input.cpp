@@ -1,9 +1,9 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023 Thomas Winischhofer (A10001986)
+ * (C) 2023-2024 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
- * https://fc.backtothefutu.re
+ * https://fc.out-a-ti.me
  *
  * FCRemote Class: Remote control handling
  * Inspired by Ken Shirriff's IRRemote library
@@ -76,7 +76,7 @@ static void IRAM_ATTR IRTimer_ISR()
                 // start recording.
                 // (In case of a smaller gap, we assume being in 
                 // the middle of a transmission whose start we 
-                // missed. Do nothing then.
+                // missed. Do nothing then.)
                 _irstate = IRSTATE_LIGHT;
                 _irbuf[0] = _cnt;  // First is length of previous gap
                 _irlen = 1;

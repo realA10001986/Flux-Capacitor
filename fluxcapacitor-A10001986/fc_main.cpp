@@ -1,9 +1,9 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023 Thomas Winischhofer (A10001986)
+ * (C) 2023-2024 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
- * https://fc.backtothefutu.re
+ * https://fc.out-a-ti.me
  *
  * Main controller
  *
@@ -553,6 +553,8 @@ void main_loop()
             fcLEDs.off();
             boxLED.setDC(0);
             centerLED.setDC(0);
+
+            flushDelayedSave();
             
         } else {
             // Power on: 
@@ -1131,6 +1133,34 @@ void main_loop()
     }
 }
 
+void flushDelayedSave()
+{
+    if(volchanged) {
+        volchanged = false;
+        saveCurVolume();
+    }
+
+    if(spdchanged) {
+        spdchanged = false;
+        saveCurSpeed();
+    }
+
+    if(bllchanged) {
+        bllchanged = false;
+        saveBLLevel();
+    }
+
+    if(ipachanged) {
+        ipachanged = false;
+        saveIdlePat();
+    }
+
+    if(irlchanged) {
+        irlchanged = false;
+        saveIRLock();
+    }
+}
+
 /*
  * Time travel
  */
@@ -1141,6 +1171,8 @@ static void timeTravel(bool TCDtriggered, uint16_t P0Dur)
     
     if(TTrunning || IRLearning)
         return;
+
+    flushDelayedSave();
 
     if(playTTsounds) {
         if(mp_stop() || !playingFlux) {
@@ -1719,6 +1751,7 @@ static bool execute(bool isIR)
                         wasActiveF = true;
                     }
                     stopAudio();
+                    flushDelayedSave();
                     wifi_getIP(a, b, c, d);
                     sprintf(ipbuf, "%d.%d.%d.%d", a, b, c, d);
                     numfname[1] = ipbuf[0];
@@ -1757,6 +1790,7 @@ static bool execute(bool isIR)
                             }
                             stopAudio();
                             if(mp_checkForFolder(musFolderNum) == -1) {
+                                flushDelayedSave();
                                 showWaitSequence();
                                 waitShown = true;
                                 play_file("/renaming.mp3", PA_INTRMUS|PA_ALLOWSD);
@@ -1812,6 +1846,7 @@ static bool execute(bool isIR)
                 endIRfeedback();
                 mp_stop();
                 stopAudio();
+                flushDelayedSave();
                 unmount_fs();
                 delay(500);
                 esp_restart();
@@ -1826,6 +1861,7 @@ static bool execute(bool isIR)
                     uint16_t num = ((inputBuffer[3] - '0') * 100) + read2digs(4);
                     num = mp_gotonum(num, mpActive);
                 } else if(!strcmp(inputBuffer, "123456")) {
+                    flushDelayedSave();
                     deleteIpSettings();               // *123456OK deletes IP settings
                     settings.appw[0] = 0;             // and clears AP mode WiFi password
                     write_settings();
@@ -2163,7 +2199,7 @@ void mydelay(unsigned long mydel, bool withIR)
 
 
 /*
- * BTTF network communication
+ * Basic Telematics Transmission Framework (BTTFN)
  */
 
 static void addCmdQueue(uint32_t command)

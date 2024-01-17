@@ -1,9 +1,9 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023 Thomas Winischhofer (A10001986)
+ * (C) 2023-2024 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
- * https://fc.backtothefutu.re
+ * https://fc.out-a-ti.me
  *
  * Main controller
  *
@@ -68,6 +68,8 @@ extern uint16_t networkLead;
 void main_boot();
 void main_setup();
 void main_loop();
+
+void flushDelayedSave();
 
 void showWaitSequence();
 void endWaitSequence();
