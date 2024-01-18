@@ -100,6 +100,8 @@
 
 /*  Changelog
  *
+ *  2024/01/18 (A10001986)
+ *    - Fix wifi menu size
  *  2024/01/15 (A10001986)
  *    - Flush outstanding delayed saves before rebooting and on fake-power-off
  *    - Remove "Restart" menu item from CP, can't let WifiManager reboot behind
