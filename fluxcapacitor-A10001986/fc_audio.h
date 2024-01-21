@@ -30,3 +30,53 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef _FC_AUDIO_H
+#define _FC_AUDIO_H
+
+// Default volume (index)
+#define DEFAULT_VOLUME 6
+
+#define PA_LOOP    0x0001
+#define PA_INTRMUS 0x0002
+#define PA_ALLOWSD 0x0004
+#define PA_DYNVOL  0x0008
+#define PA_ISFLUX  0x0010
+#define PA_MASK    (PA_LOOP|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL|PA_ISFLUX)
+
+void audio_setup();
+void audio_loop();
+
+void play_file(const char *audio_file, uint16_t flags, float volumeFactor = 1.0);
+void append_file(const char *audio_file, uint16_t flags, float volumeFactor = 1.0);
+bool checkAudioDone();
+void stopAudio();
+bool append_pending();
+
+void play_flux();
+void append_flux();
+
+void inc_vol();
+void dec_vol();
+
+void     mp_init(bool isSetup);
+void     mp_play(bool forcePlay = true);
+bool     mp_stop();
+void     mp_next(bool forcePlay = false);
+void     mp_prev(bool forcePlay = false);
+int      mp_gotonum(int num, bool force = false);
+void     mp_makeShuffle(bool enable);
+int      mp_checkForFolder(int num);
+uint8_t* m(uint8_t *a, uint32_t s, int e);
+
+extern bool    audioInitDone;
+extern bool    audioMute;
+
+extern bool    haveMusic;
+extern bool    mpActive;
+
+extern bool    playingFlux;
+
+extern uint8_t curSoftVol;
+extern bool    useVKnob;
+
+#endif

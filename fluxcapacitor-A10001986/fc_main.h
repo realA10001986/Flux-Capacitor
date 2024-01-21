@@ -30,3 +30,63 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef _FC_MAIN_H
+#define _FC_MAIN_H
+
+// Number of IR keys
+#define NUM_IR_KEYS 17
+
+// FC LEDs 
+#define FC_SPD_MAX 3     // 30ms
+#define FC_SPD_MIN 500   // 5000ms
+#define FC_SPD_IDLE 20
+
+extern unsigned long powerupMillis;
+
+extern uint16_t minBLL;
+extern uint16_t lastIRspeed;
+extern bool     irLocked;
+
+extern bool TCDconnected;
+
+extern bool FPBUnitIsOn;
+extern bool fluxNM;
+
+extern uint8_t fluxPat;
+
+extern bool TTrunning;
+extern int  playFLUX;
+extern bool IRLearning;
+
+extern bool networkTimeTravel;
+extern bool networkTCDTT;
+extern bool networkReentry;
+extern bool networkAbort;
+extern bool networkAlarm;
+extern uint16_t networkLead;
+
+void main_boot();
+void main_setup();
+void main_loop();
+
+void flushDelayedSave();
+
+void showWaitSequence();
+void endWaitSequence();
+void showCopyError();
+void allOff();
+
+void populateIRarray(uint32_t *irkeys, int index);
+void copyIRarray(uint32_t *irkeys, int index);
+
+void setFluxMode(int mode);
+void startFluxTimer();
+
+void mydelay(unsigned long mydel, bool withIR);
+
+void prepareTT();
+void wakeup();
+
+void bttfn_loop();
+
+#endif
