@@ -159,6 +159,7 @@ void writeIpSettings();
 void deleteIpSettings();
 
 void copySettings();
+void rewriteSecondarySettings();
 
 bool prepareCopyAudioFiles();
 void doCopyAudioFiles();
@@ -168,7 +169,5 @@ bool check_allow_CPA();
 void delete_ID_file();
 
 bool audio_files_present();
-
-void rewriteSecondarySettings();
 
 #endif

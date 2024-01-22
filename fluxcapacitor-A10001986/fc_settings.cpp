@@ -310,14 +310,14 @@ void unmount_fs()
 {
     if(haveFS) {
         SPIFFS.end();
-        #ifdef TC_DBG
+        #ifdef FC_DBG
         Serial.println(F("Unmounted Flash FS"));
         #endif
         haveFS = false;
     }
     if(haveSD) {
         SD.end();
-        #ifdef TC_DBG
+        #ifdef FC_DBG
         Serial.println(F("Unmounted SD card"));
         #endif
         haveSD = false;
@@ -475,7 +475,6 @@ bool checkConfigExists()
 {
     return FlashROMode ? SD.exists(cfgName) : (haveFS && SPIFFS.exists(cfgName));
 }
-
 
 /*
  *  Helpers for parm copying & checking
@@ -1524,12 +1523,13 @@ void copySettings()
         saveBLLevel(false);
         saveIRLock(false);
         saveIRKeys();
+        // NOT idlePat, is only stored on SD
     }
 
     configOnSD = !configOnSD;
 }
 
-// Re-write IP/speed/vol/etc settings
+// Re-write secondary settings
 // Used during audio file installation when flash FS needs
 // to be re-formatted.
 // Is never called in FlashROmode
@@ -1552,6 +1552,7 @@ void rewriteSecondarySettings()
     saveBLLevel(false);
     saveIRLock(false);
     saveIRKeys();
+    // NOT idlePat, is only stored on SD
     
     configOnSD = oldconfigOnSD;
 }

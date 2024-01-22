@@ -100,6 +100,8 @@
 
 /*  Changelog
  *
+ *  2024/01/22 (A10001986)
+ *    - Fix for BTTFN-wide TT vs. TCD connected by wire
  *  2024/01/20 (A10001986)
  *    - Major cleanup, minor fixes
  *  2024/01/18 (A10001986)

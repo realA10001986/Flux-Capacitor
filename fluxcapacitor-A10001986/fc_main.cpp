@@ -704,7 +704,7 @@ void main_loop()
                 if(TCDconnected) {
                     ssEnd(false);  // let TT() take care of restarting sound
                 }
-                if(!bttfnTT || !BTTFNTriggerTT()) {
+                if(TCDconnected || !bttfnTT || !BTTFNTriggerTT()) {
                     timeTravel(TCDconnected, noETTOLead ? 0 : ETTO_LEAD);
                 }
             }
@@ -2473,7 +2473,7 @@ static void BTTFNSendPacket()
         fcUDP->beginPacket(bttfnTcdIP, BTTF_DEFAULT_LOCAL_PORT);
     #ifdef BTTFN_MC    
     } else {
-        #ifdef SID_DBG
+        #ifdef FC_DBG
         Serial.printf("Sending multicast (hostname hash %x)\n", tcdHostNameHash);
         #endif
         fcUDP->beginPacket("224.0.0.224", BTTF_DEFAULT_LOCAL_PORT + 1);
@@ -2499,7 +2499,7 @@ static bool BTTFNTriggerTT()
     if(!lastBTTFNpacket)
         return false;
 
-    if(TCDconnected || TTrunning || IRLearning)
+    if(TTrunning || IRLearning)
         return false;
 
     memset(BTTFUDPBuf, 0, BTTF_PACKET_SIZE);
@@ -2525,6 +2525,10 @@ static bool BTTFNTriggerTT()
     fcUDP->beginPacket(bttfnTcdIP, BTTF_DEFAULT_LOCAL_PORT);
     fcUDP->write(BTTFUDPBuf, BTTF_PACKET_SIZE);
     fcUDP->endPacket();
+
+    #ifdef FC_DBG
+    Serial.println("Triggered BTTFN-wide TT");
+    #endif
 
     return true;
 }
