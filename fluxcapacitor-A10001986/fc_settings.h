@@ -163,7 +163,6 @@ void rewriteSecondarySettings();
 
 bool prepareCopyAudioFiles();
 void doCopyAudioFiles();
-bool copy_audio_files();
 
 bool check_allow_CPA();
 void delete_ID_file();
