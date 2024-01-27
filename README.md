@@ -63,6 +63,10 @@ If the device is inaccessible as a result of incorrect static IPs, wait until th
 
 If you have your FC, along with a Time Circuits Display, mounted in a car, see also [here](#car-setup).
 
+#### Power supply
+
+Since the LEDs of the FC draw considerable power, it is recommended to use a short cable with large wire diameters between the power supply and the FC, and to drive the FC at 12V. A long/thin cable, due to its resistance, might cause under-voltage and therefore problems like LEDs behaving erroneously or even crashes of the FC's CPU.
+
 ### The Config Portal
 
 The Config Portal is accessible exclusively through WiFi. As outlined above, if the device is not connected to a WiFi network, it creates its own WiFi network (named "FC-AP"), to which your WiFi-enabled hand held device or computer first needs to connect in order to access the Config Portal.
@@ -271,7 +275,8 @@ By default, the FC plays a "flux" sound continously.
 The flux sound can be permanently disabled, permanently enabled, or enabled for 30 or 60 seconds
 
 - upon triggering a time travel,
-- after switching on the FC.
+- after switching on the FC (real or fake power),
+- after a BTTFN event that has impact on the FC (eg. changing speed through a rotary encoder on the TCD)
 
 The different modes are selected by typing *20 (disabled), *21 (enabled), *22 (enabled for 30 secs) or *23 (enabled for 60 secs), followed by OK. The power-up default is selected in the [Config Portal](#appendix-a-the-config-portal).
 
