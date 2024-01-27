@@ -339,7 +339,6 @@ static bool read_settings(File configFile)
         wd |= CopyCheckValidNumParm(json["ssTimer"], settings.ssTimer, sizeof(settings.ssTimer), 0, 999, DEF_SS_TIMER);
 
         wd |= CopyCheckValidNumParm(json["usePLforBL"], settings.usePLforBL, sizeof(settings.usePLforBL), 0, 1, DEF_BLEDSWAP);
-        wd |= CopyCheckValidNumParm(json["useVknob"], settings.useVknob, sizeof(settings.useVknob), 0, 1, DEF_VKNOB);
         wd |= CopyCheckValidNumParm(json["useSknob"], settings.useSknob, sizeof(settings.useSknob), 0, 1, DEF_SKNOB);
         wd |= CopyCheckValidNumParm(json["disDIR"], settings.disDIR, sizeof(settings.disDIR), 0, 1, DEF_DISDIR);
 
@@ -421,7 +420,6 @@ void write_settings()
     json["ssTimer"] = (const char *)settings.ssTimer;
 
     json["usePLforBL"] = (const char *)settings.usePLforBL;
-    json["useVknob"] = (const char *)settings.useVknob;
     json["useSknob"] = (const char *)settings.useSknob;
     json["disDIR"] = (const char *)settings.disDIR;
 
@@ -692,10 +690,12 @@ bool loadCurVolume()
 
     if(openCfgFileRead(volCfgName, configFile)) {
         StaticJsonDocument<512> json;
-        //if(!deserializeJson(json, configFile)) {
         if(!readJSONCfgFile(json, configFile, funcName)) {
-            if(!CopyCheckValidNumParm(json["volume"], temp, sizeof(temp), 0, 19, DEFAULT_VOLUME)) {
-                curSoftVol = atoi(temp);
+            if(!CopyCheckValidNumParm(json["volume"], temp, sizeof(temp), 0, 255, DEFAULT_VOLUME)) {
+                uint8_t ncv = atoi(temp);
+                if((ncv >= 0 && ncv <= 19) || ncv == 255) {
+                    curSoftVol = ncv;
+                } 
             }
         } 
         configFile.close();

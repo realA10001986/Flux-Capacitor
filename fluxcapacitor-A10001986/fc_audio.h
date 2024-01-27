@@ -33,7 +33,7 @@
 #ifndef _FC_AUDIO_H
 #define _FC_AUDIO_H
 
-// Default volume (index)
+// Default volume (index or 255 for knob)
 #define DEFAULT_VOLUME 6
 
 #define PA_LOOP    0x0001
@@ -77,6 +77,5 @@ extern bool    mpActive;
 extern bool    playingFlux;
 
 extern uint8_t curSoftVol;
-extern bool    useVKnob;
 
 #endif

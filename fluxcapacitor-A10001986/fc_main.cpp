@@ -1502,7 +1502,7 @@ static void handleIRKey(int key)
         break;
     case 12:                          // arrow up: inc vol
         if(irLocked) return;
-        if(!useVKnob) {
+        if(curSoftVol != 255) {
             inc_vol();        
             volchanged = true;
             volchgnow = millis();
@@ -1510,7 +1510,7 @@ static void handleIRKey(int key)
         break;
     case 13:                          // arrow down: dec vol
         if(irLocked) return;
-        if(!useVKnob) {
+        if(curSoftVol != 255) {
             dec_vol();
             volchanged = true;
             volchgnow = millis();
@@ -1720,11 +1720,6 @@ static bool execute(bool isIR)
             case 71:
                 // Taken by SID IR lock sequence
                 break;
-            case 80:                              // *80 Toggle knob use for volume
-                if(!TTrunning && !isIRLocked) {
-                    useVKnob = !useVKnob;
-                }
-                break;
             case 81:                              // *81 Toggle knob use for LED speed
                 if(!TTrunning && !isIRLocked) {
                     useSKnob = !useSKnob;
@@ -1817,27 +1812,42 @@ static bool execute(bool isIR)
     case 3:
         if(!isIRLocked) {
             temp = atoi(inputBuffer);
-            if(!TTrunning) {
-                switch(temp) {                        // Duplicates; for matching TCD
-                case 0:                               // *000 Disable looped FLUX sound playback
-                case 1:                               // *001 Enable looped FLUX sound playback
-                case 2:                               // *002 Enable looped FLUX sound playback for 30 seconds
-                case 3:                               // *003 Enable looped FLUX sound playback for 60 seconds
-                    setFluxMode(temp);
-                    break;
-                case 222:                             // *222/*555 Disable/enable shuffle
-                case 555:
-                    if(haveMusic) {
-                        mp_makeShuffle((temp == 555));
-                    }
-                    break;
-                case 888:                             // *888 go to song #0
-                    if(haveMusic) {
-                        mp_gotonum(0, mpActive);
-                    }
-                    break;
-                default:
+            if(temp >= 300 && temp <= 399) {
+                temp -= 300;                              // 300-319/399: Set fixed volume level / enable knob
+                if(temp == 99) {
+                    curSoftVol = 255;
+                    volchanged = true;
+                    volchgnow = millis();
+                } else if(temp <= 19) {
+                    curSoftVol = temp;
+                    volchanged = true;
+                    volchgnow = millis();
+                } else {
                     doBadInp = true;
+                }
+            } else {
+                if(!TTrunning) {
+                    switch(temp) {                        // Duplicates; for matching TCD
+                    case 0:                               // *000 Disable looped FLUX sound playback
+                    case 1:                               // *001 Enable looped FLUX sound playback
+                    case 2:                               // *002 Enable looped FLUX sound playback for 30 seconds
+                    case 3:                               // *003 Enable looped FLUX sound playback for 60 seconds
+                        setFluxMode(temp);
+                        break;
+                    case 222:                             // *222/*555 Disable/enable shuffle
+                    case 555:
+                        if(haveMusic) {
+                            mp_makeShuffle((temp == 555));
+                        }
+                        break;
+                    case 888:                             // *888 go to song #0
+                        if(haveMusic) {
+                            mp_gotonum(0, mpActive);
+                        }
+                        break;
+                    default:
+                        doBadInp = true;
+                    }
                 }
             }
         }

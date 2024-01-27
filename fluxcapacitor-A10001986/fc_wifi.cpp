@@ -83,11 +83,6 @@ WiFiManagerParameter custom_swapBL("swapBL", "Use GPIO14 connector for box light
 WiFiManagerParameter custom_swapBL("swapBL", "Use GPIO14 connector for box lights", settings.usePLforBL, 1, "autocomplete='off' title='Check if you connected your box lights to the GPIO14 connector instead of the Box LED connectors' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
-WiFiManagerParameter custom_useVknob("vKnob", "Use volume knob by default (0=off, 1=on)", settings.useVknob, 1, "autocomplete='off' title='Enable to use the volume knob by default, instead of adjusting volume via IR remote control'");
-#else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_useVknob("vKnob", "Use volume knob by default", settings.useVknob, 1, "title='Check to use volume knob by default, instead of adjusting volume via IR remote control' type='checkbox'", WFM_LABEL_AFTER);
-#endif // -------------------------------------------------
-#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_useSknob("sKnob", "Use speed knob by default (0=off, 1=on)", settings.useSknob, 1, "autocomplete='off' title='Enable to use speed knob by default, instead of adjusting speed via IR remote control'");
 #else // -------------------- Checkbox hack: --------------
 WiFiManagerParameter custom_useSknob("sKnob", "Use speed knob by default", settings.useSknob, 1, "title='Check to use speed knob by default, instead of adjusting speed via IR remote control' type='checkbox'", WFM_LABEL_AFTER);
@@ -336,7 +331,6 @@ void wifi_setup()
 
     wm.addParameter(&custom_sectstart);     // 5
     wm.addParameter(&custom_swapBL);
-    wm.addParameter(&custom_useVknob);
     wm.addParameter(&custom_useSknob);
     wm.addParameter(&custom_disDIR);
     
@@ -619,7 +613,6 @@ void wifi_loop()
             #ifdef TC_NOCHECKBOXES // --------- Plain text boxes:
 
             mystrcpy(settings.usePLforBL, &custom_swapBL);
-            mystrcpy(settings.useVknob, &custom_useVknob);
             mystrcpy(settings.useSknob, &custom_useSknob);
             mystrcpy(settings.disDIR, &custom_disDIR);
 
@@ -648,7 +641,6 @@ void wifi_loop()
             #else // -------------------------- Checkboxes:
 
             strcpyCB(settings.usePLforBL, &custom_swapBL);
-            strcpyCB(settings.useVknob, &custom_useVknob);
             strcpyCB(settings.useSknob, &custom_useSknob);
             strcpyCB(settings.disDIR, &custom_disDIR);
 
@@ -1077,7 +1069,6 @@ void updateConfigPortalValues()
     custom_playFLUXSnd.setValue(settings.playFLUXsnd, 1);   
 
     custom_swapBL.setValue(settings.usePLforBL, 1);
-    custom_useVknob.setValue(settings.useVknob, 1);
     custom_useSknob.setValue(settings.useSknob, 1);
     custom_disDIR.setValue(settings.disDIR, 1);
 
@@ -1107,7 +1098,6 @@ void updateConfigPortalValues()
     setCBVal(&custom_playFLUXSnd, settings.playFLUXsnd);
 
     setCBVal(&custom_swapBL, settings.usePLforBL);
-    setCBVal(&custom_useVknob, settings.useVknob);
     setCBVal(&custom_useSknob, settings.useSknob);
     setCBVal(&custom_disDIR, settings.disDIR);
 

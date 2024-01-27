@@ -100,6 +100,10 @@
 
 /*  Changelog
  *
+ *  2024/01/27 (A10001986) [1.40]
+ *    - Make volume control work like on TCD and DG; *300-*319 sets level, *399 enables
+ *      the volume knob (3300-3319/3399 from TCD keypad). 
+ *      Remove "Use volume knob by default" option from Config Portal, and *80 IR command.
  *  2024/01/26 (A10001986)
  *    - Reformat FlashFS only if audio file installation fails due to a write error
  *    - Add sound-pack versioning; re-installation required with this FW update

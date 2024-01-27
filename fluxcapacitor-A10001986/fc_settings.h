@@ -48,7 +48,6 @@ extern uint8_t musFolderNum;
 #define DEF_SS_TIMER        0     // "Screen saver" timeout in minutes; 0 = ss off
 
 #define DEF_BLEDSWAP        0     // 0: Use box led connectors for box leds; 1: use "panel light" connector (both PWM!)
-#define DEF_VKNOB           0     // 0: Don't use knob for audio volume, 1: do
 #define DEF_SKNOB           0     // 0: Don't use knob for chase speed; 1: do
 #define DEF_DISDIR          0     // 0: Do not disable default IR remote control; 1: do
 
@@ -81,7 +80,6 @@ struct Settings {
     char ssTimer[6]         = MS(DEF_SS_TIMER);
 
     char usePLforBL[4]      = MS(DEF_BLEDSWAP);
-    char useVknob[4]        = MS(DEF_VKNOB);
     char useSknob[4]        = MS(DEF_SKNOB);
     char disDIR[4]          = MS(DEF_DISDIR);
 

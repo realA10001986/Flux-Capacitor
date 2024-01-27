@@ -72,7 +72,6 @@ static const float volTable[20] = {
 };
 // Resolution for pot, 9-12 allowed
 #define POT_RESOLUTION 9
-bool            useVKnob   = false;
 uint8_t         curSoftVol = DEFAULT_VOLUME;
 #define VOL_SMOOTH_SIZE 4
 static int      rawVol[VOL_SMOOTH_SIZE];
@@ -117,8 +116,6 @@ void audio_setup()
     #ifdef FC_DBG
     audioLogger = &Serial;
     #endif
-
-    useVKnob = (atoi(settings.useVknob) > 0);
 
     // Set resolution for volume pot
     analogReadResolution(POT_RESOLUTION);
@@ -314,18 +311,18 @@ void append_file(const char *audio_file, uint16_t flags, float volumeFactor)
  */
  
 void inc_vol()
-{
-    if(useVKnob) return;
-    
-    if(curSoftVol == 19) return;
+{   
+    if(curSoftVol == 255 || curSoftVol == 19) 
+        return;
+
     curSoftVol++;
 }
 
 void dec_vol()
-{
-    if(useVKnob) return;
-    
-    if(curSoftVol == 0) return;
+{   
+    if(curSoftVol == 255 || curSoftVol == 0) 
+        return;
+        
     curSoftVol--;
 }
 
@@ -398,7 +395,7 @@ static float getVolume()
 {
     float vol_val;
 
-    if(useVKnob) {
+    if(curSoftVol == 255) {
         vol_val = getRawVolume();
     } else {
         vol_val = volTable[curSoftVol];
