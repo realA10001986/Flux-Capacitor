@@ -209,11 +209,11 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">*40&#9166;</td><td>3040</td>
     </tr>
      <tr>
-     <td align="left">Set fixed volume level</td>
+     <td align="left">Select audio volume level</td>
      <td align="left">*300&#9166; - *319&#9166;</td><td>3300&#9166; - 3319&#9166;</td>
     </tr>
     <tr>
-     <td align="left">Use volume knob (instead of fixed volume)</td>
+     <td align="left">Enable built-in volume knob</td>
      <td align="left">*399&#9166;</td><td>3399&#9166;</td>
     </tr>
     <tr>
