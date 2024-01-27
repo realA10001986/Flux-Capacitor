@@ -208,6 +208,14 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">Reset chase speed to default</td>
      <td align="left">*40&#9166;</td><td>3040</td>
     </tr>
+     <tr>
+     <td align="left">Set fixed volume level</td>
+     <td align="left">*300&#9166; - *319&#9166;</td><td>3300&#9166; - 3319&#9166;</td>
+    </tr>
+    <tr>
+     <td align="left">Use volume knob (instead of fixed volume)</td>
+     <td align="left">*399&#9166;</td><td>3399&#9166;</td>
+    </tr>
     <tr>
      <td align="left"><a href="#the-music-player">Music Player</a>: Select music folder</td>
      <td align="left">*50&#9166; - *59&#9166;</td><td>3050-3059</td>
@@ -231,10 +239,6 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     <tr>
      <td align="left"><a href="#locking-ir-control">Disable/Enable</a> IR remote commands</td>
      <td align="left">*70&#9166;</td><td>3070</td>
-    </tr>
-    <tr>
-     <td align="left">Toggle usage of volume knob</td>
-     <td align="left">*80&#9166;</td><td>3080</td>
     </tr>
     <tr>
      <td align="left">Toggle usage of speed knob</td>
@@ -507,10 +511,6 @@ The music player will continue to run.
 ##### &#9654; Use 'GPIO14' for box lights
 
 Normally, [box lights](#box-lighting) are connected to the "Box LED" connectors. Check this option if your box lights are instead connected to the "GPIO14" connector.
-
-##### &#9654; Use volume knob by default
-
-Check this if your FC has a pot for volume selection and you want to use this pot. Note that if this option is checked, commands regarding volume from the remote control are ignored.
 
 ##### &#9654; Use speed knob by default
 
