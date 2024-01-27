@@ -154,7 +154,7 @@ In order to only disable the supplied IR remote control, check the option **_Dis
     </tr>
     <tr>
      <td align="center"></td>
-     <td align="center">&#8593;<br>Increase audio volume</td>
+     <td align="center">&#8593;<br>Increase audio volume<br>(unless knob is enabled)</td>
      <td align="center"></td>
     </tr>
     <tr>
@@ -164,7 +164,7 @@ In order to only disable the supplied IR remote control, check the option **_Dis
     </tr>
     <tr>
      <td align="center"></td>
-     <td align="center">&#8595;<br>Decrease audio volume</td>
+     <td align="center">&#8595;<br>Decrease audio volume<br>(unless knob is enabled)</td>
      <td align="center"></td>
     </tr>
 </table>
@@ -210,11 +210,11 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     </tr>
      <tr>
      <td align="left">Select audio volume level</td>
-     <td align="left">*300&#9166; - *319&#9166;</td><td>3300&#9166; - 3319&#9166;</td>
+     <td align="left">*300&#9166; - *319&#9166;</td><td>3300-3319</td>
     </tr>
     <tr>
      <td align="left">Enable built-in volume knob</td>
-     <td align="left">*399&#9166;</td><td>3399&#9166;</td>
+     <td align="left">*399&#9166;</td><td>3399</td>
     </tr>
     <tr>
      <td align="left"><a href="#the-music-player">Music Player</a>: Select music folder</td>
