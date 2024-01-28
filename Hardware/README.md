@@ -20,7 +20,7 @@ The CircuitSetup back board is made to fit the [Radbench](https://www.thingivers
 
 Since I try to avoid 3D-printed parts as much as possible, I went for replicas made from brass made by user [stuff565](https://www.ebay.co.uk/usr/stuff565) on ebay (he is a well known member of the Delorean Time Machine scene). Suitable boots for the ignition cables are available from [maxthemad](https://www.ebay.co.uk/usr/maxthemad).
 
-If you go this route, you need to enlarge the holes in CircuitSetup's back board to fit the tubes, and due to their weight, the relays need to be screws on the back board. The resin inside the relay replicas is fine for screws, a bit of pre-drilling won't hurt.
+If you go this route, you need to enlarge the holes in CircuitSetup's back board to fit the tubes, and due to their weight, the relays need to be screwed on the back board. The resin inside the relay replicas is fine for screws, a bit of pre-drilling is recommended.
 
 Also, for the brass replicas, 
 - the L-bracket and the cable boots needs to be larger, and
