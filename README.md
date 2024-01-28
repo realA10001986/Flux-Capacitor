@@ -4,7 +4,7 @@ This repository holds the most current firmware for CircuitSetup's excellent [Fl
 
 The kit parts are available [here](https://circuitsetup.us/product-category/movie-props/).
 
-Here is my FC, built around this Control Board and the other parts of the kit (backing board, window kit; see [here](https://github.com/realA10001986/Flux-Capacitor/blob/main/Hardware/README.md) for more information on the parts used):
+Here is my FC, built around this Control Board and the other parts of the kit ([backing board](https://circuitsetup.us/product/flux-capacitor-backing-board/), [window kit](https://circuitsetup.us/product/flux-capacitor-window-kit/); see [here](https://github.com/realA10001986/Flux-Capacitor/blob/main/Hardware/README.md) for more information on the parts used):
 
 ![My Flux Capacitor](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/0754e0c0-e545-4122-8edf-0f7add41cd73)
 
