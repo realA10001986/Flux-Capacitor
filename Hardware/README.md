@@ -38,7 +38,7 @@ Elbows: These are aviation plugs going by MS3108B, dimensions 20-29 and 32. In t
 
 Big pipe on top: Genova 30720 (2")
 
-The black pipe on the left and the hose on the right are fully custom made; the hose is enclosed in parts used in pressurized air equipment.
+The black pipe on the left and the hose on the right are fully custom made; the hose is enclosed in parts used in compressed air equipment.
 
 
 
