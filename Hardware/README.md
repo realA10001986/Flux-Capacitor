@@ -12,7 +12,7 @@ For replicating exactly what is seen in the movies, the hinges need to moved inw
 
 ### Warning
 
-This box is made from molded fiberglass reinforced polyester. This is a higly dangerous material, so wear a proper mask when drilling, sawing or sanding.
+This box is made from molded fiberglass reinforced polyester. This is a highly dangerous material, so wear a proper mask when drilling, sawing or sanding.
 
 ## Torr relays
 
