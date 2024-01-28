@@ -1,12 +1,12 @@
 # Hardware tips
 
-CircuitSetup provides the electronics, a window kit and the back board. You need to source the other parts yourself. Here are a few tips.
+CircuitSetup provides the [electronics](https://circuitsetup.us/product/flux-capacitor-light-sound-pcb), a [window kit](https://circuitsetup.us/product/flux-capacitor-window-kit) and the [back board](https://circuitsetup.us/product/flux-capacitor-backing-board). You need to source the other parts yourself. Here are a few tips.
 
 ## Box
 
 The box is a [Stahlin J1210HPL](https://stahlin.com/product/j-series-12-x-10-x-5-inches-j1210hpl-enclosure/), still available. The color does not match the movies, but it can be spray-painted; a suitable color would be Pantone 423C.
 
-CircuitSetup's window kit comes with templates for drilling and the door window.
+CircuitSetup's kits come with templates for holes and the door window.
 
 For replicating exactly what is seen in the movies, the hinges need to moved inward by one inch.
 
