@@ -30,11 +30,11 @@ Suitable STL-files matching the brass-replicas for brackets, boots and light bar
 
 ## Light bars
 
-Radbench and others usually paint the light bars with "mirror silver" before coating them in black. I had no luck with this since it caused cracks in the acrylic. So I skipped this step and only painted the outsides black (using a _water-based_ color). IMHO the mirror paint is pointless, since the light is reflected by the surface of the acrylic glass anyway. As a final step I slightly sanded the acrylic so that the single LEDs aren't clearly visible in the end.
+Radbench and others usually paint the light bars with "mirror silver" before coating them in black. I had no luck with this since it caused cracks in the acrylic. So I skipped this step and only painted the outsides black (using a _water-based_ color). IMHO the mirror paint is pointless, since the light is reflected by the surface of the acrylic glass anyway. As a final step I slightly sanded the unpainted top surfaces so that the single LEDs aren't clearly visible in the end.
 
 ## External stuff
 
-Elbows: These are aviation plugs going by MS3108B, dimensions 20-29 and 32. In the original, these were made by Cannon, but those are no longer available. JAE is a suitable replacement, and those offered by Chinese vendors on ebay also match closely. 
+Elbows: These are aviation plugs going by MS3108B, dimensions 20-29 and 32. In the original, these were made by Cannon (ITT), but those are no longer available. JAE is a suitable replacement, and those offered by Chinese vendors on ebay also match closely. 
 
 Big pipe on top: Genova 30720 (2")
 
