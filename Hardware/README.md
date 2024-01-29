@@ -21,13 +21,13 @@ Since the SD card on the control board is inaccessible after assembling the FC (
 
 This box is made from molded fiberglass reinforced polyester. This is a highly dangerous material, so wear a proper mask when drilling, sawing or sanding.
 
-## Torr relays
+## Torr relays & co
 
-The CircuitSetup back board is made to fit the [Radbench](https://www.thingiverse.com/thing:5164173) Torr relay replicas and accessories, such as cable boots, L-brackets and acrylic "light-bars".
+The CircuitSetup back board is made to fit the Torr relay replicas and accessories from [Radbench](https://www.thingiverse.com/thing:5164173)'s collection, such as cable boots, L-brackets and acrylic "light-bars".
 
 Since I try to avoid 3D-printed parts as much as possible, I went for replicas made from brass made by user [stuff565](https://www.ebay.co.uk/usr/stuff565) on ebay (he is a well known member of the Delorean Time Machine scene). Suitable boots for the ignition cables are available from [maxthemad](https://www.ebay.co.uk/usr/maxthemad).
 
-If you go this route, you need to enlarge the holes in CircuitSetup's back board to fit the tubes, and due to their weight, the relays need to be screwed on the back board. The resin inside the relay replicas is fine for screws, a bit of pre-drilling is recommended.
+If you go this route, you need to enlarge the holes in CircuitSetup's back board to fit the tubes, and due to their weight, the "relays" need to be screwed onto the back board. The resin inside the relay replicas is fine for screws, a bit of pre-drilling is recommended. I used three screws per "relay".
 
 Also, for the brass replicas, 
 - the L-bracket and the cable boots needs to be larger, and
@@ -39,7 +39,11 @@ The yellow cables are simply yellow 7mm ignition cables, easy to find. The boots
 
 ## Light bars
 
-Radbench and others usually paint the light bars with "mirror silver" before coating them in black. I had no luck with this since it caused cracks in the acrylic. So I skipped this step and only painted the outsides black (using a _water-based_ color). IMHO the mirror paint is pointless, since the light is reflected by the surface of the acrylic glass anyway. As a final step I slightly sanded the unpainted top surfaces so that the single LEDs aren't clearly visible in the end.
+The light bars are 10mm acrylic glass. I am sure you'll find someone to cut them for you, an STL file and a pic showing the dimensions are here in this repo.
+
+Radbench and others usually paint the light bars with "mirror silver" before coating them in black. I had no luck with this since it caused cracks in the acrylic. So I skipped this step and only painted the outsides black (using a _water-based_ color). IMHO the mirror paint is pointless, since the light is reflected by the surface of the acrylic glass anyway. 
+
+As a final step I slightly sanded the unpainted top surfaces so that the single LEDs aren't clearly visible in the end.
 
 ## External stuff
 
