@@ -20,6 +20,10 @@ Features include
 - [Home Assistant](#home-assistant--mqtt) (MQTT 3.1.1) support
 - Built-in installer for default audio files in addition to OTA firmware updates
 
+## Power supply
+
+Since the bright LEDs of the FC draw considerable power, it is recommended to use a short cable with large wire diameters (min AWG16) between the power supply and the FC, and to drive the FC at 12V-20V (as opposed to 5V). A long/thin cable, due to its resistance, might cause under-voltage and therefore problems like LEDs behaving erratically or even crashes of the FC's CPU.
+
 ## Installation
 
 There are different alternative ways to install this firmware:
@@ -62,10 +66,6 @@ After saving the WiFi network settings, the device reboots and tries to connect 
 If the device is inaccessible as a result of incorrect static IPs, wait until the Flux Capacitor has completed its startup sequence, then type \*123456OK on the IR remote; static IP data will be deleted and the device will return to DHCP after a reboot.
 
 If you have your FC, along with a Time Circuits Display, mounted in a car, see also [here](#car-setup).
-
-#### Power supply
-
-Since the LEDs of the FC draw considerable power, it is recommended to use a short cable with large wire diameters between the power supply and the FC, and to drive the FC at 12V. A long/thin cable, due to its resistance, might cause under-voltage and therefore problems like LEDs behaving erroneously or even crashes of the FC's CPU.
 
 ### The Config Portal
 
