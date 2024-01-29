@@ -304,7 +304,7 @@ The SD card, apart from being used to [install](#audio-file-installation) the de
 
 Note that the SD card must be inserted before powering up the device. It is not recognized if inserted while the Flux Capacitor is running. Furthermore, do not remove the SD card while the device is powered.
 
-Since the SD card on the control board is inaccessible after assembling the FC, I used an SD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B08W4V748P/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time. See [here](https://github.com/realA10001986/Flux-Capacitor/blob/main/Hardware/README.md).
+Since the SD card on the control board is inaccessible after assembling the FC, I used a microSD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B08W4V748P/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time. See [here](https://github.com/realA10001986/Flux-Capacitor/blob/main/Hardware/README.md).
 
 ### Sound file substitution
 
