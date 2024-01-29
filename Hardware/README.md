@@ -9,7 +9,8 @@ The box is a [Stahlin J1210HPL](https://stahlin.com/product/j-series-12-x-10-x-5
 CircuitSetup's kits come with templates for holes and the door window.
 
 For replicating exactly what is seen in the movies, the door latches need to moved inward by one inch: 
-![latches](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/a2c62fd1-762a-4763-b537-5df3e32d8300)
+![latches](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/facebe93-ecdd-470d-8e41-eda24c3d4e9c)
+
 
 ### Warning
 
