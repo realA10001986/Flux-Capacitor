@@ -11,6 +11,10 @@ CircuitSetup's kits come with templates for holes and the door window.
 For replicating exactly what is seen in the movies, the door latches need to moved inward by one inch: 
 ![latches](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/facebe93-ecdd-470d-8e41-eda24c3d4e9c)
 
+Since the SD card on the control board is inaccessible after assembling the FC (but required to install the audio files, and possibly used for music files), I used an SD extension (like [this one](https://www.amazon.com/Electop-Extension-Extender-Compatible-Raspberry/dp/B07SYFCG17/ref=sr_1_4?keywords=sd+extension&qid=1706513216&sr=8-4)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time.
+![bottom](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/5a4017b4-382d-4fd4-8d7b-8a2dffaf2791)
+
+
 
 ### Warning
 
@@ -26,9 +30,11 @@ If you go this route, you need to enlarge the holes in CircuitSetup's back board
 
 Also, for the brass replicas, 
 - the L-bracket and the cable boots needs to be larger, and
-- the light bars need to be a bit higher.
+- the light bars need to be a bit taller.
 
 Suitable STL-files matching the brass-replicas for brackets, boots and light bars are in this repository. (The boots are an alternative to maxthemad's, and need some trimming to fit; I preferred this way because my boots better resemble the ones shown in the movies.)
+
+The yellow cables are simply yellow 7mm ignition cables, easy to find. The boots are painted in RAL2008, although I don't know if this is authentic. I used the O-rings (same color as boots) from [Radbench](https://www.thingiverse.com/thing:5164173)'s collection of parts.
 
 ## Light bars
 
