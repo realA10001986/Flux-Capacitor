@@ -43,7 +43,7 @@ The firmware comes with audio data ("sound-pack") which needs to be installed se
 - insert this SD card into the device's slot and 
 - power up the Flux Capacitor.
  
-If the contents of sound-pack archive is found on the SD card, the device will install the audio files (automatically).
+If the contents of sound-pack archive is found on the SD card, the device will install the audio data (automatically).
 
 After installation, the SD card can be re-used for [other purposes](#sd-card).
 
