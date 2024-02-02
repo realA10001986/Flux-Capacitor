@@ -282,11 +282,11 @@ The different modes are selected by typing *20 (disabled), *21 (enabled), *22 (e
 
 ## Box lighting
 
-The FC features connectors for box lights, ie LEDs that light up the inside of the FC during the time travel sequence. Those should be installed, they are essential part of the time travel sequence. The kit from CircuitSetup contains suitable high-power LEDs for box lighting, and all four of those need to be connected to the "Box LED" connectors. 
-
-As an alternative, one could use four pieces of 3W High-Power KEYES LED modules and drive them via the GPIO14 connector. As those draw quite much power, their power pins should therefore be connected to the power supply directly (provided you drive your FC at 5V; otherwise you need to grab the power from the control board), and only the PWD input should be wired to the "IO14" pin of the "GPIO14" connector. If you use the GPIO14 connector for your box LEDs, check [this option](#-use-gpio14-for-box-lights) in the Config Portal.
+The FC features connectors for box lights, ie LEDs that light up the inside of the FC during the time travel sequence. Those should be installed, they are essential part of the time travel sequence. The kit from CircuitSetup contains suitable high-power LEDs for box lighting, and all four of those must be connected to the "Box LED" connectors. They IMHO best location is in each corner, as close to the front (door) as possible.
 
 In normal operation, those LEDs are off. You can, however, configure a minimum box light level to light up the box a little bit if you find it too dark. This level can be chosen out of five, by entering *30 through *34 followed by OK.
+
+As an alternative to the included LEDs, one could use four pieces of 3W High-Power KEYES LED modules and drive them via the GPIO14 connector. Since those draw quite much power, their power pins should be connected directly to the power supply (provided you drive your FC at 5V; otherwise you need to grab the power from the control board), and only the "PWD" input should be wired to the "IO14" pin of the "GPIO14" connector. If you use the GPIO14 connector for your box LEDs, check [this option](#-use-gpio14-for-box-lights) in the Config Portal.
 
 ## Time travel
 
