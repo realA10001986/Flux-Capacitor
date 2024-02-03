@@ -408,15 +408,11 @@ void main_setup()
     if(!TCDconnected) {
         // If we have a physical button, we need
         // reasonable values for debounce and press
-        TTKey.setDebounceTicks(TT_DEBOUNCE);
-        TTKey.setPressTicks(TT_PRESS_TIME);
-        TTKey.setLongPressTicks(TT_HOLD_TIME);
+        TTKey.setTicks(TT_DEBOUNCE, TT_PRESS_TIME, TT_HOLD_TIME);
         TTKey.attachLongPressStart(TTKeyHeld);
     } else {
         // If the TCD is connected, we can go more to the edge
-        TTKey.setDebounceTicks(5);
-        TTKey.setPressTicks(50);
-        TTKey.setLongPressTicks(100000);
+        TTKey.setTicks(5, 50, 100000);
         // Long press ignored when TCD is connected
         // IRLearning only possible if "TCD connected by wire" unset.
     }
@@ -447,9 +443,9 @@ void main_setup()
     #endif
     ir_remote.begin();
 
-    if(!audio_files_present()) {
+    if(!haveAudioFiles) {
         #ifdef FC_DBG
-        Serial.println(F("Audio files not installed"));
+        Serial.println(F("Current audio data not installed"));
         #endif
         fcLEDs.SpecialSignal(FCSEQ_NOAUDIO);
         while(!fcLEDs.SpecialDone()) {

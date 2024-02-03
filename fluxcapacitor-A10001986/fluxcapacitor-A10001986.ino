@@ -100,6 +100,13 @@
 
 /*  Changelog
  *
+ *  2024/02/03 (A10001986)
+ *    - Audio data (FCA.bin) can now be uploaded through Config Portal ("UPDATE" page). 
+ *      Requires an SD card present.
+ *    - Check for audio data present also in FlashROMode; better container validity
+ *      check; display hint in CP if current audio not installed
+ *  2024/01/30 (A10001986)
+ *    - Minor optimizations
  *  2024/01/27 (A10001986) [1.40]
  *    - Make volume control work like on TCD and DG; *300-*319 sets level, *399 enables
  *      the volume knob (3300-3319/3399 from TCD keypad). 

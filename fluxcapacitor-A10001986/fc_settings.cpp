@@ -60,11 +60,14 @@
 
 #define NUM_AUDIOFILES 11+8
 #define SND_REQ_VERSION "FC01"
+#define AC_FMTV 2
+#define AC_OHSZ (14 + ((NUM_AUDIOFILES+1)*(32+4)))
+#define AC_TS   1199188
 
 static const char *CONFN  = "/FCA.bin";
 static const char *CONFND = "/FCA.old";
 static const char *CONID  = "FCAA";
-static uint32_t   soa = 0;
+static uint32_t   soa = AC_TS;
 static bool       ic = false;
 static uint8_t*   f(uint8_t *d, uint32_t m, int y) { return d; }
 
@@ -107,6 +110,9 @@ bool FlashROMode = false;
 /* If SD contains default audio files */
 static bool allowCPA = false;
 
+/* If current audio data is installed */
+bool haveAudioFiles = false;
+
 /* Music Folder Number */
 uint8_t musFolderNum = 0;
 
@@ -130,10 +136,12 @@ static bool loadIRKeys();
 static bool copy_audio_files(bool& delIDfile);
 static void open_and_copy(const char *fn, int& haveErr, int& haveWriteErr);
 static bool filecopy(File source, File dest, int& haveWriteErr);
-static bool check_if_default_audio_present();
 static void cfc(File& sfile, bool doCopy, int& haveErr, int& haveWriteErr);
 
+static bool audio_files_present();
+
 static void formatFlashFS();
+static void rewriteSecondarySettings();
 
 static bool CopyIPParm(const char *json, char *text, uint8_t psize);
 
@@ -286,6 +294,9 @@ void settings_setup()
 
     // Load user-config's and learned IR keys
     loadIRKeys();
+
+    // Check if (current) audio data is installed
+    haveAudioFiles = audio_files_present();
 
     // Check if SD contains the default sound files
     if(haveSD && (haveFS || FlashROMode)) {
@@ -1174,41 +1185,29 @@ static uint32_t getuint32(uint8_t *buf)
     return t;
 }
 
-static bool check_if_default_audio_present()
+bool check_if_default_audio_present()
 {
+    uint8_t dbuf[16];
     File file;
     size_t ts;
-    int i, idx = 0;
-    uint8_t dbuf[16];
-    size_t sizes[NUM_AUDIOFILES] = {
-      7313, 8045, 7313, 7679, 7679,         // 0-4
-      8045, 8045, 8045, 7679, 8045,         // 5-9
-      7679,                                 // dot
-      712515,                               // flux (loop) 
-      57259,                                // startup
-      46392, 98742,                         // timetravel, travelstart
-      65230,                                // alarm
-      60342,                                // fluxing
-      40593,                                // renaming
-      32548                                 // _installing (not copied)
-    };
+    int i;
 
+    ic = false;
+    
     if(!haveSD)
         return false;
 
-    for(i = 0; i < NUM_AUDIOFILES; i++) {
-        soa += sizes[i];
-    }
-
     if(SD.exists(CONFN)) {
         if(file = SD.open(CONFN, FILE_READ)) {
+            ts = file.size();
             file.read(dbuf, 14);
             file.close();
             if((!memcmp(dbuf, CONID, 4))             && 
-               ((*(dbuf+4) & 0x7f) == 2)             &&
+               ((*(dbuf+4) & 0x7f) == AC_FMTV)       &&
                (!memcmp(dbuf+5, SND_REQ_VERSION, 4)) &&
                (*(dbuf+9) == (NUM_AUDIOFILES+1))     &&
-               (getuint32(dbuf+10) == soa)) {
+               (getuint32(dbuf+10) == soa)           &&
+               (ts > soa + AC_OHSZ)) {
                 ic = true;
                 if(!(*(dbuf+4) & 0x80)) r  = f;
             }
@@ -1360,19 +1359,25 @@ static void cfc(File& sfile, bool doCopy, int& haveErr, int& haveWriteErr)
     }
 }
 
-bool audio_files_present()
+static bool audio_files_present()
 {
     File file;
     uint8_t buf[4];
     const char *fn = "/VER";
-    
-    if(FlashROMode || !haveFS)
-        return true;
 
-    if(!SPIFFS.exists(fn))
-        return false;
-    if(!(file = SPIFFS.open(fn, FILE_READ)))
-        return false;
+    if(FlashROMode) {
+        if(!(file = SD.open(fn, FILE_READ)))
+            return false;
+    } else {
+        // No SD, no FS - don't even bother....
+        if(!haveFS)
+            return true;
+        if(!SPIFFS.exists(fn))
+            return false;
+        if(!(file = SPIFFS.open(fn, FILE_READ)))
+            return false;
+    }
+
     file.read(buf, 4);
     file.close();
 
@@ -1428,7 +1433,7 @@ void copySettings()
 // Used during audio file installation when flash FS needs
 // to be re-formatted.
 // Is never called in FlashROmode
-void rewriteSecondarySettings()
+static void rewriteSecondarySettings()
 {
     bool oldconfigOnSD = configOnSD;
     
@@ -1548,4 +1553,32 @@ static bool writeFileToFS(const char *fn, uint8_t *buf, int len)
         return (bytesw == len);
     } else
         return false;
+}
+
+bool openACFile(File& file)
+{
+    if(haveSD) {
+        if(file = SD.open(CONFN, FILE_WRITE)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+size_t writeACFile(File& file, uint8_t *buf, size_t len)
+{
+    return file.write(buf, len);
+}
+
+void closeACFile(File& file)
+{
+    file.close();
+}
+
+void removeACFile()
+{
+    if(haveSD) {
+        SD.remove(CONFN);
+    }
 }
