@@ -42,12 +42,12 @@ The first step is to download "install/sound-pack-xxxxxxxx.zip" and extract it. 
 
 Then there are two alternative ways to proceed. Note that both methods *require an SD card*.
 
-1) Through the [Config Portal](#the-config-portal). Click on *Update*, select this file in the bottom file selector and click on *Upload*.
+1) Through the [Config Portal](#the-config-portal). Click on *Update*, select this file in the bottom file selector and click on *Upload*. Note that an SD card must be in the FC's slot during this operation.
 
 2) Via SD card:
 - Copy "FCA.bin" to the root directory of of a FAT32 formatted SD card;
 - power down the Flux Capacitor,
-- insert this SD card into the device's slot and 
+- insert this SD card into the slot and 
 - power up the Flux Capacitor; the audio data will (automatically) bei installed.
 
 After installation, the SD card can be re-used for [other purposes](#sd-card).
@@ -80,7 +80,7 @@ If the operating system on your handheld or computer supports Bonjour (a.k.a. "m
 
 If that fails, the way to enter the Config Portal depends on whether the device is in access point mode or not. 
 - If it is in access point mode (and your handheld/computer is connected to the WiFi network "FC-AP"), navigate your browser to http://192.168.4.1 
-- Otherwise type *90 followed by OK on the remote control and listen, the IP address will be spoken out loud.
+- Otherwise type *90 followed by OK on the supplied remote control and listen, the IP address will be spoken out loud.
 
 In the main menu, click on "Setup" to configure your Flux Capacitor.
 
@@ -491,7 +491,11 @@ This leads to the [Setup page](#setup-page).
 
 ##### &#9654; Update
 
-This leads to the firmware update page. You can select a locally stored firmware image file to upload (such as the ones published here in the install/ folder).
+This leads to the firmware update page. 
+
+In order to upload a new firmware binary (such as the ones published here in the install/ folder), select that image file in the top file selector and click "Update".
+
+You can also install the FC's audio data on this page; download the current sound-pack, extract it and select the resulting FCA.bin file in the bottom file selector. Finally, click "Upload". Note that an SD card is required for this operation.
 
 ##### &#9654; Erase WiFi Config
 
