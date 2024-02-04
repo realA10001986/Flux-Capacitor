@@ -48,7 +48,7 @@ Then there are two alternative ways to proceed. Note that both methods *require 
 - Copy "FCA.bin" to the root directory of of a FAT32 formatted SD card;
 - power down the Flux Capacitor,
 - insert this SD card into the slot and 
-- power up the Flux Capacitor; the audio data will (automatically) bei installed.
+- power up the Flux Capacitor; the audio data will be installed automatically.
 
 After installation, the SD card can be re-used for [other purposes](#sd-card).
 
