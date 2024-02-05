@@ -72,13 +72,6 @@
  *
  * - Install required libraries. In the Arduino IDE, go to "Tools" -> "Manage Libraries" 
  *   and install the following libraries:
- *   - WifiManager (tablatronix, tzapu) https://github.com/tzapu/WiFiManager
- *     (Tested with 2.0.13beta, 2.0.15-rc1, 2.0.16-rc2)
- *     For versions 2.0.16-rc2 and below, in order to avoid a delay when powering up
- *     several BTTFN-connected props, change _preloadwifiscan to false in WiFiManager.h 
- *     before compiling:
- *     -boolean       _preloadwifiscan        = true;
- *     +boolean       _preloadwifiscan        = false;
  *   - ArduinoJSON >= 6.19: https://arduinojson.org/v6/doc/installation/
  *
  * - Download the complete firmware source code:
