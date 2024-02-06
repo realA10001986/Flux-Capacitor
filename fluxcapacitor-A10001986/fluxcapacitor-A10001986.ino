@@ -96,6 +96,8 @@
 
 /*  Changelog
  *
+ *  2024/02/06 (A10001986)
+ *    - Fix reading and parsing of JSON document
  *  2024/02/05 (A10001986)
  *    - Tweaks for audio upload
  *  2024/02/04 (A10001986)
