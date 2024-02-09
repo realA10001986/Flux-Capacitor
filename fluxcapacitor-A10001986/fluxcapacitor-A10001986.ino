@@ -72,7 +72,7 @@
  *
  * - Install required libraries. In the Arduino IDE, go to "Tools" -> "Manage Libraries" 
  *   and install the following libraries:
- *   - ArduinoJSON >= 6.19: https://arduinojson.org/v6/doc/installation/
+ *   - ArduinoJSON (>= 6.19): https://arduinojson.org/v6/doc/installation/
  *
  * - Download the complete firmware source code:
  *   https://github.com/realA10001986/Flux-Capacitor/archive/refs/heads/main.zip
@@ -96,8 +96,11 @@
 
 /*  Changelog
  *
+ *  2024/02/08 (A10001986)
+ *    - CP: Add header to "Saved" page so one can return to main menu
  *  2024/02/06 (A10001986)
  *    - Fix reading and parsing of JSON document
+ *    - Fixes for using ArduinoJSON 7; not used in bin yet, too immature IMHO.
  *  2024/02/05 (A10001986)
  *    - Tweaks for audio upload
  *  2024/02/04 (A10001986)
