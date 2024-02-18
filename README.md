@@ -313,7 +313,7 @@ Since the SD card on the control board is inaccessible after assembling the FC, 
 
 ### Sound substitution
 
-The FC's built-in sounds can be substituted by your own sound files on a FAT32-formatted SD card. These files will be played back directly from the SD card during operation, so the SD card has to remain in the slot.
+The FC's built-in sound effects can be substituted by your own sound files on a FAT32-formatted SD card. These files will be played back directly from the SD card during operation, so the SD card has to remain in the slot.
 
 Your replacements need to be put in the root (top-most) directory of the SD card, be in mp3 format (128kbps max) and named as follows:
 - "flux.mp3". The standard flux sound, played continously;
