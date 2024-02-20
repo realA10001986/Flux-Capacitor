@@ -64,7 +64,7 @@ As long as the device is unconfigured, as is the case with a brand new Flux Capa
 
 #### Connecting to a WiFi network
 
-If you want your Flux Capacitor to connect to another access point, such as your WiFi network, click on "Configure WiFi". The bare minimum is to select an SSID (WiFi network name) and a WiFi password.
+If you want to connect your Flux Capacitor to your WiFi network, click on "Configure WiFi". The bare minimum is to select an SSID (WiFi network name) and a WiFi password.
 
 Note that the device requests an IP address via DHCP, unless you entered valid data in the fields for static IP addresses (IP, gateway, netmask, DNS). 
 
