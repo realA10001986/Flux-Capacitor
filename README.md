@@ -56,7 +56,7 @@ After installation, the SD card can be re-used for [other purposes](#sd-card).
 
 A good first step would be to establish access to the Config Portal in order to configure your Flux Capacitor.
 
-As long as the device is unconfigured, as is the case with a brand new Flux Capacitor, or later if it for some reason fails to connect to a configured WiFi network, it starts in "access point" mode, i.e. it creates a WiFi network of its own named "FC-AP". This is called "Access point mode", or "AP-mode".
+As long as the device is unconfigured, as is the case with a brand new Flux Capacitor, or later if it for some reason fails to connect to a configured WiFi network, it creates a WiFi network of its own named "FC-AP". This is called "Access point mode", or "AP-mode".
 
 - Power up the device and wait until the startup sequence has completed.
 - Connect your computer or handheld device to the WiFi network "FC-AP".
