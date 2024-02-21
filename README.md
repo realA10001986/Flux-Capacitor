@@ -28,15 +28,15 @@ Since the bright LEDs draw considerable power, it is recommended to use a short 
 
 There are different alternative ways to install this firmware:
 
-1) If a previous version of the Flux Capacitor firmware is installed on your device, you can update easily using the pre-compiled binary.  Enter the [Config Portal](#the-config-portal), click on "Update" and select the pre-compiled binary file provided in this repository ([install/fluxcapacitor-A10001986.ino.nodemcu-32s.bin](https://github.com/realA10001986/Flux-Capacitor/blob/main/install/fluxcapacitor-A10001986.ino.nodemcu-32s.bin)).
+1) If a previous version of the Flux Capacitor firmware is installed on your device, you can update easily using the pre-compiled binary. Enter the [Config Portal](#the-config-portal), click on "Update" and select the pre-compiled binary file provided in this repository ([install/fluxcapacitor-A10001986.ino.nodemcu-32s.bin](https://github.com/realA10001986/Flux-Capacitor/blob/main/install/fluxcapacitor-A10001986.ino.nodemcu-32s.bin)).
 
-2) Using the Arduino IDE or PlatformIO: Download the sketch source code, all required libraries, compile and upload it. This method is the one for fresh ESP32 boards and/or folks familiar with the programming tool chain. Detailed build information is in [fluxcapacitor-A10001986.ino](https://github.com/realA10001986/Flux-Capacitor/blob/main/fluxcapacitor-A10001986/fluxcapacitor-A10001986.ino).
+If you are using a fresh ESP32 board, please see [fluxcapacitor-A10001986.ino](https://github.com/realA10001986/Flux-Capacitor/blob/main/fluxcapacitor-A10001986/fluxcapacitor-A10001986.ino) for detailed build information.
 
- *Important: After a firmware update, the inner and outer LEDs might blink alternately for up to a minute after reboot. Do NOT unplug the device during this time.*
+ *Important: After a firmware update, the inner and outer LEDs might blink alternately for short while after reboot. Do NOT unplug the device during this time.*
 
-### Audio file installation
+### Audio data installation
 
-The firmware comes with audio data ("sound-pack") which needs to be installed separately. The audio data is not updated as often as the firmware itself. If you have previously installed the latest version of the sound-pack, you normally don't have to re-install the audio data when you update the firmware. Only if either a new version of the sound-pack is released, or your device is quiet after a firmware update, a re-installation is needed.
+The firmware comes with audio data ("sound-pack") which needs to be installed separately. The audio data is not updated as often as the firmware itself. If you have previously installed the latest version of the sound-pack, you normally don't have to re-install the audio data when you update the firmware. Only if either a the FC puts up a [signal]() at startup, or your device is quiet after a firmware update, a re-installation is needed.
 
 The first step is to download "install/sound-pack-xxxxxxxx.zip" and extract it. It contains one file named "FCA.bin".
 
@@ -52,39 +52,49 @@ Then there are two alternative ways to proceed. Note that both methods *require 
 
 After installation, the SD card can be re-used for [other purposes](#sd-card).
 
-## Short summary of first steps
+## Initial Configuration
 
-A good first step would be to establish access to the Config Portal in order to configure your Flux Capacitor.
+The first step is to establish access to the FC's configuration web site ("Config Portal") in order to configure your FC:
 
-As long as the device is unconfigured, as is the case with a brand new Flux Capacitor, or later if it for some reason fails to connect to a configured WiFi network, it creates a WiFi network of its own named "FC-AP". This is called "Access point mode", or "AP-mode".
-
-- Power up the device and wait until the startup sequence has completed.
+- Power up the FC and wait until the startup sequence has completed.
 - Connect your computer or handheld device to the WiFi network "FC-AP".
 - Navigate your browser to http://flux.local or http://192.168.4.1 to enter the Config Portal.
 
 #### Connecting to a WiFi network
 
-If you want to connect your Flux Capacitor to your WiFi network, click on "Configure WiFi". The bare minimum is to select an SSID (WiFi network name) and a WiFi password.
+As long as the device is unconfigured, it creates a WiFi network of its own named "FC-AP". This is called "Access point mode", or "AP-mode". 
 
-Note that the device requests an IP address via DHCP, unless you entered valid data in the fields for static IP addresses (IP, gateway, netmask, DNS). 
+It is ok to leave the FC in this mode, especially if it run stand-alone. In a typical home setup and/or if you have a [Time Circuits Display](https://tcd.out-a-ti.me), however, you might want to connect the FC to your WiFi network. If you have your FC, along with a Time Circuits Display, mounted in a car, you might want to connect the FC to the TCD's very own WiFi network "TCD-AP"; also [here](#car-setup).
 
-After saving the WiFi network settings, the device reboots and tries to connect to your configured WiFi network. If that fails, it will again start in access point mode. 
+In order to connect your FC to a WiFi network, click on "Configure WiFi". The bare minimum is to select an SSID (WiFi network name) and a WiFi password.
 
-If the device is inaccessible as a result of incorrect static IPs, wait until the Flux Capacitor has completed its startup sequence, then type \*123456OK on the IR remote; static IP data will be deleted and the device will return to DHCP after a reboot.
+(Note that the FC requests an IP address via DHCP, unless you entered valid data in the fields for static IP addresses (IP, gateway, netmask, DNS). If the device is inaccessible as a result of incorrect static IPs, wait until the Flux Capacitor has completed its startup sequence, then type \*123456OK on the IR remote; static IP data will be deleted and the device will return to DHCP after a reboot.)
 
-If you have your FC, along with a Time Circuits Display, mounted in a car, see also [here](#car-setup).
+After saving the WiFi network settings, the FC reboots and tries to connect to your configured WiFi network. If that fails, it will again start in access point mode.
+
+After completing this step, your FC is basically ready for use; you can also continue configuring it to your personal preferences through the Config Portal.
 
 ## The Config Portal
 
-The Config Portal is accessible exclusively through WiFi. As outlined above, if the device is not connected to a WiFi network, it creates its own WiFi network (named "FC-AP"), to which your WiFi-enabled hand held device or computer first needs to connect in order to access the Config Portal.
+The "Config Portal" is the TCD's configuration web site. 
 
-If the operating system on your handheld or computer supports Bonjour (a.k.a. "mDNS"), you can enter the Config Portal by directing your browser to http://flux.local . (mDNS is supported on Windows 10 version TH2 (1511) [other sources say 1703] and later, Android 13 and later, MacOS, iOS)
+It can be accessed as follows:
 
-If that fails, the way to enter the Config Portal depends on whether the device is in access point mode or not. 
-- If it is in access point mode (and your handheld/computer is connected to the WiFi network "FC-AP"), navigate your browser to http://192.168.4.1 
-- Otherwise type *90 followed by OK on the supplied remote control and listen, the IP address will be spoken out loud.
+#### If FC is in AP mode
 
-In the main menu, click on "Setup" to configure your Flux Capacitor.
+- Connect your computer or handheld device to the WiFi network "FC-AP".
+- Navigate your browser to http://flux.local or http://192.168.4.1 to enter the Config Portal.
+
+#### If FC is connected to WiFi network
+
+- Connect your hand-held/computer to the same WiFi network to which the FC is connected, and
+- navigate your browser to http://flux.local
+
+  Accessing the Config Portal through this address requires the operating system of your hand-held/computer to support Bonjour/mDNS: Windows 10 version TH2     (1511) [other sources say 1703] and later, Android 13 and later; MacOS and iOS since the dawn of time.
+
+  If connecting to http://flux.local fails due to a name resultion error, you need to find out the FCD's IP address: Type *90 followed by OK on the supplied remote control and listen, the IP address will be spoken out loud. Then, on your handheld or computer, navigate to http://a.b.c.d (a.b.c.d being the IP address as read out loud by the FC) in order to enter the Config Portal.
+
+In the main menu, click on "Setup" to configure your Flux Capacitor. 
 
 | ![The Config Portal](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/e5b695a3-5c55-4ef2-b3fc-7e7358d3cba7) |
 |:--:| 
@@ -307,7 +317,7 @@ Other ways of triggering a time travel are available if a [Time Circuits Display
 
 Preface note on SD cards: For unknown reasons, some SD cards simply do not work with this device. For instance, I had no luck with Sandisk Ultra 32GB and  "Intenso" cards. If your SD card is not recognized, check if it is formatted in FAT32 format (not exFAT!). Also, the size must not exceed 32GB (as larger cards cannot be formatted with FAT32). Transcend SDHC cards and those work fine in my experience.
 
-The SD card, apart from being required for [installing](#audio-file-installation) of the built-in audio data, can be used for substituting built-in sound effects and for music played back by the [Music player](#the-music-player). Also, it is recommended to store [secondary settings](#-save-secondary-settings-on-sd) on the SD card to minimize [Flash Wear](#flash-wear). The chosen chase sequence (*1x) is only stored on SD, so for your selection to be persistent accross reboots, an SD card is required.
+The SD card, apart from being required for [installing](#audio-data-installation) of the built-in audio data, can be used for substituting built-in sound effects and for music played back by the [Music player](#the-music-player). Also, it is recommended to store [secondary settings](#-save-secondary-settings-on-sd) on the SD card to minimize [Flash Wear](#flash-wear). The chosen chase sequence (*1x) is only stored on SD, so for your selection to be persistent accross reboots, an SD card is required.
 
 Note that the SD card must be inserted before powering up the device. It is not recognized if inserted while the Flux Capacitor is running. Furthermore, do not remove the SD card while the device is powered.
 
@@ -455,7 +465,7 @@ If your FC, along with a [Time Circuits Display](https://tcd.out-a-ti.me/), is m
 
 #### Flux Capacitor
 
-Enter the Config Portal on the FC (as described above), click on *Setup* and
+Enter the Config Portal on the FC, click on *Setup* and
   - enter *192.168.4.1* into the field **_IP address or hostname of TCD_**
   - check the option **_Follow TCD fake power_** if you have a fake power switch for the TCD (like eg a TFC switch)
   - click on *Save*.
@@ -666,7 +676,7 @@ This procedure ensures that all your settings are copied from the old to the new
     </tr>
  <tr>
      <td align="left">&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
-     <td align="left">Error: Audio files <a href="#audio-file-installation">not installed</a></td>
+     <td align="left">Error: Audio files <a href="#audio-data-installation">not installed</a></td>
     </tr>
 <tr>
      <td align="left">&#9675; &#9675; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9675; &#9675;<br>&#8635;</td>
