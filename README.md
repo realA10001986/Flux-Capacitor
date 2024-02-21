@@ -36,7 +36,7 @@ If you are using a fresh ESP32 board, please see [fluxcapacitor-A10001986.ino](h
 
 ### Audio data installation
 
-The firmware comes with audio data ("sound-pack") which needs to be installed separately. The audio data is not updated as often as the firmware itself. If you have previously installed the latest version of the sound-pack, you normally don't have to re-install the audio data when you update the firmware. Only if either a the FC puts up a [signal]() at startup, or your device is quiet after a firmware update, a re-installation is needed.
+The firmware comes with audio data ("sound-pack") which needs to be installed separately. The audio data is not updated as often as the firmware itself. If you have previously installed the latest version of the sound-pack, you normally don't have to re-install the audio data when you update the firmware. Only if either a the FC puts up a respective [signal](#appendix-b-led-signals) at startup, or your device is quiet after a firmware update, a re-installation is needed.
 
 The first step is to download "install/sound-pack-xxxxxxxx.zip" and extract it. It contains one file named "FCA.bin".
 
@@ -64,7 +64,7 @@ The first step is to establish access to the FC's configuration web site ("Confi
 
 As long as the device is unconfigured, it creates a WiFi network of its own named "FC-AP". This is called "Access point mode", or "AP-mode". 
 
-It is ok to leave the FC in this mode, especially if it run stand-alone. In a typical home setup and/or if you have a [Time Circuits Display](https://tcd.out-a-ti.me), however, you might want to connect the FC to your WiFi network. If you have your FC, along with a Time Circuits Display, mounted in a car, you might want to connect the FC to the TCD's very own WiFi network "TCD-AP"; also [here](#car-setup).
+It is ok to leave the FC in this mode, especially if it run stand-alone. In a typical home setup and/or if you also have a [Time Circuits Display](https://tcd.out-a-ti.me), however, you might want to connect the FC to a WiFi network (in case of using it together with a TCD: to the same WiFi network the TCD is connected to). If you have your FC, along with a Time Circuits Display, mounted in a car, you might want to connect the FC to the TCD's very own WiFi network "TCD-AP"; see [here](#car-setup).
 
 In order to connect your FC to a WiFi network, click on "Configure WiFi". The bare minimum is to select an SSID (WiFi network name) and a WiFi password.
 
