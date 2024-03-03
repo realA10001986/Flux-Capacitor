@@ -24,7 +24,7 @@ From left to right:
 - Speaker (using Radbench's speaker grill "Speaker_Grill_RBv1")
 - USB and power (using Radbench's bracket "PowerUsbMount")
 
-As a speaker, I used [this](https://www.amazon.com/ACEIRMC-Loundspeaker-JST-PH2-0-Interface-Electronic/dp/B0BTM1VCBM/ref=sr_1_8) one; I cut off the latches and taped it onto the back side of the backing board.
+As a speaker, I used [this](https://www.amazon.com/ACEIRMC-Loundspeaker-JST-PH2-0-Interface-Electronic/dp/B0BTM1VCBM/ref=sr_1_8) one; I cut off the latches and taped it onto the back side of the [back board](https://circuitsetup.us/product/flux-capacitor-backing-board).
 
 <img width="300" alt="Speaker" src="https://github.com/realA10001986/Flux-Capacitor/assets/76924199/385f154f-1f49-474d-b4dc-b12a9e868271">
 
@@ -41,7 +41,7 @@ The power connector is an adapter like this, which fits nicely into the bracket:
 
 The CircuitSetup back board is made to fit the Torr relay replicas and accessories from [Radbench](https://www.thingiverse.com/thing:5164173)'s collection, such as cable boots, L-brackets and acrylic "light-bars".
 
-Since I try to avoid 3D-printed parts as much as possible, I went for replicas made from brass made by user [stuff565](https://www.ebay.co.uk/usr/stuff565) on ebay (he is a well known member of the Delorean Time Machine scene). Suitable boots for the ignition cables are available from [maxthemad](https://www.ebay.co.uk/usr/maxthemad).
+Since I try to avoid 3D-printed parts as much as possible, I went for replicas made from brass made by user [stuff565](https://www.ebay.co.uk/usr/stuff565) on ebay (he is a well known member of the Delorean Time Machine Builders scene). Suitable boots for the ignition cables are available from [maxthemad](https://www.ebay.co.uk/usr/maxthemad).
 
 If you go this route, you need to enlarge the holes in CircuitSetup's back board to fit the tubes, and due to their weight, the "relays" need to be screwed onto the back board. The resin inside the relay replicas is fine for screws, a bit of pre-drilling is recommended. I used three screws per "relay".
 
@@ -57,7 +57,7 @@ The yellow cables are simply yellow 7mm ignition cables, easy to find. The boots
 
 The light bars are 10mm acrylic glass. I am sure you'll find someone to cut them for you, an STL file and a pic showing the dimensions are here in this repo.
 
-Radbench and others usually paint the light bars with "mirror silver" before coating them in black. I had no luck with this since it caused cracks in the acrylic. So I skipped this step and only painted the outsides black (using a _water-based_ color). IMHO the mirror paint is pointless, since the light is reflected by the surface of the acrylic glass anyway. 
+Radbench and others usually spray paint the light bars with "mirror silver" before coating them in black. I had no luck with this since it caused cracks in the acrylic. So I skipped this step and only painted the outsides black (using a _water-based_ color). IMHO the mirror paint is pointless, since the light is reflected by the surface of the acrylic glass anyway. 
 
 As a final step I slightly sanded the unpainted top surfaces so that the single LEDs aren't clearly visible in the end.
 
@@ -65,7 +65,7 @@ As a final step I slightly sanded the unpainted top surfaces so that the single 
 
 Elbows: These are aviation plugs going by MS3108B, dimensions 20-29 and 32. In the original, these were made by Cannon (ITT), but those are no longer available. JAE is a suitable replacement, and those offered by Chinese vendors on ebay also match closely. 
 
-Big pipe on top: Genova 30720 (2")
+Big pipe on top: Genova 30720 (2"). Beware, many ebay sellers quitely ship other brands/models despite explicitly selling this type.
 
 The black pipe on the left and the hose on the right are fully custom made; the hose is enclosed in parts used in compressed air equipment.
 
