@@ -36,6 +36,7 @@ The power connector is an adapter like this, which fits nicely into the bracket:
 
 <img width="300" alt="Power connector" src="https://github.com/realA10001986/Flux-Capacitor/assets/76924199/196055b4-7177-4f72-8561-d6c56eb33ae7">
 
+Since the bright LEDs draw considerable power, it is recommended to drive the FC at 12V-20V (as opposed to 5V).
 
 ## Torr relays & co
 
