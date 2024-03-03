@@ -11,7 +11,7 @@ CircuitSetup's kits come with templates for holes and the door window.
 For replicating exactly what is seen in the movies, the door latches need to moved inward by one inch: 
 ![latches](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/facebe93-ecdd-470d-8e41-eda24c3d4e9c)
 
-Since the SD card on the control board is inaccessible after assembling the FC (but required to install the audio files, and possibly used for music files), I used a microSD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B08W4V748P/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time.
+Since the SD card on the control board is inaccessible after assembling the FC (but required to install the audio files, and possibly used for music files), I used a microSD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B09MS85FQ3/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time.
 
 ![bottom](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/5a4017b4-382d-4fd4-8d7b-8a2dffaf2791)
 
