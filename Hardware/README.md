@@ -19,13 +19,15 @@ From left to right:
 - Time Travel button (shortens "TT_IN" and "3V3" on the FC control board)
 - Time Travel input for connecting TCD by wire (outer: GND, inner "TT_IN" from the FC control board)
 - microSD extension
-- Speaker (using Radbench's speaker grill "Speaker_Grill_RBv1" and speaker like  one)
+- Speaker (using Radbench's speaker grill "Speaker_Grill_RBv1")
 - USB and power (using Radbench's bracket "PowerUsbMount")
 
 As a speaker, I used [this](https://www.amazon.com/ACEIRMC-Loundspeaker-JST-PH2-0-Interface-Electronic/dp/B0BTM1VCBM/ref=sr_1_8) one:
 
+<img width="355" alt="Speaker" src="https://github.com/realA10001986/Flux-Capacitor/assets/76924199/385f154f-1f49-474d-b4dc-b12a9e868271">
 
 The USB connecter is part of an USB extension cable like this one; I simply trimmed it down to fit the bracket.
+
 <img width="546" alt="USB extension" src="https://github.com/realA10001986/Flux-Capacitor/assets/76924199/2c93e391-3fcb-410c-bb11-2d2924cf46a7">
 
 ### Warning
