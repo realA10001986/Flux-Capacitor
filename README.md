@@ -76,6 +76,10 @@ After completing this step, your FC is basically ready for use; you can also con
 
 The "Config Portal" is the FC's configuration web site. 
 
+| ![The Config Portal](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/fd2c7768-d3ee-4255-b67c-90b4d8cc1f8f) |
+|:--:| 
+| *The Config Portal's main page* |
+
 It can be accessed as follows:
 
 #### If FC is in AP mode
@@ -94,7 +98,7 @@ It can be accessed as follows:
 
 In the main menu, click on "Setup" to configure your Flux Capacitor. 
 
-| ![The Config Portal](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/e5b695a3-5c55-4ef2-b3fc-7e7358d3cba7) |
+| ![The Config Portal](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/ef058e3e-ad3d-4493-834f-6abd6560acfd) |
 |:--:| 
 | *The Config Portal's Setup page* |
 
