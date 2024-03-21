@@ -24,7 +24,7 @@ From left to right:
 - Speaker (using Radbench's speaker grill "Speaker_Grill_RBv1")
 - USB and power (using Radbench's bracket "PowerUsbMount")
 
-As a speaker, I used [this](https://www.amazon.com/ACEIRMC-Loundspeaker-JST-PH2-0-Interface-Electronic/dp/B0BTM1VCBM/ref=sr_1_8) one; I cut off the latches and taped it onto the back side of the [back board](https://circuitsetup.us/product/flux-capacitor-backing-board).
+As a speaker, I used [this](https://www.amazon.com/ACEIRMC-Loundspeaker-JST-PH2-0-Interface-Electronic/dp/B0BTM1VCBM/ref=sr_1_8) one; I cut off the latches and glued it onto the back side of the [back board](https://circuitsetup.us/product/flux-capacitor-backing-board).
 
 <img width="300" alt="Speaker" src="https://github.com/realA10001986/Flux-Capacitor/assets/76924199/385f154f-1f49-474d-b4dc-b12a9e868271">
 
@@ -64,11 +64,13 @@ As a final step I slightly sanded the unpainted top surfaces so that the single 
 
 ## External stuff
 
-Elbows: These are aviation plugs going by MS3108B, dimensions 20-29 and 32. In the original, these were made by Cannon (ITT), but those are no longer available. JAE is a suitable replacement, and those offered by Chinese vendors on ebay also match closely. 
+Elbows: These are aviation plugs going by MS3108B, dimensions 20-29 and 32. In the original, these were made by Cannon (ITT), but those are no longer available. JAE is a suitable replacement, and those offered by Chinese vendors on ebay also match closely. I removed the electrical components inside the plug and used screws to attach it to the box.
 
-Big pipe on top: Genova 30720 (2"). Beware, many ebay sellers quitely ship other brands/models despite explicitly selling this type.
+Big pipe on top: Genova 30720 (2"). Beware, many ebay sellers quitely ship other brands/models despite explicitly selling this type. In order to attach it to the box, I glued a disc of wood into the bottom end, and screwed it onto the top part of the box.
 
-The black pipe on the left and the hose on the right are fully custom made; the hose is enclosed in parts used in compressed air equipment.
+The black pipe on the left and the hose on the right are fully custom made; the hose is enclosed in parts used in compressed air equipment. Both are atteched using screws.
+
+If you avoid 3D-printed parts in general (or use a UV- and heat-resistant resin) and attach parts properly, the FC is perfectly fine to be mounted in an actual Delorean.
 
 
 
