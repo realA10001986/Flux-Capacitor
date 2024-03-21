@@ -8,6 +8,8 @@ Here is my FC, built around this Control Board and the other parts of the kit ([
 
 ![My Flux Capacitor](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/0754e0c0-e545-4122-8edf-0f7add41cd73)
 
+The Flux Capacitor can be used stand-alone, or in connection with a [Time Circuits Display](https://tcd.out-a-ti.me). If built properly, the Flux Capacitor is perfectly fit for mounting in your Delorean.
+
 Features include
 - movie-accurate default flux sequence, plus 9 alternative flux sequences
 - Optional [flux](#the-flux-sound) sound (4 modes)
@@ -94,7 +96,7 @@ It can be accessed as follows:
 
   Accessing the Config Portal through this address requires the operating system of your hand-held/computer to support Bonjour/mDNS: Windows 10 version TH2     (1511) [other sources say 1703] and later, Android 13 and later; MacOS and iOS since the dawn of time.
 
-  If connecting to http://flux.local fails due to a name resultion error, you need to find out the FC's IP address: Type *90 followed by OK on the supplied remote control and listen, the IP address will be spoken out loud. Then, on your handheld or computer, navigate to http://a.b.c.d (a.b.c.d being the IP address as read out loud by the FC) in order to enter the Config Portal.
+  If connecting to http://flux.local fails due to a name resolution error, you need to find out the FC's IP address: Type *90 followed by OK on the supplied remote control and listen, the IP address will be spoken out loud. Then, on your handheld or computer, navigate to http://a.b.c.d (a.b.c.d being the IP address as read out loud by the FC) in order to enter the Config Portal.
 
 In the main menu, click on "Setup" to configure your Flux Capacitor. 
 
