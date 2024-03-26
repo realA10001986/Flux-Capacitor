@@ -125,6 +125,8 @@ void IRRemote::begin()
     // Install & enable interrupt
     _IRTimer = timerBegin(_timer_no, TMR_PRESCALE, true);
     timerAttachInterrupt(_IRTimer, &IRTimer_ISR, true);
+    // While in theory, this should work, it disturbs firmware updates:
+    //timerAttachInterruptFlag(_IRTimer, &IRTimer_ISR, true, ESP_INTR_FLAG_IRAM); //|ESP_INTR_FLAG_LEVEL2);
     timerAlarmWrite(_IRTimer, TMR_TICKS, true);
     timerAlarmEnable(_IRTimer);
 }

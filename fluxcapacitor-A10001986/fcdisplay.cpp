@@ -391,6 +391,8 @@ void FCLEDs::begin()
     // Install & enable timer interrupt
     _FCLTimer_Cfg = timerBegin(_timer_no, TMR_PRESCALE, true);
     timerAttachInterrupt(_FCLTimer_Cfg, &FCLEDTimer_ISR, true);
+    // While in theory, this should work, it disturbs firmware updates:
+    //timerAttachInterruptFlag(_FCLTimer_Cfg, &FCLEDTimer_ISR, true, ESP_INTR_FLAG_IRAM);
     timerAlarmWrite(_FCLTimer_Cfg, TMR_TICKS, true);
     timerAlarmEnable(_FCLTimer_Cfg);
 }

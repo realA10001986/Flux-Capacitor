@@ -12,8 +12,8 @@
 #define _FC_GLOBAL_H
 
 // Version strings
-#define FC_VERSION       "V1.43"
-#define FC_VERSION_EXTRA "FEB082024"
+#define FC_VERSION       "V1.44"
+#define FC_VERSION_EXTRA "MAR262024"
 
 //#define FC_DBG              // debug output on Serial
 
@@ -26,12 +26,11 @@
 // <hostname> is configurable in the Config Portal
 // This needs to be commented if WiFiManager provides mDNS
 #define FC_MDNS
+// Uncomment this if WiFiManager has mDNS enabled
+//#define FC_WM_HAS_MDNS 
 
 // Uncomment when using WiFiManager 2.0.17 or later
-//#define WIFIMANAGER_2_0_17
-
-// Uncomment this if WiFiManager has mDNS enabled
-//#define FC_WM_HAS_MDNS          
+//#define WIFIMANAGER_2_0_17       
 
 /*************************************************************************
  ***             Configuration for peripherals/features                ***

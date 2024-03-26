@@ -96,6 +96,10 @@
 
 /*  Changelog
  *
+ *  2024/03/26 (A10001986)
+ *    - BTTFN device type update
+ *  2024/02/26 (A10001986)
+ *    - Note: IRAM flags for interrupts disturb firmware update, do not set.
  *  2024/02/08 (A10001986)
  *    - CP: Add header to "Saved" page so one can return to main menu
  *  2024/02/06 (A10001986)

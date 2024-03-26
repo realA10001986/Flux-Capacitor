@@ -335,6 +335,9 @@ static float getRawVolume()
     long raw;
 
     raw = analogRead(VOLUME_PIN);
+    
+    if(raw > (1<<POT_RESOLUTION)-1) 
+        raw = (1<<POT_RESOLUTION)-1;
 
     if(anaReadCount > 1) {
       
