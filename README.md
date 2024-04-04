@@ -560,7 +560,7 @@ Note that this only disables the supplied remote, unlike [IR locking](#locking-i
 
 The device's hostname in the WiFi network. Defaults to 'flux'. This also is the domain name at which the Config Portal is accessible from a browser in the same local network. The URL of the Config Portal then is http://<i>hostname</i>.local (the default is http://flux.local)
 
-If you have more than one Flux Capacitors in your local network, please give them unique hostnames.
+If you have more than one Flux Capacitor in your local network, please give them unique hostnames.
 
 ##### &#9654; AP Mode: Network name appendix
 
