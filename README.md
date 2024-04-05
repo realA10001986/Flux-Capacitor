@@ -411,7 +411,7 @@ The TCD can communicate with the FC wirelessly, via the built-in "**B**asic-**T*
 
 Note that the TCD's firmware must be up to date for BTTFN. You can use [this](http://tcd.out-a-ti.me) one or CircuitSetup's release 2.9 or later.
 
-![BTTFN connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/89ecaca0-a627-4a8a-a253-3d72c6132da3)
+![BTTFN connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/001b6742-0d2b-4cc0-a284-69a5566a0d4a)
 
 In order to connect your FC to the TCD using BTTFN, just enter the TCD's IP address or hostname in the **_IP address or hostname of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required. Note that you need TCD firmware 2.9.1 or later for using a hostname; previous versions only work with an IP address.
   
@@ -448,7 +448,7 @@ The FC can - to some extent - be controlled through messages sent to topic **btt
 
 If both TCD and FC are connected to the same broker, and the option **_Send event notifications_** is checked on the TCD's side, the FC will receive information on time travel and alarm and play their sequences in sync with the TCD. Unlike BTTFN, however, no other communication takes place.
 
-![MQTT connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/466ad54f-3e18-41b7-bfaa-cb798b31cd37)
+![MQTT connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/62aff4a9-4f45-40fd-917b-343061aae95b)
 
 MQTT and BTTFN can co-exist. However, the TCD only sends out time travel and alarm notifications through either MQTT or BTTFN, never both. If you have other MQTT-aware devices listening to the TCD's public topic (bttf/tcd/pub) in order to react to time travel or alarm messages, use MQTT (ie check **_Send event notifications_**). If only BTTFN-aware devices are to be used, uncheck this option to use BTTFN as it has less latency.
 
