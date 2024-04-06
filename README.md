@@ -102,9 +102,9 @@ It can be accessed as follows:
 
 In the main menu, click on "Setup" to configure your Flux Capacitor. 
 
-| ![The Config Portal](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/ef058e3e-ad3d-4493-834f-6abd6560acfd) |
+| [<img src="https://github.com/realA10001986/Flux-Capacitor/assets/76924199/ef058e3e-ad3d-4493-834f-6abd6560acfd">](img/cp_setup.png) |
 |:--:| 
-| *The Config Portal's Setup page* |
+| *Click for full screenshot* |
 
 A full reference of the Config Portal is [here](#appendix-a-the-config-portal).
 
