@@ -96,6 +96,9 @@
 
 /*  Changelog
  *
+ *  2024/04/03 (A10001986)
+ *    - Rewrite settings upon clearing AP-PW only if AP-PW was actually set.
+ *    - Re-phrase "shuffle" Config option
  *  2024/03/26 (A10001986)
  *    - BTTFN device type update
  *  2024/02/26 (A10001986)

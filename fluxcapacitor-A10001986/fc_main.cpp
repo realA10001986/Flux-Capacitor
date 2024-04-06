@@ -1875,8 +1875,10 @@ static bool execute(bool isIR)
                 } else if(!strcmp(inputBuffer, "123456")) {
                     flushDelayedSave();
                     deleteIpSettings();               // *123456OK deletes IP settings
-                    settings.appw[0] = 0;             // and clears AP mode WiFi password
-                    write_settings();
+                    if(settings.appw[0]) {
+                        settings.appw[0] = 0;         // and clears AP mode WiFi password
+                        write_settings();
+                    }
                 } else if(!strcmp(inputBuffer, "654321")) {
                     deleteIRKeys();                   // *654321OK deletes learned IR remote
                     for(int i = 0; i < NUM_IR_KEYS; i++) {
