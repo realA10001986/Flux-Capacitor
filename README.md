@@ -6,7 +6,7 @@ The kit parts are available [here](https://circuitsetup.us/product-category/movi
 
 Here is my FC, built around this Control Board and the other parts of the kit ([backing board](https://circuitsetup.us/product/flux-capacitor-backing-board/), [window kit](https://circuitsetup.us/product/flux-capacitor-window-kit/); see [here](https://github.com/realA10001986/Flux-Capacitor/blob/main/Hardware/README.md) for more information on the other parts used):
 
-![My Flux Capacitor](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/0754e0c0-e545-4122-8edf-0f7add41cd73)
+![My Flux Capacitor](img/thefc.jpg)
 
 The Flux Capacitor can be used stand-alone, or in connection with CircuitSetup's [Time Circuits Display](https://tcd.out-a-ti.me). If [built properly](https://github.com/realA10001986/Flux-Capacitor/blob/main/Hardware/README.md), the Flux Capacitor is perfectly fit for mounting in your Delorean.
 
@@ -80,7 +80,7 @@ After completing this step, your FC is basically ready for use; you can also con
 
 The "Config Portal" is the FC's configuration web site. 
 
-| ![The Config Portal](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/fd2c7768-d3ee-4255-b67c-90b4d8cc1f8f) |
+| ![The Config Portal](img/cps-frag.png) |
 |:--:| 
 | *The Config Portal's main page* |
 
@@ -102,7 +102,7 @@ It can be accessed as follows:
 
 In the main menu, click on "Setup" to configure your Flux Capacitor. 
 
-| [<img src="https://github.com/realA10001986/Flux-Capacitor/assets/76924199/ef058e3e-ad3d-4493-834f-6abd6560acfd">](img/cp_setup.png) |
+| [<img src="img/cps-frag.png">](img/cp_setup.png) |
 |:--:| 
 | *Click for full screenshot* |
 
@@ -125,7 +125,7 @@ The main control device is the supplied IR remote control. If a TCD is connected
 
 Your FC kit includes an IR remote control. This remote works out-of-the-box and needs no setup. 
 
-| ![Default IR remote control](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/e9ccbb0a-c808-444f-9faa-505c972731b8) |
+| ![Default IR remote control](img/irremote.jpg) |
 |:--:| 
 | *The default IR remote control* |
 
@@ -411,7 +411,7 @@ The TCD can communicate with the FC wirelessly, via the built-in "**B**asic-**T*
 
 Note that the TCD's firmware must be up to date for BTTFN. You can use [this](http://tcd.out-a-ti.me) one or CircuitSetup's release 2.9 or later.
 
-![BTTFN connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/001b6742-0d2b-4cc0-a284-69a5566a0d4a)
+![BTTFN connection](img/family-wifi-bttfn.png)
 
 In order to connect your FC to the TCD using BTTFN, just enter the TCD's IP address or hostname in the **_IP address or hostname of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required. Note that you need TCD firmware 2.9.1 or later for using a hostname; previous versions only work with an IP address.
   
@@ -448,7 +448,7 @@ The FC can - to some extent - be controlled through messages sent to topic **btt
 
 If both TCD and FC are connected to the same broker, and the option **_Send event notifications_** is checked on the TCD's side, the FC will receive information on time travel and alarm and play their sequences in sync with the TCD. Unlike BTTFN, however, no other communication takes place.
 
-![MQTT connection](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/62aff4a9-4f45-40fd-917b-343061aae95b)
+![MQTT connection](img/family-wifi-mqtt.png)
 
 MQTT and BTTFN can co-exist. However, the TCD only sends out time travel and alarm notifications through either MQTT or BTTFN, never both. If you have other MQTT-aware devices listening to the TCD's public topic (bttf/tcd/pub) in order to react to time travel or alarm messages, use MQTT (ie check **_Send event notifications_**). If only BTTFN-aware devices are to be used, uncheck this option to use BTTFN as it has less latency.
 
