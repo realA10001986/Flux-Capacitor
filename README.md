@@ -80,7 +80,7 @@ After completing this step, your FC is basically ready for use; you can also con
 
 The "Config Portal" is the FC's configuration web site. 
 
-| ![The Config Portal](img/cps-frag.png) |
+| ![The Config Portal](img/cpm.png) |
 |:--:| 
 | *The Config Portal's main page* |
 
