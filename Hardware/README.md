@@ -66,7 +66,7 @@ As a final step I slightly sanded the unpainted top surfaces so that the single 
 
 Elbows: These are aviation plugs going by MS3108B, dimensions 20-29 and 32. In the original, these were made by Cannon (ITT), but those are no longer available. JAE is a suitable replacement, and those offered by Chinese vendors on ebay also match closely. I removed the electrical components inside the plug and used screws to attach it to the box.
 
-Big pipe on top: Genova 30720 (2"). Beware, many ebay sellers quitely ship other brands/models despite explicitly selling this type. In order to attach it to the box, I glued a disc of wood into the bottom end, and screwed it onto the top part of the box.
+Big pipe on top: Genova 30720 (2"). Beware, many ebay sellers quietely ship other brands/models despite explicitly selling this type. In order to attach it to the box, I glued a disc of wood into the bottom end, and screwed it onto the top part of the box.
 
 The black pipe on the left and the hose on the right are fully custom made; the hose is enclosed in parts used in compressed air equipment. Both are atteched using screws.
 
