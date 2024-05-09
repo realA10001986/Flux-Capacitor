@@ -92,7 +92,8 @@ FCLEDs fcLEDs(1, SHIFT_CLK_PIN, REG_CLK_PIN, SERDATA_PIN, MRESET_PIN);
 // The tt button / TCD tt trigger
 static FCButton TTKey = FCButton(TT_IN_PIN,
     false,    // Button/Trigger is active HIGH
-    false     // Disable internal pull-up resistor
+    false,    // Disable internal pull-up resistor
+    true      // Enable internal pull-down resistor
 );
 
 #define TT_DEBOUNCE    50    // tt button debounce time in ms

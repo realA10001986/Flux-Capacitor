@@ -88,7 +88,7 @@ typedef enum {
 class FCButton {
   
     public:
-        FCButton(const int pin, const boolean activeLow = true, const bool pullupActive = true);
+        FCButton(const int pin, const boolean activeLow = true, const bool pullupActive = true, const bool pulldownActive = false);
       
         void setTicks(const int dticks, const int pticks, const int lticks);
       

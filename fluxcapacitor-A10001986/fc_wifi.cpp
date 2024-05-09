@@ -133,7 +133,6 @@ WiFiManagerParameter custom_noETTOL("uEtNL", "TCD signals Time Travel without 5s
 WiFiManagerParameter custom_noETTOL("uEtNL", "TCD signals Time Travel without 5s lead", settings.noETTOLead, 1, "autocomplete='off' type='checkbox' class='mt5' style='margin-left:20px;'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 
-WiFiManagerParameter custom_bttfnHint("<div style='margin:0px 0px 10px 0px;padding:0px'>Wireless communication (BTTF-Network)</div>");
 #ifdef BTTFN_MC
 WiFiManagerParameter custom_tcdIP("tcdIP", "IP address or hostname of TCD", settings.tcdIP, 63, "pattern='(^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$)|([A-Za-z0-9\\-]+)' placeholder='Example: 192.168.4.1'");
 #else
@@ -186,7 +185,6 @@ WiFiManagerParameter custom_mqttServer("ha_server", "<br>Broker IP[:port] or dom
 WiFiManagerParameter custom_mqttUser("ha_usr", "User[:Password]", settings.mqttUser, 63, "placeholder='Example: ronald:mySecret'");
 #endif // HAVEMQTT
 
-WiFiManagerParameter custom_musHint("<div style='margin:0px;padding:0px'>MusicPlayer</div>");
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_shuffle("musShu", "Shuffle mode enabled at startup (0=no, 1=yes)", settings.shuffle, 1, "autocomplete='off'");
 #else // -------------------- Checkbox hack: --------------
@@ -207,6 +205,9 @@ WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save secondary settings on SD<br
 WiFiManagerParameter custom_sectstart_head("<div class='sects'>");
 WiFiManagerParameter custom_sectstart("</div><div class='sects'>");
 WiFiManagerParameter custom_sectend("</div>");
+
+WiFiManagerParameter custom_sectstart_nw("</div><div class='sects'><div class='headl'>Wireless communication (BTTF-Network)</div>");
+WiFiManagerParameter custom_sectstart_mp("</div><div class='sects'><div class='headl'>MusicPlayer</div>");
 
 WiFiManagerParameter custom_sectend_foot("</div><p></p>");
 
@@ -377,8 +378,7 @@ void wifi_setup()
     wm.addParameter(&custom_TCDpresent);
     wm.addParameter(&custom_noETTOL);
 
-    wm.addParameter(&custom_sectstart);     // 7
-    wm.addParameter(&custom_bttfnHint);
+    wm.addParameter(&custom_sectstart_nw);  // 6
     wm.addParameter(&custom_tcdIP);
     wm.addParameter(&custom_uGPS);
     wm.addParameter(&custom_uNM);
@@ -397,8 +397,7 @@ void wifi_setup()
     wm.addParameter(&custom_mqttUser);
     #endif
 
-    wm.addParameter(&custom_sectstart);     // 3
-    wm.addParameter(&custom_musHint);
+    wm.addParameter(&custom_sectstart_mp);  // 2
     wm.addParameter(&custom_shuffle);
     
     wm.addParameter(&custom_sectstart);     // 2 (3)
