@@ -68,7 +68,7 @@ Elbows: These are aviation plugs going by MS3108B, dimensions 20-29 and 32. In t
 
 Big pipe on top: Genova 30720 (2"). Beware, many ebay sellers quietely ship other brands/models despite explicitly selling this type. In order to attach it to the box, I glued a disc of wood into the bottom end, and screwed it onto the top part of the box.
 
-The black pipe on the left and the hose on the right are fully custom made; the hose is enclosed in parts used in compressed air equipment. Both are atteched using screws.
+The black pipe on the left and the hose on the right are fully custom made; the hose is enclosed in parts used in compressed air equipment. Both are attached using screws.
 
 If you avoid 3D-printed parts in general (or use a UV- and heat-resistant resin) and attach parts properly, the FC is perfectly fine to be mounted in an actual Delorean.
 
