@@ -18,7 +18,7 @@ Since the SD card on the control board is inaccessible after assembling the FC (
 ![bottom](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/5a4017b4-382d-4fd4-8d7b-8a2dffaf2791)
 
 From left to right:
-- Time Travel button (shortens "TT_IN" and "3V3" on the FC control board)
+- Time Travel button (connects "TT_IN" and "3V3" on the FC control board)
 - Time Travel input for connecting TCD by wire (outer: GND, inner "TT_IN" from the FC control board)
 - microSD extension
 - Speaker (using Radbench's speaker grill "Speaker_Grill_RBv1")
