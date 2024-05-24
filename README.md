@@ -383,7 +383,7 @@ For a connection by wire, connect GND and GPIO on the Flux Capacitor's "Time Tra
     <tr>
      <td align="center">Flux Capacitor</td>
      <td align="center">TCD with control board 1.2</td>
-     <td align="center">TCD with control board 1.3</td>
+     <td align="center">TCD with control board >=1.3</td>
     </tr>
    <tr>
      <td align="center">GND of "Time Travel" connector</td>
