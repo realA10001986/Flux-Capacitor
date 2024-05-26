@@ -397,7 +397,7 @@ For a connection by wire, connect GND and GPIO on the Flux Capacitor's "Time Tra
     </tr>
 </table>
 
-_Do not connect 3_3V to the TCD!_
+_Do not connect 3V3 to the TCD!_
 
 Next, head to the Config Portal and set the option **_TCD connected by wire_**. On the TCD, the option "Control props connected by wire" must be set.
 
