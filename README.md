@@ -315,7 +315,7 @@ As an alternative to the included LEDs, one could use four pieces of 3W High-Pow
 
 To travel through time, type "0" on the remote control. The Flux Capacitor will play its time travel sequence.
 
-You can also connect a physical button to your FC; the button must connect "GPIO" and "3.3V" on the "Time Travel" connector. Pressing this button briefly will trigger a time travel.
+You can also connect a physical button to your FC; the button must connect "GPIO" to "3.3V" on the "Time Travel" connector. Pressing this button briefly will trigger a time travel.
 
 Other ways of triggering a time travel are available if a [Time Circuits Display](#connecting-a-time-circuits-display) is connected.
 
@@ -399,7 +399,7 @@ For a connection by wire, connect GND and GPIO on the Flux Capacitor's "Time Tra
 
 Next, head to the Config Portal and set the option **_TCD connected by wire_**. On the TCD, the option "Control props connected by wire" must be set.
 
->You can connect both the TCD and a button to the TT connector, which might be handy in case you want to have the FC learn an IR remote control without fiddling with cables. But the button should not be pressed when the option **_TCD connected by wire_** is set, as it might yield unwanted results. Also, note that the button connects to IO13 and 3_3V (not GND!).
+>You can connect both the TCD and a button to the TT connector, which might be handy in case you want to have the FC learn an IR remote control without fiddling with cables. But the button should not be pressed when the option **_TCD connected by wire_** is set, as it might yield unwanted results. Also, note that the button connects IO13 to 3_3V (not GND!).
 
 ### BTTF-Network ("BTTFN")
 
