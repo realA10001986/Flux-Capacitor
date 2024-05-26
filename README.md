@@ -397,6 +397,8 @@ For a connection by wire, connect GND and GPIO on the Flux Capacitor's "Time Tra
     </tr>
 </table>
 
+_Do not connect 3_3V to the TCD!_
+
 Next, head to the Config Portal and set the option **_TCD connected by wire_**. On the TCD, the option "Control props connected by wire" must be set.
 
 >You can connect both the TCD and a button to the TT connector, which might be handy in case you want to have the FC learn an IR remote control without fiddling with cables. But the button should not be pressed when the option **_TCD connected by wire_** is set, as it might yield unwanted results. Also, note that the button connects IO13 to 3_3V (not GND!).
