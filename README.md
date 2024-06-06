@@ -31,7 +31,7 @@ Since the bright LEDs draw considerable power, it is recommended to use a short 
 
 If a previous version of the Flux Capacitor firmware is installed on your device, you can update easily using the pre-compiled binary. Enter the [Config Portal](#the-config-portal), click on "Update" and select the pre-compiled binary file provided in this repository ([install/fluxcapacitor-A10001986.ino.nodemcu-32s.bin](https://github.com/realA10001986/Flux-Capacitor/blob/main/install/fluxcapacitor-A10001986.ino.nodemcu-32s.bin)).
 
-If you are using a fresh ESP32 board, please see [fluxcapacitor-A10001986.ino](https://github.com/realA10001986/Flux-Capacitor/blob/main/fluxcapacitor-A10001986/fluxcapacitor-A10001986.ino) for detailed build information.
+If you are using a fresh ESP32 board, please see [fluxcapacitor-A10001986.ino](https://github.com/realA10001986/Flux-Capacitor/blob/main/fluxcapacitor-A10001986/fluxcapacitor-A10001986.ino) for detailed build and upload information.
 
  *Important: After a firmware update, the inner and outer LEDs might blink alternately for short while after reboot. Do NOT unplug the device during this time.*
 
