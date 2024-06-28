@@ -229,7 +229,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">*23&#9166;</td><td>3023</td>
     </tr>
     <tr>
-     <td align="left">Set minimum box light level</td>
+     <td align="left">Set minimum box light level (0-4)</td>
      <td align="left">*30&#9166; - *34&#9166;</td><td>3030-3034</td>
     </tr>
      <tr>
@@ -237,7 +237,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">*40&#9166;</td><td>3040</td>
     </tr>
      <tr>
-     <td align="left">Select audio volume level</td>
+     <td align="left">Select audio volume level (00-19)</td>
      <td align="left">*300&#9166; - *319&#9166;</td><td>3300-3319</td>
     </tr>
     <tr>
@@ -245,7 +245,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">*399&#9166;</td><td>3399</td>
     </tr>
     <tr>
-     <td align="left"><a href="#the-music-player">Music Player</a>: Select music folder</td>
+     <td align="left"><a href="#the-music-player">Music Player</a>: Select music folder (0-9)</td>
      <td align="left">*50&#9166; - *59&#9166;</td><td>3050-3059</td>
     </tr>
     <tr>
