@@ -90,7 +90,7 @@ class FCButton {
     public:
         FCButton(const int pin, const boolean activeLow = true, const bool pullupActive = true, const bool pulldownActive = false);
       
-        void setTicks(const int dticks, const int pticks, const int lticks);
+        void setTiming(const int debounceDur, const int pressDur, const int lPressDur);
       
         void attachPress(void (*newFunction)(void));
         void attachLongPressStart(void (*newFunction)(void));
@@ -109,9 +109,9 @@ class FCButton {
 
         int _pin;
         
-        unsigned int _debounceTicks = 50;
-        unsigned int _pressTicks = 400;
-        unsigned int _longPressTicks = 800;
+        unsigned int _debounceDur = 50;
+        unsigned int _pressDur = 400;
+        unsigned int _longPressDur = 800;
       
         int _buttonPressed;
       

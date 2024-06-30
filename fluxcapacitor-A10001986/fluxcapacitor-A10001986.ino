@@ -96,6 +96,8 @@
 
 /*  Changelog
  *
+ *  2024/06/30 (A10001986)
+ *    - Fix box-light level commands
  *  2024/06/05 (A10001986)
  *    - Minor fixes for WiFiManager
  *    * Switched to esp32-arduino 2.0.17 for pre-compiled binary.

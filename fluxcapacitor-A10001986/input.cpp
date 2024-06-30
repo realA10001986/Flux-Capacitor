@@ -240,11 +240,11 @@ FCButton::FCButton(const int pin, const boolean activeLow, const bool pullupActi
 // dticks: Number of millisec for a stable click to be assumed
 // pticks: Number of millisec to pass for a short press 
 // lticks: Number of millisec to pass for a long press
-void FCButton::setTicks(const int dticks, const int pticks, const int lticks)
+void FCButton::setTiming(const int debounceDur, const int pressDur, const int lPressDur)
 {
-    _debounceTicks = dticks;
-    _pressTicks = pticks;
-    _longPressTicks = lticks;
+    _debounceDur = debounceDur;
+    _pressDur = pressDur;
+    _longPressDur = lPressDur;
 }
 
 // Register function for short press event
@@ -281,18 +281,18 @@ void FCButton::scan(void)
         break;
 
     case TCBS_PRESSED:
-        if((!active) && (waitTime < _debounceTicks)) {  // de-bounce
+        if((!active) && (waitTime < _debounceDur)) {  // de-bounce
             transitionTo(_lastState);
         } else if(!active) {
             transitionTo(TCBS_RELEASED);
             _startTime = now;
-        } else if(active) {
+        } else {
             if(!_longPressStartFunc) {
-                if(waitTime > _pressTicks) {
+                if(waitTime > _pressDur) {
                     if(_pressFunc) _pressFunc();
                     _pressNotified = true;
                 }      
-            } else if(waitTime > _longPressTicks) {
+            } else if(waitTime > _longPressDur) {
                 if(_longPressStartFunc) _longPressStartFunc(); 
                 transitionTo(TCBS_LONGPRESS);
             }
@@ -300,9 +300,9 @@ void FCButton::scan(void)
         break;
 
     case TCBS_RELEASED:
-        if((active) && (waitTime < _debounceTicks)) {  // de-bounce
+        if((active) && (waitTime < _debounceDur)) {  // de-bounce
             transitionTo(_lastState);
-        } else if((!active) && (waitTime > _pressTicks)) {
+        } else if((!active) && (waitTime > _pressDur)) {
             if(!_pressNotified && _pressFunc) _pressFunc();
             reset();
         }
@@ -316,9 +316,9 @@ void FCButton::scan(void)
         break;
 
     case TCBS_LONGPRESSEND:
-        if((active) && (waitTime < _debounceTicks)) { // de-bounce
+        if((active) && (waitTime < _debounceDur)) { // de-bounce
             transitionTo(_lastState);
-        } else if(waitTime >= _debounceTicks) {
+        } else if(waitTime >= _debounceDur) {
             if(_longPressStopFunc) _longPressStopFunc();
             reset();
         }

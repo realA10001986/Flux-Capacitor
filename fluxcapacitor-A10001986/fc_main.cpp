@@ -412,11 +412,11 @@ void main_setup()
     if(!TCDconnected) {
         // If we have a physical button, we need
         // reasonable values for debounce and press
-        TTKey.setTicks(TT_DEBOUNCE, TT_PRESS_TIME, TT_HOLD_TIME);
+        TTKey.setTiming(TT_DEBOUNCE, TT_PRESS_TIME, TT_HOLD_TIME);
         TTKey.attachLongPressStart(TTKeyHeld);
     } else {
         // If the TCD is connected, we can go more to the edge
-        TTKey.setTicks(5, 50, 100000);
+        TTKey.setTiming(5, 50, 100000);
         // Long press ignored when TCD is connected
         // IRLearning only possible if "TCD connected by wire" unset.
     }
@@ -1689,7 +1689,7 @@ static bool execute(bool isIR)
             case 33:
             case 34:
                 if(!TTrunning && !isIRLocked) {
-                    minBLL = temp - 10;
+                    minBLL = temp - 30;
                     boxLED.setDC(mbllArray[minBLL]);
                     bllchanged = true;
                     bllchgnow = now;
