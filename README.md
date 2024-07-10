@@ -712,3 +712,5 @@ This procedure ensures that all your settings are copied from the old to the new
      <td align="left"><a href="#ir-remote-control">IR Learning</a>: Done</td>
     </tr>
 </table>
+
+_Text written by Thomas Winischhofer ("A10001986"). See LICENSE._
