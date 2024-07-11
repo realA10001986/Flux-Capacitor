@@ -115,6 +115,8 @@
 
 /*  Changelog
  *
+ *  2024/07/11 (A10001986)
+ *    - Fix typo in filename sorting
  *  2024/06/30 (A10001986)
  *    - Fix box-light level commands
  *  2024/06/05 (A10001986)
