@@ -1668,12 +1668,14 @@ static bool execute(bool isIR)
 
     switch(strlen(inputBuffer)) {
     case 1:
+        /*
         if(!isIRLocked) {
             fluxPat = inputBuffer[0] - '0';       // *0-*9 Set idle pattern (deprecated)
             fcLEDs.setSequence(fluxPat);
             ipachanged = true;
             ipachgnow = now;
         }
+        */
         break;
     case 2:
         temp = atoi(inputBuffer);
@@ -1686,6 +1688,7 @@ static bool execute(bool isIR)
             }
         } else {
             switch(temp) {
+            /*
             case 0:                               // *00 Disable looped FLUX sound playback
             case 1:                               // *01 Enable looped FLUX sound playback
             case 2:                               // *02 Enable looped FLUX sound playback for 30 seconds
@@ -1694,10 +1697,11 @@ static bool execute(bool isIR)
                     setFluxMode(temp);
                 }
                 break;
-            case 20:                              // *20-*23 like *00-*03 (for TCD-remote control)
-            case 21:
-            case 22:
-            case 23:
+            */
+            case 20:                              // *20 Disable looped FLUX sound playback
+            case 21:                              // *21 Enable looped FLUX sound playback
+            case 22:                              // *22 Enable looped FLUX sound playback for 30 seconds
+            case 23:                              // *23 Enable looped FLUX sound playback for 60 seconds
                 if(!TTrunning && !isIRLocked) {
                     setFluxMode(temp - 20);
                 }
@@ -1793,34 +1797,7 @@ static bool execute(bool isIR)
             default:                              // *50 - *59 Set music folder number
                 if(!TTrunning && !isIRLocked) {
                     if(inputBuffer[0] == '5' && haveSD) {
-                        if(inputBuffer[1] - '0' != musFolderNum) {
-                            bool wasActive = false;
-                            bool waitShown = false;
-                            musFolderNum = (int)inputBuffer[1] - '0';
-                            // Initializing the MP can take a while;
-                            // need to stop all audio before calling
-                            // mp_init()
-                            if(haveMusic && mpActive) {
-                                mp_stop();
-                            } else if(playingFlux) {
-                                wasActive = true;
-                            }
-                            stopAudio();
-                            if(mp_checkForFolder(musFolderNum) == -1) {
-                                flushDelayedSave();
-                                showWaitSequence();
-                                waitShown = true;
-                                play_file("/renaming.mp3", PA_INTRMUS|PA_ALLOWSD);
-                                waitAudioDone(false);
-                            }
-                            saveMusFoldNum();
-                            mp_init(false);
-                            if(waitShown) {
-                                fcLEDs.SpecialSignal(0);
-                            }
-                            if(wasActive && contFlux()) play_flux();
-                            ir_remote.loop(); // Flush IR afterwards
-                        }
+                        switchMusicFolder((uint8_t)inputBuffer[1] - '0');
                     } else {
                         doBadInp = true;
                     }
@@ -1846,13 +1823,15 @@ static bool execute(bool isIR)
                 }
             } else {
                 if(!TTrunning) {
-                    switch(temp) {                        // Duplicates; for matching TCD
+                    switch(temp) {
+                    /*
                     case 0:                               // *000 Disable looped FLUX sound playback
                     case 1:                               // *001 Enable looped FLUX sound playback
                     case 2:                               // *002 Enable looped FLUX sound playback for 30 seconds
                     case 3:                               // *003 Enable looped FLUX sound playback for 60 seconds
                         setFluxMode(temp);
                         break;
+                    */
                     case 222:                             // *222/*555 Disable/enable shuffle
                     case 555:
                         if(haveMusic) {
@@ -1998,6 +1977,45 @@ static void setPotSpeed()
         }
         
         startSpdPot = now;
+    }
+}
+
+/*
+ * Switch music folder
+ */
+ 
+void switchMusicFolder(uint8_t nmf)
+{
+    bool wasActive = false;
+    bool waitShown = false;
+
+    if(nmf > 9) return;
+    
+    if(nmf != musFolderNum) {
+        musFolderNum = nmf;
+        // Initializing the MP can take a while;
+        // need to stop all audio before calling
+        // mp_init()
+        if(haveMusic && mpActive) {
+            mp_stop();
+        } else if(playingFlux) {
+            wasActive = true;
+        }
+        stopAudio();
+        if(mp_checkForFolder(musFolderNum) == -1) {
+            flushDelayedSave();
+            showWaitSequence();
+            waitShown = true;
+            play_file("/renaming.mp3", PA_INTRMUS|PA_ALLOWSD);
+            waitAudioDone(false);
+        }
+        saveMusFoldNum();
+        mp_init(false);
+        if(waitShown) {
+            fcLEDs.SpecialSignal(0);
+        }
+        if(wasActive && contFlux()) play_flux();
+        ir_remote.loop(); // Flush IR afterwards
     }
 }
 

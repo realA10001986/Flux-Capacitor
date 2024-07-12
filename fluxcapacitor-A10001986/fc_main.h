@@ -101,6 +101,8 @@ void copyIRarray(uint32_t *irkeys, int index);
 void setFluxMode(int mode);
 void startFluxTimer();
 
+void switchMusicFolder(uint8_t nmf);
+
 void mydelay(unsigned long mydel, bool withIR);
 
 void prepareTT();

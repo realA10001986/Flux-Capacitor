@@ -248,9 +248,8 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
         mp3->stop();
     }
 
-    curVolFact = volumeFactor;
-    dynVol     = (flags & PA_DYNVOL) ? true : false;
-
+    curVolFact  = volumeFactor;
+    dynVol      = (flags & PA_DYNVOL) ? true : false;
     playingFlux = (flags & PA_ISFLUX) ? true : false;
     
     out->SetGain(getVolume());
@@ -731,7 +730,7 @@ int mp_checkForFolder(int num)
  * Auto-renamer
  */
 
-// Check file is eligable for renaming:
+// Check file is eligible for renaming:
 // - not a hidden/exAtt file,
 // - filename not already "/musicX/ddd.mp3"
 static bool mpren_checkFN(const char *buf)

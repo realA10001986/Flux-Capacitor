@@ -115,6 +115,9 @@
 
 /*  Changelog
  *
+ *  2024/07/12 (A10001986)
+ *    - MQTT: Add MP_FOLDER_x commands to set music folder number
+ *    - Remove old, duplicate command codes
  *  2024/07/11 (A10001986)
  *    - Fix typo in filename sorting
  *  2024/06/30 (A10001986)

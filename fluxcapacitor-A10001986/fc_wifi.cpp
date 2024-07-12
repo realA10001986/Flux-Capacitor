@@ -1485,6 +1485,7 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
       "MP_STOP",          // 8
       "MP_NEXT",          // 9
       "MP_PREV",          // 10
+      "MP_FOLDER_",       // 11  MP_FOLDER_0..MP_FOLDER_9
       NULL
     };
     static const char *cmdList2[] = {
@@ -1619,6 +1620,13 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
             break;
         case 10:
             if(haveMusic) mp_prev(mpActive);
+            break;
+        case 11:
+            if(haveSD) {
+                if(strlen(tempBuf) > j && tempBuf[j] >= '0' && tempBuf[j] <= '9') {
+                    switchMusicFolder((uint8_t)(tempBuf[j] - '0'));
+                }
+            }
             break;
         }
             
