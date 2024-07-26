@@ -13,6 +13,10 @@ For replicating exactly what is seen in the movies, the door latches need to mov
 
 **&#9888; Warning: This box is made from molded fiberglass reinforced polyester. This is a highly dangerous material, so wear a proper mask when drilling, sawing or sanding.**
 
+The Original FC's box, as used in the movies, has six large holes at the bottom. I didn't drill those holes because a) they aren't visible anyway, and b) those holes allow light from the inside to flood out and cause unwanted effects.
+
+Instead, I used the buttom for the controls and connectors.
+
 Since the SD card on the control board is inaccessible after assembling the FC (but required to install the audio files, and possibly used for music files), I used a microSD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B09MS85FQ3/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time.
 
 ![bottom](https://github.com/realA10001986/Flux-Capacitor/assets/76924199/5a4017b4-382d-4fd4-8d7b-8a2dffaf2791)
