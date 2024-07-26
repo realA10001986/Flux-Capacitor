@@ -42,7 +42,7 @@ Since the bright LEDs draw considerable power, it is recommended to drive the FC
 
 The CircuitSetup back board is made to fit the Torr relay replicas and accessories from [Radbench](https://www.thingiverse.com/thing:5164173)'s collection, such as cable boots, L-brackets and acrylic "light-bars".
 
-Since I try to avoid 3D-printed parts as much as possible, I went for replicas made from brass made by user [stuff565](https://www.ebay.co.uk/usr/stuff565) on ebay (he is a well known member of the Delorean Time Machine Builders scene). Suitable boots for the ignition cables are available from [maxthemad](https://www.ebay.co.uk/usr/maxthemad).
+Since I try to avoid 3D-printed parts as much as possible, I went for replicas made from brass made by user [stuff565](https://www.ebay.co.uk/usr/stuff565) on ebay (he is a well known member of the Delorean Time Machine Builders scene). Suitable boots for the ignition cables are sometimes available from [maxthemad](https://www.ebay.co.uk/usr/maxthemad).
 
 If you go this route, you need to enlarge the holes in CircuitSetup's back board to fit the tubes, and due to their weight, the "relays" need to be screwed onto the back board. The resin inside the relay replicas is fine for screws, a bit of pre-drilling is recommended. I used three screws per "relay".
 
@@ -50,23 +50,23 @@ Also, for the brass replicas,
 - the L-bracket and the cable boots needs to be larger, and
 - the light bars need to be a bit taller.
 
-Suitable STL-files matching the brass-replicas for brackets, boots and light bars are in this repository. (The boots are an alternative to maxthemad's, and need some trimming to fit; I preferred this way because my boots better resemble the ones shown in the movies.)
+Suitable STL-files matching the brass-replicas for brackets ("Relay_L_Bracket_v1"), boots ("Spark_Boot") and light bars ("Light bar - 81x29") are in this repository. (The boots are an alternative to maxthemad's, and need some trimming to fit; I preferred this way because my boots better resemble the ones shown in the movies.)
 
-The yellow cables are simply yellow 7mm ignition cables, easy to find. The boots are painted in RAL2008, although I don't know if this is authentic. I used the O-rings (same color as boots) from [Radbench](https://www.thingiverse.com/thing:5164173)'s collection of parts.
+The yellow cables are simply yellow 7mm ignition cables, easy to find. The boots are painted in RAL2008, although I don't know if this is authentic. I used the O-rings ("Spark_O-Ring_RBv1", same color as boots) designed by Radbench.
 
 ## Light bars
 
-The light bars are 10mm acrylic glass. I am sure you'll find someone to cut them for you, an STL file and a pic showing the dimensions are here in this repo.
+The light bars are 10mm acrylic glass. I am sure you'll find someone to cut them for you, an STL file and a pic showing the dimensions are here in this repo ("Light bar - 81x29" and "lightBar_Dims").
 
 Radbench and others usually spray paint the light bars with "mirror silver" before coating them in black. I had no luck with this since it caused cracks in the acrylic. So I skipped this step and only painted the outsides black (using a _water-based_ color). IMHO the mirror paint is pointless, since the light is reflected by the surface of the acrylic glass anyway. 
 
-As a final step I slightly sanded the unpainted top surfaces so that the single LEDs aren't clearly visible in the end.
+As a final step I slightly sanded the unpainted top surfaces so that the individual LEDs aren't clearly visible in the end.
 
 ## External stuff
 
-Elbows: These are aviation plugs going by MS3108B, dimensions 20-29 and 32. On the original, these were made by Cannon (ITT), but those are no longer available. JAE is a suitable replacement, and those offered by Chinese vendors on ebay also match closely. I removed the electrical components inside the plug and used screws to attach it to the box.
+Elbows: These are aviation plugs going by MS3108B, dimensions 20-29 and 32. On the original, these were made by Cannon (ITT), but those are no longer available. JAE is a suitable replacement, and those offered by Chinese vendors on ebay also match closely. I removed the electrical components inside the plug and used screws to attach it to the box. (Good replicas are available [here](https://movieprops.blog/shop/).)
 
-Big pipe on top: On the Original, allegedly Lasco 2"; I used a Genova 30720 (2"). Beware, many ebay sellers quietely ship other brands/models despite explicitly selling this type. In order to attach it to the box, I glued a disc of wood into the bottom end, and screwed it onto the top part of the box.
+Big pipe on top: On the Original, allegedly Lasco 2"; I used a Genova 30720 (2"). Beware, many ebay sellers quietely ship other brands/models despite explicitly advertising this type. In order to attach it to the box, I glued a disc of wood into the bottom end, and screwed it onto the top part of the box.
 
 The black pipe on the left and the hose on the right are fully custom made; the hose is enclosed in parts used in compressed air equipment. Both are attached using screws.
 
