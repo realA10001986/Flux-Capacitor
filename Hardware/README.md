@@ -30,15 +30,15 @@ From left to right:
 
 As a speaker, I used [this](https://www.amazon.com/ACEIRMC-Loundspeaker-JST-PH2-0-Interface-Electronic/dp/B0BTM1VCBM/ref=sr_1_8) one; I cut off the latches and glued it onto the back side of the [back board](https://circuitsetup.us/product/flux-capacitor-backing-board).
 
-<img width="300" alt="Speaker" src="https://github.com/realA10001986/Flux-Capacitor/assets/76924199/385f154f-1f49-474d-b4dc-b12a9e868271">
+<img width="300" alt="Speaker" src="img/speaker.png">
 
 The USB connector is the end of an USB extension cable like this one; I simply trimmed it to fit into the bracket.
 
-<img width="300" alt="USB extension" src="https://github.com/realA10001986/Flux-Capacitor/assets/76924199/2c93e391-3fcb-410c-bb11-2d2924cf46a7">
+<img width="300" alt="USB extension" src="img/usbcable.png">
 
 The power connector is an adapter like this, which fits nicely into the bracket:
 
-<img width="300" alt="Power connector" src="https://github.com/realA10001986/Flux-Capacitor/assets/76924199/196055b4-7177-4f72-8561-d6c56eb33ae7">
+<img width="300" alt="Power connector" src="img/dcadapters.png">
 
 Since the bright LEDs draw considerable power, it is recommended to drive the FC at 12V-20V (as opposed to 5V).
 
