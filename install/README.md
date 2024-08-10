@@ -1,4 +1,8 @@
-### Firmware Installation
+This folder holds all files necessary for immediate installation on your Flux Capacitor. Here you'll find
+- a binary of the current firmware, ready for upload to the device;
+- the latest audio data
+
+## Firmware Installation
 
 If a previous version of the Flux Capacitor firmware is installed on your device, you can update easily using the pre-compiled binary. Enter the [Config Portal](#the-config-portal), click on "Update" and select the pre-compiled binary file provided in this repository ([install/fluxcapacitor-A10001986.ino.nodemcu-32s.bin](https://github.com/realA10001986/Flux-Capacitor/blob/main/install/fluxcapacitor-A10001986.ino.nodemcu-32s.bin)).
 
@@ -6,7 +10,7 @@ If you are using a fresh ESP32 board, please see [fluxcapacitor-A10001986.ino](h
 
  *Important: After a firmware update, the inner and outer LEDs might blink alternately for short while after reboot. Do NOT unplug the device during this time.*
 
-### Audio data installation
+## Audio data installation
 
 The firmware comes with audio data ("sound-pack") which needs to be installed separately. The audio data is not updated as often as the firmware itself. If you have previously installed the latest version of the sound-pack, you normally don't have to re-install the audio data when you update the firmware. Only if either a the FC puts up a respective [signal](#appendix-b-led-signals) at startup, or your device is quiet after a firmware update, a re-installation is needed.
 
