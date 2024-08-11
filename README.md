@@ -19,7 +19,7 @@ Features include
 - [Music player](#the-music-player): Play mp3 files located on an SD card
 - [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player
 - Advanced network-accessible [Config Portal](#the-config-portal) for setup (http://flux.local, hostname configurable)
-- [Wireless communication](#bttf-network-bttfn) with [Time Circuits Display](https://tcd.out-a-ti.me); used for synchonized time travels, alarm, chase speed, night mode, fake power and remote control through TCD keypad
+- [Wireless communication](#bttf-network-bttfn) with [Time Circuits Display](https://tcd.out-a-ti.me); used for synchronized time travels, alarm, chase speed, night mode, fake power and remote control through TCD keypad
 - [Home Assistant](#home-assistant--mqtt) (MQTT 3.1.1) support
 - Built-in installer for default audio files in addition to OTA firmware updates
 
@@ -144,7 +144,7 @@ First, go to the Config Portal, uncheck **_TCD connected by wire_** on the Setup
 
 If your remote control lacks the \* (starts command sequence) and \# (aborts command sequence) keys, you can use any other key, of course. \* could be eg. "menu" or "setup", \# could be "exit" or "return".
 
-If no key is pressed for 10 seconds, the learning process aborts, as does briefly pressing the Time Travel button. In thoses cases, the keys already learned are forgotten and nothing is saved.
+If no key is pressed for 10 seconds, the learning process aborts, as does briefly pressing the Time Travel button. In those cases, the keys already learned are forgotten and nothing is saved.
 
 To make the FC forget a learned IR remote control, type *654321 followed by OK.
 
@@ -296,7 +296,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
 
 ## The Flux sound
 
-By default, the FC plays a "flux" sound continously.
+By default, the FC plays a "flux" sound continuously.
 
 The flux sound can be permanently disabled, permanently enabled, or enabled for 30 or 60 seconds
 
@@ -337,7 +337,7 @@ Since the SD card on the control board is inaccessible after assembling the FC, 
 The FC's built-in sound effects can be substituted by your own sound files on a FAT32-formatted SD card. These files will be played back directly from the SD card during operation, so the SD card has to remain in the slot.
 
 Your replacements need to be put in the root (top-most) directory of the SD card, be in mp3 format (128kbps max) and named as follows:
-- "flux.mp3". The standard flux sound, played continously;
+- "flux.mp3". The standard flux sound, played continuously;
 - "alarm.mp3". Played when the alarm sounds (triggered by a Time Circuits Display via BTTFN or MQTT);
 - "0.mp3" through "9.mp3", "dot.mp3": Numbers for IP address read-out.
 
