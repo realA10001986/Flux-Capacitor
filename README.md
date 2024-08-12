@@ -163,19 +163,19 @@ In order to only disable the supplied IR remote control, check the option **_Dis
      <td align="center" colspan="3">Single key actions<br>[Code on TCD keypad]</td>
     </tr>
     <tr>
-     <td align="center">1<br>-</td>
+     <td align="center">1<br><a href="#additional-custom-sounds">Play "key1.mp3"</a><br>[3001]</td>
      <td align="center">2<br><a href="#the-music-player">Music Player</a>: Previous song<br>[3002]</td>
      <td align="center">3<br><a href="#additional-custom-sounds">Play "key3.mp3"</a><br>[3003]</td>
     </tr>
     <tr>
-     <td align="center">4<br>-</td>
+     <td align="center">4<br><a href="#additional-custom-sounds">Play "key4.mp3"</a><br>[3004]</td>
      <td align="center">5<br><a href="#the-music-player">Music Player</a>: Play/Stop<br>[3005]</td>
      <td align="center">6<br><a href="#additional-custom-sounds">Play "key6.mp3"</a><br>[3006]</td>
     </tr>
     <tr>
-     <td align="center">7<br>-</td>
+     <td align="center">7<br><a href="#additional-custom-sounds">Play "key7.mp3"</a><br>[3007]</td>
      <td align="center">8<br><a href="#the-music-player">Music Player</a>: Next song<br>[3008]</td>
-     <td align="center">9<br>-</td>
+     <td align="center">9<br><a href="#additional-custom-sounds">Play "key9.mp3"</a><br>[3009]</td>
     </tr>
     <tr>
      <td align="center">*<br>Start command sequence</td>
@@ -350,7 +350,7 @@ The following sounds are time-sync'd to display action. If you decide to substit
 
 The firmware supports some additional user-provided sound effects, which it will load from the SD card. If the respective file is present, it will be used. If that file is absent, no sound will be played.
 
-- "key3.mp3" and/or "key6.mp3": Will be played if you press the "3"/"6" button on your remote.
+- "key1.mp3", "key3.mp3", "key4.mp3", "key6.mp3", "key7.mp3", "key9.mp3": Will be played if you press the "1"/"3"/"4"/"6"/"7"/"9" button on your remote.
 
 Those files are not provided here. You can use any mp3, with a bitrate of 128kpbs or less.
 
