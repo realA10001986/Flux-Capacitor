@@ -84,7 +84,7 @@ extern uint8_t musFolderNum;
 #define DEF_USE_NM          0     // 0: Ignore TCD night mode; 1: Follow TCD night mode
 #define DEF_USE_FPO         0     // 0: Ignore TCD fake power; 1: Follow TCD fake power
 
-#define DEF_BTTFN_TT        1     // 0: '0' on IR remove and TT button trigger stand-alone TT; 1: They trigger BTTFN-wide TT
+#define DEF_BTTFN_TT        1     // 0: '0' on IR remote and TT button trigger stand-alone TT; 1: They trigger BTTFN-wide TT
 
 #define DEF_PLAY_TT_SND     1     // 1: Play time travel sounds (0: Do not; for use with external equipment)
 #define DEF_STTBL_ANIM      0     // 1: Skip box light animation in tt; 0: Play anim
@@ -92,7 +92,7 @@ extern uint8_t musFolderNum;
 
 #define DEF_SHUFFLE         0     // Music Player: Do not shuffle by default
 
-#define DEF_CFG_ON_SD       1     // Default: Save vol/spd/IR/mbl settings on SD card
+#define DEF_CFG_ON_SD       1     // Default: Save secondary settings on SD card
 #define DEF_SD_FREQ         0     // SD/SPI frequency: Default 16MHz
 
 

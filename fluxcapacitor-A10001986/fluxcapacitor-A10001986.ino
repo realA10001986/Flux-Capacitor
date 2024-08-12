@@ -115,6 +115,11 @@
 
 /*  Changelog
  *
+ *  2024/08/11 (A10001986)
+ *    - In addition to the custom "key3" and "key6" sounds, now also "key1", 
+ *      "key4", "key7" and "key9" are available/supported; these are triggered 
+ *      by previously unused keys on the IR remote (1, 4, 7, 9) and command 
+ *      codes 3001, 3004, 3007, 3009.
  *  2024/07/12 (A10001986)
  *    - MQTT: Add MP_FOLDER_x commands to set music folder number
  *    - Remove old, duplicate command codes

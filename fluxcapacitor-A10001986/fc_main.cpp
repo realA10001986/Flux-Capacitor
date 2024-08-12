@@ -1385,8 +1385,23 @@ static uint8_t read2digs(uint8_t idx)
     return ((inputBuffer[idx] - '0') * 10) + (inputBuffer[idx+1] - '0');
 }
 
+static void doKeySound(char key)
+{
+    char fn[] = "/keyx.mp3";
+
+    fn[4] = key;
+    
+    if(!TTrunning) {
+        play_file(fn, PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
+        if(contFlux()) {
+            append_flux();
+        }
+    }
+}
+
 static void doKey1()
 {
+    doKeySound('1');
 }
 static void doKey2()
 {
@@ -1396,15 +1411,11 @@ static void doKey2()
 }
 static void doKey3()
 {
-    if(!TTrunning) {
-        play_file("/key3.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
-        if(contFlux()) {
-            append_flux();
-        }
-    }
+    doKeySound('3');
 }
 static void doKey4()
 {
+    doKeySound('4');
 }
 static void doKey5()
 {
@@ -1421,15 +1432,11 @@ static void doKey5()
 }
 static void doKey6()
 {
-    if(!TTrunning) {
-        play_file("/key6.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
-        if(contFlux()) {
-            append_flux();
-        }
-    }
+    doKeySound('6');
 }
 static void doKey7()
 {
+    doKeySound('7');
 }
 static void doKey8()
 {
@@ -1439,6 +1446,7 @@ static void doKey8()
 }
 static void doKey9()
 {
+    doKeySound('9');
 }
 
 static void handleIRKey(int key)
@@ -1476,7 +1484,7 @@ static void handleIRKey(int key)
             timeTravel(false, ETTO_LEAD);
         }
         break;
-    case 1:                           // 1:
+    case 1:                           // 1: Play key1.mp3
         if(irLocked) return;
         doKey1();
         break;
@@ -1488,7 +1496,7 @@ static void handleIRKey(int key)
         if(irLocked) return;
         doKey3();
         break;
-    case 4:                           // 4:
+    case 4:                           // 4: Play key4.mp3
         if(irLocked) return;
         doKey4();
         break;
@@ -1500,7 +1508,7 @@ static void handleIRKey(int key)
         if(irLocked) return;
         doKey6();
         break;
-    case 7:                           // 7:
+    case 7:                           // 7: Play key7.mp3
         if(irLocked) return;
         doKey7();
         break;
@@ -1508,7 +1516,7 @@ static void handleIRKey(int key)
         if(irLocked) return;
         doKey8();
         break;
-    case 9:                           // 9:
+    case 9:                           // 9: Play key9.mp3
         if(irLocked) return;
         doKey9();
         break;
