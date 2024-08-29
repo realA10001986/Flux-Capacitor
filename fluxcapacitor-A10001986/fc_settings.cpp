@@ -568,13 +568,13 @@ static bool checkValidNumParmF(char *text, float lowerLim, float upperLim, float
     float f;
 
     if(len == 0) {
-        sprintf(text, "%1.1f", setDefault);
+        sprintf(text, "%.1f", setDefault);
         return true;
     }
 
     for(i = 0; i < len; i++) {
         if(text[i] != '.' && text[i] != '-' && (text[i] < '0' || text[i] > '9')) {
-            sprintf(text, "%1.1f", setDefault);
+            sprintf(text, "%.1f", setDefault);
             return true;
         }
     }
@@ -582,16 +582,16 @@ static bool checkValidNumParmF(char *text, float lowerLim, float upperLim, float
     f = atof(text);
 
     if(f < lowerLim) {
-        sprintf(text, "%1.1f", lowerLim);
+        sprintf(text, "%.1f", lowerLim);
         return true;
     }
     if(f > upperLim) {
-        sprintf(text, "%1.1f", upperLim);
+        sprintf(text, "%.1f", upperLim);
         return true;
     }
 
-    // Re-do to get rid of formatting errors (eg "0.")
-    sprintf(text, "%1.1f", f);
+    // Re-do to get rid of formatting errors (eg "00.")
+    sprintf(text, "%.1f", f);
 
     return false;
 }
