@@ -4,7 +4,7 @@ This [repository](https://fc.out-a-ti.me) holds the most current firmware for Ci
 
 The kit parts are available [here](https://circuitsetup.us/product-category/movie-props/).
 
-Here is my FC, built around this Control Board and the other parts of the kit ([backing board](https://circuitsetup.us/product/flux-capacitor-backing-board/), [window kit](https://circuitsetup.us/product/flux-capacitor-window-kit/); see [here](https://github.com/realA10001986/Flux-Capacitor/blob/main/Hardware/README.md) for more information on the other parts used):
+Here is my FC, built around this Control Board and the other parts of the kit ([backing board](https://circuitsetup.us/product/flux-capacitor-backing-board/), [window kit](https://circuitsetup.us/product/flux-capacitor-window-kit/); see [here](Hardware/) for more information on the other parts used):
 
 ![My Flux Capacitor](img/myfc.jpg)
 ![My Flux Capacitor](img/myfc2.jpg)
