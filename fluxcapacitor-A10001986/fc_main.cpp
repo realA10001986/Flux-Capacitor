@@ -272,6 +272,8 @@ uint16_t lastIRspeed = FC_SPD_IDLE;
 #define BTTFN_VERSION              1
 #define BTTF_PACKET_SIZE          48
 #define BTTF_DEFAULT_LOCAL_PORT 1338
+#define BTTFN_POLL_INT          1100
+#define BTTFN_POLL_INT_FAST      800
 #define BTTFN_NOT_PREPARE  1
 #define BTTFN_NOT_TT       2
 #define BTTFN_NOT_REENTRY  3
@@ -298,6 +300,7 @@ static WiFiUDP       bttfUDP;
 static UDP*          fcUDP;
 static byte          BTTFUDPBuf[BTTF_PACKET_SIZE];
 static unsigned long BTTFNUpdateNow = 0;
+static unsigned long bttfnFCPollInt = BTTFN_POLL_INT;
 static unsigned long BTFNTSAge = 0;
 static unsigned long BTTFNTSRQAge = 0;
 static bool          BTTFNPacketDue = false;
@@ -549,6 +552,9 @@ void main_loop()
 {
     unsigned long now = millis();
 
+    // Reset polling interval; will be overruled below if applicable
+    bttfnFCPollInt = BTTFN_POLL_INT;
+
     // Follow TCD fake power
     if(useFPO && (tcdFPO != fpoOld)) {
         if(tcdFPO) {
@@ -652,6 +658,10 @@ void main_loop()
     if(useGPSS) {
 
         if(gpsSpeed >= 0) {
+
+            if(FPBUnitIsOn && !IRLearning) {
+                bttfnFCPollInt = BTTFN_POLL_INT_FAST;
+            }
 
             if(!TTrunning) {
 
@@ -2316,7 +2326,7 @@ void bttfn_loop()
         if(!BTTFNWiFiUp && (WiFi.status() == WL_CONNECTED)) {
             BTTFNUpdateNow = 0;
         }
-        if((!BTTFNUpdateNow) || (millis() - BTTFNUpdateNow > 1100)) {
+        if((!BTTFNUpdateNow) || (millis() - BTTFNUpdateNow > bttfnFCPollInt)) {
             BTTFNTriggerUpdate();
         }
     }
