@@ -188,9 +188,9 @@ In order to only disable the supplied IR remote control, check the option **_Dis
      <td align="center"></td>
     </tr>
     <tr>
-     <td align="center">&#8592;<br>Decrease chase speed</td>
+     <td align="center">&#8592;<br>Decrease chase speed (*)/td>
      <td align="center">OK<br>Execute command</td>
-     <td align="center">&#8594;<br>Increase chase speed</td>
+     <td align="center">&#8594;<br>Increase chase speed (*)</td>
     </tr>
     <tr>
      <td align="center"></td>
@@ -235,7 +235,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">*30&#9166; - *34&#9166;</td><td>3030-3034</td>
     </tr>
      <tr>
-     <td align="left">Reset chase speed to default</td>
+     <td align="left">Reset chase speed to default (*)</td>
      <td align="left">*40&#9166;</td><td>3040</td>
     </tr>
      <tr>
@@ -291,6 +291,8 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">*654321&#9166;</td><td>3654321</td>
     </tr>
 </table>
+
+(*) Chase speed changes are not executed if a speed knob is active; if the FC uses GPS speed from a TCD, the commands have no visual effect, but the changes are saved.
 
 [Here](https://github.com/realA10001986/Flux-Capacitor/blob/main/CheatSheet.pdf) is a cheat sheet for printing or screen-use. (Note that MacOS' preview application has a bug that scrambles the links in the document. Acrobat Reader does it correctly.)
 
@@ -440,8 +442,8 @@ The FC supports the MQTT protocol version 3.1.1 for the following features:
 
 The FC can - to some extent - be controlled through messages sent to topic **bttf/fc/cmd**. Support commands are
 - TIMETRAVEL: Start a [time travel](#time-travel)
-- FASTER, SLOWER: Make chase faster or slower. Only if speed knob is deactivated, and GPS speed is not used.
-- RESETSPEED: Reset chase speed to default. Only if speed knob is deactivated, and GPS speed is not used.
+- FASTER, SLOWER: Make chase faster or slower. Only if speed knob is deactivated.
+- RESETSPEED: Reset chase speed to default. Only if speed knob is deactivated.
 - CHASE_x: x being 0-9, change chase pattern
 - FLUX_OFF: Disables the [flux sound](#the-flux-sound)
 - FLUX_ON: Enables the [flux sound](#the-flux-sound)
