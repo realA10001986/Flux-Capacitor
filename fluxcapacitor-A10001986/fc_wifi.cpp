@@ -1430,40 +1430,6 @@ static void strcpyutf8(char *dst, const char *src, unsigned int len)
     dst[len - 1] = 0;
 }
 
-static int16_t filterOutUTF8(char *src, char *dst)
-{
-    int i, j, slen = strlen(src);
-    unsigned char c, d, e, f;
-
-    for(i = 0, j = 0; i < slen; i++) {
-        c = (unsigned char)src[i];
-        if(c >= 32 && c < 127) {
-            if(c >= 'a' && c <= 'z') c &= ~0x20;
-            dst[j++] = c;
-        } else if(c >= 194 && c < 224 && (i+1) < slen) {
-            d = (unsigned char)src[i+1];
-            if(d > 127 && d < 192) i++;
-        } else if(c < 240 && (i+2) < slen) {
-            d = (unsigned char)src[i+1];
-            e = (unsigned char)src[i+2];
-            if(d > 127 && d < 192 && 
-               e > 127 && e < 192) 
-                i+=2;
-        } else if(c < 245 && (i+3) < slen) {
-            d = (unsigned char)src[i+1];
-            e = (unsigned char)src[i+2];
-            f = (unsigned char)src[i+3];
-            if(d > 127 && d < 192 && 
-               e > 127 && e < 192 && 
-               f > 127 && f < 192)
-                i+=3;
-        }
-    }
-    dst[j] = 0;
-
-    return j;
-}
-
 static void mqttLooper()
 {
     audio_loop();
@@ -1474,18 +1440,22 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
     int i = 0, j, ml = (length <= 255) ? length : 255;
     char tempBuf[256];
     static const char *cmdList[] = {
-      "TIMETRAVEL",       // 0
-      "FLUX_OFF",         // 1
-      "FLUX_ON",          // 2
-      "FLUX_30",          // 3
-      "FLUX_60",          // 4
-      "MP_SHUFFLE_ON",    // 5 
-      "MP_SHUFFLE_OFF",   // 6
-      "MP_PLAY",          // 7
-      "MP_STOP",          // 8
-      "MP_NEXT",          // 9
-      "MP_PREV",          // 10
-      "MP_FOLDER_",       // 11  MP_FOLDER_0..MP_FOLDER_9
+      "FASTER",           // 0
+      "SLOWER",           // 1
+      "RESETSPEED",       // 2            
+      "TIMETRAVEL",       // 3
+      "CHASE_",           // 4 CHASE_0 .. CHASE_9
+      "FLUX_OFF",         // 5
+      "FLUX_ON",          // 6
+      "FLUX_30",          // 7
+      "FLUX_60",          // 8
+      "MP_SHUFFLE_ON",    // 9 
+      "MP_SHUFFLE_OFF",   // 10
+      "MP_PLAY",          // 11
+      "MP_STOP",          // 12
+      "MP_NEXT",          // 13
+      "MP_PREV",          // 14
+      "MP_FOLDER_",       // 15  MP_FOLDER_0..MP_FOLDER_9
       NULL
     };
     static const char *cmdList2[] = {
@@ -1589,25 +1559,39 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
 
         switch(i) {
         case 0:
+            incIRSpeed();
+            break;
+        case 1:
+            decIRSpeed();
+            break;
+        case 2:
+            resetIRSpeed();
+            break;
+        case 3:
             // Trigger Time Travel; treated like button, not
             // like TT from TCD.
             networkTimeTravel = true;
             networkTCDTT = false;
             break;
-        case 1:
-        case 2:
-        case 3:
         case 4:
-            setFluxMode(i - 1);
+            if(strlen(tempBuf) > j && tempBuf[j] >= '0' && tempBuf[j] <= '9') {
+                setFluxPattern((uint8_t)(tempBuf[j] - '0'));
+            }
             break;
         case 5:
         case 6:
-            if(haveMusic) mp_makeShuffle((i == 5));
+        case 7:
+        case 8:
+            setFluxMode(i - 5);
             break;
-        case 7:    
+        case 9:
+        case 10:
+            if(haveMusic) mp_makeShuffle((i == 9));
+            break;
+        case 11:    
             if(haveMusic) mp_play();
             break;
-        case 8:
+        case 12:
             if(haveMusic && mpActive) {
                 mp_stop();
                 if(playFLUX) {
@@ -1615,13 +1599,13 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
                 }
             }
             break;
-        case 9:
+        case 13:
             if(haveMusic) mp_next(mpActive);
             break;
-        case 10:
+        case 14:
             if(haveMusic) mp_prev(mpActive);
             break;
-        case 11:
+        case 15:
             if(haveSD) {
                 if(strlen(tempBuf) > j && tempBuf[j] >= '0' && tempBuf[j] <= '9') {
                     switchMusicFolder((uint8_t)(tempBuf[j] - '0'));

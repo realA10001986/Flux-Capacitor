@@ -324,13 +324,11 @@ static uint32_t commandQueue[16] = { 0 };
     (((a)[(b)+1]) << 8)  |  \
     (((a)[(b)+2]) << 16) |  \
     (((a)[(b)+3]) << 24))
-//#define GET32(a,b)    *((uint32_t *)((a) + (b)))
 #define SET32(a,b,c)                        \
     (a)[b]       = ((uint32_t)(c)) & 0xff;  \
     ((a)[(b)+1]) = ((uint32_t)(c)) >> 8;    \
     ((a)[(b)+2]) = ((uint32_t)(c)) >> 16;   \
     ((a)[(b)+3]) = ((uint32_t)(c)) >> 24;  
-//#define SET32(a,b,c)   *((uint32_t *)((a) + (b))) = c
 
 // Forward declarations ------
 
@@ -1476,7 +1474,6 @@ static void doKey9()
 
 static void handleIRKey(int key)
 {
-    int16_t tempi;
     bool doBadInp = false;
     unsigned long now = millis();
 
@@ -1570,39 +1567,11 @@ static void handleIRKey(int key)
         break;
     case 14:                          // arrow left: dec LED speed
         if(irLocked) return;
-        if(!useSKnob && !TTrunning) {
-            tempi = lastIRspeed;
-            if(tempi >= 100) tempi = tempi / 10 * 10;
-            if(tempi >= 130)     tempi += 20;
-            else if(tempi >= 90) tempi += 10;
-            else if(tempi >= 15) tempi += 5;
-            else if(tempi >= 1)  tempi++;
-            if(tempi > FC_SPD_MIN) tempi = FC_SPD_MIN;
-            if(!usingGPSS) {
-                fcLEDs.setSpeed(tempi);
-            }
-            lastIRspeed = tempi;
-            spdchanged = true;
-            spdchgnow = millis();
-        }
+        decIRSpeed();
         break;
     case 15:                          // arrow right: inc LED speed
         if(irLocked) return;
-        if(!useSKnob && !TTrunning) {
-            tempi = lastIRspeed;
-            if(tempi >= 100) tempi = tempi / 10 * 10;
-            if(tempi >= 150)      tempi -= 20;
-            else if(tempi >= 100) tempi -= 10;
-            else if(tempi >= 20)  tempi -= 5;
-            else if(tempi > 1)    tempi--;
-            if(tempi < FC_SPD_MAX) tempi = FC_SPD_MAX;
-            if(!usingGPSS) {
-                fcLEDs.setSpeed(tempi);
-            }
-            lastIRspeed = tempi;
-            spdchanged = true;
-            spdchgnow = millis();
-        }
+        incIRSpeed();
         break;
     case 16:                          // ENTER: Execute code command
         doBadInp = execute(true);
@@ -1701,36 +1670,15 @@ static bool execute(bool isIR)
 
     switch(strlen(inputBuffer)) {
     case 1:
-        /*
-        if(!isIRLocked) {
-            fluxPat = inputBuffer[0] - '0';       // *0-*9 Set idle pattern (deprecated)
-            fcLEDs.setSequence(fluxPat);
-            ipachanged = true;
-            ipachgnow = now;
-        }
-        */
         break;
     case 2:
         temp = atoi(inputBuffer);
         if(temp >= 10 && temp <= 19) {            // *10-*19 Set idle pattern
             if(!isIRLocked) {
-                fluxPat = atoi(inputBuffer) - 10;
-                fcLEDs.setSequence(fluxPat);
-                ipachanged = true;
-                ipachgnow = now;
+                setFluxPattern(atoi(inputBuffer) - 10);
             }
         } else {
             switch(temp) {
-            /*
-            case 0:                               // *00 Disable looped FLUX sound playback
-            case 1:                               // *01 Enable looped FLUX sound playback
-            case 2:                               // *02 Enable looped FLUX sound playback for 30 seconds
-            case 3:                               // *03 Enable looped FLUX sound playback for 60 seconds
-                if(!TTrunning && !isIRLocked) {
-                    setFluxMode(temp);
-                }
-                break;
-            */
             case 20:                              // *20 Disable looped FLUX sound playback
             case 21:                              // *21 Enable looped FLUX sound playback
             case 22:                              // *22 Enable looped FLUX sound playback for 30 seconds
@@ -1752,15 +1700,8 @@ static bool execute(bool isIR)
                 }
                 break;
             case 40:                              // *40 set default speed
-                if(!TTrunning && !isIRLocked) {
-                    if(!useSKnob) {
-                        if(!usingGPSS) {
-                            fcLEDs.setSpeed(FC_SPD_IDLE);
-                        }
-                        lastIRspeed = FC_SPD_IDLE;
-                        spdchanged = true;
-                        spdchgnow = now;
-                    }
+                if(!isIRLocked) {
+                    resetIRSpeed();
                 }
                 break;
             case 70:                              // *70 lock/unlock ir
@@ -1857,14 +1798,6 @@ static bool execute(bool isIR)
             } else {
                 if(!TTrunning) {
                     switch(temp) {
-                    /*
-                    case 0:                               // *000 Disable looped FLUX sound playback
-                    case 1:                               // *001 Enable looped FLUX sound playback
-                    case 2:                               // *002 Enable looped FLUX sound playback for 30 seconds
-                    case 3:                               // *003 Enable looped FLUX sound playback for 60 seconds
-                        setFluxMode(temp);
-                        break;
-                    */
                     case 222:                             // *222/*555 Disable/enable shuffle
                     case 555:
                         if(haveMusic) {
@@ -2055,6 +1988,64 @@ void switchMusicFolder(uint8_t nmf)
 /*
  * Helpers
  */
+
+void decIRSpeed()
+{
+    if(!useSKnob && !TTrunning) {
+        int16_t tempi = lastIRspeed;
+        if(tempi >= 100) tempi = tempi / 10 * 10;
+        if(tempi >= 130)     tempi += 20;
+        else if(tempi >= 90) tempi += 10;
+        else if(tempi >= 15) tempi += 5;
+        else if(tempi >= 1)  tempi++;
+        if(tempi > FC_SPD_MIN) tempi = FC_SPD_MIN;
+        if(!usingGPSS) {
+            fcLEDs.setSpeed(tempi);
+        }
+        lastIRspeed = tempi;
+        spdchanged = true;
+        spdchgnow = millis();
+    }
+}
+
+void incIRSpeed()
+{
+    if(!useSKnob && !TTrunning) {
+        int16_t tempi = lastIRspeed;
+        if(tempi >= 100) tempi = tempi / 10 * 10;
+        if(tempi >= 150)      tempi -= 20;
+        else if(tempi >= 100) tempi -= 10;
+        else if(tempi >= 20)  tempi -= 5;
+        else if(tempi > 1)    tempi--;
+        if(tempi < FC_SPD_MAX) tempi = FC_SPD_MAX;
+        if(!usingGPSS) {
+            fcLEDs.setSpeed(tempi);
+        }
+        lastIRspeed = tempi;
+        spdchanged = true;
+        spdchgnow = millis();
+    }
+}
+
+void resetIRSpeed()
+{
+    if(!useSKnob && !TTrunning) {
+        if(!usingGPSS) {
+            fcLEDs.setSpeed(FC_SPD_IDLE);
+        }
+        lastIRspeed = FC_SPD_IDLE;
+        spdchanged = true;
+        spdchgnow = millis();
+    }
+}
+
+void setFluxPattern(uint8_t i)
+{
+    fluxPat = i;
+    fcLEDs.setSequence(i);
+    ipachanged = true;
+    ipachgnow = millis();
+}
 
 void showWaitSequence()
 {
@@ -2443,7 +2434,6 @@ static void BTTFNCheckPacket()
 
         // (Possibly) a response packet
     
-        //if(*((uint32_t *)(BTTFUDPBuf + 6)) != BTTFUDPID)
         if(GET32(BTTFUDPBuf, 6) != BTTFUDPID)
             return;
     
@@ -2528,7 +2518,6 @@ static void BTTFNSendPacket()
     // Serial
     BTTFUDPID = (uint32_t)millis();
     SET32(BTTFUDPBuf, 6, BTTFUDPID);
-    //*((uint32_t *)(BTTFUDPBuf + 6)) = 
 
     // Tell the TCD about our hostname (0-term., 13 bytes total)
     strncpy((char *)BTTFUDPBuf + 10, settings.hostName, 12);
@@ -2545,7 +2534,6 @@ static void BTTFNSendPacket()
     #ifdef BTTFN_MC
     if(!haveTCDIP) {
         BTTFUDPBuf[5] |= 0x80;
-        //memcpy(BTTFUDPBuf + 31, (void *)&tcdHostNameHash, 4);
         SET32(BTTFUDPBuf, 31, tcdHostNameHash);
     }
     #endif

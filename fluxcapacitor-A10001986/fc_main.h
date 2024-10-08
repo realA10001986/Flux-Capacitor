@@ -90,6 +90,11 @@ void main_loop();
 
 void flushDelayedSave();
 
+void decIRSpeed();
+void incIRSpeed();
+void resetIRSpeed();
+void setFluxPattern(uint8_t i);
+
 void showWaitSequence();
 void endWaitSequence();
 void showCopyError();

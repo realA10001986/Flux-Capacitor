@@ -115,6 +115,9 @@
 
 /*  Changelog
  *
+ *  2024/10/08 (A10001986)
+ *    - MQTT: Add FASTER, SLOWER, RESETSPEED and CHASE_x commands. CHASE_x sets the
+ *      chase pattern (x=0-9)
  *  2024/09/11 (A10001986)
  *    - Fix C99-compliance
  *  2024/09/09 (A10001986)
