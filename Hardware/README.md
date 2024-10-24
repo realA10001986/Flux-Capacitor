@@ -77,7 +77,7 @@ The black pipe on the left and the hose on the right are fully custom made; the 
 If you avoid 3D-printed parts in general (or use a UV- and heat-resistant resin) and attach parts properly, the FC is perfectly fine to be mounted in an actual Delorean.
 
 
-_Text & images: (C) Thomas Winischhofer ("A10001986"). See LICENSE._
+_Text & images: (C) Thomas Winischhofer ("A10001986"). See LICENSE._ Source: https://fc.out-a-ti.me
 
 
 
