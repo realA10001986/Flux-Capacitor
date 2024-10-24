@@ -725,4 +725,4 @@ This procedure ensures that all your settings are copied from the old to the new
     </tr>
 </table>
 
-_Text & images: (C) Thomas Winischhofer ("A10001986"). See LICENSE._
+_Text & images: (C) Thomas Winischhofer ("A10001986"). See LICENSE._ Source: https://fc.out-a-ti.me
