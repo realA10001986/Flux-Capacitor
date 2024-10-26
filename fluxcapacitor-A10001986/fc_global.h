@@ -11,9 +11,12 @@
 #ifndef _FC_GLOBAL_H
 #define _FC_GLOBAL_H
 
-// Version strings
-#define FC_VERSION       "V1.55"
-#define FC_VERSION_EXTRA "OCT082024"
+/*************************************************************************
+ ***                          Version Strings                          ***
+ *************************************************************************/
+
+#define FC_VERSION       "V1.60"
+#define FC_VERSION_EXTRA "OCT262024"
 
 //#define FC_DBG              // debug output on Serial
 
@@ -33,29 +36,23 @@
 //#define WIFIMANAGER_2_0_17       
 
 /*************************************************************************
- ***             Configuration for peripherals/features                ***
+ ***                           Miscellaneous                           ***
  *************************************************************************/
 
 // Uncomment for HomeAssistant MQTT protocol support
 #define FC_HAVEMQTT
 
-// --- end of config options
-
-/*************************************************************************
- ***                           Miscellaneous                           ***
- *************************************************************************/
-
-// Use SPIFFS (if defined) or LittleFS (if undefined; esp32-arduino >= 2.x)
-//#define USE_SPIFFS
-
 // External time travel lead time, as defined by TCD firmware
-// If FC is connected by wire, and the option "Signal Time Travel without 5s 
-// lead" is set on the TCD, the FC option "TCD signals without lead" must
-// be set, too.
+// If FC is connected to TCD by wire, and the option "Signal Time Travel 
+// without 5s lead" is set on the TCD, the FC option "TCD signals without 
+// lead" must be set, too.
 #define ETTO_LEAD 5000
 
 // Uncomment to include BTTFN discover support (multicast)
 #define BTTFN_MC
+
+// Use SPIFFS (if defined) or LittleFS (if undefined; esp32-arduino >= 2.x)
+//#define USE_SPIFFS
 
 // Uncomment this if using a FC control board v1.2
 // Comment for all later versions

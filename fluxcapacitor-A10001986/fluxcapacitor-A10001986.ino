@@ -115,6 +115,11 @@
 
 /*  Changelog
  *
+ *  2024/10/26 (A10001986) [1.60]
+ *    - Add support for TCD multicast notifications: This brings more immediate speed 
+ *      updates (no more polling; TCD sends out speed info when appropriate), and 
+ *      less network traffic in time travel sequences.
+ *      The TCD supports this since Oct 26, 2024.
  *  2024/10/08 (A10001986)
  *    - MQTT: Add FASTER, SLOWER, RESETSPEED and CHASE_x commands. CHASE_x sets the
  *      chase pattern (x=0-9)
