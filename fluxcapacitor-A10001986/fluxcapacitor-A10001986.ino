@@ -115,6 +115,8 @@
 
 /*  Changelog
  *
+ *  2024/10/27 (A10001986)
+ *    - Minor changes (bttfn_loop in delay-loops; etc)
  *  2024/10/26 (A10001986) [1.60]
  *    - Add support for TCD multicast notifications: This brings more immediate speed 
  *      updates (no more polling; TCD sends out speed info when appropriate), and 
