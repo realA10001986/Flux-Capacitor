@@ -697,7 +697,7 @@ This procedure ensures that all your settings are copied from the old to the new
     </tr>
  <tr>
      <td align="left">&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
-     <td align="left">Error: Audio files <a href="#audio-data-installation">not installed</a> (or outdated version of sound-pack)</td>
+     <td align="left">Error: Audio files <a href="#audio-data-installation">not installed</a> or outdated</td>
     </tr>
 <tr>
      <td align="left">&#9675; &#9675; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9675; &#9675;<br>&#8635;</td>
