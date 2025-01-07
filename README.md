@@ -1,4 +1,4 @@
-# Firmware for Flux Capacitor
+# Flux Capacitor
 
 This [repository](https://fc.out-a-ti.me) holds the most current firmware for CircuitSetup's excellent [Flux Capacitor Light & Sound Control Board](https://circuitsetup.us/product/flux-capacitor-light-sound-pcb/). The "Flux Capacitor" is a key component of the Delorean Time Machine.
 
