@@ -728,11 +728,11 @@ This procedure ensures that all your settings are copied from the old to the new
      <td align="left"><a href="#">TCD remote control mode</a> started</td>
     </tr>
 <tr>
-     <td align="left">&#9679; &#9675; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br></td>
+     <td align="left">&#9679; &#9675; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br></td>
      <td align="left"><a href="#">TCD remote control mode</a> end</td>
     </tr>
 <tr>
-     <td align="left">&#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br></td>
+     <td align="left">&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br></td>
      <td align="left">No music files in currently selected music folder</td>
     </tr>
 </table>
