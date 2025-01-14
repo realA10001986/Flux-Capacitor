@@ -1,7 +1,7 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023-2024 Thomas Winischhofer (A10001986)
+ * (C) 2023-2025 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *
@@ -252,8 +252,8 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
         {
           SS_ONESHOT,                                   // 4: error: Bad IR input (1)
           0b000000, 100,
-          0b100000, 100, 0b000000, 100,
-          0b100000, 100, 0b000000, 100, SS_END
+          0b100000, 25, 0b000000, 25,
+          0b100000, 25, 0b000000, 25, SS_END
         },
         {
           SS_ONESHOT,                                   // 5: Alarm (BTTFN/MQTT)
@@ -289,6 +289,23 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
         {
           SS_LOOP,                                      // 9: Error when copying audio files
           0b110000,  20, 0b000011,  20, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 10: RemMode started
+          0b000000,  10,
+          0b101010,  50, 0b000000,  50,
+          0b101010,  50, 0b000000,  50, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 11: RemMode quit
+          0b000000,  10,
+          0b010101,  50, 0b000000,  50, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 12: No music in current music folder
+          0b000000,  10,
+          0b000101,  50, 0b000000,  50,
+          0b000101,  50, 0b000000,  50, SS_END
         }
 };        
 

@@ -1,7 +1,7 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023-2024 Thomas Winischhofer (A10001986)
+ * (C) 2023-2025 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *
@@ -115,6 +115,17 @@
 
 /*  Changelog
  *
+ *  2025/01/12-14 (A10001986) [1.70]
+ *    - Add support for remote controlling the TCD keypad through the IR remote
+ *      control. *95OK starts, "#" quits remote controlling. All keys until # 
+ *      are directly sent to the TCD. Holding a key on the TCD keypad is emulated 
+ *      by typing * followed by the key to be "held".
+ *    - BTTFN: Minor code optimizations
+ *    - Flux sound now off by default
+ *    - Better feedback on IR/remote command execution. Success is now mostly
+ *      signalled by 1 sec of IR feedback, failure either by the usual signal
+ *      (chase LEDs) or 2 blinks of the IR feedback LED.
+ *    - IR input buffer is no longer reset when receiving commands from TCD
  *  2024/10/27 (A10001986)
  *    - Minor changes (bttfn_loop in delay-loops; etc)
  *  2024/10/26 (A10001986) [1.60]

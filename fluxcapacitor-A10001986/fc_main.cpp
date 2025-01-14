@@ -1,7 +1,7 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023-2024 Thomas Winischhofer (A10001986)
+ * (C) 2023-2025 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *
@@ -247,6 +247,7 @@ static uint32_t remote_codes[NUM_IR_KEYS][NUM_REM_TYPES] = {
 
 #define INPUTLEN_MAX 6
 static char          inputBuffer[INPUTLEN_MAX + 2];
+static char          inputBackup[INPUTLEN_MAX + 2];
 static int           inputIndex = 0;
 static bool          inputRecord = false;
 static unsigned long lastKeyPressed = 0;
@@ -255,6 +256,10 @@ static int           maxIRctrls = NUM_REM_TYPES;
 #define IR_FEEDBACK_DUR 300
 static bool          irFeedBack = false;
 static unsigned long irFeedBackNow = 0;
+static unsigned long irFeedBackDur = IR_FEEDBACK_DUR;
+static bool          irErrFeedBack = false;
+static unsigned long irErrFeedBackNow = 0;
+static int           irErrFBState = 0;
 
 bool                 irLocked = false;
 static bool          noIR = false;      // for temporary disabling IR reception
@@ -265,6 +270,11 @@ static int           IRLearnIndex = 0;
 static unsigned long IRLearnNow;
 static unsigned long IRFBLearnNow;
 static bool          IRLearnBlink = false;
+
+uint32_t             myRemID = 0x12345678;
+static bool          remoteAllowed = false;
+static bool          remMode = false;
+static bool          remHoldKey = false;
 
 uint16_t lastIRspeed = FC_SPD_IDLE;
 
@@ -295,6 +305,10 @@ uint16_t lastIRspeed = FC_SPD_IDLE;
 #define BTTFN_TYPE_VSR     4    // VSR
 #define BTTFN_TYPE_AUX     5    // Aux (user custom device)
 #define BTTFN_TYPE_REMOTE  6    // Futaba remote control
+#define BTTFN_REMCMD_KP_PING    4
+#define BTTFN_REMCMD_KP_KEY     5
+#define BTTFN_REMCMD_KP_BYE     6
+#define BTTFN_REM_MAX_COMMAND   BTTFN_REMCMD_KP_BYE
 #define BTTFN_SSRC_NONE         0
 #define BTTFN_SSRC_GPS          1
 #define BTTFN_SSRC_ROTENC       2
@@ -325,12 +339,19 @@ static bool          haveTCDIP = false;
 static IPAddress     bttfnTcdIP;
 static uint32_t      bttfnTCDSeqCnt = 0;
 static uint8_t       bttfnReqStatus = 0x52; // Request capabilities, status, speed
+static bool          TCDSupportsRemKP = false;
 #ifdef BTTFN_MC
 static uint32_t      tcdHostNameHash = 0;
 static byte          BTTFMCBuf[BTTF_PACKET_SIZE];
 static uint8_t       bttfnMcMarker = 0;
 static IPAddress     bttfnMcIP(224, 0, 0, 224);
-#endif  
+#endif
+static uint32_t      bttfnSeqCnt[BTTFN_REM_MAX_COMMAND+1] = { 1 };
+
+enum {
+    BTTFN_KP_KS_PRESSED,
+    BTTFN_KP_KS_HOLD,
+};
 
 static int      iCmdIdx = 0;
 static int      oCmdIdx = 0;
@@ -354,7 +375,8 @@ static void endIRLearn(bool restore);
 static void handleIRinput();
 static void handleIRKey(int command);
 static void handleRemoteCommand();
-static bool execute(bool isIR);
+static void clearInpBuf();
+static int  execute(bool isIR);
 static void startIRfeedback();
 static void endIRfeedback();
 
@@ -384,8 +406,10 @@ static bool bttfn_checkmc();
 static void BTTFNCheckPacket();
 static bool BTTFNTriggerUpdate();
 static void BTTFNSendPacket();
-static bool BTTFNTriggerTT();
+static bool BTTFNConnected();
 
+static bool bttfn_trigger_tt();
+static bool bttfn_send_command(uint8_t cmd, uint8_t p1, uint8_t p2);
 
 void main_boot()
 {
@@ -450,6 +474,10 @@ void main_setup()
     // via wire, and is source of GPIO tt trigger
     TCDconnected = (atoi(settings.TCDpresent) > 0);
     noETTOLead = (atoi(settings.noETTOLead) > 0);
+
+    for(int i = 0; i < BTTFN_REM_MAX_COMMAND+1; i++) {
+        bttfnSeqCnt[i] = 1;
+    }
 
     // Init IR feedback LED
     pinMode(IRFeedBackPin, OUTPUT);
@@ -649,15 +677,24 @@ void main_loop()
         fpoOld = tcdFPO;
     }
     
-    // Discard (incomlete) input from IR after 30 seconds of inactivity
+    // Discard (incomplete) input from IR after 30 seconds of inactivity
     if(now - lastKeyPressed >= 30*1000) {
-        inputBuffer[0] = '\0';
-        inputIndex = 0;
-        inputRecord = false;
+        clearInpBuf();
     }
 
-    // IR feedback timeout
-    if(irFeedBack && now - irFeedBackNow > IR_FEEDBACK_DUR) {
+    // IR feedback
+    if(irErrFeedBack && (now - irErrFeedBackNow > 250)) {
+        irErrFeedBackNow = now;
+        irErrFBState++;
+        if(irErrFBState > 3) {
+            irErrFeedBack = false;
+            endIRfeedback();
+        } else {
+            (irErrFBState & 0x01) ? endIRfeedback() : startIRfeedback();
+            irErrFeedBack = true;
+        }
+    }
+    if(irFeedBack && now - irFeedBackNow > irFeedBackDur) {
         endIRfeedback();
         irFeedBack = false;
     }
@@ -768,7 +805,7 @@ void main_loop()
                 if(TCDconnected) {
                     ssEnd(false);  // let TT() take care of restarting sound
                 }
-                if(TCDconnected || !bttfnTT || !BTTFNTriggerTT()) {
+                if(TCDconnected || !bttfnTT || !bttfn_trigger_tt()) {
                     timeTravel(TCDconnected, noETTOLead ? 0 : ETTO_LEAD);
                 }
             }
@@ -1304,11 +1341,22 @@ static int convertGPSSpeed(int16_t spd)
 static void startIRfeedback()
 {
     digitalWrite(IRFeedBackPin, HIGH);
+    irFeedBackDur = IR_FEEDBACK_DUR;
+    irErrFeedBack = false;
 }
 
 static void endIRfeedback()
 {
     digitalWrite(IRFeedBackPin, LOW);
+}
+
+static void startIRErrFeedback()
+{
+    startIRfeedback();
+    irErrFeedBack = true;
+    irErrFeedBackNow = millis();
+    irErrFBState = 0;
+    irFeedBack = false;
 }
 
 static void backupIR()
@@ -1490,7 +1538,7 @@ static void doKey9()
 
 static void handleIRKey(int key)
 {
-    bool doBadInp = false;
+    int doInpReaction = 0;
     unsigned long now = millis();
 
     if(ssActive) {
@@ -1513,12 +1561,34 @@ static void handleIRKey(int key)
     if(inputRecord && key >= 0 && key <= 9) {
         recordKey(key);
         return;
+    } else if(remMode) {
+        // Remote mode for TCD keypad: 
+        // (Must not be started while irlocked - user wouldn't be able to unlock IR)
+        if(key == 11) {   // # quits
+            remMode = remHoldKey = false;
+            clearInpBuf();  // Relevant if initiated by TCD (3095)
+            bttfn_send_command(BTTFN_REMCMD_KP_BYE, 0, 0);
+            if(!TTrunning) {
+                fcLEDs.SpecialSignal(FCSEQ_REMEND);
+            } else {
+                irFeedBackDur = 1000;
+            }
+        } else if(key == 10) {   // * means the following key is "held" on TCD keypad
+            remHoldKey = true;
+        } else {
+            uint8_t rkey = (key >= 0 && key <= 9) ? key + '0' : ((key == 16) ? rkey = 'E' : 0);
+            if(rkey) {
+                bttfn_send_command(BTTFN_REMCMD_KP_KEY, rkey, remHoldKey ? BTTFN_KP_KS_HOLD : BTTFN_KP_KS_PRESSED);
+            }
+            remHoldKey = false;
+        }
+        return;
     }
     
     switch(key) {
     case 0:                           // 0: time travel
         if(irLocked) return;
-        if(!bttfnTT || !BTTFNTriggerTT()) {
+        if(!bttfnTT || !bttfn_trigger_tt()) {
             timeTravel(false, ETTO_LEAD);
         }
         break;
@@ -1571,7 +1641,7 @@ static void handleIRKey(int key)
             inc_vol();        
             volchanged = true;
             volchgnow = millis();
-        }
+        } else doInpReaction = -2;
         break;
     case 13:                          // arrow down: dec vol
         if(irLocked) return;
@@ -1579,33 +1649,41 @@ static void handleIRKey(int key)
             dec_vol();
             volchanged = true;
             volchgnow = millis();
-        }
+        } else doInpReaction = -2;
         break;
     case 14:                          // arrow left: dec LED speed
         if(irLocked) return;
-        decIRSpeed();
+        if(!decIRSpeed()) doInpReaction = -2;
         break;
     case 15:                          // arrow right: inc LED speed
         if(irLocked) return;
-        incIRSpeed();
+        if(!incIRSpeed()) doInpReaction = -2;
         break;
     case 16:                          // ENTER: Execute code command
-        doBadInp = execute(true);
+        doInpReaction = execute(true);
+        clearInpBuf();
         break;
     default:
         if(!irLocked) {
-            doBadInp = true;
+            doInpReaction = -1;
         }
     }
 
-    if(!TTrunning && doBadInp) {
-        fcLEDs.SpecialSignal(FCSEQ_BADINP);
+    if(doInpReaction < 0) {
+        if(doInpReaction < -1 || TTrunning) {
+            startIRErrFeedback();
+        } else {
+            fcLEDs.SpecialSignal(FCSEQ_BADINP);
+        }
+    } else if(doInpReaction) {
+        irFeedBackDur = 1000;
     }
 }
 
 static void handleRemoteCommand()
 {
     uint32_t command = commandQueue[oCmdIdx];
+    int      doInpReaction = 0;
 
     if(!command)
         return;
@@ -1618,7 +1696,6 @@ static void handleRemoteCommand()
         ssEnd();
     }
     ssRestartTimer();
-    lastKeyPressed = millis();
 
     // Some translation
     if(command < 10) {
@@ -1656,8 +1733,13 @@ static void handleRemoteCommand()
 
         return;
         
-    } else if(command < 100) {
+    }
+
+    // Backup current IR input buffer
+    memcpy(inputBackup, inputBuffer, sizeof(inputBuffer));
       
+    if(command < 100) {
+  
         sprintf(inputBuffer, "%02d", command);
         
     } else if(command < 1000) {
@@ -1674,24 +1756,44 @@ static void handleRemoteCommand()
 
     }
 
-    execute(false);
+    doInpReaction = execute(false);
+
+    // Restore current IR input buffer
+    memcpy(inputBuffer, inputBackup, sizeof(inputBuffer));
+
+    if(doInpReaction < 0) {
+        if(doInpReaction < -1 || TTrunning) {
+            startIRErrFeedback();
+        } else {
+            fcLEDs.SpecialSignal(FCSEQ_BADINP);
+        }
+    } else if(doInpReaction) {
+        startIRfeedback();
+        irFeedBack = true;
+        irFeedBackNow = millis();
+        irFeedBackDur = 1000;
+    }
 }
 
-static bool execute(bool isIR)
+static int execute(bool isIR)
 {
-    bool doBadInp = false;
+    int  doInpReaction = 0;
     bool isIRLocked = isIR ? irLocked : false;
     uint16_t temp;
     unsigned long now = millis();
 
     switch(strlen(inputBuffer)) {
     case 1:
+        if(!isIRLocked) {
+            doInpReaction = -1;
+        }
         break;
     case 2:
         temp = atoi(inputBuffer);
         if(temp >= 10 && temp <= 19) {            // *10-*19 Set idle pattern
             if(!isIRLocked) {
                 setFluxPattern(atoi(inputBuffer) - 10);
+                doInpReaction = 1;
             }
         } else {
             switch(temp) {
@@ -1699,8 +1801,11 @@ static bool execute(bool isIR)
             case 21:                              // *21 Enable looped FLUX sound playback
             case 22:                              // *22 Enable looped FLUX sound playback for 30 seconds
             case 23:                              // *23 Enable looped FLUX sound playback for 60 seconds
-                if(!TTrunning && !isIRLocked) {
-                    setFluxMode(temp - 20);
+                if(!isIRLocked) {
+                    if(!TTrunning) {
+                        setFluxMode(temp - 20);
+                        doInpReaction = 1;
+                    } else doInpReaction = -1;
                 }
                 break;
             case 30:                              // *30 - *34: Set minimum box light level
@@ -1708,37 +1813,51 @@ static bool execute(bool isIR)
             case 32:
             case 33:
             case 34:
-                if(!TTrunning && !isIRLocked) {
-                    minBLL = temp - 30;
-                    boxLED.setDC(mbllArray[minBLL]);
-                    bllchanged = true;
-                    bllchgnow = now;
+                if(!isIRLocked) {
+                    if(!TTrunning) {
+                        minBLL = temp - 30;
+                        boxLED.setDC(mbllArray[minBLL]);
+                        bllchanged = true;
+                        bllchgnow = now;
+                        doInpReaction = 1;
+                    } else doInpReaction = -1;
                 }
                 break;
             case 40:                              // *40 set default speed
                 if(!isIRLocked) {
-                    resetIRSpeed();
+                    doInpReaction = resetIRSpeed() ? 1 : -1;
                 }
                 break;
             case 70:                              // *70 lock/unlock ir
+                if(remMode) {
+                    // Need to quit remote mode before locking ir
+                    // (Use case: Enter 3070 on TCD keypad during remMode)
+                    remMode = remHoldKey = false;                    
+                    bttfn_send_command(BTTFN_REMCMD_KP_BYE, 0, 0);
+                }
                 irLocked = !irLocked;
                 irlchanged = true;
                 irlchgnow = now;
-                if(!TTrunning && !irLocked) {
+                if(!irLocked) {
+                    // Start IR feedback here, since wasn't done above
                     startIRfeedback();
                     irFeedBack = true;
                     irFeedBackNow = now;
                 }
+                doInpReaction = 1;
                 break;
-            case 71:
-                // Taken by SID IR lock sequence
+            case 71:                              // *71 Taken by SID IR lock sequence
+                // Stay silent
                 break;
             case 81:                              // *81 Toggle knob use for LED speed
-                if(!TTrunning && !isIRLocked) {
-                    useSKnob = !useSKnob;
-                    if(!useSKnob && !usingGPSS) {
-                        fcLEDs.setSpeed(lastIRspeed);
-                    }
+                if(!isIRLocked) {
+                    if(!TTrunning) {
+                        useSKnob = !useSKnob;
+                        if(!useSKnob && !usingGPSS) {
+                            fcLEDs.setSpeed(lastIRspeed);
+                        }
+                        doInpReaction = 1;
+                    } else doInpReaction = -1;
                 }
                 break;
             case 85:
@@ -1750,47 +1869,66 @@ static bool execute(bool isIR)
                 }
                 break;
             case 90:                              // *90 say IP address
-                if(!TTrunning && !isIRLocked) {
-                    uint8_t a, b, c, d;
-                    bool wasActiveM = false, wasActiveF = false;
-                    char ipbuf[16];
-                    char numfname[8] = "/x.mp3";
-                    if(haveMusic && mpActive) {
-                        mp_stop();
-                        wasActiveM = true;
-                    } else if(playingFlux) {
-                        wasActiveF = true;
-                    }
-                    stopAudio();
-                    flushDelayedSave();
-                    wifi_getIP(a, b, c, d);
-                    sprintf(ipbuf, "%d.%d.%d.%d", a, b, c, d);
-                    numfname[1] = ipbuf[0];
-                    play_file(numfname, PA_INTRMUS|PA_ALLOWSD);
-                    for(int i = 1; i < strlen(ipbuf); i++) {
-                        if(ipbuf[i] == '.') {
-                            append_file("/dot.mp3", PA_INTRMUS|PA_ALLOWSD);
+                if(!isIRLocked) {
+                    if(!TTrunning) {
+                        uint8_t a, b, c, d;
+                        bool wasActiveM = false, wasActiveF = false;
+                        char ipbuf[16];
+                        char numfname[8] = "/x.mp3";
+                        if(haveMusic && mpActive) {
+                            mp_stop();
+                            wasActiveM = true;
+                        } else if(playingFlux) {
+                            wasActiveF = true;
+                        }
+                        stopAudio();
+                        flushDelayedSave();
+                        wifi_getIP(a, b, c, d);
+                        sprintf(ipbuf, "%d.%d.%d.%d", a, b, c, d);
+                        numfname[1] = ipbuf[0];
+                        play_file(numfname, PA_INTRMUS|PA_ALLOWSD);
+                        for(int i = 1; i < strlen(ipbuf); i++) {
+                            if(ipbuf[i] == '.') {
+                                append_file("/dot.mp3", PA_INTRMUS|PA_ALLOWSD);
+                            } else {
+                                numfname[1] = ipbuf[i];
+                                append_file(numfname, PA_INTRMUS|PA_ALLOWSD);
+                            }
+                            while(append_pending()) {
+                                mydelay(10, false);
+                            }
+                        }
+                        waitAudioDone(false);
+                        if(wasActiveF && contFlux()) play_flux();
+                        else if(wasActiveM)          mp_play();
+                        ir_remote.loop(); // Flush IR afterwards
+                    } else doInpReaction = -1;
+                }
+                break;
+            case 95:                              // *95  enter TCD keypad remote control mode
+                if(!irLocked) {                   //      yes, 'irLocked' - must not be entered while IR is locked
+                    if(!TTrunning) {
+                        if(BTTFNConnected() && TCDSupportsRemKP && remoteAllowed) {                       
+                            remMode = true;
+                            fcLEDs.SpecialSignal(FCSEQ_REMSTART);
+                            // doInpReaction = 1;  // no, we show a signal instead
                         } else {
-                            numfname[1] = ipbuf[i];
-                            append_file(numfname, PA_INTRMUS|PA_ALLOWSD);
+                            doInpReaction = -1;
                         }
-                        while(append_pending()) {
-                            mydelay(10, false);
-                        }
-                    }
-                    waitAudioDone(false);
-                    if(wasActiveF && contFlux()) play_flux();
-                    else if(wasActiveM)          mp_play();
-                    ir_remote.loop(); // Flush IR afterwards
+                    } else doInpReaction = -1;
                 }
                 break;
             default:                              // *50 - *59 Set music folder number
-                if(!TTrunning && !isIRLocked) {
-                    if(inputBuffer[0] == '5' && haveSD) {
-                        switchMusicFolder((uint8_t)inputBuffer[1] - '0');
-                    } else {
-                        doBadInp = true;
-                    }
+                if(!isIRLocked) {
+                    if(!TTrunning) {
+                        if(inputBuffer[0] == '5' && haveSD) {
+                            if(switchMusicFolder((uint8_t)inputBuffer[1] - '0')) {
+                                doInpReaction = 1;
+                            }
+                        } else {
+                            doInpReaction = -1;
+                        }
+                    } else doInpReaction = -1;
                 }
             }
         }
@@ -1800,6 +1938,7 @@ static bool execute(bool isIR)
             temp = atoi(inputBuffer);
             if(temp >= 300 && temp <= 399) {
                 temp -= 300;                              // 300-319/399: Set fixed volume level / enable knob
+                doInpReaction = 1;
                 if(temp == 99) {
                     curSoftVol = 255;
                     volchanged = true;
@@ -1809,7 +1948,7 @@ static bool execute(bool isIR)
                     volchanged = true;
                     volchgnow = millis();
                 } else {
-                    doBadInp = true;
+                    doInpReaction = -1;
                 }
             } else {
                 if(!TTrunning) {
@@ -1818,17 +1957,19 @@ static bool execute(bool isIR)
                     case 555:
                         if(haveMusic) {
                             mp_makeShuffle((temp == 555));
-                        }
+                            doInpReaction = 1;
+                        } else doInpReaction = -1;
                         break;
                     case 888:                             // *888 go to song #0
                         if(haveMusic) {
                             mp_gotonum(0, mpActive);
-                        }
+                            doInpReaction = 1;
+                        } else doInpReaction = -1;
                         break;
                     default:
-                        doBadInp = true;
+                        doInpReaction = -1;
                     }
-                }
+                } else doInpReaction = -1;
             }
         }
         break;
@@ -1844,15 +1985,18 @@ static bool execute(bool isIR)
                 delay(500);
                 esp_restart();
             }
-            doBadInp = true;
+            doInpReaction = -1;
         }
         break;
     case 6:
         if(!isIRLocked) {
             if(!TTrunning) {                          // *888xxx go to song #xxx
-                if(haveMusic && !strncmp(inputBuffer, "888", 3)) {
-                    uint16_t num = ((inputBuffer[3] - '0') * 100) + read2digs(4);
-                    num = mp_gotonum(num, mpActive);
+                if(!strncmp(inputBuffer, "888", 3)) {
+                    if(haveMusic) {
+                        uint16_t num = ((inputBuffer[3] - '0') * 100) + read2digs(4);
+                        num = mp_gotonum(num, mpActive);
+                        doInpReaction = 1;
+                    } else doInpReaction = -1;
                 } else if(!strcmp(inputBuffer, "123456")) {
                     flushDelayedSave();
                     deleteIpSettings();               // *123456OK deletes IP settings
@@ -1860,25 +2004,26 @@ static bool execute(bool isIR)
                         settings.appw[0] = 0;         // and clears AP mode WiFi password
                         write_settings();
                     }
+                    doInpReaction = 1;
                 } else if(!strcmp(inputBuffer, "654321")) {
                     deleteIRKeys();                   // *654321OK deletes learned IR remote
                     for(int i = 0; i < NUM_IR_KEYS; i++) {
                         remote_codes[i][1] = 0;
                     }
+                    doInpReaction = 1;
                 } else {
-                    doBadInp = true;
+                    doInpReaction = -1;
                 }
-            }
+            } else doInpReaction = -1;
         }
         break;
     default:
         if(!isIRLocked) {
-            doBadInp = true;
+            doInpReaction = -1;
         }
     }
-    clearInpBuf();
 
-    return doBadInp;
+    return doInpReaction;
 }
 
 /*
@@ -1966,12 +2111,13 @@ static void setPotSpeed()
  * Switch music folder
  */
  
-void switchMusicFolder(uint8_t nmf)
+bool switchMusicFolder(uint8_t nmf)
 {
     bool wasActive = false;
     bool waitShown = false;
+    bool doSuccessSignal = true;
 
-    if(nmf > 9) return;
+    if(nmf > 9) return false;
     
     if(nmf != musFolderNum) {
         musFolderNum = nmf;
@@ -1985,6 +2131,7 @@ void switchMusicFolder(uint8_t nmf)
         }
         stopAudio();
         if(mp_checkForFolder(musFolderNum) == -1) {
+            doSuccessSignal = false;
             flushDelayedSave();
             showWaitSequence();
             waitShown = true;
@@ -1996,16 +2143,24 @@ void switchMusicFolder(uint8_t nmf)
         if(waitShown) {
             fcLEDs.SpecialSignal(0);
         }
+        if(!haveMusic) {
+            doSuccessSignal = false;
+            fcLEDs.SpecialSignal(FCSEQ_NOMUSIC);
+            //play_file("/nomusic.mp3", PA_INTRMUS|PA_ALLOWSD);
+            //waitAudioDone(false);
+        }
         if(wasActive && contFlux()) play_flux();
         ir_remote.loop(); // Flush IR afterwards
     }
+
+    return doSuccessSignal;
 }
 
 /*
  * Helpers
  */
 
-void decIRSpeed()
+bool decIRSpeed()
 {
     if(!useSKnob && !TTrunning) {
         int16_t tempi = lastIRspeed;
@@ -2021,10 +2176,12 @@ void decIRSpeed()
         lastIRspeed = tempi;
         spdchanged = true;
         spdchgnow = millis();
+        return true;
     }
+    return false;
 }
 
-void incIRSpeed()
+bool incIRSpeed()
 {
     if(!useSKnob && !TTrunning) {
         int16_t tempi = lastIRspeed;
@@ -2040,10 +2197,12 @@ void incIRSpeed()
         lastIRspeed = tempi;
         spdchanged = true;
         spdchgnow = millis();
+        return true;
     }
+    return false;
 }
 
-void resetIRSpeed()
+bool resetIRSpeed()
 {
     if(!useSKnob && !TTrunning) {
         if(!usingGPSS) {
@@ -2052,7 +2211,9 @@ void resetIRSpeed()
         lastIRspeed = FC_SPD_IDLE;
         spdchanged = true;
         spdchgnow = millis();
+        return true;
     }
+    return false;
 }
 
 void setFluxPattern(uint8_t i)
@@ -2590,9 +2751,11 @@ static void BTTFNCheckPacket()
         if(BTTFUDPBuf[5] & 0x10) {
             tcdNM  = (BTTFUDPBuf[26] & 0x01) ? true : false;
             tcdFPO = (BTTFUDPBuf[26] & 0x02) ? true : false;   // 1 means fake power off
+            remoteAllowed = (BTTFUDPBuf[26] & 0x08) ? true : false;
         } else {
             tcdNM = false;
             tcdFPO = false;
+            remoteAllowed = false;
         }
 
         if(BTTFUDPBuf[5] & 0x40) {
@@ -2603,6 +2766,9 @@ static void BTTFNCheckPacket()
                 bttfnReqStatus &= ~0x02; // Do no longer poll speed, comes over multicast
             }
             #endif
+            if(BTTFUDPBuf[31] & 0x08) {
+                TCDSupportsRemKP = true;
+            }
         }
 
         lastBTTFNpacket = mymillis;
@@ -2638,16 +2804,12 @@ static bool BTTFNTriggerUpdate()
     return true;
 }
 
-static void BTTFNSendPacket()
+static void BTTFNPreparePacket()
 {
     memset(BTTFUDPBuf, 0, BTTF_PACKET_SIZE);
 
     // ID
     memcpy(BTTFUDPBuf, BTTFUDPHD, 4);
-
-    // Serial
-    BTTFUDPID = (uint32_t)millis();
-    SET32(BTTFUDPBuf, 6, BTTFUDPID);
 
     // Tell the TCD about our hostname (0-term., 13 bytes total)
     strncpy((char *)BTTFUDPBuf + 10, settings.hostName, 12);
@@ -2655,23 +2817,19 @@ static void BTTFNSendPacket()
 
     BTTFUDPBuf[10+13] = BTTFN_TYPE_FLUX;
 
+    // Version, MC-marker
     #ifdef BTTFN_MC
-    BTTFUDPBuf[4] = BTTFN_VERSION | bttfnMcMarker; // Version, MC-marker
+    BTTFUDPBuf[4] = BTTFN_VERSION | bttfnMcMarker;  
     #else
     BTTFUDPBuf[4] = BTTFN_VERSION;
     #endif
-    BTTFUDPBuf[5] = bttfnReqStatus;                // Request status and speed
 
-    //BTTFUDPBuf[5] |= 0x20;             // Query SID IP from TCD
-    //BTTFUDPBuf[24] = BTTFN_TYPE_SID;
+    // Remote-ID
+    SET32(BTTFUDPBuf, 35, myRemID);                 
+}
 
-    #ifdef BTTFN_MC
-    if(!haveTCDIP) {
-        BTTFUDPBuf[5] |= 0x80;
-        SET32(BTTFUDPBuf, 31, tcdHostNameHash);
-    }
-    #endif
-
+static void BTTFNDispatch()
+{
     uint8_t a = 0;
     for(int i = 4; i < BTTF_PACKET_SIZE - 1; i++) {
         a += BTTFUDPBuf[i] ^ 0x55;
@@ -2694,7 +2852,32 @@ static void BTTFNSendPacket()
     fcUDP->endPacket();
 }
 
-static bool BTTFNTriggerTT()
+static void BTTFNSendPacket()
+{
+    BTTFNPreparePacket();
+    
+    // Serial
+    BTTFUDPID = (uint32_t)millis();
+    SET32(BTTFUDPBuf, 6, BTTFUDPID);
+
+    // Request flags
+    BTTFUDPBuf[5] = bttfnReqStatus;                
+
+    // Query SID IP from TCD
+    //BTTFUDPBuf[5] |= 0x20;             
+    //BTTFUDPBuf[24] = BTTFN_TYPE_SID;
+
+    #ifdef BTTFN_MC
+    if(!haveTCDIP) {
+        BTTFUDPBuf[5] |= 0x80;
+        SET32(BTTFUDPBuf, 31, tcdHostNameHash);
+    }
+    #endif
+
+    BTTFNDispatch();
+}
+
+static bool BTTFNConnected()
 {
     if(!useBTTFN)
         return false;
@@ -2710,40 +2893,48 @@ static bool BTTFNTriggerTT()
     if(!lastBTTFNpacket)
         return false;
 
+    return true;
+}
+
+static bool bttfn_trigger_tt()
+{
+    if(!BTTFNConnected())
+        return false;
+
     if(TTrunning || IRLearning)
         return false;
 
-    memset(BTTFUDPBuf, 0, BTTF_PACKET_SIZE);
+    BTTFNPreparePacket();
 
-    // ID
-    memcpy(BTTFUDPBuf, BTTFUDPHD, 4);
+    // Trigger BTTFN-wide TT
+    BTTFUDPBuf[5] = 0x80;
 
-    // Tell the TCD about our hostname (0-term., 13 bytes total)
-    strncpy((char *)BTTFUDPBuf + 10, settings.hostName, 12);
-    BTTFUDPBuf[10+12] = 0;
+    BTTFNDispatch();
 
-    BTTFUDPBuf[10+13] = BTTFN_TYPE_FLUX;
+    return true;
+}
 
-    #ifdef BTTFN_MC
-    BTTFUDPBuf[4] = BTTFN_VERSION | bttfnMcMarker; // Version, MC-marker
-    #else
-    BTTFUDPBuf[4] = BTTFN_VERSION;
-    #endif
-    BTTFUDPBuf[5] = 0x80;                          // Trigger BTTFN-wide TT
-
-    uint8_t a = 0;
-    for(int i = 4; i < BTTF_PACKET_SIZE - 1; i++) {
-        a += BTTFUDPBuf[i] ^ 0x55;
-    }
-    BTTFUDPBuf[BTTF_PACKET_SIZE - 1] = a;
+static bool bttfn_send_command(uint8_t cmd, uint8_t p1, uint8_t p2)
+{
+    if(!TCDSupportsRemKP || !remoteAllowed)
+        return false;
         
-    fcUDP->beginPacket(bttfnTcdIP, BTTF_DEFAULT_LOCAL_PORT);
-    fcUDP->write(BTTFUDPBuf, BTTF_PACKET_SIZE);
-    fcUDP->endPacket();
+    if(!BTTFNConnected())
+        return false;
 
-    #ifdef FC_DBG
-    Serial.println("Triggered BTTFN-wide TT");
-    #endif
+    BTTFNPreparePacket();
+    
+    BTTFUDPBuf[5] = 0x00;
+
+    SET32(BTTFUDPBuf, 6, bttfnSeqCnt[cmd]);         // Seq counter
+    bttfnSeqCnt[cmd]++;
+    if(!bttfnSeqCnt[cmd]) bttfnSeqCnt[cmd]++;
+
+    BTTFUDPBuf[25] = cmd;                           // Cmd + parms
+    BTTFUDPBuf[26] = p1;
+    BTTFUDPBuf[27] = p2;
+
+    BTTFNDispatch();
 
     return true;
 }

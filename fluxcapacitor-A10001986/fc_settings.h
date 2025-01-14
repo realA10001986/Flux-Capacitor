@@ -1,7 +1,7 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023-2024 Thomas Winischhofer (A10001986)
+ * (C) 2023-2025 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *
@@ -65,7 +65,7 @@ extern uint8_t musFolderNum;
 
 // Default settings
 
-#define DEF_PLAY_FLUX_SND   1     // 1: Play "flux" sound permantly, 0: Do not
+#define DEF_PLAY_FLUX_SND   0     // 1: Play "flux" sound permanently, 0: Do not, 2, 3: 30/60 secs after event
 #define DEF_SS_TIMER        0     // "Screen saver" timeout in minutes; 0 = ss off
 
 #define DEF_BLEDSWAP        0     // 0: Use box led connectors for box leds; 1: use "panel light" connector (both PWM!)

@@ -1,7 +1,7 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023-2024 Thomas Winischhofer (A10001986)
+ * (C) 2023-2025 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *
@@ -99,7 +99,7 @@ static const char *acul_errs[]  = { "Can't open file on SD", "No SD card found",
 static const char acul_part8[]  = "</div></div></body></html>";
 
 static char fluxCustHTML[512] = "";
-static const char fluxCustHTML1[] = "<div class='cmp0'><label for='fluxmode'>Default flux sound mode</label><select class='sel0' value='";
+static const char fluxCustHTML1[] = "<div class='cmp0'><label for='fluxmode'>Power-up flux sound mode</label><select class='sel0' value='";
 static const char fluxCustHTML2[] = "' name='fluxmode' id='fluxmode' autocomplete='off' title='Select power-up flux sound mode'><option value='0'";
 static const char fluxCustHTML3[] = ">Off</option><option value='1'";
 static const char fluxCustHTML4[] = ">On</option><option value='2'";

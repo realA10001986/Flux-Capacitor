@@ -1,7 +1,7 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023-2024 Thomas Winischhofer (A10001986)
+ * (C) 2023-2025 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *
@@ -246,7 +246,7 @@ bool IRRemote::calcHash()
  * activeLow: Set to true when the input level is LOW when the button is pressed, Default is true.
  * pullupActive: Activate the internal pullup when available. Default is true.
  */
-FCButton::FCButton(const int pin, const boolean activeLow, const bool pullupActive, const bool pulldownActive)
+FCButton::FCButton(const int pin, const bool activeLow, const bool pullupActive, const bool pulldownActive)
 {
     _pin = pin;
 

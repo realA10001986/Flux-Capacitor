@@ -1,7 +1,7 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023-2024 Thomas Winischhofer (A10001986)
+ * (C) 2023-2025 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *
@@ -85,7 +85,10 @@ class PWMLED {
 #define FCSEQ_LEARNNEXT  7
 #define FCSEQ_LEARNDONE  8
 #define FCSEQ_ERRCOPY    9
-#define FCSEQ_MAX        FCSEQ_ERRCOPY
+#define FCSEQ_REMSTART   10
+#define FCSEQ_REMEND     11
+#define FCSEQ_NOMUSIC    12
+#define FCSEQ_MAX        FCSEQ_NOMUSIC
 
 /*
  * FC LEDs class

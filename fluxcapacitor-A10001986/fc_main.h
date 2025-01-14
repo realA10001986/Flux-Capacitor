@@ -1,7 +1,7 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023-2024 Thomas Winischhofer (A10001986)
+ * (C) 2023-2025 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *
@@ -84,15 +84,17 @@ extern bool networkAbort;
 extern bool networkAlarm;
 extern uint16_t networkLead;
 
+extern uint32_t myRemID;
+
 void main_boot();
 void main_setup();
 void main_loop();
 
 void flushDelayedSave();
 
-void decIRSpeed();
-void incIRSpeed();
-void resetIRSpeed();
+bool decIRSpeed();
+bool incIRSpeed();
+bool resetIRSpeed();
 void setFluxPattern(uint8_t i);
 
 void showWaitSequence();
@@ -106,7 +108,7 @@ void copyIRarray(uint32_t *irkeys, int index);
 void setFluxMode(int mode);
 void startFluxTimer();
 
-void switchMusicFolder(uint8_t nmf);
+bool switchMusicFolder(uint8_t nmf);
 
 void mydelay(unsigned long mydel, bool withIR);
 
