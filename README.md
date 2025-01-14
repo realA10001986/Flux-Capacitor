@@ -733,7 +733,7 @@ This procedure ensures that all your settings are copied from the old to the new
     </tr>
 <tr>
      <td align="left">&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br></td>
-     <td align="left">No music files in currently selected music folder</td>
+     <td align="left">No music files in currently selected <a href="#the-music-player">music folder</a></td>
     </tr>
 </table>
 
