@@ -188,7 +188,7 @@ In order to only disable the supplied IR remote control, check the option **_Dis
      <td align="center"></td>
     </tr>
     <tr>
-     <td align="center">&#8592;<br>Decrease chase speed (*)/td>
+     <td align="center">&#8592;<br>Decrease chase speed (*)</td>
      <td align="center">OK<br>Execute command</td>
      <td align="center">&#8594;<br>Increase chase speed (*)</td>
     </tr>
