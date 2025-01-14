@@ -725,11 +725,11 @@ This procedure ensures that all your settings are copied from the old to the new
     </tr>
 <tr>
      <td align="left">&#9675; &#9679; &#9675; &#9679; &#9675; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9675; &#9679; &#9675; &#9679; &#9675; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
-     <td align="left"><a href="#">TCD remote control mode</a> started</td>
+     <td align="left"><a href="#remote-controlling-the-tcds-keypad">TCD remote control mode</a> started</td>
     </tr>
 <tr>
      <td align="left">&#9679; &#9675; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br></td>
-     <td align="left"><a href="#">TCD remote control mode</a> end</td>
+     <td align="left"><a href="#remote-controlling-the-tcds-keypad">TCD remote control mode</a> end</td>
     </tr>
 <tr>
      <td align="left">&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br></td>
