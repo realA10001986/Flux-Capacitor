@@ -279,6 +279,10 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">*90&#9166;</td><td>3090</td>
     </tr>
     <tr>
+     <td align="left">Enter <a href="#remote-controlling-the-tcds-keypad">TCD keypad remote control mode</a></td>
+     <td align="left">*95&#9166;</td><td>3095</td>
+    </tr>
+    <tr>
      <td align="left">Reboot the device</td>
      <td align="left">*64738&#9166;</td><td>3064738</td>
     </tr>
@@ -398,11 +402,26 @@ Afterwards, the FC and the TCD can communicate wirelessly and
 - play time travel sequences in sync,
 - both play an alarm-sequence when the TCD's alarm occurs,
 - the FC can be remote controlled through the TCD's keypad (command codes 3xxx),
+- the FC can remote control the TCD's keypad (see [below](#remote-controlling-the-tcds-keypad))
 - the FC queries the TCD for GPS speed if desired to adapt chase speed to GPS speed,
 - the FC queries the TCD for fake power and night mode, in order to react accordingly if so configured,
 - pressing "0" on the IR remote control or the FC's Time Travel button can trigger a synchronized Time Travel on all BTTFN-connected devices, just like if that Time Travel was triggered through the TCD.
 
 You can use BTTF-Network and MQTT at the same time, see [below](#home-assistant--mqtt).
+
+#### Remote controlling the TCD's keypad
+
+The FC can, through its IR remote control, remote control the TCD keypad. The TCD will react to pressing a key on the IR remote as if that key was pressed on the TCD keypad.
+
+In order to start TCD keypad remote control, type *95OK on the FC's IR remote control.
+
+Keys 0-9 as well as OK (=ENTER) will now be registrered by the TCD as key presses.
+
+In order to remotely "hold" a key, press * followed by the key, for instance *1 (in order to toggle the TCD alarm). Note: Only keys 0-9 can be held.
+
+Pressing # quits TCD keypad remote control mode.
+
+>Since the TCD itself can remote control every other compatible prop (3xxx = Flux Capacitor, 6xxx = SID, 7xxx = Futaba Remote Control, 8xxx = VSR, 9xxx = Dash Gauges), and the IR remote can emulate the TCD keypad, it can essentially remote control every other prop.
 
 ### Connecting a TCD by wire
 
