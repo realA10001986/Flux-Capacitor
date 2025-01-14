@@ -723,6 +723,18 @@ This procedure ensures that all your settings are copied from the old to the new
      <td align="left">&#9675; &#9675; &#9675; &#9675; &#9675; &#9675; (500ms)<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679; (500ms)<br>&#9675; &#9675; &#9675; &#9675; &#9675; &#9675; (500ms)<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679; (500ms)</td>
      <td align="left"><a href="#ir-remote-control">IR Learning</a>: Done</td>
     </tr>
+<tr>
+     <td align="left">&#9675; &#9679; &#9675; &#9679; &#9675; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9675; &#9679; &#9675; &#9679; &#9675; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
+     <td align="left"><a href="#">TCD remote control mode</a> started</td>
+    </tr>
+<tr>
+     <td align="left">&#9679; &#9675; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br></td>
+     <td align="left"><a href="#">TCD remote control mode</a> end</td>
+    </tr>
+<tr>
+     <td align="left">&#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br></td>
+     <td align="left">No music files in currently selected music folder</td>
+    </tr>
 </table>
 
 _Text & images: (C) Thomas Winischhofer ("A10001986"). See LICENSE._ Source: https://fc.out-a-ti.me
