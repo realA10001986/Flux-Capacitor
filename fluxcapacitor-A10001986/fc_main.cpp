@@ -1472,14 +1472,10 @@ static uint8_t read2digs(uint8_t idx)
     return ((inputBuffer[idx] - '0') * 10) + (inputBuffer[idx+1] - '0');
 }
 
-static void doKeySound(char key)
-{
-    char fn[] = "/keyx.mp3";
-
-    fn[4] = key;
-    
+static void doKeySound(int key)
+{   
     if(!TTrunning) {
-        play_file(fn, PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
+        play_key(key);
         if(contFlux()) {
             append_flux();
         }
@@ -1488,7 +1484,7 @@ static void doKeySound(char key)
 
 static void doKey1()
 {
-    doKeySound('1');
+    doKeySound(1);
 }
 static void doKey2()
 {
@@ -1498,11 +1494,11 @@ static void doKey2()
 }
 static void doKey3()
 {
-    doKeySound('3');
+    doKeySound(3);
 }
 static void doKey4()
 {
-    doKeySound('4');
+    doKeySound(4);
 }
 static void doKey5()
 {
@@ -1519,11 +1515,11 @@ static void doKey5()
 }
 static void doKey6()
 {
-    doKeySound('6');
+    doKeySound(6);
 }
 static void doKey7()
 {
-    doKeySound('7');
+    doKeySound(7);
 }
 static void doKey8()
 {
@@ -1533,7 +1529,7 @@ static void doKey8()
 }
 static void doKey9()
 {
-    doKeySound('9');
+    doKeySound(9);
 }
 
 static void handleIRKey(int key)

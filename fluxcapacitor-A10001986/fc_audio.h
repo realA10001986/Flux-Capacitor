@@ -60,6 +60,7 @@
 #define PA_ALLOWSD 0x0004
 #define PA_DYNVOL  0x0008
 #define PA_ISFLUX  0x0010
+// upper 8 bits all taken
 #define PA_MASK    (PA_LOOP|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL|PA_ISFLUX)
 
 void audio_setup();
@@ -67,12 +68,15 @@ void audio_loop();
 
 void play_file(const char *audio_file, uint16_t flags, float volumeFactor = 1.0);
 void append_file(const char *audio_file, uint16_t flags, float volumeFactor = 1.0);
-bool checkAudioDone();
-void stopAudio();
-bool append_pending();
 
 void play_flux();
 void append_flux();
+void play_key(int k, bool stopOnly = false);
+
+bool check_file_SD(const char *audio_file);
+bool checkAudioDone();
+void stopAudio();
+bool append_pending();
 
 void inc_vol();
 void dec_vol();

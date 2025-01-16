@@ -104,11 +104,15 @@ static bool     dynVol     = true;
 static int      sampleCnt = 0;
 
 bool            playingFlux = false;
+uint16_t        key_playing = 0;
 
 static char     append_audio_file[256];
 static float    append_vol;
 static uint16_t append_flags;
 static bool     appendFile = false;
+
+static char     keySnd[] = "/key3.mp3";   // not const
+static bool     haveKeySnd[10];
 
 static const char *tcdrdone = "/TCD_DONE.TXT";   // leave "TCD", SD is interchangable this way
 unsigned long   renNow1;
@@ -170,6 +174,13 @@ void audio_setup()
         endWaitSequence();
     }
 
+    // Check for keyX sounds to avoid unsuccessful file-lookups every time
+    for(int i = 1; i < 10; i++) {
+        if(i == 8) continue;
+        keySnd[4] = '0' + i;
+        haveKeySnd[i] = check_file_SD(keySnd);
+    }
+
     audioInitDone = true;
 }
 
@@ -182,15 +193,16 @@ void audio_loop()
     if(mp3->isRunning()) {
         if(!mp3->loop()) {
             mp3->stop();
+            key_playing = 0;
             if(appendFile) {
                 play_file(append_audio_file, append_flags, append_vol);
             } else if(mpActive) {
                 mp_next(true);
             }
-        } else {
+        } else if(dynVol) {
             sampleCnt++;
             if(sampleCnt > 1) {
-                if(dynVol) out->SetGain(getVolume());
+                out->SetGain(getVolume());
                 sampleCnt = 0;
             }
         }
@@ -251,6 +263,12 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
     curVolFact  = volumeFactor;
     dynVol      = (flags & PA_DYNVOL) ? true : false;
     playingFlux = (flags & PA_ISFLUX) ? true : false;
+    key_playing = flags & 0xff00;
+
+    // Reset vol smoothing
+    // (user might have turned the pot while no sound was played)
+    rawVolIdx = 0;
+    anaReadCount = 0;
     
     out->SetGain(getVolume());
 
@@ -287,6 +305,7 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
         Serial.println(F("Playing from flash FS"));
         #endif
     } else {
+        key_playing = 0;
         #ifdef FC_DBG
         Serial.println(F("Audio file not found"));
         #endif
@@ -306,6 +325,26 @@ void play_flux()
 void append_flux() 
 {
     append_file("/flux.mp3", PA_ISFLUX|PA_LOOP|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
+}
+
+void play_key(int k, bool stopOnly)
+{
+    uint16_t pa_key = (k == 9) ? 0x8000 : (1 << (7+k));
+    
+    if(!haveKeySnd[k]) return;    
+
+    if(pa_key == key_playing) {
+        mp3->stop();
+        key_playing = 0;
+        return;
+    }
+
+    if(stopOnly)
+        return;
+
+    keySnd[4] = '0' + k;
+    
+    play_file(keySnd, pa_key|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
 }
 
 /*
@@ -439,7 +478,12 @@ static float getVolume()
 /*
  * Helpers for external
  */
- 
+
+bool check_file_SD(const char *audio_file)
+{
+    return (haveSD && SD.exists(audio_file));
+}
+
 bool checkAudioDone()
 {
     if(mp3->isRunning()) return false;
@@ -450,9 +494,10 @@ void stopAudio()
 {
     if(mp3->isRunning()) {
         mp3->stop();
-        playingFlux = false;
     }
     appendFile = false;   // Clear appended, stop means stop.
+    playingFlux = false;
+    key_playing = 0;
 }
 
 bool append_pending()

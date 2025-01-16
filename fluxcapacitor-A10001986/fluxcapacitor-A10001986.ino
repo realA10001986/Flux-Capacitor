@@ -115,6 +115,9 @@
 
 /*  Changelog
  *
+ *  2025/01/15 (A10001986)
+ *    - Optimize play_key; keyX will be stopped instead of (re)started if it is 
+ *      currently played when repeatedly triggered.
  *  2025/01/12-14 (A10001986) [1.70]
  *    - Add support for remote controlling the TCD keypad through the IR remote
  *      control. *95OK starts, "#" quits remote controlling. All keys until # 
