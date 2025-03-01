@@ -9,7 +9,7 @@ The box is a [Stahlin J1210HPL](https://stahlin.com/product/j-series-12-x-10-x-5
 CircuitSetup's kits come with templates for holes and the door window.
 
 For replicating exactly what is seen in the movies, the door latches need to moved inward by one inch:
-![latches](hardware/img/latches.jpg)
+![latches](Hardware/img/latches.jpg)
 
 **&#9888; Warning: This box is made from molded fiberglass reinforced polyester. This is a highly dangerous material, so wear a proper mask when drilling, sawing or sanding.**
 
@@ -19,7 +19,7 @@ Instead, I used the buttom for the controls and connectors.
 
 Since the SD card on the control board is inaccessible after assembling the FC (but required to install the audio files, and possibly used for music files), I used a microSD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B09MS85FQ3/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time.
 
-![bottom](img/bottom.jpg)
+![bottom](Hardware/img/bottom.jpg)
 
 From left to right:
 - Time Travel button (connects "TT_IN" and "3V3" on the FC control board)
@@ -30,15 +30,15 @@ From left to right:
 
 As a speaker, I used [this](https://www.amazon.com/ACEIRMC-Loundspeaker-JST-PH2-0-Interface-Electronic/dp/B0BTM1VCBM/ref=sr_1_8) one; I cut off the latches and glued it onto the back side of the [back board](https://circuitsetup.us/product/flux-capacitor-backing-board).
 
-<img width="300" alt="Speaker" src="hardware/img/speaker.png">
+<img width="300" alt="Speaker" src="Hardware/img/speaker.png">
 
 The USB connector is the end of an USB extension cable like this one; I simply trimmed it to fit into the bracket.
 
-<img width="300" alt="USB extension" src="hardware/img/usbcable.png">
+<img width="300" alt="USB extension" src="Hardware/img/usbcable.png">
 
 The power connector is an adapter like this, which fits nicely into the bracket:
 
-<img width="300" alt="Power connector" src="hardware/img/dcadapters.png">
+<img width="300" alt="Power connector" src="Hardware/img/dcadapters.png">
 
 Since the bright LEDs draw considerable power, it is recommended to drive the FC at 12V-20V (as opposed to 5V).
 
