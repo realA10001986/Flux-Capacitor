@@ -4,12 +4,12 @@ This [repository](https://fc.out-a-ti.me) holds the most current firmware for Ci
 
 The kit parts are available [here](https://circuitsetup.us/product-category/movie-props/).
 
-Here is my FC, built around this Control Board and the other parts of the kit ([backing board](https://circuitsetup.us/product/flux-capacitor-backing-board/), [window kit](https://circuitsetup.us/product/flux-capacitor-window-kit/); see [here](Hardware/) for more information on the other parts used):
+Here is my FC, built around this Control Board and the other parts of the kit ([backing board](https://circuitsetup.us/product/flux-capacitor-backing-board/), [window kit](https://circuitsetup.us/product/flux-capacitor-window-kit/); see [here](Hardware.md) for more information on the other parts used):
 
 ![My Flux Capacitor](img/myfc.jpg)
 ![My Flux Capacitor](img/myfc2.jpg)
 
-The Flux Capacitor can be used stand-alone, or in connection with CircuitSetup's [Time Circuits Display](https://tcd.out-a-ti.me). If [built properly](Hardware/), the Flux Capacitor is perfectly fit for mounting in your Delorean.
+The Flux Capacitor can be used stand-alone, or in connection with CircuitSetup's [Time Circuits Display](https://tcd.out-a-ti.me). If [built properly](Hardware.md), the Flux Capacitor is perfectly fit for mounting in your Delorean.
 
 Features include
 - movie-accurate default flux sequence, plus 9 alternative flux sequences
@@ -336,7 +336,7 @@ The SD card, apart from being required for [installing](#audio-data-installation
 
 Note that the SD card must be inserted before powering up the device. It is not recognized if inserted while the Flux Capacitor is running. Furthermore, do not remove the SD card while the device is powered.
 
-Since the SD card on the control board is inaccessible after assembling the FC, I used a microSD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B09MS85FQ3/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time. See [here](Hardware/).
+Since the SD card on the control board is inaccessible after assembling the FC, I used a microSD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B09MS85FQ3/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time. See [here](Hardware.md).
 
 ### Sound substitution
 
