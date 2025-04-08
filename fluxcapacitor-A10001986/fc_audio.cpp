@@ -305,6 +305,7 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
         Serial.println(F("Playing from flash FS"));
         #endif
     } else {
+        playingFlux = false;
         key_playing = 0;
         #ifdef FC_DBG
         Serial.println(F("Audio file not found"));
