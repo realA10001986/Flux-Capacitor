@@ -128,6 +128,7 @@ static const DRAM_ATTR byte _array[] = {
         0b000100,
         0b000010,
         0b000001,
+        0b000000,   // TW: Added 9-5-2025, to match original circuit board's design for 7 lamps
         SEQEND
 };
 static const DRAM_ATTR byte _array1[] = {   //  KITT
