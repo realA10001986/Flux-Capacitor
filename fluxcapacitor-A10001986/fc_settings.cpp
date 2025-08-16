@@ -86,9 +86,9 @@
 #endif 
 
 #define NUM_AUDIOFILES 11+8
-#define SND_REQ_VERSION "FC01"
+#define SND_REQ_VERSION "FC02"
 #define AC_FMTV 2
-#define AC_TS   1199188
+#define AC_TS   1198327
 #define AC_OHSZ (14 + ((NUM_AUDIOFILES+1)*(32+4)))
 
 static const char *CONFN  = "/FCA.bin";

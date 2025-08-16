@@ -115,6 +115,8 @@
 
 /*  Changelog
  *
+ *  2025/08/25 (A10001986) [1.71.3]
+ *    - Properly loop flux sound (new sound pack)
  *  2025/05/09 (A10001986) [1.71.2]
  *    - Change default sequence to match original circuit board (which allegedly was
  *      designed for sevel lamps, of which only six ended up in the movies)
