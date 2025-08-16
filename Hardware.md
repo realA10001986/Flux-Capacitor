@@ -8,7 +8,7 @@ The box is a [Stahlin J1210HPL](https://stahlin.com/product/j-series-12-x-10-x-5
 
 CircuitSetup's kits come with templates for holes and the door window.
 
-For replicating exactly what is seen in the movies, the door latches need to moved inward by one inch:
+For replicating exactly what is seen in the movies, the door latches need to be moved inward by one inch:
 ![latches](Hardware/img/latches.jpg)
 
 **&#9888; Warning: This box is made from molded fiberglass reinforced polyester. This is a highly dangerous material, so wear a proper mask when drilling, sawing or sanding.**
