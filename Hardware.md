@@ -1,4 +1,4 @@
-# Hardware tips
+# FLux Capacitor Hardware Tips
 
 CircuitSetup provides the [electronics](https://circuitsetup.us/product/flux-capacitor-light-sound-pcb), a [window kit](https://circuitsetup.us/product/flux-capacitor-window-kit) and the [back board](https://circuitsetup.us/product/flux-capacitor-backing-board). Here is some information on the other parts you'll need.
 
