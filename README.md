@@ -9,6 +9,10 @@ Here is my FC, built around this Control Board and the other parts of the kit ([
 ![My Flux Capacitor](img/myfc.jpg)
 ![My Flux Capacitor](img/myfc2.jpg)
 
+| [![Watch the video](https://img.youtube.com/vi/BG8tXd8mnxQ/0.jpg)](https://youtu.be/BG8tXd8mnxQ?si=j7_hBTBNLE-TKOMw) |
+|:--:|
+| Click to watch the video |
+
 The Flux Capacitor can be used stand-alone, or in connection with CircuitSetup's [Time Circuits Display](https://tcd.out-a-ti.me). If [built properly](Hardware.md), the Flux Capacitor is perfectly fit for mounting in your Delorean.
 
 Features include
