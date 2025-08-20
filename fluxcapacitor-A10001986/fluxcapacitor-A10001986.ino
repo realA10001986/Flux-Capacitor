@@ -115,11 +115,15 @@
 
 /*  Changelog
  *
- *  2025/08/25 (A10001986) [1.71.3]
+ *  2025/08/20 (A10001986) [1.72]
+ *    - Add "987654" IR command; triggers IR learning (and spares the user from
+ *      installing a time travel button as required for IR learning before)
+ *    - Minor fixes
+ *  2025/08/16 (A10001986) [1.71.3]
  *    - Properly loop flux sound (new sound pack)
  *  2025/05/09 (A10001986) [1.71.2]
  *    - Change default sequence to match original circuit board (which allegedly was
- *      designed for sevel lamps, of which only six ended up in the movies)
+ *      designed for seven lamps, of which only six ended up in the movies)
  *  2025/02/13 (A10001986) [1.71.1]
  *    - Delete temp file after audio installation
  *  2025/01/15 (A10001986) [1.71]

@@ -270,6 +270,8 @@ static int           IRLearnIndex = 0;
 static unsigned long IRLearnNow;
 static unsigned long IRFBLearnNow;
 static bool          IRLearnBlink = false;
+static bool          triggerIRLN = false;
+static unsigned long triggerIRLNNow;
 
 uint32_t             myRemID = 0x12345678;
 static bool          remoteAllowed = false;
@@ -632,14 +634,15 @@ void main_loop()
             stopAudio();
             fluxTimer = false;
 
-            if(irFeedBack) {
+            if(irFeedBack || irErrFeedBack) {
                 endIRfeedback();
-                irFeedBack = false;
+                irFeedBack = irErrFeedBack = false;
             }
             
             if(IRLearning) {
                 endIRLearn(true); // Turns LEDs on
             }
+            triggerIRLN = false;
             
             fcLEDs.off();
             boxLED.setDC(0);
@@ -691,7 +694,7 @@ void main_loop()
             endIRfeedback();
         } else {
             (irErrFBState & 0x01) ? endIRfeedback() : startIRfeedback();
-            irErrFeedBack = true;
+            irErrFeedBack = true; // startIR clears it, so set it again
         }
     }
     if(irFeedBack && now - irFeedBackNow > irFeedBackDur) {
@@ -777,6 +780,14 @@ void main_loop()
     // up to speed when coming back.
     if(useSKnob && !usingGPSS) {
         setPotSpeed();
+    }
+
+    // IR learning triggered by IR?
+    if(triggerIRLN && (now - triggerIRLNNow > 1000)) {
+        triggerIRLN = false;
+        if(!TTrunning) {
+            isTTKeyHeld = true;
+        }
     }
 
     // TT button evaluation
@@ -1904,7 +1915,7 @@ static int execute(bool isIR)
             case 95:                              // *95  enter TCD keypad remote control mode
                 if(!irLocked) {                   //      yes, 'irLocked' - must not be entered while IR is locked
                     if(!TTrunning) {
-                        if(BTTFNConnected() && TCDSupportsRemKP && remoteAllowed) {                       
+                        if(BTTFNConnected() && TCDSupportsRemKP && remoteAllowed) {
                             remMode = true;
                             fcLEDs.SpecialSignal(FCSEQ_REMSTART);
                             // doInpReaction = 1;  // no, we show a signal instead
@@ -1997,7 +2008,7 @@ static int execute(bool isIR)
                     flushDelayedSave();
                     deleteIpSettings();               // *123456OK deletes IP settings
                     if(settings.appw[0]) {
-                        settings.appw[0] = 0;         // and clears AP mode WiFi password
+                        settings.appw[0] = 0;         //           and clears AP mode WiFi password
                         write_settings();
                     }
                     doInpReaction = 1;
@@ -2006,6 +2017,10 @@ static int execute(bool isIR)
                     for(int i = 0; i < NUM_IR_KEYS; i++) {
                         remote_codes[i][1] = 0;
                     }
+                    doInpReaction = 1;
+                } else if(!strcmp(inputBuffer, "987654")) {
+                    triggerIRLN = true;               // *987654OK initates IR learning
+                    triggerIRLNNow = millis();
                     doInpReaction = 1;
                 } else {
                     doInpReaction = -1;
