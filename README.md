@@ -136,13 +136,15 @@ Your FC kit includes an IR remote control. This remote works out-of-the-box and 
 
 Each time you press a (recognized) key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the bright center LED.
 
-### IR learning
+### IR Learning
 
 Your FC can learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, especially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards, that remote is of that type and cannot be used.
 
-IR Learning requires a physical [Time Travel](#time-travel) button.
+As of firmware 1.72, IR learning can be initiated by entering *987654 followed by OK on the standard IR remote. (The old method described below is still supported.)
 
-First, go to the Config Portal, uncheck **_TCD connected by wire_** on the Setup page and save. The FC reboots. Afterwards, to start the learning process, hold the [Time Travel](#time-travel) button for a few seconds, until the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Then press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then press "1", wait for the acknowledgement, and so on. Enter your keys in the following order:
+With earlier firmware versions, IR learning required a physical [Time Travel](#time-travel) button, and the option **_TCD connected by wire_** in the Config Portal needs to be unchecked. To start the learning process, hold the [Time Travel](#time-travel) button for a few seconds. 
+
+When IR learning is started, the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Then press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then press "1", wait for the acknowledgement, and so on. Enter your keys in the following order:
 
 ```0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - * - # - Arrow up - Arrow down - Arrow left - Arrow right - OK``` 
 
@@ -293,6 +295,10 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     <tr>
      <td align="left">Delete static IP address and AP WiFI password</td>
      <td align="left">*123456&#9166;</td><td>3123456</td>
+    </tr>
+    <tr>
+     <td align="left">Start IR remote learning process</td>
+     <td align="left">*987654&#9166;</td><td>3987654</td>
     </tr>
     <tr>
      <td align="left">Forget learned IR remote control</td>
