@@ -668,6 +668,10 @@ If the FC is connected to a TCD through BTTFN, this option allows to trigger a s
 
 #### Audio-visual options
 
+##### &#9654; Movie sequence for 7 lights
+
+The original flux capacitor circuit was designed for 7 lights per light bar; however, only 6 lights were installed. So there is a visual gap in the movie sequence. This option allows choosing between the 7-lights sequence (with gap), and a 6-lights sequence (without gap). Defaults to enabled.
+
 ##### &#9654; Play time travel sounds
 
 If other props are connected, they might bring their own time travel sound effects. In this case, you can uncheck this to disable the Flux Capacitor's own time travel sounds. Note that this only covers sounds played during time travel, not other sound effects.
