@@ -441,14 +441,14 @@ void main_setup()
     // Set up options to play/mute sounds
     playFLUX = atoi(settings.playFLUXsnd);
     playTTsounds = (atoi(settings.playTTsnds) > 0);
-
+    
     // Other options
     ssDelay = ssOrigDelay = atoi(settings.ssTimer) * 60 * 1000;    
     useGPSS = (atoi(settings.useGPSS) > 0);
     useNM = (atoi(settings.useNM) > 0);
     useFPO = (atoi(settings.useFPO) > 0);
     bttfnTT = (atoi(settings.bttfnTT) > 0);
-    
+
     skipttblanim = (atoi(settings.skipTTBLAnim) > 0);
 
     // Option to disable supplied default IR remote
@@ -505,7 +505,7 @@ void main_setup()
         // If the TCD is connected, we can go more to the edge
         TTKey.setTiming(5, 50, 100000);
         // Long press ignored when TCD is connected
-        // IRLearning only possible if "TCD connected by wire" unset.
+        // IRLearning-by-TT button only possible if "TCD connected by wire" unset.
     }
 
     // Power-up use of speed pot
@@ -546,6 +546,7 @@ void main_setup()
 
     fcLEDs.stop(true);
     fcLEDs.setSequence(fluxPat);
+    fcLEDs.setOrigMovieSequence(atoi(settings.origSeq) > 0);
 
     // Set FCLeds to default/saved speed
     if(useSKnob) {

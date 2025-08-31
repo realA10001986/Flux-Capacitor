@@ -121,7 +121,7 @@ static volatile bool     _fcstopped = false;
 #define SEQEND 0x80
 static volatile uint8_t  _seqType = 0;
 static volatile uint8_t  _index = 0;
-static const DRAM_ATTR byte _array[] = {
+static const DRAM_ATTR byte _arrayOrig[] = {
         0b100000,
         0b010000,
         0b001000,
@@ -129,6 +129,15 @@ static const DRAM_ATTR byte _array[] = {
         0b000010,
         0b000001,
         0b000000,   // TW: Added 9-5-2025, to match original circuit board's design for 7 lamps
+        SEQEND
+};
+static const DRAM_ATTR byte _arrayNonOrig[] = {
+        0b100000,
+        0b010000,
+        0b001000,
+        0b000100,
+        0b000010,
+        0b000001,
         SEQEND
 };
 static const DRAM_ATTR byte _array1[] = {   //  KITT
@@ -414,7 +423,7 @@ void FCLEDs::begin()
     // Switch off
     off();
 
-    chaseArrs[0] = _array;
+    chaseArrs[0] = _arrayOrig;
     chaseArrs[1] = _array1;
     chaseArrs[2] = _array2;
     chaseArrs[3] = _array3;
@@ -463,6 +472,17 @@ void FCLEDs::setSpeed(uint16_t speed)
 uint16_t FCLEDs::getSpeed()
 {
     return _tick_interval;
+}
+
+void FCLEDs::setOrigMovieSequence(bool orig)
+{
+    _critical = true;
+    chaseArrs[0] = orig ? _arrayOrig : _arrayNonOrig;
+    if(!_seqType) {
+        _ticks = 0;
+        _index = 0;
+    }
+    _critical = false;
 }
 
 void FCLEDs::setSequence(uint8_t seq)

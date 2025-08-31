@@ -109,6 +109,7 @@ class FCLEDs {
         void setSpeed(uint16_t speed);
         uint16_t getSpeed();
 
+        void setOrigMovieSequence(bool orig);
         void setSequence(uint8_t seq);
 
         void SpecialSignal(uint8_t signum);

@@ -179,9 +179,14 @@ WiFiManagerParameter custom_bttfnTT("bttfnTT", "'0' and button trigger BTTFN-wid
 #endif // -------------------------------------------------
 
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
+WiFiManagerParameter custom_origSeq("oSeq", "Movie sequence for 7 lights (0=no, 1=yes)", settings.origSeq, 1, "autocomplete='off' title='When enabled, the movie sequence includes a 7th, yet non-existent light'");
+#else // -------------------- Checkbox hack: --------------
+WiFiManagerParameter custom_origSeq("oSeq", "Movie sequence for 7 lights", settings.origSeq, 1, "autocomplete='off' title='When checked, the movie sequence includes a 7th, yet non-existent light' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
+#endif // -------------------------------------------------
+#ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds (0=no, 1=yes)", settings.playTTsnds, 1, "autocomplete='off' title='Enable to have the device play time travel sounds. Disable if other props provide time travel sound.'");
 #else // -------------------- Checkbox hack: --------------
-WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds", settings.playTTsnds, 1, "autocomplete='off' title='Check to have the device play time travel sounds. Uncheck if other props provide time travel sound.' type='checkbox' style='margin-top:5px;'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds", settings.playTTsnds, 1, "autocomplete='off' title='Check to have the device play time travel sounds. Uncheck if other props provide time travel sound.' type='checkbox'", WFM_LABEL_AFTER);
 #endif // -------------------------------------------------
 #ifdef TC_NOCHECKBOXES  // --- Standard text boxes: -------
 WiFiManagerParameter custom_sTTBLA("sTTBL", "Skip Box Light animation (0=no, 1=yes)", settings.skipTTBLAnim, 1, "autocomplete='off' title='Enable to skip the box light animation and just plainly switch it on during time travel'");
@@ -404,7 +409,8 @@ void wifi_setup()
     wm.addParameter(&custom_uFPO);
     wm.addParameter(&custom_bttfnTT);
     
-    wm.addParameter(&custom_sectstart);     // 4
+    wm.addParameter(&custom_sectstart);     // 5
+    wm.addParameter(&custom_origSeq);
     wm.addParameter(&custom_playTTSnd);
     wm.addParameter(&custom_sTTBLA);
     wm.addParameter(&custom_playALSnd);
@@ -673,7 +679,8 @@ void wifi_loop()
             mystrcpy(settings.useNM, &custom_uNM);
             mystrcpy(settings.useFPO, &custom_uFPO);
             mystrcpy(settings.bttfnTT, &custom_bttfnTT);
-            
+
+            mystrcpy(settings.origSeq, &custom_origSeq);
             mystrcpy(settings.playTTsnds, &custom_playTTSnd);
             mystrcpy(settings.skipTTBLAnim, &custom_sTTBLA);
             mystrcpy(settings.playALsnd, &custom_playALSnd);
@@ -702,6 +709,7 @@ void wifi_loop()
             strcpyCB(settings.useFPO, &custom_uFPO);
             strcpyCB(settings.bttfnTT, &custom_bttfnTT);
 
+            strcpyCB(settings.origSeq, &custom_origSeq);
             strcpyCB(settings.playTTsnds, &custom_playTTSnd);
             strcpyCB(settings.skipTTBLAnim, &custom_sTTBLA);
             strcpyCB(settings.playALsnd, &custom_playALSnd);
@@ -1130,6 +1138,7 @@ void updateConfigPortalValues()
     custom_uFPO.setValue(settings.useFPO, 1);
     custom_bttfnTT.setValue(settings.bttfnTT, 1);
 
+    custom_origSeq.setValue(settings.origSeq, 1);
     custom_playTTSnd.setValue(settings.playTTsnds, 1);
     custom_sTTBLA.setValue(settings.skipTTBLAnim, 1);
     custom_playALSnd.setValue(settings.playALsnd, 1);
@@ -1159,6 +1168,7 @@ void updateConfigPortalValues()
     setCBVal(&custom_uFPO, settings.useFPO);
     setCBVal(&custom_bttfnTT, settings.bttfnTT);
 
+    setCBVal(&custom_origSeq, settings.origSeq);
     setCBVal(&custom_playTTSnd, settings.playTTsnds);
     setCBVal(&custom_sTTBLA, settings.skipTTBLAnim);
     setCBVal(&custom_playALSnd, settings.playALsnd);

@@ -115,6 +115,9 @@
 
 /*  Changelog
  *
+ *  2025/08/31 (A10001986) [1.73]
+ *    - Add option to choose between 6- and 7-lights movie sequence. This allows
+ *      using the movie sequence as of before 1.71.2.
  *  2025/08/20 (A10001986) [1.72]
  *    - Add "987654" IR command; triggers IR learning (and spares the user from
  *      installing a time travel button as required for IR learning before)
