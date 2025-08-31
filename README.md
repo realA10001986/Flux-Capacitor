@@ -17,16 +17,16 @@ The Flux Capacitor can be used stand-alone, or in connection with CircuitSetup's
 
 Features include
 - movie-accurate default flux sequence, plus 9 alternative flux sequences
-- Optional [flux](#the-flux-sound) sound (4 modes)
+- optional [flux](#the-flux-sound) sound (4 modes)
 - [Time Travel](#time-travel) function, triggered by button, [Time Circuits Display](https://tcd.out-a-ti.me) (TCD) or via [MQTT](#home-assistant--mqtt)
 - [IR remote controlled](#ir-remote-control); can learn keys from third-party remote
-- [Music player](#the-music-player): Play mp3 files located on an SD card
+- [music player](#the-music-player): Play mp3 files located on an SD card
 - [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player
-- Advanced network-accessible [Config Portal](#the-config-portal) for setup (http://flux.local, hostname configurable)
-- [Wireless communication](#bttf-network-bttfn) with [Time Circuits Display](https://tcd.out-a-ti.me); used for synchronized time travels, alarm, chase speed, night mode, fake power, remote control through TCD keypad, or [remote controlling](#remote-controlling-the-tcds-keypad) the TCD keypad.
+- advanced network-accessible [Config Portal](#the-config-portal) for setup (http://flux.local, hostname configurable)
+- [wireless communication](#bttf-network-bttfn) with [Time Circuits Display](https://tcd.out-a-ti.me); used for synchronized time travels, alarm, chase speed, night mode, fake power, remote control through TCD keypad, or [remote controlling](#remote-controlling-the-tcds-keypad) the TCD keypad.
 - [Home Assistant](#home-assistant--mqtt) (MQTT 3.1.1) support
-- Built-in installer for default audio files in addition to OTA firmware updates
-
+- built-in OTA installer for firmware updates and audio files
+  
 ## Power supply
 
 Since the bright LEDs draw considerable power, it is recommended to use a short cable with large wire diameters (min AWG16) between the power supply and the FC, and to drive the FC at 12V-20V (as opposed to 5V). A long/thin cable, due to its resistance, might cause under-voltage and therefore problems like LEDs behaving erratically or even crashes of the FC's CPU.
