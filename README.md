@@ -644,7 +644,7 @@ If your FC is connected wirelessly, this option has no effect.
 
 ##### &#9654; IP address or hostname of TCD
 
-If you want to have your FC to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the IP address of the TCD here. If your TCD is running firmware version 2.9.1 or later, you can also enter the TCD's hostname here instead (eg. 'timecircuits').
+If you want to have your FC to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the hostname or IP address of the TCD here. The TCD's default hostname is 'timecircuits'.
 
 If you connect your FC to the TCD's access point ("TCD-AP"), the TCD's IP address is 192.168.4.1.
 
