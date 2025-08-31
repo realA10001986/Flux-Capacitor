@@ -308,7 +308,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
 
 (*) Chase speed changes are not executed if a speed knob is active; if the FC uses GPS speed from a TCD, the commands have no visual effect, but the changes are saved.
 
-[Here](https://github.com/realA10001986/Flux-Capacitor/blob/main/CheatSheet.pdf) is a cheat sheet for printing or screen-use. (Note that MacOS' preview application has a bug that scrambles the links in the document. Acrobat Reader does it correctly.)
+[Here](CheatSheet.pdf) is a cheat sheet for printing or screen-use. (Note that MacOS' preview application has a bug that scrambles the links in the document. Acrobat Reader does it correctly.)
 
 ## The Flux sound
 
