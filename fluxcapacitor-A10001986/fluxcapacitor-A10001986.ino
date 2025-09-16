@@ -115,6 +115,19 @@
 
 /*  Changelog
  *
+ *  2025/09/15 (A10001986) [1.80]
+ *    - Refine mp3 upload facility; allow deleting files from SD by prefixing
+ *      filename with "delete-".
+ *    - WiFi manager: Remove lots of <br> tags; makes Safari display the
+ *      pages better.
+ *  2025/09/14 (A10001986)
+ *    - Allow uploading .mp3 files to SD through config portal. Uses the same
+ *      interface as audio container upload. Files are stored in the root
+ *      folder of the SD; hence not suitable for music player.
+ *    - WiFi manager: Remove (ie skip compilation of) unused code
+ *    - WiFi manager: Add callback to Erase WiFi settings, before reboot
+ *    - WiFi manager: Build param page with fixed size string to avoid memory 
+ *      fragmentation; add functions to calculate String size beforehand.
  *  2025/08/31 (A10001986) [1.73]
  *    - Add option to choose between 6- and 7-lights movie sequence. This allows
  *      using the movie sequence as of before 1.71.2.

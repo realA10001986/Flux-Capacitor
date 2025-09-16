@@ -97,6 +97,7 @@ static const char *CONID  = "FCAA";
 static uint32_t   soa = AC_TS;
 static bool       ic = false;
 static uint8_t*   f(uint8_t *d, uint32_t m, int y) { return d; }
+static char       *uploadFileName = NULL;
 
 static const char *cfgName    = "/fcconfig.json";   // Main config (flash)
 static const char *idName     = "/fcid.json";       // FC remote ID (flash)
@@ -1406,6 +1407,7 @@ void doCopyAudioFiles()
     }
 
     mydelay(500, false);
+    allOff();
 
     flushDelayedSave();
 
@@ -1716,9 +1718,72 @@ void closeACFile(File& file)
     file.close();
 }
 
-void removeACFile()
+void removeACFile(bool isUPLFile)
 {
     if(haveSD) {
-        SD.remove(CONFN);
+        if(!isUPLFile) {
+            SD.remove(CONFN);
+        } else if(uploadFileName) {
+            SD.remove(uploadFileName);
+        }
+    }
+}
+
+bool openUploadFile(const char *fn, File& file, bool& isDel)
+{
+    if(haveSD) {
+
+        isDel = false;
+
+        if(!strlen(fn))
+            return false;
+      
+        if(!(uploadFileName = (char *)malloc(strlen(fn)+4)))
+            return false;
+
+        uploadFileName[0] = '/';
+        uploadFileName[1] = '-';
+        uploadFileName[2] = 0;
+        strcat(uploadFileName, fn);
+
+        if((strlen(uploadFileName) <= 9) ||
+           (strstr(uploadFileName, "/-delete-") != uploadFileName)) {
+    
+            if((file = SD.open(uploadFileName, FILE_WRITE))) {
+                isDel = false;
+                return true;
+            }
+
+        } else {
+
+            uploadFileName[8] = '/';
+            SD.remove(uploadFileName+8);
+            isDel = true;
+          
+        }
+
+        free(uploadFileName);
+        uploadFileName = NULL;
+    }
+
+    return false;
+}
+
+void renameUploadFile()
+{
+    if(haveSD && uploadFileName) {
+
+        char *t = (char *)malloc(strlen(uploadFileName)+4);
+        t[0] = uploadFileName[0];
+        t[1] = 0;
+        strcat(t, uploadFileName+2);
+        
+        SD.remove(t);
+        SD.rename(uploadFileName, t);
+        
+        free(t);
+
+        free(uploadFileName);
+        uploadFileName = NULL;
     }
 }

@@ -100,7 +100,9 @@ void setFluxPattern(uint8_t i);
 void showWaitSequence();
 void endWaitSequence();
 void showCopyError();
+
 void allOff();
+void prepareReboot();
 
 void populateIRarray(uint32_t *irkeys, int index);
 void copyIRarray(uint32_t *irkeys, int index);

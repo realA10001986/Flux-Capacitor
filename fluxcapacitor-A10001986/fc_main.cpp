@@ -1984,12 +1984,7 @@ static int execute(bool isIR)
     case 5:
         if(!isIRLocked) {
             if(!strcmp(inputBuffer, "64738")) {
-                allOff();
-                endIRfeedback();
-                mp_stop();
-                stopAudio();
-                flushDelayedSave();
-                unmount_fs();
+                prepareReboot();
                 delay(500);
                 esp_restart();
             }
@@ -2256,6 +2251,18 @@ void allOff()
     fcLEDs.off();
     centerLED.setDC(0);
     boxLED.setDC(0);
+}
+
+void prepareReboot()
+{
+    mp_stop();
+    stopAudio();
+    allOff();
+    endIRfeedback();
+    flushDelayedSave();
+    delay(500);
+    unmount_fs();
+    delay(100);
 }
 
 void populateIRarray(uint32_t *irkeys, int index)
