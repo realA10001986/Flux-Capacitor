@@ -75,7 +75,7 @@ As long as the FC is unconfigured, it creates its own WiFi network named "FC-AP"
 
 It is ok to leave the FC in AP-mode, predominantly if used stand-alone.
 
-##### Home setup with a pre-existing local WiFi network
+##### &#9654; Home setup with a pre-existing local WiFi network
 
 In this case, you can connect your FC to your home WiFi network: Click on "Connect to WiFi" and either select a network from the top of the page or enter a WiFi network name (SSID), and enter your WiFi password.
 
@@ -85,7 +85,7 @@ In this case, you can connect your FC to your home WiFi network: Click on "Conne
 
 After saving the WiFi network settings, the FC reboots and tries to connect to your configured WiFi network. If that fails, it will again start in access point mode.
 
-##### Places without a WiFi network
+##### &#9654; Places without a WiFi network
 
 If no TCD is present, keep your FC operating in AP-mode.
 
