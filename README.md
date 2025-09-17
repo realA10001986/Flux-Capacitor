@@ -89,7 +89,7 @@ After saving the WiFi network settings, your FC reboots and tries to connect to 
 
 ##### &#9654; Places without a WiFi network
 
-If no TCD is present, keep your FC operating in AP-mode.
+If no TCD is present, keep your FC operating in AP-mode: Leave *WiFi network name* and *password* empty.
 
 If you have a [Time Circuits Display](https://tcd.out-a-ti.me), you can connect your FC to the TCD's own WiFi network. 
 
