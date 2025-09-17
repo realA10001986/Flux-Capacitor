@@ -69,17 +69,33 @@ The first step is to establish access to the FC's configuration web site ("Confi
 
 #### Connecting to a WiFi network
 
-As long as the device is unconfigured, it creates a WiFi network of its own named "FC-AP". This is called "Access point mode", or "AP-mode". 
+The FC knows two ways of WiFi operation: Either it creates its own WiFi network, or it connects to a pre-existing WiFi network.
 
-It is ok to leave the FC in this mode, especially if it run stand-alone. In a typical home setup and/or if you also have a [Time Circuits Display](https://tcd.out-a-ti.me), however, you might want to connect the FC to a WiFi network (in case of using it together with a TCD: to the same WiFi network the TCD is connected to). If you have your FC, along with a Time Circuits Display, mounted in a car, you might want to connect the FC to the TCD's very own WiFi network "TCD-AP"; see [here](#car-setup).
+As long as the FC is unconfigured, it creates its own WiFi network named "FC-AP". This mode of operation is called "Access point mode", or "AP-mode". 
 
-In order to connect your FC to a WiFi network, click on "Configure WiFi". The bare minimum is to select an SSID (WiFi network name) and a WiFi password.
+It is ok to leave the FC in AP-mode, predominantly if used stand-alone.
+
+##### Home setup with a pre-existing local WiFi network
+
+In this case, you can connect your FC to your home WiFi network: Click on "Connect to WiFi" and either select a network from the top of the page or enter a WiFi network name (SSID), and enter your WiFi password.
+
+>If you have a [Time Circuits Display](https://tcd.out-a-ti.me) note that in order to have the FC and TCD communicate with each other, the FC must be connected to the same network the TCD is connected to. In order to use MQTT, the FC must be connected to the same network the broker is connected to.
 
 >Note that the FC requests an IP address via DHCP, unless you entered valid data in the fields for static IP addresses (IP, gateway, netmask, DNS). If the device is inaccessible as a result of incorrect static IPs, wait until the Flux Capacitor has completed its startup sequence, then type \*123456OK on the IR remote; static IP data will be deleted and the device will return to DHCP after a reboot.
 
 After saving the WiFi network settings, the FC reboots and tries to connect to your configured WiFi network. If that fails, it will again start in access point mode.
 
-After completing this step, your FC is basically ready for use; you can also continue configuring it to your personal preferences through the Config Portal.
+##### Places without a WiFi network
+
+If no TCD is present, keep your FC operating in AP-mode.
+
+If you have a [Time Circuits Display](https://tcd.out-a-ti.me), you can connect the FC to the TCD's own WiFi network. 
+
+Click on "Connect to WiFi" and either select "TCD-AP" from the top of the page or enter "TCD-AP" under *WiFi network name (SSID)*. If you password-proteced your TCD-AP, enter this password below.
+
+See [here](#car-setup) for more details.
+
+After completing WiFi setup, your FC is basically ready for use; you can also continue configuring it to your personal preferences through the Config Portal.
 
 ## The Config Portal
 
