@@ -526,16 +526,14 @@ If your FC, along with a [Time Circuits Display](https://tcd.out-a-ti.me/), is m
 #### Flux Capacitor
 
 Enter the Config Portal on the FC, click on *Setup* and
-  - enter *192.168.4.1* into the field **_IP address or hostname of TCD_**
+  - enter *192.168.4.1* into the field **_IP address or hostname of TCD_** under BTTFN settings;
   - check the option **_Follow TCD fake power_** if you have a fake power switch for the TCD (like eg a TFC switch)
   - click on *Save*.
 
 After the FC has restarted, re-enter the FC's Config Portal (while the TCD is powered and in *car mode*) and
-  - click on *Configure WiFi*,
-  - select the TCD's access point name in the list at the top or enter *TCD-AP* into the *SSID* field; if you password-protected your TCD's AP, enter this password in the *password* field. Leave all other fields empty,
+  - click on *Connect to WiFi*,
+  - select the TCD's access point name in the list at the top ("TCD-AP") or enter *TCD-AP* into the *WiFi network name (SSID)* field; if you password-protected your TCD's AP, enter this password in the *password* field. Leave all other fields empty,
   - click on *Save*.
-
-Using this setup enables the FC to receive notifications about time travel and alarm wirelessly, and to query the TCD for data. Also, the TCD keypad can be used to remote-control the FC.
 
 In order to access the FC's Config Portal in your car, connect your hand held or computer to the TCD's WiFi access point ("TCD-AP"), and direct your browser to http://flux.local ; if that does not work, go to the TCD's keypad menu, press ENTER until "BTTFN CLIENTS" is shown, hold ENTER, and look for the FC's IP address there; then direct your browser to that IP by using the URL http://a.b.c.d (a-d being the IP address displayed on the TCD display).
 
