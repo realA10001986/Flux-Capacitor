@@ -390,7 +390,7 @@ As of version 1.80 of the FC firmware, above mentioned audio files (both replace
 
 Uploading through the Config Portal works exactly like [installing the default audio files](#audio-data-installation); on the main menu, click "UPDATE". Afterwards choose the file to upload in the bottom file selector, and click "UPLOAD". The firmware recognizes mp3 files, and stores them on the SD card. (Unlike with the default files, no further "installation" takes place.)
 
-In order to delete a file from the SD card, upload a file whose names is prefixed with "delete-". For example: To delete "key1.mp3" from the SD card, either rename your "key1.mp3" into "delete-key1.mp3", or create a new file named "delete-key1.mp3", and upload this file. The firmware detects the "delete-" part and, instead of storing the uploaded file, it throws it away and deletes "key1.mp3" from the SD card.
+In order to delete a file from the SD card, upload a file whose name is prefixed with "delete-". For example: To delete "key1.mp3" from the SD card, either rename your "key1.mp3" into "delete-key1.mp3", or create a new file named "delete-key1.mp3", and upload this file. The firmware detects the "delete-" part and, instead of storing the uploaded file, it throws it away and deletes "key1.mp3" from the SD card.
 
 For technical reasons, the FC must reboot after a file is uploaded in this way.
 
