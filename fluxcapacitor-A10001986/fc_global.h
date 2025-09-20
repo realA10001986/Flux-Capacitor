@@ -15,8 +15,8 @@
  ***                          Version Strings                          ***
  *************************************************************************/
 
-#define FC_VERSION       "V1.80"
-#define FC_VERSION_EXTRA "SEP152025"
+#define FC_VERSION       "V1.81"
+#define FC_VERSION_EXTRA "SEP192025"
 
 //#define FC_DBG              // debug output on Serial
 
