@@ -583,8 +583,6 @@ You can also install the FC's sound-pack on this page; download the current soun
 
 Finally, this page is also for uploading [custom or replacement sound files](#installing-custom--replacement-audio-files) to the SD card. Select an mp3 file in the bottom file selector and click upload. (Requires firmware 1.80 or later.)
 
-Note that either a firmware or audio data can be uploaded at once, not both at the same time.
-
 ##### &#9654; Erase WiFi Config
 
 Clicking this (and saying "yes" in the confirmation dialog) erases the WiFi connection configuration (as set up through the *Connect to WiFi* page) and reboots the device; it will restart in "access point" (AP) mode. See [here](#short-summary-of-first-steps).
@@ -599,6 +597,22 @@ Clicking this (and saying "yes" in the confirmation dialog) erases the WiFi conn
 
 Selects the power-up "flux" sound mode. "Auto: xx secs" enables the beep for xx seconds after triggering a time travel, and upon power-on. Can be changed at any time by typing *00 (off), *01 (on), *02 (Auto 30secs) or *03 (Auto 60secs) followed by OK.
 
+##### &#9654; Movie sequence for 7 lights
+
+The original flux capacitor circuit was designed for 7 lights per light bar; however, only 6 lights were installed. So there is a visual gap in the movie sequence. This option allows choosing between the 7-lights sequence (with gap), and a 6-lights sequence (without gap). Defaults to enabled.
+
+##### &#9654; Skip Box Light animation
+
+Normally, the Box LEDs flash during the time travel sequence. If you prefer to instead have them constantly on during a time travel, check this option.
+
+##### &#9654; Play time travel sounds
+
+If other props are connected, they might bring their own time travel sound effects. In this case, you can uncheck this to disable the Flux Capacitor's own time travel sounds. Note that this only covers sounds played during time travel, not other sound effects.
+
+##### &#9654; Play TCD-alarm sounds
+
+If a TCD is connected via BTTFN or MQTT, the FC visually signals when the TCD's alarm sounds. If you want the FC to play an alarm sound, check this option.
+
 ##### &#9654; Screen saver timer
 
 Enter the number of minutes until the Screen Saver should become active when the FC is idle.
@@ -609,22 +623,12 @@ The Screen Saver, when active, stops the flux sound and disables all LEDs, until
 - on a connected TCD, a destination date is entered (only if TCD is wirelessly connected) or a time travel event is triggered (also when wired).
 
 The music player will continue to run.
- 
-#### Hardware configuration settings
 
-##### &#9654; Use 'GPIO14' for box lights
+#### Music Player settings
 
-Normally, [box lights](#box-lighting) are connected to the "Box LED" connectors. Check this option if your box lights are instead connected to the "GPIO14" connector.
+##### &#9654; Shuffle at startup
 
-##### &#9654; Use speed knob by default
-
-Check this if your FC has a pot for chasing speed selection and you want to use this pot. Note that if this option is checked, commands regarding chasing speed from the remote control are ignored.
-
-##### &#9654; Disable supplied IR remote control
-
-Check this to disable the supplied remote control; the FC will only accept commands from a learned IR remote (if applicable). 
-
-Note that this only disables the supplied remote, unlike [IR locking](#locking-ir-control), where IR commands from any known remote are ignored.
+When checked, songs are shuffled when the device is booted. When unchecked, songs will be played in order.
 
 #### Network settings
 
@@ -632,17 +636,7 @@ Note that this only disables the supplied remote, unlike [IR locking](#locking-i
 
 The device's hostname in the WiFi network. Defaults to 'flux'. This also is the domain name at which the Config Portal is accessible from a browser in the same local network. The URL of the Config Portal then is http://<i>hostname</i>.local (the default is http://flux.local)
 
-If you have more than one Flux Capacitor in your local network, please give them unique hostnames.
-
-##### &#9654; AP Mode: Network name appendix
-
-By default, if the FC creates a WiFi network of its own ("AP-mode"), this network is named "FC-AP". In case you have multiple FCs in your vicinity, you can have a string appended to create a unique network name. If you, for instance, enter "-ABC" here, the WiFi network name will be "FC-AP-ABC". Characters A-Z, a-z, 0-9 and - are allowed.
-
-##### &#9654; AP Mode: WiFi password
-
-By default, and if this field is empty, the FC's own WiFi network ("AP-mode") will be unprotected. If you want to protect your FC access point, enter your password here. It needs to be 8 characters in length and only characters A-Z, a-z, 0-9 and - are allowed.
-
-If you forget this password and are thereby locked out of your FC, enter *123456 followed by OK on the IR remote control; this deletes the WiFi password. Then power-down and power-up your FC and the access point will start unprotected.
+This setting applies to both AP-mode and when the FC is connected to a WiFi network. If you have more than one Flux Capacitor in your local network, please give them unique hostnames.
 
 ##### &#9654; WiFi connection attempts
 
@@ -652,23 +646,19 @@ Number of times the firmware tries to reconnect to a WiFi network, before fallin
 
 Number of seconds before a timeout occurs when connecting to a WiFi network. When a timeout happens, another attempt is made (see immediately above), and if all attempts fail, the device falls back to AP-mode. See [here](#short-summary-of-first-steps)
 
-#### Settings for prop communication/synchronization
+#### Network settings for AP-mode
 
-##### &#9654; TCD connected by wire
+##### &#9654; Network name (SSID) appendix
 
-Check this if you have a Time Circuits Display connected by wire. Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place.
+By default, when the FC creates a WiFi network of its own ("AP-mode"), this network is named "FC-AP". In case you have multiple FCs in your vicinity, you can have a string appended to create a unique network name. If you, for instance, enter "-ABC" here, the WiFi network name will be "FC-AP-ABC". Characters A-Z, a-z, 0-9 and - are allowed.
 
-While you can connect both a button and the TCD to the "time travel" connector on the FC, the button should not be pressed when this option is set, as it might yield unwanted effects.
+##### &#9654; Password
 
-Also note that the process of [learning keys from an IR remote control](#ir-remote-control) requires this option to be unchecked. After learning keys is done, you can, of course, check this option again.
+By default, and if this field is empty, the FC's own WiFi network ("AP-mode") will be unprotected. If you want to protect your FC access point, enter your password here. It needs to be 8 characters in length and only characters A-Z, a-z, 0-9 and - are allowed.
 
-Do NOT check this option if your TCD is connected wirelessly (BTTFN, MQTT).
+If you forget this password and are thereby locked out of your FC, enter *123456 followed by OK on the IR remote control; this deletes the WiFi password. Then power-down and power-up your FC and the access point will start unprotected.
 
-##### &#9654; TCD signals Time Travel without 5s lead
-
-Usually, the TCD signals a time travel with a 5 seconds lead, in order to give a prop a chance to play an acceleration sequence before the actual time travel takes place. Since this 5 second lead is unique to CircuitSetup props, and people sometimes want to connect third party props to the TCD, the TCD has the option of skipping this 5 seconds lead. If that is the case, and your Flux Capacitor is connected by wire, you need to set this option.
-
-If your FC is connected wirelessly, this option has no effect.
+#### Settings for BTTFN communication
 
 ##### &#9654; IP address or hostname of TCD
 
@@ -694,24 +684,6 @@ If this option is checked, and your TCD is equipped with a fake power switch, th
 
 If the FC is connected to a TCD through BTTFN, this option allows to trigger a synchronized time travel on all BTTFN-connected devices when pressing "0" on the IR remote control or pressing the Time Travel button, just as if the Time Travel was triggered by the TCD. If this option is unchecked, pressing "0" or the Time Travel button only triggers a Time Travel sequence on the FC.
 
-#### Audio-visual options
-
-##### &#9654; Movie sequence for 7 lights
-
-The original flux capacitor circuit was designed for 7 lights per light bar; however, only 6 lights were installed. So there is a visual gap in the movie sequence. This option allows choosing between the 7-lights sequence (with gap), and a 6-lights sequence (without gap). Defaults to enabled.
-
-##### &#9654; Play time travel sounds
-
-If other props are connected, they might bring their own time travel sound effects. In this case, you can uncheck this to disable the Flux Capacitor's own time travel sounds. Note that this only covers sounds played during time travel, not other sound effects.
-
-##### &#9654; Skip Box Light animation
-
-Normally, the Box LEDs flash during the time travel sequence. If you prefer to instead have them constantly on during a time travel, check this option.
-
-##### &#9654; Play TCD-alarm sounds
-
-If a TCD is connected via BTTFN or MQTT, the FC visually signals when the TCD's alarm sounds. If you want the FC to play an alarm sound, check this option.
-
 #### Home Assistant / MQTT settings
 
 ##### &#9654; Use Home Assistant (MQTT 3.1.1)
@@ -726,11 +698,23 @@ The broker server address. Can be a domain (eg. "myhome.me") or an IP address (e
 
 The username (and optionally the password) to be used when connecting to the broker. Can be left empty if the broker accepts anonymous logins.
 
-#### Music Player settings
+#### Settings for wired connections
 
-##### &#9654; Shuffle at startup
+##### &#9654; TCD connected by wire
 
-When checked, songs are shuffled when the device is booted. When unchecked, songs will be played in order.
+Check this if you have a Time Circuits Display connected by wire. Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place.
+
+While you can connect both a button and the TCD to the "time travel" connector on the FC, the button should not be pressed when this option is set, as it might yield unwanted effects.
+
+Also note that the process of [learning keys from an IR remote control](#ir-remote-control) requires this option to be unchecked. After learning keys is done, you can, of course, check this option again.
+
+Do NOT check this option if your TCD is connected wirelessly (BTTFN, MQTT).
+
+##### &#9654; TCD signals Time Travel without 5s lead
+
+Usually, the TCD signals a time travel with a 5 seconds lead, in order to give a prop a chance to play an acceleration sequence before the actual time travel takes place. Since this 5 second lead is unique to CircuitSetup props, and people sometimes want to connect third party props to the TCD, the TCD has the option of skipping this 5 seconds lead. If that is the case, and your Flux Capacitor is connected by wire, you need to set this option.
+
+If your FC is connected wirelessly, this option has no effect.
 
 #### Other settings
 
@@ -748,6 +732,22 @@ If you want copy settings from one SD card to another, do as follows:
 - Power-up the FC, enter the Config Portal, re-enable _Save secondary settings on SD_, and click "SAVE".
 
 This procedure ensures that all your settings are copied from the old to the new SD card.
+
+#### Hardware configuration settings
+
+##### &#9654; Use 'GPIO14' for box lights
+
+Normally, [box lights](#box-lighting) are connected to the "Box LED" connectors. Check this option if your box lights are instead connected to the "GPIO14" connector.
+
+##### &#9654; Use speed knob by default
+
+Check this if your FC has a pot for chasing speed selection and you want to use this pot. Note that if this option is checked, commands regarding chasing speed from the remote control are ignored.
+
+##### &#9654; Disable supplied IR remote control
+
+Check this to disable the supplied remote control; the FC will only accept commands from a learned IR remote (if applicable). 
+
+Note that this only disables the supplied remote, unlike [IR locking](#locking-ir-control), where IR commands from any known remote are ignored.
 
 ## Appendix B: LED signals
 
