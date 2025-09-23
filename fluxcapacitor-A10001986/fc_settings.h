@@ -66,64 +66,55 @@ extern uint8_t musFolderNum;
 // Default settings
 
 #define DEF_PLAY_FLUX_SND   0     // 1: Play "flux" sound permanently, 0: Do not, 2, 3: 30/60 secs after event
+#define DEF_ORIG_SEQ        1     // 0: movie sequence for 6 lamps; 1: sequence uses 7th (non-existent) light
+#define DEF_STTBL_ANIM      0     // 1: Skip box light animation in tt; 0: Play anim
+#define DEF_PLAY_TT_SND     1     // 1: Play time travel sounds (0: Do not; for use with external equipment)
+#define DEF_PLAY_ALM_SND    0     // 1: Play TCD-alarm sound, 0: do not
 #define DEF_SS_TIMER        0     // "Screen saver" timeout in minutes; 0 = ss off
 
-#define DEF_BLEDSWAP        0     // 0: Use box led connectors for box leds; 1: use "panel light" connector (both PWM!)
-#define DEF_SKNOB           0     // 0: Don't use knob for chase speed; 1: do
-#define DEF_DISDIR          0     // 0: Do not disable default IR remote control; 1: do
+#define DEF_SHUFFLE         0     // Music Player: Do not shuffle by default
 
 #define DEF_HOSTNAME        "flux"
 #define DEF_WIFI_RETRY      3     // 1-10; Default: 3 retries
 #define DEF_WIFI_TIMEOUT    7     // 7-25; Default: 7 seconds
 
-#define DEF_TCD_PRES        0     // 0: No TCD connected, 1: connected via GPIO
-#define DEF_NO_ETTO_LEAD    0     // Default: 0: TCD signals TT with ETTO_LEAD lead time; 1 without
-
 #define DEF_TCD_IP          ""    // TCD ip address for networked polling
 #define DEF_USE_GPSS        0     // 0: Ignore GPS speed; 1: Use it for chase speed
 #define DEF_USE_NM          0     // 0: Ignore TCD night mode; 1: Follow TCD night mode
 #define DEF_USE_FPO         0     // 0: Ignore TCD fake power; 1: Follow TCD fake power
-
 #define DEF_BTTFN_TT        1     // 0: '0' on IR remote and TT button trigger stand-alone TT; 1: They trigger BTTFN-wide TT
 
-#define DEF_ORIG_SEQ        1     // 0: movie sequence for 6 lamps; 1: sequence uses 7th (non-existent) light
-#define DEF_PLAY_TT_SND     1     // 1: Play time travel sounds (0: Do not; for use with external equipment)
-#define DEF_STTBL_ANIM      0     // 1: Skip box light animation in tt; 0: Play anim
-#define DEF_PLAY_ALM_SND    0     // 1: Play TCD-alarm sound, 0: do not
-
-#define DEF_SHUFFLE         0     // Music Player: Do not shuffle by default
+#define DEF_TCD_PRES        0     // 0: No TCD connected, 1: connected via GPIO
+#define DEF_NO_ETTO_LEAD    0     // Default: 0: TCD signals TT with ETTO_LEAD lead time; 1 without
 
 #define DEF_CFG_ON_SD       1     // Default: Save secondary settings on SD card
 #define DEF_SD_FREQ         0     // SD/SPI frequency: Default 16MHz
 
+#define DEF_BLEDSWAP        0     // 0: Use box led connectors for box leds; 1: use "panel light" connector (both PWM!)
+#define DEF_SKNOB           0     // 0: Don't use knob for chase speed; 1: do
+#define DEF_DISDIR          0     // 0: Do not disable default IR remote control; 1: do
 
 struct Settings {
     char playFLUXsnd[4]     = MS(DEF_PLAY_FLUX_SND);
+    char origSeq[4]         = MS(DEF_ORIG_SEQ);
+    char skipTTBLAnim[4]    = MS(DEF_STTBL_ANIM); 
+    char playTTsnds[4]      = MS(DEF_PLAY_TT_SND);
+    char playALsnd[4]       = MS(DEF_PLAY_ALM_SND);
     char ssTimer[6]         = MS(DEF_SS_TIMER);
 
-    char usePLforBL[4]      = MS(DEF_BLEDSWAP);
-    char useSknob[4]        = MS(DEF_SKNOB);
-    char disDIR[4]          = MS(DEF_DISDIR);
-
+    char shuffle[4]         = MS(DEF_SHUFFLE);
+    
     char hostName[32]       = DEF_HOSTNAME;
     char systemID[8]        = "";
     char appw[10]           = "";
     char wifiConRetries[4]  = MS(DEF_WIFI_RETRY);
     char wifiConTimeout[4]  = MS(DEF_WIFI_TIMEOUT);
-
-    char TCDpresent[4]      = MS(DEF_TCD_PRES);
-    char noETTOLead[4]      = MS(DEF_NO_ETTO_LEAD);
-
-    char tcdIP[16]          = DEF_TCD_IP;
+    
+    char tcdIP[32]          = DEF_TCD_IP;
     char useGPSS[4]         = MS(DEF_USE_GPSS);
     char useNM[4]           = MS(DEF_USE_NM);
     char useFPO[4]          = MS(DEF_USE_FPO);
     char bttfnTT[4]         = MS(DEF_BTTFN_TT);
-
-    char origSeq[4]         = MS(DEF_ORIG_SEQ);
-    char playTTsnds[4]      = MS(DEF_PLAY_TT_SND);
-    char skipTTBLAnim[4]    = MS(DEF_STTBL_ANIM); 
-    char playALsnd[4]       = MS(DEF_PLAY_ALM_SND);
 
 #ifdef FC_HAVEMQTT  
     char useMQTT[4]         = "0";
@@ -131,10 +122,15 @@ struct Settings {
     char mqttUser[128]      = "";  // user[:pass] (UTF8)
 #endif     
 
-    char shuffle[4]         = MS(DEF_SHUFFLE);
+    char TCDpresent[4]      = MS(DEF_TCD_PRES);
+    char noETTOLead[4]      = MS(DEF_NO_ETTO_LEAD);
 
     char CfgOnSD[4]         = MS(DEF_CFG_ON_SD);
     char sdFreq[4]          = MS(DEF_SD_FREQ);
+
+    char usePLforBL[4]      = MS(DEF_BLEDSWAP);
+    char useSknob[4]        = MS(DEF_SKNOB);
+    char disDIR[4]          = MS(DEF_DISDIR);
 };
 
 struct IPSettings {
