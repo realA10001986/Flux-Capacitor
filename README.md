@@ -591,7 +591,7 @@ Clicking this (and saying "yes" in the confirmation dialog) erases the WiFi conn
 
 ### Setup page
 
-#### Basic settings
+#### <ins>Basic settings</ins>
 
 ##### &#9654; Default flux sound mode
 
@@ -624,13 +624,13 @@ The Screen Saver, when active, stops the flux sound and disables all LEDs, until
 
 The music player will continue to run.
 
-#### Music Player settings
+#### <ins>Music Player settings</ins>
 
 ##### &#9654; Shuffle at startup
 
 When checked, songs are shuffled when the device is booted. When unchecked, songs will be played in order.
 
-#### Network settings
+#### <ins>Network settings</ins>
 
 ##### &#9654; Hostname
 
@@ -646,7 +646,7 @@ Number of times the firmware tries to reconnect to a WiFi network, before fallin
 
 Number of seconds before a timeout occurs when connecting to a WiFi network. When a timeout happens, another attempt is made (see immediately above), and if all attempts fail, the device falls back to AP-mode. See [here](#short-summary-of-first-steps)
 
-#### Network settings for AP-mode
+#### <ins>Network settings for AP-mode</ins>
 
 ##### &#9654; Network name (SSID) appendix
 
@@ -658,7 +658,7 @@ By default, and if this field is empty, the FC's own WiFi network ("AP-mode") wi
 
 If you forget this password and are thereby locked out of your FC, enter *123456 followed by OK on the IR remote control; this deletes the WiFi password. Then power-down and power-up your FC and the access point will start unprotected.
 
-#### Settings for BTTFN communication
+#### <ins>Settings for BTTFN communication</ins>
 
 ##### &#9654; IP address or hostname of TCD
 
@@ -684,7 +684,7 @@ If this option is checked, and your TCD is equipped with a fake power switch, th
 
 If the FC is connected to a TCD through BTTFN, this option allows to trigger a synchronized time travel on all BTTFN-connected devices when pressing "0" on the IR remote control or pressing the Time Travel button, just as if the Time Travel was triggered by the TCD. If this option is unchecked, pressing "0" or the Time Travel button only triggers a Time Travel sequence on the FC.
 
-#### Home Assistant / MQTT settings
+#### <ins>Home Assistant / MQTT settings</ins>
 
 ##### &#9654; Use Home Assistant (MQTT 3.1.1)
 
@@ -698,7 +698,7 @@ The broker server address. Can be a domain (eg. "myhome.me") or an IP address (e
 
 The username (and optionally the password) to be used when connecting to the broker. Can be left empty if the broker accepts anonymous logins.
 
-#### Settings for wired connections
+#### <ins>Settings for wired connections</ins>
 
 ##### &#9654; TCD connected by wire
 
@@ -716,7 +716,7 @@ Usually, the TCD signals a time travel with a 5 seconds lead, in order to give a
 
 If your FC is connected wirelessly, this option has no effect.
 
-#### Other settings
+#### <ins>Other settings</ins>
 
 ##### &#9654; Save secondary settings on SD
 
@@ -733,7 +733,7 @@ If you want copy settings from one SD card to another, do as follows:
 
 This procedure ensures that all your settings are copied from the old to the new SD card.
 
-#### Hardware configuration settings
+#### <ins>Hardware configuration settings</ins>
 
 ##### &#9654; Use 'GPIO14' for box lights
 
