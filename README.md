@@ -39,9 +39,9 @@ If you are using a fresh ESP32 board, please see [fluxcapacitor-A10001986.ino](h
 
  *Important: After a firmware update, the inner and outer LEDs might blink alternately for short while after reboot. Do NOT unplug the device during this time.*
 
-### Audio data installation
+### Sound-pack installation
 
-The firmware comes with audio data ("sound-pack") which needs to be installed separately. The audio data is not updated as often as the firmware itself. If you have previously installed the latest version of the sound-pack, you normally don't have to re-install the audio data when you update the firmware. Only if either a the FC puts up a respective [signal](#appendix-b-led-signals) at startup, or your device is quiet after a firmware update, a re-installation is needed.
+The firmware comes with audio data ("sound-pack") which needs to be installed separately. The sound-pack is not updated as often as the firmware itself. If you have previously installed the latest version of the sound-pack, you normally don't have to re-install it when you update the firmware. Only if either a the FC puts up a respective [signal](#appendix-b-led-signals) at startup, or your device is quiet after a firmware update, a re-installation/update is needed.
 
 The first step is to download "install/sound-pack-xxxxxxxx.zip" and extract it. It contains one file named "FCA.bin".
 
@@ -53,7 +53,7 @@ Then there are two alternative ways to proceed. Note that both methods *require 
 - Copy "FCA.bin" to the root directory of of a FAT32 formatted SD card;
 - power down the Flux Capacitor,
 - insert this SD card into the slot and 
-- power up the Flux Capacitor; the audio data will be installed automatically.
+- power up the Flux Capacitor; the sound-pack will be installed automatically.
 
 After installation, the SD card can be re-used for [other purposes](#sd-card).
 
@@ -354,7 +354,7 @@ Other ways of triggering a time travel are available if a [Time Circuits Display
 
 Preface note on SD cards: For unknown reasons, some SD cards simply do not work with this device. For instance, I had no luck with Sandisk Ultra 32GB and  "Intenso" cards. If your SD card is not recognized, check if it is formatted in FAT32 format (not exFAT!). Also, the size must not exceed 32GB (as larger cards cannot be formatted with FAT32). Transcend SDHC cards work fine in my experience.
 
-The SD card, apart from being required for [installing](#audio-data-installation) of the built-in audio data, can be used for substituting built-in sound effects and for music played back by the [Music player](#the-music-player). Also, it is recommended to store [secondary settings](#-save-secondary-settings-on-sd) on the SD card to minimize [Flash Wear](#flash-wear). The chosen chase sequence (*1x) is only stored on SD, so for your selection to be persistent across reboots, an SD card is required.
+The SD card, apart from being required for [installing](#sound-pack-installation) of the built-in sound-pack, can be used for substituting built-in sound effects and for music played back by the [Music player](#the-music-player). Also, it is recommended to store [secondary settings](#-save-secondary-settings-on-sd) on the SD card to minimize [Flash Wear](#flash-wear). The chosen chase sequence (*1x) is only stored on SD, so for your selection to be persistent across reboots, an SD card is required.
 
 Note that the SD card must be inserted before powering up the device. It is not recognized if inserted while the Flux Capacitor is running. Furthermore, do not remove the SD card while the device is powered.
 
@@ -388,7 +388,7 @@ Those files are not provided here. You can use any mp3, with a bitrate of 128kpb
 
 As of version 1.80 of the FC firmware, above mentioned audio files (both replacements and custom sounds) can either be copied to the SD card using a computer (as before), or uploaded through the Config Portal.
 
-Uploading through the Config Portal works exactly like [installing the default audio files](#audio-data-installation); on the main menu, click "UPDATE". Afterwards choose one or more mp3 files to upload using the bottom file selector, and click "UPLOAD". The firmware will store the uploaded mp3 files on the SD card.
+Uploading through the Config Portal works exactly like [installing the default audio files](#sound-pack-installation); on the main menu, click "UPDATE". Afterwards choose one or more mp3 files to upload using the bottom file selector, and click "UPLOAD". The firmware will store the uploaded mp3 files on the SD card.
 
 In order to delete a file from the SD card, upload a file whose name is prefixed with "delete-". For example: To delete "key1.mp3" from the SD card, either rename your "key1.mp3" into "delete-key1.mp3", or create a new file named "delete-key1.mp3", and upload this file. The firmware detects the "delete-" part and, instead of storing the uploaded file, it throws it away and deletes "key1.mp3" from the SD card.
 
@@ -579,11 +579,11 @@ This leads to the firmware and audio update page.
 
 In order to upload a new firmware binary (such as the ones published here in the install/ folder), select that image file in the top file selector and click "Update".
 
-You can also install the FC's audio data on this page; download the current sound-pack, extract it and select the resulting FCA.bin file in the bottom file selector. Finally, click "Upload". Note that an SD card is required for this operation.
-
-Note that either a firmware or audio data can be uploaded at once, not both at the same time.
+You can also install the FC's sound-pack on this page; download the current sound-pack, extract it and select the resulting FCA.bin file in the bottom file selector. Finally, click "Upload". Note that an SD card is required for this operation.
 
 Finally, this page is also for uploading [custom or replacement sound files](#installing-custom--replacement-audio-files) to the SD card. Select an mp3 file in the bottom file selector and click upload. (Requires firmware 1.80 or later.)
+
+Note that either a firmware or audio data can be uploaded at once, not both at the same time.
 
 ##### &#9654; Erase WiFi Config
 
@@ -758,11 +758,11 @@ This procedure ensures that all your settings are copied from the old to the new
     </tr>
  <tr>
      <td align="left">&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
-     <td align="left">Error: Audio files <a href="#audio-data-installation">not installed</a> or outdated</td>
+     <td align="left">Error: Sound pack <a href="#sound-pack-installation">not installed</a> or outdated</td>
     </tr>
 <tr>
      <td align="left">&#9675; &#9675; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9675; &#9675;<br>&#8635;</td>
-     <td align="left">Error: Audio file copy error</td>
+     <td align="left">Error: Sound pack installation error</td>
     </tr>
  <tr>
      <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
