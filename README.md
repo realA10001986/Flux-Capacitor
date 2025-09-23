@@ -636,7 +636,7 @@ When checked, songs are shuffled when the device is booted. When unchecked, song
 
 The device's hostname in the WiFi network. Defaults to 'flux'. This also is the domain name at which the Config Portal is accessible from a browser in the same local network. The URL of the Config Portal then is http://<i>hostname</i>.local (the default is http://flux.local)
 
-This setting applies to both AP-mode and when the FC is connected to a WiFi network. If you have more than one Flux Capacitor in your local network, please give them unique hostnames.
+This setting applies to both AP-mode and when your FC is connected to a WiFi network. If you have more than one Flux Capacitor in your local network, please give them unique hostnames.
 
 ##### &#9654; WiFi connection attempts
 
