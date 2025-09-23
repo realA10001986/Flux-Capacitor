@@ -595,7 +595,9 @@ Clicking this (and saying "yes" in the confirmation dialog) erases the WiFi conn
 
 ##### &#9654; Default flux sound mode
 
-Selects the power-up "flux" sound mode. "Auto: xx secs" enables the beep for xx seconds after triggering a time travel, and upon power-on. Can be changed at any time by typing *00 (off), *01 (on), *02 (Auto 30secs) or *03 (Auto 60secs) followed by OK.
+Selects the power-up "flux" sound mode. "Auto: xx secs" enables the beep for xx seconds after triggering a time travel, upon power-on, and then the TCD sends a respective signal through BTTFN.
+
+Can be changed at any time by typing *00 (off), *01 (on), *02 (Auto 30secs) or *03 (Auto 60secs) followed by OK, or through the TCD's keypad. Note that a change through remote or TCD is not saved.
 
 ##### &#9654; Movie sequence for 7 lights
 
@@ -629,6 +631,8 @@ The music player will continue to run.
 ##### &#9654; Shuffle at startup
 
 When checked, songs are shuffled when the device is booted. When unchecked, songs will be played in order.
+
+Shuffle mode can be changed at any time through the FC's remote control (*222 / *555) or via TCD (3222/3555); however, a change through remote or TCD is not saved.
 
 #### <ins>Network settings</ins>
 
