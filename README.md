@@ -630,7 +630,7 @@ If you forget this password and are thereby locked out of your FC, enter *123456
 
 ##### &#9654; WiFi channel
 
-Here you can select one out of 13 channels, or have the TCD choose a random channel for you. The default channel is 1.
+Here you can select one out of 13 channels, or have the FC choose a random channel for you. The default channel is 1.
 
 ---
 
