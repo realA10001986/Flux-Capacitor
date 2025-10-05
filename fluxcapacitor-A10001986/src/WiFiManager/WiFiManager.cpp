@@ -621,16 +621,21 @@ void WiFiManager::setupDNSD()
 {
     dnsServer.reset(new DNSServer());
 
-    // The DNS server is a single-domain DNS, only useful
-    // for captive resolving.
-    // Setup the DNS server redirecting all the domains to the apIP
-    dnsServer->setErrorReplyCode(DNSReplyCode::NoError);
+    // The DNS server is a single-domain DNS.
+    // If a hostname is set, we let it resolve it to our IP.
+    // If no hostname is set, we resolve ALL requests to our IP.
+
+    if(!*_hostname) {
+        dnsServer->setErrorReplyCode(DNSReplyCode::NoError);
+    }
 
     #ifdef WM_DEBUG_LEVEL
     DEBUG_WM(DEBUG_DEV,F("dns server started with ip: "), WiFi.softAPIP());
     #endif
 
-    dnsServer->start(DNS_PORT, F("*"), WiFi.softAPIP());
+    dnsServer->start(DNS_PORT,
+              *_hostname ? String(_hostname) : F("*"),
+              WiFi.softAPIP());
 }
 
 void WiFiManager::setupMDNS()
