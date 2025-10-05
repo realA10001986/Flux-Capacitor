@@ -91,7 +91,7 @@ In this case, you can connect your FC to your home WiFi network: Click on "WiFi 
 
 If no TCD is present, keep your FC operating in AP-mode.
 
-If you have a [Time Circuits Display](https://tcd.out-a-ti.me), you can connect your FC to the TCD's own WiFi network: Click on "Connect to WiFi" and either select "TCD-AP" from the top of the page or enter "TCD-AP" under *WiFi network name (SSID)*. If you password-proteced your TCD-AP, enter this password below. See [here](#car-setup) for more details.
+If you have a [Time Circuits Display](https://tcd.out-a-ti.me), you can connect your FC to the TCD's own WiFi network: Click on "WiFi Configuration" and either select "TCD-AP" from the top of the page or enter "TCD-AP" under *WiFi network name (SSID)*. If you password-proteced your TCD-AP, enter this password below. See [here](#car-setup) for more details.
 
 After completing WiFi setup, your FC is ready for use; you can also continue configuring it to your personal preferences through the Config Portal.
 
@@ -120,7 +120,7 @@ It can be accessed as follows:
 
   If connecting to http://flux.local fails due to a name resolution error, you need to find out the FC's IP address: Type *90 followed by OK on the supplied remote control and listen, the IP address will be spoken out loud. Then, on your handheld or computer, navigate to http://a.b.c.d (a.b.c.d being the IP address as read out loud by the FC) in order to enter the Config Portal.
 
-In the main menu, click on "Setup" to configure your Flux Capacitor. 
+In the main menu, click on "Settings" to configure your Flux Capacitor. 
 
 | [<img src="img/cps-frag.png">](img/cp_setup.png) |
 |:--:| 
@@ -542,13 +542,13 @@ If your FC, along with a [Time Circuits Display](https://tcd.out-a-ti.me/), is m
 
 #### Flux Capacitor
 
-Enter the Config Portal on the FC, click on *Setup* and
+Enter the Config Portal on the FC, click on *Settings* and
   - enter *192.168.4.1* into the field **_IP address or hostname of TCD_** under BTTFN settings;
   - check the option **_Follow TCD fake power_** if you have a fake power switch for the TCD (like eg a TFC switch)
   - click on *Save*.
 
 After the FC has restarted, re-enter the FC's Config Portal (while the TCD is powered and in *car mode*) and
-  - click on *Connect to WiFi*,
+  - click on *WiFi Configuration*,
   - select the TCD's access point name in the list at the top ("TCD-AP") or enter *TCD-AP* into the *WiFi network name (SSID)* field; if you password-protected your TCD's AP, enter this password in the *password* field. Leave all other fields empty,
   - click on *Save*.
 
