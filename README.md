@@ -73,7 +73,7 @@ Your FC knows two ways of WiFi operation: Either it creates its own WiFi network
 
 As long as your FC is unconfigured, it creates its own WiFi network named "FC-AP". This mode of operation is called "Access point mode", or "AP-mode". 
 
-It is ok to leave it in AP-mode, predominantly if used stand-alone. (To operate your FC in AP-mode, do not configure a WiFi network as described below, or click on "Erase WiFi config" on the Config Portal's main page.)
+It is ok to leave it in AP-mode, predominantly if used stand-alone. (To operate your FC in AP-mode, do not configure a WiFi network as described below, or click on "Forget saved WiFi network" on the Config Portal's "WiFi Configuration" page.)
 
 >Please do not leave computers/hand helds permanently connected to the FC's AP. These devices might think they are connected to the internet and therefore hammer the FC with DNS and HTTP requests which might lead to packet loss and disruptions.
 
@@ -81,7 +81,7 @@ It is ok to leave it in AP-mode, predominantly if used stand-alone. (To operate 
 
 ##### &#9654; Home setup with a pre-existing local WiFi network
 
-In this case, you can connect your FC to your home WiFi network: Click on "Connect to WiFi" and either select a network from the top of the page or enter a WiFi network name (SSID), and enter your WiFi password. After saving the WiFi network settings, your FC reboots and tries to connect to your selected WiFi network. If that fails, it will again start in access point mode.
+In this case, you can connect your FC to your home WiFi network: Click on "WiFi Configuration" and either select a network from the top of the page or enter a WiFi network name (SSID), and enter your WiFi password. After saving the WiFi network settings, your FC reboots and tries to connect to your selected WiFi network. If that fails, it will again start in access point mode.
 
 >If you have a [Time Circuits Display](https://tcd.out-a-ti.me) note that in order to have both FC and TCD communicate with each other, your FC must be connected to the same network your TCD is connected to. In order to use MQTT, your FC must be connected to the same network your broker is connected to.
 
