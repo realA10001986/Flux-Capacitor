@@ -75,6 +75,8 @@ void play_key(int k, bool stopOnly = false);
 
 bool check_file_SD(const char *audio_file);
 bool checkAudioDone();
+bool checkAudioStarted();
+bool checkMP3Running();
 void stopAudio();
 bool append_pending();
 

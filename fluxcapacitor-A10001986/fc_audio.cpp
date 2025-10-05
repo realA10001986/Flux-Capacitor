@@ -75,6 +75,8 @@ static AudioOutputI2S *out;
 bool audioInitDone = false;
 bool audioMute     = false;
 
+unsigned long audioplaystart = 0;
+
 bool haveMusic            = false;
 bool mpActive             = false;
 static uint16_t maxMusic  = 0;
@@ -194,6 +196,7 @@ void audio_loop()
         if(!mp3->loop()) {
             mp3->stop();
             key_playing = 0;
+            audioplaystart = 0;
             if(appendFile) {
                 play_file(append_audio_file, append_flags, append_vol);
             } else if(mpActive) {
@@ -259,6 +262,7 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
     if(mp3->isRunning()) {
         mp3->stop();
     }
+    audioplaystart = 0;
 
     curVolFact  = volumeFactor;
     dynVol      = (flags & PA_DYNVOL) ? true : false;
@@ -282,9 +286,10 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
         mySD0L->seek(curSeek, SEEK_SET);
 
         mp3->begin(mySD0L, out);
-        
+
+        audioplaystart = millis();
         #ifdef FC_DBG
-        Serial.println(F("Playing from SD"));
+        Serial.println("Playing from SD");
         #endif
     }
     #ifdef USE_SPIFFS
@@ -300,15 +305,16 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
         myFS0L->seek(curSeek, SEEK_SET);
         
         mp3->begin(myFS0L, out);
-        
+
+        audioplaystart = millis();
         #ifdef FC_DBG
-        Serial.println(F("Playing from flash FS"));
+        Serial.println("Playing from flash FS");
         #endif
     } else {
         playingFlux = false;
         key_playing = 0;
         #ifdef FC_DBG
-        Serial.println(F("Audio file not found"));
+        Serial.println("Audio file not found");
         #endif
     }
 }
@@ -337,6 +343,7 @@ void play_key(int k, bool stopOnly)
     if(pa_key == key_playing) {
         mp3->stop();
         key_playing = 0;
+        audioplaystart = 0;
         return;
     }
 
@@ -491,6 +498,12 @@ bool checkAudioDone()
     return true;
 }
 
+bool checkMP3Running()
+{
+    if(mp3->isRunning()) return true;
+    return false;
+}
+
 void stopAudio()
 {
     if(mp3->isRunning()) {
@@ -499,11 +512,24 @@ void stopAudio()
     appendFile = false;   // Clear appended, stop means stop.
     playingFlux = false;
     key_playing = 0;
+    audioplaystart = 0;
 }
 
 bool append_pending()
 {
     return appendFile;
+}
+
+bool checkAudioStarted()
+{
+    if(!audioplaystart)
+        return false;
+
+    if(millis() - audioplaystart < 3000) {
+        return true;
+    }
+
+    return false;
 }
 
 /*
@@ -650,6 +676,7 @@ bool mp_stop()
     if(mpActive) {
         mp3->stop();
         mpActive = false;
+        audioplaystart = 0;
     }
     
     return ret;

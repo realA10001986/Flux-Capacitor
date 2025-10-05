@@ -15,8 +15,8 @@
  ***                          Version Strings                          ***
  *************************************************************************/
 
-#define FC_VERSION       "V1.82"
-#define FC_VERSION_EXTRA "SEP222025"
+#define FC_VERSION       "V1.83"
+#define FC_VERSION_EXTRA "OCT052025"
 
 //#define FC_DBG              // debug output on Serial
 
@@ -30,10 +30,7 @@
 // This needs to be commented if WiFiManager provides mDNS
 #define FC_MDNS
 // Uncomment this if WiFiManager has mDNS enabled
-//#define FC_WM_HAS_MDNS 
-
-// Uncomment when using WiFiManager 2.0.17 or later
-//#define WIFIMANAGER_2_0_17       
+//#define FC_WM_HAS_MDNS      
 
 /*************************************************************************
  ***                           Miscellaneous                           ***

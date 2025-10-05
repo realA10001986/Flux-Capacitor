@@ -417,20 +417,20 @@ void main_boot()
 {
     // Boot center LED here (is for some reason on after reset)
     #ifdef FC_DBG
-    Serial.println(F("Booting Center LED"));
+    Serial.println("Booting Center LED");
     #endif
     centerLED.begin(CLED_CHANNEL, CLED_FREQ, CLED_RES);
 
     // Boot FC leds here to have a way to show the user whats going on
     #ifdef FC_DBG
-    Serial.println(F("Booting FC LEDs"));
+    Serial.println("Booting FC LEDs");
     #endif
     fcLEDs.begin();
 }
 
 void main_setup()
 {
-    Serial.println(F("Flux Capacitor version " FC_VERSION " " FC_VERSION_EXTRA));
+    Serial.println("Flux Capacitor version " FC_VERSION " " FC_VERSION_EXTRA);
 
     // Load settings
     loadCurSpeed();
@@ -487,7 +487,7 @@ void main_setup()
 
     // Boot remaining display LEDs (but keep them dark)
     #ifdef FC_DBG
-    Serial.println(F("Booting Box LED"));
+    Serial.println("Booting Box LED");
     #endif
     boxLED.begin(BLED_CHANNEL, BLED_FREQ, BLED_RES, PLforBL ? GPIO_14 : 255);
 
@@ -517,7 +517,7 @@ void main_setup()
 
     // Invoke audio file installer if SD content qualifies
     #ifdef FC_DBG
-    Serial.println(F("Probing for audio data on SD"));
+    Serial.println("Probing for audio data on SD");
     #endif
     if(check_allow_CPA()) {
         showWaitSequence();
@@ -530,13 +530,13 @@ void main_setup()
     }
 
     #ifdef FC_DBG
-    Serial.println(F("Booting IR Receiver"));
+    Serial.println("Booting IR Receiver");
     #endif
     ir_remote.begin();
 
     if(!haveAudioFiles) {
         #ifdef FC_DBG
-        Serial.println(F("Current audio data not installed"));
+        Serial.println("Current audio data not installed");
         #endif
         fcLEDs.SpecialSignal(FCSEQ_NOAUDIO);
         while(!fcLEDs.SpecialDone()) {
@@ -604,7 +604,7 @@ void main_setup()
     }
     
     #ifdef FC_DBG
-    Serial.println(F("main_setup() done"));
+    Serial.println("main_setup() done");
     #endif
 
     // Delete previous IR input, start fresh
