@@ -115,6 +115,8 @@
 
 /*  Changelog
  *   
+ *  2025/10/03-05 (A10001986) [1.83.1]
+ *    - Let DNS server in AP mode only resolve our domain (hostname)
  *  2025/10/03-05 (A10001986) [1.83]
  *    - More WiFiManager changes. We no longer use NVS-stored WiFi configs, 
  *      all is managed by our own settings. (No details are known, but it
@@ -127,7 +129,7 @@
  *      the device tries to connect to the TCD for MQTT, which naturally
  *      will fail.
  *  2025/09/22-10/03 (A10001986)
- *    - WiFi Manager overhaul; matching changes to Config Portal.
+ *    - WiFi Manager overhaul; many changes to Config Portal.
  *      WiFi-related settings moved to WiFi Configuration page.
  *      Note: If the FC is in AP-mode, mp3 playback will be stopped when 
  *      accessing Config Portal web pages from now on.
