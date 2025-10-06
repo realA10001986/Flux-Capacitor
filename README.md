@@ -47,7 +47,7 @@ The first step is to download "install/sound-pack-xxxxxxxx.zip" and extract it. 
 
 Then there are two alternative ways to proceed. Note that both methods *require an SD card*.
 
-1) Through the [Config Portal](#the-config-portal). Click on *Update*, select this file in the bottom file selector and click on *Upload*. Note that an SD card must be in the FC's slot during this operation.
+1) Through the [Config Portal](#the-config-portal). Click on *Update*, select this file in the bottom file selector and click on *Upload*.
 
 2) Via SD card:
 - Copy "FCA.bin" to the root directory of of a FAT32 formatted SD card;
