@@ -744,8 +744,6 @@ Check this if you have a Time Circuits Display connected by wire. Note that a wi
 
 While you can connect both a button and the TCD to the "time travel" connector on the FC, the button should not be pressed when this option is set, as it might yield unwanted effects.
 
-Also note that the process of [learning keys from an IR remote control](#ir-remote-control) requires this option to be unchecked. After learning keys is done, you can, of course, check this option again.
-
 Do NOT check this option if your TCD is connected wirelessly (BTTFN, MQTT).
 
 ##### &#9654; TCD signals Time Travel without 5s lead
