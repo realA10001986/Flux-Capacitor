@@ -600,7 +600,7 @@ Through this page you can either connect your FC to your local WiFi network, or 
 
 #### <ins>Connecting to an existing WiFi network</ins>
 
-In order to connect your FC to your WiFi network, all you need to do is either to click on one of the networks listed at the top or to enter a __Network name (SSID)__, and optionally a __passwort__ (WPAx).
+In order to connect your FC to your WiFi network, all you need to do is either to click on one of the networks listed at the top or to enter a __Network name (SSID)__, and optionally a __passwort__ (WPAx). If there is no list displayed, click on "WiFi Scan".
 
 >By default, the FC requests an IP address via DHCP. However, you can also configure a static IP for the FC by entering the IP, netmask, gateway and DNS server. All four fields must be filled for a valid static IP configuration. If you want to stick to DHCP, leave those four fields empty. If you connect your FC to your Time Circuits Display acting as access point ("TCD-AP"), leave these all empty.
 
@@ -640,7 +640,10 @@ If you forget this password and are thereby locked out of your FC, enter *123456
 
 Here you can select one out of 11 channels, or have the FC choose a random channel for you. The default channel is 1. Preferred are channels 1, 6 and 11.
 
-If a WiFi Scan was done, a "proposed channel" is displayed, based on a rather simple heuristic. The banner is green when a channel is excellent, grey when it is impeded by overlapping channels, and when that banner is red operation in AP mode is not recommended due to channels all being used.
+If a WiFi Scan was done (which can be triggered by clicking "WiFI Scan"), 
+
+- a list of networks is displayed at the top of the page; click "Show All" to list all networks including their channel;
+- a "proposed channel" is displayed near the "WiFi channel" drop-down, based on a rather simple heuristic. The banner is green when a channel is excellent, grey when it is impeded by overlapping channels, and when that banner is red operation in AP mode is not recommended due to channels all being used.
 
 The channel proposition is based on all WiFi networks found; it does not take non-WiFi equipment (babyphones, bluetooth devices, microwave ovens, etc) into account. WiFI channel selection is key for a trouble-free operation. Disturbed WiFi communication can lead to disrupted sequences, packet loss, hanging or freezing props, and other problems. A good article on WiFi channel selection is [here](https://community.ui.com/questions/Choosing-the-right-Wifi-Channel-on-2-4Ghz-Why-Conventional-Wisdom-is-Wrong/ea2ffae0-8028-45fb-8fbf-60569c6d026d).
 
