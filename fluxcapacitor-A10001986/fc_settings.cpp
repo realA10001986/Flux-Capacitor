@@ -69,6 +69,8 @@
 #include <LittleFS.h>
 #endif
 
+#include <Update.h>
+
 #include "fc_settings.h"
 #include "fc_audio.h"
 #include "fc_main.h"
@@ -110,6 +112,9 @@ static const char *irCfgName  = "/fcirkeys.json";   // IR keys (system-created) 
 static const char *irUCfgName = "/fcirkeys.txt";    // IR keys (user-created) (SD only)
 static const char *ipaCfgName = "/fcipat.json";     // Idle pattern (SD only)
 static const char *musCfgName = "/fcmcfg.json";     // Music config (SD only)
+
+static const char fwfn[]      = "/fcfw.bin";
+static const char fwfnold[]   = "/fcfw.old";
 
 static const char *jsonNames[NUM_IR_KEYS] = {
     "key0", "key1", "key2", "key3", "key4", 
@@ -183,6 +188,8 @@ static DeserializationError readJSONCfgFile(JsonDocument& json, File& configFile
 static bool writeJSONCfgFile(const JsonDocument& json, const char *fn, bool useSD, const char *funcName);
 static bool writeFileToSD(const char *fn, uint8_t *buf, int len);
 static bool writeFileToFS(const char *fn, uint8_t *buf, int len);
+
+static void firmware_update();
 
 /*
  * settings_setup()
@@ -293,6 +300,9 @@ void settings_setup()
     }
 
     if(haveSD) {
+
+        firmware_update();
+
         if(SD.exists("/FC_FLASH_RO") || !haveFS) {
             bool writedefault2 = false;
             FlashROMode = true;
@@ -420,7 +430,7 @@ static bool read_settings(File configFile)
         if(json["appw"]) {
             CopyTextParm(settings.appw, json["appw"], sizeof(settings.appw));
         } else wd = true;
-        wd |= CopyCheckValidNumParm(json["apch"], settings.apChnl, sizeof(settings.apChnl), 0, 13, DEF_AP_CHANNEL);
+        wd |= CopyCheckValidNumParm(json["apch"], settings.apChnl, sizeof(settings.apChnl), 0, 11, DEF_AP_CHANNEL);
 
         // Settings
 
@@ -778,6 +788,12 @@ bool loadCurVolume()
                     curSoftVol = ncv;
                 } 
             }
+            if(!CopyCheckValidNumParm(json["flux"], temp, sizeof(temp), 0, 3, DEFAULT_FLUX_LEVEL)) {
+                uint8_t ncv = atoi(temp);
+                if(ncv >= 0 && ncv <= 3) {
+                    fluxLvlIdx = ncv;
+                } 
+            }
         } 
         configFile.close();
     }
@@ -793,6 +809,7 @@ void saveCurVolume(bool useCache)
 {
     const char *funcName = "saveCurVolume";
     char buf[6];
+    char flbuf[6];
     DECLARE_S_JSON(512,json);
 
     if(useCache && (prevSavedVol == curSoftVol)) {
@@ -808,7 +825,9 @@ void saveCurVolume(bool useCache)
     }
 
     sprintf(buf, "%d", curSoftVol);
+    sprintf(flbuf, "%d", fluxLvlIdx);
     json["volume"] = (const char *)buf;
+    json["flux"] = (const char *)flbuf;
 
     if(writeJSONCfgFile(json, volCfgName, configOnSD, funcName)) {
         prevSavedVol = curSoftVol;
@@ -1856,3 +1875,66 @@ void renameUploadFile(int idx)
         free(t);
     }
 }
+
+// Emergency firmware update from SD card
+static void fw_error_blink(int n)
+{
+    bool leds = false;
+
+    for(int i = 0; i < n; i++) {
+        leds = !leds;
+        digitalWrite(IR_FB_PIN, leds ? HIGH : LOW);
+        delay(500);
+    }
+    digitalWrite(IR_FB_PIN, LOW);
+}
+
+static void firmware_update()
+{
+    const char *upderr = "Firmware update error %d\n";
+    uint8_t  buf[1024];
+    unsigned int lastMillis = millis();
+    bool     leds = false;
+    size_t   s;
+
+    if(!SD.exists(fwfn))
+        return;
+    
+    File myFile = SD.open(fwfn, FILE_READ);
+    
+    if(!myFile)
+        return;
+
+    pinMode(IR_FB_PIN, OUTPUT);
+    
+    if(!Update.begin(UPDATE_SIZE_UNKNOWN)) {
+        Serial.printf(upderr, Update.getError());
+        fw_error_blink(5);
+        return;
+    }
+
+    while((s = myFile.read(buf, 1024))) {
+        if(Update.write(buf, s) != s) {
+            break;
+        }
+        if(millis() - lastMillis > 1000) {
+            leds = !leds;
+            digitalWrite(IR_FB_PIN, leds ? HIGH : LOW);
+            lastMillis = millis();
+        }
+    }
+    
+    if(Update.hasError() || !Update.end(true)) {
+        Serial.printf(upderr, Update.getError());
+        fw_error_blink(5);
+    } 
+    myFile.close();
+    // Rename/remove in any case, we don't
+    // want an update loop hammer our flash
+    SD.remove(fwfnold);
+    SD.rename(fwfn, fwfnold);
+    unmount_fs();
+    delay(1000);
+    fw_error_blink(0);
+    esp_restart();
+}    

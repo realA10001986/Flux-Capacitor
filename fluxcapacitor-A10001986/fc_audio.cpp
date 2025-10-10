@@ -91,6 +91,9 @@ static const float volTable[20] = {
     0.35, 0.40, 0.50, 0.60,
     0.70, 0.80, 0.90, 1.00
 };
+static const float fluxLevels[4] = {
+    0.30, 0.50, 0.75, 1.0
+};
 // Resolution for pot, 9-12 allowed
 #define POT_RESOLUTION 9
 uint8_t         curSoftVol = DEFAULT_VOLUME;
@@ -106,6 +109,8 @@ static bool     dynVol     = true;
 static int      sampleCnt = 0;
 
 bool            playingFlux = false;
+unsigned int    fluxLvlIdx = 3;
+static float    fluxLevel = 1.0;
 uint16_t        key_playing = 0;
 
 static char     append_audio_file[256];
@@ -159,6 +164,8 @@ void audio_setup()
     }
 
     loadCurVolume();
+
+    setFluxLevel(fluxLvlIdx);
 
     loadMusFoldNum();
     mpShuffle = (settings.shuffle[0] != '0');
@@ -326,12 +333,12 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
 
 void play_flux()
 {
-    play_file("/flux.mp3", PA_ISFLUX|PA_LOOP|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
+    play_file("/flux.mp3", PA_ISFLUX|PA_LOOP|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, fluxLevel);
 }
 
 void append_flux() 
 {
-    append_file("/flux.mp3", PA_ISFLUX|PA_LOOP|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
+    append_file("/flux.mp3", PA_ISFLUX|PA_LOOP|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, fluxLevel);
 }
 
 void play_key(int k, bool stopOnly)
@@ -481,6 +488,13 @@ static float getVolume()
     if(vol_val < 0.02) vol_val = 0.02;
 
     return vol_val;
+}
+
+void setFluxLevel(unsigned int levelIdx)
+{
+    if(levelIdx > 3) levelIdx = 3;
+    fluxLevel = fluxLevels[levelIdx];
+    if(playingFlux) curVolFact = fluxLevel;
 }
 
 /*

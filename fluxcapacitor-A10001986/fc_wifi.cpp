@@ -53,11 +53,12 @@
 
 #include <Arduino.h>
 
-#ifdef FC_MDNS
+#include "src/WiFiManager/WiFiManager.h"
+
+#ifndef WM_MDNS
+#define FC_MDNS
 #include <ESPmDNS.h>
 #endif
-
-#include "src/WiFiManager/WiFiManager.h"
 
 #include "fc_audio.h"
 #include "fc_settings.h"
@@ -110,7 +111,7 @@ static const char *fluxCustHTMLSrc[6] = {
     ">Auto (60 secs)%s"
 };
 
-static const char *apChannelCustHTMLSrc[16] = {
+static const char *apChannelCustHTMLSrc[14] = {
     "<div class='cmp0'><label for='apchnl'>WiFi channel</label><select class='sel0' value='",
     "apchnl",
     ">Random%s1'",
@@ -124,19 +125,25 @@ static const char *apChannelCustHTMLSrc[16] = {
     ">8%s9'",
     ">9%s10'",
     ">10%s11'",
-    ">11%s12'",
-    ">12%s13'",
-    ">13%s"
+    ">11%s"
 };
 
 static const char *wmBuildFluxMode(const char *dest);
 static const char *wmBuildApChnl(const char *dest);
+static const char *wmBuildBestApChnl(const char *dest);
+static const char *wmBuildHaveSD(const char *dest);
 
 static const char *osde = "</option></select></div>";
 static const char *ooe  = "</option><option value='";
 static const char custHTMLSel[] = " selected";
 
 static const char *aco = "autocomplete='off'";
+
+// double-% since this goes through sprintf!
+static const char bestAP[]   = "<div class='c' style='background-color:#%s;color:#fff;font-size:80%%;border-radius:5px'>Proposed channel at current location: %d<br>%s(Non-WiFi devices not taken into account)</div>";
+static const char badWiFi[]  = "<br><i>Operating in AP mode not recommended</i>";
+
+static const char haveNoSD[] = "<div class='c' style='background-color:#dc3630;color:#fff;font-size:80%;border-radius:5px'><i>No SD card present</i></div>";
 
 // WiFi Configuration
 
@@ -152,6 +159,7 @@ WiFiManagerParameter custom_wifiConTimeout("wificon", "Connection timeout (7-25[
 WiFiManagerParameter custom_sysID("sysID", "Network name (SSID) appendix<br><span style='font-size:80%'>Will be appended to \"FC-AP\" to create a unique SSID if multiple FCs are in range. [a-z/0-9/-]</span>", settings.systemID, 7, "pattern='[A-Za-z0-9\\-]+'");
 WiFiManagerParameter custom_appw("appw", "Password<br><span style='font-size:80%'>Password to protect FC-AP. Empty or 8 characters [a-z/0-9/-]<br><b>Write this down, you might lock yourself out!</b></span>", settings.appw, 8, "minlength='8' pattern='[A-Za-z0-9\\-]+'");
 WiFiManagerParameter custom_apch(wmBuildApChnl);
+WiFiManagerParameter custom_bapch(wmBuildBestApChnl);
 
 // Settings
 
@@ -185,6 +193,7 @@ WiFiManagerParameter custom_mqttUser("ha_usr", "User[:Password]", settings.mqttU
 WiFiManagerParameter custom_TCDpresent("TCDpres", "TCD connected by wire", settings.TCDpresent, 1, "autocomplete='off' title='Check this if you have a Time Circuits Display connected via wire' type='checkbox' class='mt5'", WFM_LABEL_AFTER);
 WiFiManagerParameter custom_noETTOL("uEtNL", "TCD signals Time Travel without 5s lead", settings.noETTOLead, 1, "autocomplete='off' type='checkbox' class='mt5' style='margin-left:20px;'", WFM_LABEL_AFTER);
 
+WiFiManagerParameter custom_haveSD(wmBuildHaveSD);
 WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save secondary settings on SD<br><span style='font-size:80%'>Check this to avoid flash wear</span>", settings.CfgOnSD, 1, "autocomplete='off' type='checkbox' class='mt5 mb0'", WFM_LABEL_AFTER);
 //WiFiManagerParameter custom_sdFrq("sdFrq", "4MHz SD clock speed<br><span style='font-size:80%'>Checking this might help in case of SD card problems</span>", settings.sdFreq, 1, "autocomplete='off' type='checkbox' style='margin-top:12px'", WFM_LABEL_AFTER);
 
@@ -215,7 +224,8 @@ static const int8_t wifiMenu[TC_MENUSIZE] = {
 };
 
 #define AA_TITLE "Flux Capacitor"
-#define AA_ICON "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAxQTFRFSUpKk491zszD/PGzYuH5fAAAAD5JREFUeNpiYEIDDEwMKACHACOEwwgTYGQGK2NiZoSpYAKJgAmYGUBJmDKooYwwg3Bby8xMuQA+v6ABgAADAGYRALv2zDkbAAAAAElFTkSuQmCC"
+#define AA_ICON "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAADFBMVEVJSkrOzMP88bOTj3X+RyUkAAAAL0lEQVQI12MIBQIGBwYGRihxgJmRwXkC20EGhxRJIFf6CZDgMYDJMjWgEwi9YKMA/v8ME3vY03UAAAAASUVORK5CYII="
+//#define AA_ICON "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAxQTFRFSUpKk491zszD/PGzYuH5fAAAAD5JREFUeNpiYEIDDEwMKACHACOEwwgTYGQGK2NiZoSpYAKJgAmYGUBJmDKooYwwg3Bby8xMuQA+v6ABgAADAGYRALv2zDkbAAAAAElFTkSuQmCC"
 #define AA_CONTAINER "FCA"
 #define UNI_VERSION FC_VERSION 
 #define UNI_VERSION_EXTRA FC_VERSION_EXTRA
@@ -332,6 +342,7 @@ void wifi_setup()
       &custom_sysID,
       &custom_appw,
       &custom_apch,
+      &custom_bapch,
 
       &custom_sectend_foot,
 
@@ -373,6 +384,7 @@ void wifi_setup()
       &custom_noETTOL,
       
       &custom_sectstart,     // 2 (3)
+      &custom_haveSD,
       &custom_CfgOnSD,
       //&custom_sdFrq,
   
@@ -394,7 +406,7 @@ void wifi_setup()
     if(!settings.ssid[0] && settings.ssid[1] == 'X') {
         
         // Read NVS-stored WiFi data
-        wm.getStoredCredentials(settings.ssid, sizeof(settings.ssid) - 1, settings.pass, sizeof(settings.pass) - 1);
+        wm.getStoredCredentials(settings.ssid, sizeof(settings.ssid), settings.pass, sizeof(settings.pass));
 
         #ifdef FC_DBG
         Serial.printf("WiFi Transition: ssid '%s' pass '%s'\n", settings.ssid, settings.pass);
@@ -405,7 +417,7 @@ void wifi_setup()
 
     wm.setHostname(settings.hostName);
 
-    wm.showUploadContainer(true, AA_CONTAINER);
+    wm.showUploadContainer(haveSD, AA_CONTAINER, true);
 
     wm.setPreSaveWiFiCallback(preSaveWiFiCallback);
     wm.setSaveWiFiCallback(saveWiFiCallback);
@@ -434,8 +446,8 @@ void wifi_setup()
 
     temp = atoi(settings.apChnl);
     if(temp < 0) temp = 0;
-    if(temp > 13) temp = 13;
-    if(!temp) temp = random(1, 13);
+    if(temp > 11) temp = 11;
+    if(!temp) temp = random(1, 11);
     wm.setWiFiAPChannel(temp);
 
     temp = atoi(settings.wifiConTimeout);
@@ -449,7 +461,6 @@ void wifi_setup()
     wm.setConnectRetries(temp);
 
     wm.setCleanConnect(true);
-    //wm.setRemoveDuplicateAPs(false);
 
     wm.setMenu(wifiMenu, TC_MENUSIZE);
 
@@ -485,6 +496,9 @@ void wifi_setup()
             if(wm.getConnectRetries() < 2) {
                 wm.setConnectRetries(2);
             }
+            // Delay to give the TCD some time
+            // (differs accross the props)
+            delay(1000);
             #ifdef FC_HAVEMQTT
             useMQTT = false;
             #endif
@@ -675,7 +689,7 @@ void wifi_loop()
         stopAudio();
 
         #ifdef FC_DBG
-        Serial.println("Config Portal: Saving config"));
+        Serial.println("Config Portal: Saving config");
         #endif
 
         // Only read parms if the user actually clicked SAVE on the wifi config or params pages
@@ -1327,9 +1341,36 @@ static const char *wmBuildApChnl(const char *dest)
     char *str = (char *)malloc(600);    // actual length 564
 
     str[0] = 0;
-    buildSelectMenu(str, apChannelCustHTMLSrc, 16, settings.apChnl);
+    buildSelectMenu(str, apChannelCustHTMLSrc, 14, settings.apChnl);
     
     return str;
+}
+
+static const char *wmBuildBestApChnl(const char *dest)
+{
+    if(dest) {
+      free((void *)dest);
+      return NULL;
+    }
+
+    int32_t mychan = 0;
+    int qual = 0;
+
+    if(wm.getBestAPChannel(mychan, qual)) {
+        char *str = (char *)malloc(STRLEN(bestAP) + 4 + 7 + STRLEN(badWiFi) + 1);
+        sprintf(str, bestAP, qual < 0 ? "dc3630" : (qual > 0 ? "609b71" : "777"), mychan, qual < 0 ? badWiFi : "");
+        return str;
+    }
+
+    return NULL;
+}
+
+static const char *wmBuildHaveSD(const char *dest)
+{
+    if(dest || haveSD)
+        return NULL;
+
+    return haveNoSD;
 }
 
 /*

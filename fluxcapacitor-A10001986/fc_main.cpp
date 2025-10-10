@@ -1816,24 +1816,15 @@ static int execute(bool isIR)
                     } else doInpReaction = -1;
                 }
                 break;
-            case 30:                              // *30 - *34: Set minimum box light level
+            case 30:                              // *30 - *34: Set flux relative volume level
             case 31:
             case 32:
             case 33:
-            case 34:
                 if(!isIRLocked) {
-                    if(!TTrunning) {
-                        minBLL = temp - 30;
-                        boxLED.setDC(mbllArray[minBLL]);
-                        bllchanged = true;
-                        bllchgnow = now;
-                        doInpReaction = 1;
-                    } else doInpReaction = -1;
-                }
-                break;
-            case 40:                              // *40 set default speed
-                if(!isIRLocked) {
-                    doInpReaction = resetIRSpeed() ? 1 : -1;
+                    setFluxLevel(temp - 30);
+                    volchanged = true;
+                    volchgnow = millis();
+                    doInpReaction = TTrunning ? -1 : 1;
                 }
                 break;
             case 70:                              // *70 lock/unlock ir
@@ -1856,6 +1847,11 @@ static int execute(bool isIR)
                 break;
             case 71:                              // *71 Taken by SID IR lock sequence
                 // Stay silent
+                break;
+            case 80:                              // *80 set default speed
+                if(!isIRLocked) {
+                    doInpReaction = resetIRSpeed() ? 1 : -1;
+                }
                 break;
             case 81:                              // *81 Toggle knob use for LED speed
                 if(!isIRLocked) {
@@ -1957,6 +1953,16 @@ static int execute(bool isIR)
                     volchgnow = millis();
                 } else {
                     doInpReaction = -1;
+                }
+            } else if(temp >= 400 && temp <= 404) {
+                if(!isIRLocked) {
+                    if(!TTrunning) {
+                        minBLL = temp - 400;
+                        boxLED.setDC(mbllArray[minBLL]);
+                        bllchanged = true;
+                        bllchgnow = now;
+                        doInpReaction = 1;
+                    } else doInpReaction = -1;
                 }
             } else {
                 if(!TTrunning) {
@@ -2522,9 +2528,9 @@ static void bttfn_setup()
 }
 
 void bttfn_loop()
-{
+{   
     #ifdef BTTFN_MC
-    int t = 10;
+    int t = 100;
     #endif
     
     if(!useBTTFN)
@@ -2550,7 +2556,7 @@ void bttfn_loop()
 static void bttfn_loop_quick()
 {
     #ifdef BTTFN_MC
-    int t = 10;
+    int t = 100;
     #endif
     
     if(!useBTTFN)
@@ -2661,6 +2667,10 @@ static bool bttfn_checkmc()
     if(!psize) {
         return false;
     }
+
+    // This returns true as long as a packet was received
+    // regardless whether it was for us or not. Point is
+    // to clear the receive buffer.
     
     fcMcUDP->read(BTTFMCBuf, BTTF_PACKET_SIZE);
 
@@ -2670,26 +2680,26 @@ static bool bttfn_checkmc()
 
     if(haveTCDIP) {
         if(bttfnTcdIP != fcMcUDP->remoteIP())
-            return false;
+            return true; //false;
     } else {
         // Do not use tcdHostNameHash; let DISCOVER do its work
         // and wait for a result.
-        return false;
+        return true; //false;
     }
 
     if(!check_packet(BTTFMCBuf))
-        return false;
+        return true; //false;
 
     if((BTTFMCBuf[4] & 0x4f) == (BTTFN_VERSION | 0x40)) {
 
         // A notification from the TCD
         handle_tcd_notification(BTTFMCBuf);
     
-    } else {
+    } /*else {
       
         return false;
 
-    }
+    }*/
 
     return true;
 }

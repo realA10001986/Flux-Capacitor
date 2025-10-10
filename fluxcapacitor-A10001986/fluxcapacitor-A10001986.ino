@@ -101,20 +101,44 @@
  *
  * - Go to "Sketch" -> "Upload" to compile and upload the firmware to your ESP32 board.
  *
- * - Install the audio data: 
+ * - Install the sound-pack: 
  *   Method 1:
- *   - Go to Config Portal, click "Update" and upload the audio data (FCA.bin, extracted
+ *   - Go to Config Portal, click "Update" and upload the sound-pack (FCA.bin, extracted
  *     from install/sound-pack-xxxxxxxx.zip) through the bottom file selector.
  *     An SD card must be present in the slot during this operation.
  *   Method 2:
  *   - Copy FCA.bin to the top folder of a FAT32 (not ExFAT!) formatted SD card (max 
  *     32GB) and put this card into the slot while the FC is powered down. 
- *   - Now power-up. The audio files will now be installed. When finished, the FC will 
+ *   - Now power-up. The sound-pack will now be installed. When finished, the FC will 
  *     reboot.
  */
 
 /*  Changelog
  *   
+ *  2025/10/08 (A10001986) [1.84]
+ *    - Add control of relative flux volume level; *30-*33. Defaults to
+ *      *33 which is the level used before. Saved together with volume.
+ *    - "Box light level" control code moved to *400-*404
+ *    - "Reset to default speed" control code moved to *80
+ *    - WM: Set "world safe" country info, limiting choices to 11 channels
+ *    - WM: Add "show all", add channel info (when all are shown) and
+ *      proposed AP WiFi channel on WiFi Configuration page.
+ *    - Experimental: Change bttfn_checkmc() to return true as long as 
+ *      a packet was received (as opposed to false if a packet was received
+ *      but not for us, malformed, etc). Also, change the max packet counter
+ *      in bttfn_loop(_quick)() from 10 to 100 to get more piled-up old 
+ *      packets out of the way.
+ *    - Add a delay when connecting to TCD-AP so not all props hammer the
+ *      TCD-AP at the very same time
+ *    - WM: Use events when connecting, instead of delays
+ *  2025/10/07 (A10001986)
+ *    - Add emergency firmware update via SD (for dev purposes)
+ *    - WM fixes (Upload, etc)
+ *  2025/10/06 (A10001986)
+ *    - WM: Skip setting static IP params in Save
+ *    - Add "No SD present" banner in Config Portal if no SD present
+ *  2025/10/05 (A10001986)
+ *    - CP: Show msg instead of upload file input if no sd card is present
  *  2025/10/03-05 (A10001986) [1.83.1]
  *    - Let DNS server in AP mode only resolve our domain (hostname)
  *  2025/10/03-05 (A10001986) [1.83]
@@ -124,10 +148,7 @@
  *      is totally not needed for our purposes, nor in the interest of 
  *      flash longevity.)
  *    - Save static IP only if changed
- *    - Disable MQTT when connected to "TCD-AP"; the TCD runs a captive DNS,
- *      resolves the MQTT server domain with the TCD's IP, and as a result
- *      the device tries to connect to the TCD for MQTT, which naturally
- *      will fail.
+ *    - Disable MQTT when connected to "TCD-AP"
  *  2025/09/22-10/03 (A10001986)
  *    - WiFi Manager overhaul; many changes to Config Portal.
  *      WiFi-related settings moved to WiFi Configuration page.

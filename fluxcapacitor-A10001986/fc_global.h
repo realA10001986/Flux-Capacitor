@@ -15,22 +15,10 @@
  ***                          Version Strings                          ***
  *************************************************************************/
 
-#define FC_VERSION       "V1.83"
-#define FC_VERSION_EXTRA "OCT052025"
+#define FC_VERSION       "V1.84"
+#define FC_VERSION_EXTRA "OCT102025"
 
-//#define FC_DBG              // debug output on Serial
-
-/*************************************************************************
- ***                     mDNS (Bonjour) support                        ***
- *************************************************************************/
-
-// Supply mDNS service 
-// Allows accessing the Config Portal via http://hostname.local
-// <hostname> is configurable in the Config Portal
-// This needs to be commented if WiFiManager provides mDNS
-#define FC_MDNS
-// Uncomment this if WiFiManager has mDNS enabled
-//#define FC_WM_HAS_MDNS      
+//#define FC_DBG              // debug output on Serial   
 
 /*************************************************************************
  ***                           Miscellaneous                           ***

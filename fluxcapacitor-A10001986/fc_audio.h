@@ -55,6 +55,8 @@
 // Default volume (index or 255 for knob)
 #define DEFAULT_VOLUME 6
 
+#define DEFAULT_FLUX_LEVEL 3
+
 #define PA_LOOP    0x0001
 #define PA_INTRMUS 0x0002
 #define PA_ALLOWSD 0x0004
@@ -72,6 +74,8 @@ void append_file(const char *audio_file, uint16_t flags, float volumeFactor = 1.
 void play_flux();
 void append_flux();
 void play_key(int k, bool stopOnly = false);
+
+void setFluxLevel(unsigned int levelIdx);
 
 bool check_file_SD(const char *audio_file);
 bool checkAudioDone();
@@ -100,6 +104,7 @@ extern bool    haveMusic;
 extern bool    mpActive;
 
 extern bool    playingFlux;
+extern unsigned int fluxLvlIdx;
 
 extern uint8_t curSoftVol;
 
