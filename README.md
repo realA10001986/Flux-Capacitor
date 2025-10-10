@@ -157,9 +157,9 @@ Each time you press a (recognized) key on the remote, an IR feedback LED will br
 
 Your FC can learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, especially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards, that remote is of that type and cannot be used.
 
-As of firmware 1.72, IR learning can be initiated by entering *987654 followed by OK on the standard IR remote. (The old method described below is still supported.)
+As of firmware 1.72, IR learning can be initiated by entering *987654 followed by OK on the standard IR remote.
 
-With earlier firmware versions, IR learning required a physical [Time Travel](#time-travel) button, and the option **_TCD connected by wire_** in the Config Portal needs to be unchecked. To start the learning process, hold the [Time Travel](#time-travel) button for a few seconds. 
+>With earlier firmware versions, IR learning required a physical [Time Travel](#time-travel) button, and the option **_TCD connected by wire_** in the Config Portal needs to be unchecked. To start the learning process, hold the [Time Travel](#time-travel) button for a few seconds. 
 
 When IR learning is started, the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Afterwards, the IR feedback LED will keep blinking - this means the FC is ready to receive a key from your IR remote. Press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then, again while the IR feedback LED is blinking, press "1", wait for the acknowledgement, and so on. Enter your keys in the following order:
 
