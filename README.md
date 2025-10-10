@@ -252,12 +252,8 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">*23&#9166;</td><td>3023</td>
     </tr>
     <tr>
-     <td align="left">Set minimum box light level (0-4)</td>
-     <td align="left">*30&#9166; - *34&#9166;</td><td>3030-3034</td>
-    </tr>
-     <tr>
-     <td align="left">Reset chase speed to default (*)</td>
-     <td align="left">*40&#9166;</td><td>3040</td>
+     <td align="left">Set relative flux volume level (0-3)</td>
+     <td align="left">*30&#9166; - *33&#9166;</td><td>3030-3033</td>
     </tr>
      <tr>
      <td align="left">Select audio volume level (00-19)</td>
@@ -266,6 +262,10 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     <tr>
      <td align="left">Enable built-in volume knob</td>
      <td align="left">*399&#9166;</td><td>3399</td>
+    </tr>
+    <tr>
+     <td align="left">Set minimum box light level (0-4)</td>
+     <td align="left">*400&#9166; - *34&#9166;</td><td>3400-3404</td>
     </tr>
     <tr>
      <td align="left"><a href="#the-music-player">Music Player</a>: Select music folder (0-9)</td>
@@ -290,6 +290,10 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     <tr>
      <td align="left"><a href="#locking-ir-control">Disable/Enable</a> IR remote commands</td>
      <td align="left">*70&#9166;</td><td>3070</td>
+    </tr>
+    <tr>
+     <td align="left">Reset chase speed to default (*)</td>
+     <td align="left">*80&#9166;</td><td>3080</td>
     </tr>
     <tr>
      <td align="left">Toggle usage of speed knob</td>
@@ -337,11 +341,13 @@ The flux sound can be permanently disabled, permanently enabled, or enabled for 
 
 The different modes are selected by typing *20 (disabled), *21 (enabled), *22 (enabled for 30 secs) or *23 (enabled for 60 secs), followed by OK. The power-up default is selected in the [Config Portal](#appendix-a-the-config-portal).
 
+The flux sound's volume level, relative to general volume, can be adjusted in four levels by typing *30 (lowest) to *33 (loudest), followed by OK. This setting is saved 10 seconds after the last change.
+
 ## Box lighting
 
 The FC features connectors for box lights, ie LEDs that light up the inside of the FC during the time travel sequence. Those should be installed, they are essential part of the time travel sequence. The kit from CircuitSetup contains suitable high-power LEDs for box lighting, and all four of those must be connected to the "Box LED" connectors. Their ideal location is in each corner, as close to the front (door) as possible.
 
-In normal operation, those LEDs are off. You can, however, configure a minimum box light level to light up the box a little bit if you find it too dark. This level can be chosen out of five, by entering *30 through *34 followed by OK.
+In normal operation, those LEDs are off. You can, however, configure a minimum box light level to light up the box a little bit if you find it too dark. This level can be chosen out of five, by entering *400 through *404 followed by OK.
 
 > As an alternative to the included LEDs, one could use four pieces of 3W High-Power KEYES LED modules and drive them via the GPIO14 connector. Since those draw quite much power, their power pins should be connected directly to the power supply (provided you drive your FC at 5V; otherwise you need to grab the power from the control board), and only the "PWD" input should be wired to the "IO14" pin of the "GPIO14" connector. If you use the GPIO14 connector for your box LEDs, check the [Use GPIO14 for Box Lights](#-use-gpio14-for-box-lights) option in the Config Portal.
 
@@ -630,9 +636,11 @@ If you forget this password and are thereby locked out of your FC, enter *123456
 
 ##### &#9654; WiFi channel
 
-Here you can select one out of 13 channels, or have the FC choose a random channel for you. The default channel is 1.
+Here you can select one out of 11 channels, or have the FC choose a random channel for you. The default channel is 1. Preferred are channels 1, 6 and 11.
 
-If you are in the US, please select a channel between 1 and 11. All above 11 are not legal. A future update will limit this to 11 channels.
+If a WiFi Scan was done, a "proposed channel" is displayed, based on a rather simple heuristic. The banner is green when a channel is excellent, grey when it is impeded by overlapping channels, and when that banner is red operation in AP mode is not recommended due to channels all being used.
+
+The channel proposition is based on all WiFi networks found; it does not take non-WiFi equipment (babyphones, bluetooth devices, microwave ovens, etc) into account. WiFI channel selection is key for a trouble-free operation. Disturbed WiFi communication can lead to disrupted sequences, packet loss, hanging or freezing props, and other problems. A good article on WiFi channel selection is [here](https://community.ui.com/questions/Choosing-the-right-Wifi-Channel-on-2-4Ghz-Why-Conventional-Wisdom-is-Wrong/ea2ffae0-8028-45fb-8fbf-60569c6d026d).
 
 ---
 
