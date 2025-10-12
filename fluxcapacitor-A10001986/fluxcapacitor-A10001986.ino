@@ -115,6 +115,9 @@
 
 /*  Changelog
  *   
+ *  2025/10/11 (A10001986) [1.84.1]
+ *    - More WM changes: Simplify "Forget" using a checkbox; redo signal quality
+ *      assessment; remove over-engineered WM debug stuff.
  *  2025/10/08 (A10001986) [1.84]
  *    - Add control of relative flux volume level; *30-*33. Defaults to
  *      *33 which is the level used before. Saved together with volume.
