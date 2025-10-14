@@ -316,9 +316,7 @@ class WiFiManager
     #endif
 
     // gets number of retries for autoconnect, force retry after wait failure exit
-    #ifdef WM_ADDLGETTERS
     uint8_t       getConnectRetries();
-    #endif
 
     // make some HTML templates available for app
     const char *  getHTTPSTART(int& titleStart);

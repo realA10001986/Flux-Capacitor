@@ -3109,12 +3109,10 @@ String WiFiManager::getWiFiHostname()
     return (String)WiFi.getHostname();
 }
 
-#ifdef WM_ADDLGETTERS
 uint8_t WiFiManager::getConnectRetries()
 {
     return _connectRetries;
 }
-#endif
 
 /**
  * return the last known connection result
