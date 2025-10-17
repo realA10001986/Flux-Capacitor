@@ -327,7 +327,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     </tr>
 </table>
 
-(*) Chase speed changes are not executed if a speed knob is active; if the FC uses GPS/Rotary Encoder/Futaba Remote Control speed from a TCD, the selected chase speed corresponds to 0mph and is scaled between 0 and 88mph accordingly.
+(*) Chase speed changes are not executed if a speed knob is active. If the FC receives and uses GPS/Rotary Encoder/Futaba Remote Control speed from a TCD, the selected chase speed corresponds to 0mph; the available range between the currently selected chase speed and the maximum chase speed is what is mapped to TCD/Remote-speeds from 0 to 88mph.
 
 [Here](https://github.com/realA10001986/Flux-Capacitor/blob/main/CheatSheet.pdf) is a cheat sheet for printing or screen-use. (Note that MacOS' preview application has a bug that scrambles the links in the document. Acrobat Reader does it correctly.)
 
