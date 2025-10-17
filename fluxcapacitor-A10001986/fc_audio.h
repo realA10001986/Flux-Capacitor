@@ -73,7 +73,8 @@ void append_file(const char *audio_file, uint16_t flags, float volumeFactor = 1.
 
 void play_flux();
 void append_flux();
-void play_key(int k, bool stopOnly = false);
+bool play_key(int k, bool stopOnly = false);
+bool play_usersnd(int num);
 
 void setFluxLevel(unsigned int levelIdx);
 
@@ -105,6 +106,7 @@ extern bool    mpActive;
 
 extern bool    playingFlux;
 extern unsigned int fluxLvlIdx;
+extern float   fluxLevel;
 
 extern uint8_t curSoftVol;
 

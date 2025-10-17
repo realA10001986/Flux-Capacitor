@@ -240,6 +240,13 @@ static volatile uint8_t  _specialidx = 0;
 static volatile int16_t  _specialticks = 0;
 static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
         {                                               // 1: startup
+          SS_ONESHOT,
+          0b100000, 14, 0b110000, 14, 0b111000, 14,
+          0b111100, 14, 0b111110, 14, 0b111111, 30,
+          0b111110, 18, 0b111100, 21, 0b111000, 24,
+          0b110000, 27, 0b100000, 55, 0b000000, 105, 
+          SS_END
+/*
           #define SPD 20
           SS_ONESHOT,
           0b100000, SPD, 0b110000, SPD, 0b111000, SPD,
@@ -248,6 +255,7 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
           0b110000, SPD, 0b100000, SPD, SS_END
           // No "all off" at end, never run when FC chase is off
           #undef SPD
+*/          
         },
         {                                               // 2: error: no audio files installed (128)
           SS_ONESHOT,
@@ -316,6 +324,24 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
           0b000000,  10,
           0b000101,  50, 0b000000,  50,
           0b000101,  50, 0b000000,  50, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 13: User signal 1, triggered by MQTT command
+          0b000000,  10,
+          0b000111,  50, 0b000000,  50,
+          0b000111,  50, 0b000000,  50,
+          0b000111,  50, 0b000000,  50,
+          0b000111,  50, 0b000000,  50,
+          0b000111,  50, 0b000000,  50, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 14: User signal 2, triggered by MQTT command
+          0b000000,  10,
+          0b111000,  50, 0b000000,  50,
+          0b111000,  50, 0b000000,  50,
+          0b111000,  50, 0b000000,  50,
+          0b111000,  50, 0b000000,  50,
+          0b111000,  50, 0b000000,  50, SS_END
         }
 };        
 

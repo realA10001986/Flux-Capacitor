@@ -88,7 +88,9 @@ class PWMLED {
 #define FCSEQ_REMSTART   10
 #define FCSEQ_REMEND     11
 #define FCSEQ_NOMUSIC    12
-#define FCSEQ_MAX        FCSEQ_NOMUSIC
+#define FCSEQ_USER1      13
+#define FCSEQ_USER2      14
+#define FCSEQ_MAX        FCSEQ_USER2
 
 /*
  * FC LEDs class

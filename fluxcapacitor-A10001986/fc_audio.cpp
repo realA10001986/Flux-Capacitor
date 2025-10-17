@@ -110,7 +110,7 @@ static int      sampleCnt = 0;
 
 bool            playingFlux = false;
 unsigned int    fluxLvlIdx = 3;
-static float    fluxLevel = 1.0;
+float           fluxLevel = 1.0;
 uint16_t        key_playing = 0;
 
 static char     append_audio_file[256];
@@ -120,6 +120,9 @@ static bool     appendFile = false;
 
 static char     keySnd[] = "/key3.mp3";   // not const
 static bool     haveKeySnd[10];
+
+static const char *userSnd[2] = { "/user1.mp3", "/user2.mp3" };
+static bool     haveUserSnd[2] = { false, false };
 
 static const char *tcdrdone = "/TCD_DONE.TXT";   // leave "TCD", SD is interchangable this way
 unsigned long   renNow1;
@@ -189,6 +192,9 @@ void audio_setup()
         keySnd[4] = '0' + i;
         haveKeySnd[i] = check_file_SD(keySnd);
     }
+
+    haveUserSnd[0] = check_file_SD(userSnd[0]);
+    haveUserSnd[1] = check_file_SD(userSnd[1]);
 
     audioInitDone = true;
 }
@@ -341,25 +347,39 @@ void append_flux()
     append_file("/flux.mp3", PA_ISFLUX|PA_LOOP|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, fluxLevel);
 }
 
-void play_key(int k, bool stopOnly)
+bool play_key(int k, bool stopOnly)
 {
     uint16_t pa_key = (k == 9) ? 0x8000 : (1 << (7+k));
     
-    if(!haveKeySnd[k]) return;    
+    if(!haveKeySnd[k]) return false;    
 
     if(pa_key == key_playing) {
         mp3->stop();
         key_playing = 0;
         audioplaystart = 0;
-        return;
+        return true;
     }
 
     if(stopOnly)
-        return;
+        return true;
 
     keySnd[4] = '0' + k;
     
     play_file(keySnd, pa_key|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
+
+    return true;
+}
+
+bool play_usersnd(int num)
+{
+    if(num < 1 || num > 2) return false;
+    num--;
+    
+    if(!haveUserSnd[num]) return false;    
+    
+    play_file(userSnd[num], PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
+
+    return true;
 }
 
 /*
@@ -493,6 +513,7 @@ static float getVolume()
 void setFluxLevel(unsigned int levelIdx)
 {
     if(levelIdx > 3) levelIdx = 3;
+    fluxLvlIdx = levelIdx;
     fluxLevel = fluxLevels[levelIdx];
     if(playingFlux) curVolFact = fluxLevel;
 }

@@ -279,6 +279,7 @@ static bool          remMode = false;
 static bool          remHoldKey = false;
 
 uint16_t lastIRspeed = FC_SPD_IDLE;
+uint16_t lastPotspeed = FC_SPD_IDLE;
 
 // BTTF network
 #define BTTFN_VERSION              1
@@ -934,9 +935,9 @@ void main_loop()
                         if(!networkAbort) {
                             play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
                         }
-                        if(playFLUX) {
-                            append_flux();
-                        }
+                        //if(playFLUX) {
+                        //    append_flux();
+                        //}
                     }
                 }
             }
@@ -979,6 +980,9 @@ void main_loop()
                     } else {
                         fDone = true;
                         fcLEDs.setSpeed(TTSSpd);
+                        if(playFLUX) {
+                           append_flux();
+                        }
                     }
                 }
 
@@ -1231,10 +1235,8 @@ void main_loop()
         networkAlarm = false;
         if(atoi(settings.playALsnd) > 0) {
             play_file("/alarm.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
-            if(FPBUnitIsOn && !ssActive) {
-                if(playFLUX == 1) {
-                    append_flux();
-                }
+            if(FPBUnitIsOn && !ssActive && contFlux()) {
+                append_flux();
             }
         }
         // No special handling for !FPBUnitIsOn needed, when
@@ -1343,7 +1345,11 @@ static void timeTravel(bool TCDtriggered, uint16_t P0Dur)
 static int convertGPSSpeed(int16_t spd)
 {
     // GPS speeds 0-87 translate into fc LED speeds IDLE - 3; 88+ => 3 (2 reserved for tt)
-    return (spd >= 88) ? 3 : ((87 - spd) * (FC_SPD_IDLE-3) / 87) + 3;
+    
+    int16_t bspd = useSKnob ? lastPotspeed : lastIRspeed;
+
+    return (spd >= 88) ? 3 : ((87 - spd) * (bspd-3) / 87) + 3;
+    //return (spd >= 88) ? 3 : ((87 - spd) * (FC_SPD_IDLE-3) / 87) + 3;
 }
 
 /*
@@ -1487,9 +1493,10 @@ static uint8_t read2digs(uint8_t idx)
 static void doKeySound(int key)
 {   
     if(!TTrunning) {
-        play_key(key);
-        if(contFlux()) {
-            append_flux();
+        if(play_key(key)) {
+            if(contFlux()) {
+                append_flux();
+            }
         }
     }
 }
@@ -1866,7 +1873,7 @@ static int execute(bool isIR)
                 break;
             case 85:
                 if(!TTrunning && !isIRLocked) {
-                    play_file("/fluxing.mp3", PA_INTRMUS, 1.0);
+                    play_file("/fluxing.mp3", PA_INTRMUS, playFLUX ? fluxLevel : 1.0);
                     if(contFlux()) {
                         append_flux();
                     }
@@ -2111,7 +2118,7 @@ static void setPotSpeed()
 
         uint16_t spd = getRawSpeed() / (((1 << POT_RESOLUTION) - 1) / POT_GRAN);
         if(spd > POT_GRAN - 1) spd = POT_GRAN - 1;
-        spd = potSpeeds[spd];
+        lastPotspeed = spd = potSpeeds[spd];
         if(fcLEDs.getSpeed() != spd) {
             fcLEDs.setSpeed(spd);
         }
@@ -2250,6 +2257,17 @@ void endWaitSequence()
 void showCopyError()
 {
     fcLEDs.SpecialSignal(FCSEQ_ERRCOPY);
+}
+
+void showUserSignal(int num)
+{
+    // num = 1 or 2
+    fcLEDs.SpecialSignal((num == 1) ? FCSEQ_USER1 : FCSEQ_USER2);
+    if(play_usersnd(num)) {
+        if(FPBUnitIsOn && !ssActive && contFlux()) {
+            append_flux();
+        }
+    }
 }
 
 void allOff()

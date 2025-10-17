@@ -115,6 +115,28 @@
 
 /*  Changelog
  *   
+ *  2025/10/17 (A10001986) [1.85]
+ *    - New sound pack; new startup-sequence, and new re-entry sequence.
+ *      Re-done due to flux sound level being adjustable now.
+ *    - Chase speed, when determined by the TCD through GPS, rotary encoder or
+ *      through Futaba Remote, or while accelerating/decelerating due to a 
+ *      time travel, is now based on the idle speed set by the IR control or the
+ *      speed knob. Previously, the speed-to-chase-speed conversion was based
+ *      on a fixed idle speed. This means that when you select a faster idle
+ *      speed (eg using the IR remote), this very chase speed, instead of a
+ *      fixed idle speed, will now correspond to 0mph.
+ *    - Wipe flash FS if alien VER found; in case no VER is present, check
+ *      available space for audio files, and wipe if not enough.
+ *  2025/10/16 (A10001986)
+ *    - Fix saving of relative Flux volume level
+ *    - MQTT: Add two user signals, to be triggered by sending commands "USER1"
+ *      or "USER2" to bttf/fc/cmd topic. These signals are accompanied by sound
+ *      if the SD card contains "user1.mp3" or "user2.mp3". No default sound.
+ *    - Minor code optim (settings)
+ *    - WM: More event-based waiting instead of delays
+ *  2025/10/15 (A10001986)  
+ *    - Some more WM changes. Number of scanned networks listed is now restricted 
+ *      in order not to run out of memory.
  *  2025/10/14 (A10001986) [1.84.2]
  *    - WM: Do not garble UTF8 SSID; skip SSIDs with non-printable characters
  *    - Fix regression in CP ("show password")

@@ -101,6 +101,8 @@ void showWaitSequence();
 void endWaitSequence();
 void showCopyError();
 
+void showUserSignal(int num);
+
 void allOff();
 void prepareReboot();
 
