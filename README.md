@@ -389,9 +389,10 @@ The following sounds are time-sync'd to display action. If you decide to substit
 
 The firmware supports some additional user-provided sound effects, which it will load from the SD card. If the respective file is present, it will be used. If that file is absent, no sound will be played.
 
+- "user1.mp3", "user2.mp3": Played when the FC receives [MQTT commands](#home-assistant--mqtt) "USER1" and "USER2", respectively.
 - "key1.mp3", "key3.mp3", "key4.mp3", "key6.mp3", "key7.mp3", "key9.mp3": Will be played if you press the "1"/"3"/"4"/"6"/"7"/"9" button on your remote.
 
-> The seemingly odd numbering is because of synchronicity with other props, especially the TCD and its keymap where the MusicPlayer also occupies keys 2, 5, 8.
+> The seemingly odd numbering of keyX files is because of synchronicity with other props, especially the TCD and its keymap where the MusicPlayer also occupies keys 2, 5, 8.
 
 Those files are not provided here. You can use any mp3, with a bitrate of 128kpbs or less.
 
@@ -520,6 +521,8 @@ The FC can - to some extent - be controlled through messages sent to topic **btt
 - MP_SHUFFLE_ON: Enables shuffle mode in [Music Player](#the-music-player)
 - MP_SHUFFLE_OFF: Disables shuffle mode in [Music Player](#the-music-player)
 - MP_FOLDER_x: x being 0-9, set Music Folder number for [Music Player](#the-music-player)
+
+Additionally, the FC features two user chase-LED-signals that can be triggered by commands USER1 and USER2. These signals can be accompanied by sound, if "user1.mp3" and/or "user2.mp3" are present on the SD card. This can be used freely, like for HA-integrated door bells, actuators, etc. 
 
 ### Receive commands from Time Circuits Display
 
