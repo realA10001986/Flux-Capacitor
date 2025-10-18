@@ -79,7 +79,7 @@ It is ok to leave it in AP-mode, predominantly if used stand-alone. (To keep ope
 
 >If you want your device to remain in AP-mode, please choose a suitable WiFi channel on the Config Portal's "WiFi Configuration" page. See [here](#-wifi-channel).
 
->For experts: In the following, the term "WiFi network" is used for both "WiFi network" and "ip network" for simplicity reasons. However, for BTTFN/MQTT communication, the devices must (only) be on the same ip network, regardless of how they take part in it: They can be can be connected to different WiFi networks, if those WiFi networks are part of the same ip network, or, in case of the MQTT broker, by wire. If the TCD operates as access point for other props, connecting a prop to the TCD's WiFi network also takes care of suitable ip network configuration through DHCP.
+>For experts: In the following, the term "WiFi network" is used for both "WiFi network" and "ip network" for simplicity reasons. However, for BTTFN/MQTT communication, the devices must (only) be on the same ip network, regardless of how they take part in it: They can be connected to different WiFi networks, if those WiFi networks are part of the same ip network, or, in case of the MQTT broker, by wire. If the TCD operates as access point for other props, connecting a prop to the TCD's WiFi network also takes care of suitable ip network configuration through DHCP.
 
 ##### &#9654; Home setup with a pre-existing local WiFi network
 
@@ -93,7 +93,7 @@ In this case, you can connect your FC to your home WiFi network: Click on "WiFi 
 
 In this case and with no [Time Circuits Display](https://tcd.out-a-ti.me) at hand, keep your FC operating in AP-mode.
 
-If you have a TCD, you can connect your FC to the TCD's own WiFi network: Run the TCD in AP-Mode, and on your FC's Config Portal, click on "WiFi Configuration" and either select "TCD-AP" from the top of the page or enter "TCD-AP" under *Network name (SSID)*. If you password-proteced your TCD-AP, enter this password below. See [here](#car-setup) for more details.
+If you have a TCD, you can connect your FC to the TCD's own WiFi network: Run the TCD in AP-Mode, and on your FC's Config Portal, click on "WiFi Configuration" and either select "TCD-AP" from the top of the page or enter "TCD-AP" under *Network name (SSID)*. If you password-protected your TCD-AP, enter this password below. See [here](#car-setup) for more details.
 
 After completing WiFi setup, your FC is ready for use; you can also continue configuring it to your personal preferences through the Config Portal.
 
@@ -392,7 +392,7 @@ The firmware supports some additional user-provided sound effects, which it will
 - "user1.mp3", "user2.mp3": Played when the FC receives [MQTT commands](#home-assistant--mqtt) "USER1" and "USER2", respectively.
 - "key1.mp3", "key3.mp3", "key4.mp3", "key6.mp3", "key7.mp3", "key9.mp3": Will be played if you press the "1"/"3"/"4"/"6"/"7"/"9" button on your remote.
 
-> The seemingly odd numbering of keyX files is because of synchronicity with other props, especially the TCD and its keymap where the MusicPlayer also occupies keys 2, 5, 8.
+> The seemingly odd numbering of keyX files is because of synchronicity with other props, especially the TCD and its keymap where the Music Player also occupies keys 2, 5, 8.
 
 Those files are not provided here. You can use any mp3, with a bitrate of 128kpbs or less.
 
@@ -461,7 +461,7 @@ The FC can, through its IR remote control, remote control the TCD keypad. The TC
 
 In order to start TCD keypad remote control, type *95OK on the FC's IR remote control.
 
-Keys 0-9 as well as OK (=ENTER) will now be registrered by the TCD as key presses.
+Keys 0-9 as well as OK (=ENTER) will now be registered by the TCD as key presses.
 
 "Holding" a key on the TCD keypad is emulated by pressing * followed by the key, for instance *1 (in order to toggle the TCD alarm). Only keys 0-9 can be "held".
 
@@ -522,7 +522,7 @@ The FC can - to some extent - be controlled through messages sent to topic **btt
 - MP_SHUFFLE_OFF: Disables shuffle mode in [Music Player](#the-music-player)
 - MP_FOLDER_x: x being 0-9, set Music Folder number for [Music Player](#the-music-player)
 
-Additionally, the FC features two user chase-LED-signals that can be triggered by commands USER1 and USER2. These signals can be accompanied by sound, if "user1.mp3" and/or "user2.mp3" are present on the SD card. This can be used freely, like for HA-integrated door bells, actuators, etc. 
+Additionally, the FC features two user chase-LED-signals that can be triggered by commands USER1 and USER2. These signals can be accompanied by sound, if "user1.mp3" and/or "user2.mp3" are present on the SD card. This can be used freely, like for HA-integrated doorbells, actuators, etc. 
 
 ### Receive commands from Time Circuits Display
 
@@ -603,7 +603,7 @@ Through this page you can either connect your FC to your local WiFi network, or 
 
 #### <ins>Connecting to an existing WiFi network</ins>
 
-In order to connect your FC to your WiFi network, all you need to do is either to click on one of the networks listed at the top or to enter a __Network name (SSID)__, and optionally a __passwort__ (WPAx). If there is no list displayed, click on "WiFi Scan".
+In order to connect your FC to your WiFi network, all you need to do is either to click on one of the networks listed at the top or to enter a __Network name (SSID)__, and optionally a __password__ (WPAx). If there is no list displayed, click on "WiFi Scan".
 
 >By default, the FC requests an IP address via DHCP. However, you can also configure a static IP for the FC by entering the IP, netmask, gateway and DNS server. All four fields must be filled for a valid static IP configuration. If you want to stick to DHCP, leave those four fields empty. If you connect your FC to your Time Circuits Display acting as access point ("TCD-AP"), leave these all empty.
 
@@ -650,7 +650,7 @@ If a WiFi Scan was done (which can be triggered by clicking "WiFI Scan"),
 - a list of networks is displayed at the top of the page; click "Show All" to list all networks including their channel;
 - a "proposed channel" is displayed near the "WiFi channel" drop-down, based on a rather simple heuristic. The banner is green when a channel is excellent, grey when it is impeded by overlapping channels, and when that banner is red operation in AP mode is not recommended due to channels all being used.
 
-The channel proposition is based on all WiFi networks found; it does not take non-WiFi equipment (baby monitors, cordless phones, bluetooth devices, microwave ovens, etc) into account. 
+The channel proposition is based on all WiFi networks found; it does not take non-WiFi equipment (baby monitors, cordless phones, Bluetooth devices, microwave ovens, etc) into account. 
 
 ---
 
@@ -751,7 +751,7 @@ Do NOT check this option if your TCD is connected wirelessly (BTTFN, MQTT).
 
 ##### &#9654; TCD signals Time Travel without 5s lead
 
-Usually, the TCD signals a time travel with a 5 seconds lead, in order to give a prop a chance to play an acceleration sequence before the actual time travel takes place. Since this 5 second lead is unique to CircuitSetup props, and people sometimes want to connect third party props to the TCD, the TCD has the option of skipping this 5 seconds lead. If that is the case, and your Flux Capacitor is connected by wire, you need to set this option.
+Usually, the TCD signals a time travel with a 5 second lead, in order to give a prop a chance to play an acceleration sequence before the actual time travel takes place. Since this 5 second lead is unique to CircuitSetup props, and people sometimes want to connect third party props to the TCD, the TCD has the option of skipping this 5 second lead. If that is the case, and your Flux Capacitor is connected by wire, you need to set this option.
 
 If your FC is connected wirelessly, this option has no effect.
 
