@@ -50,7 +50,7 @@ Then there are two alternative ways to proceed. Note that both methods *require 
 1) Through the [Config Portal](#the-config-portal). Click on *Update*, select this file in the bottom file selector and click on *Upload*.
 
 2) Via SD card:
-- Copy "FCA.bin" to the root directory of of a FAT32 formatted SD card;
+- Copy "FCA.bin" to the root directory of a FAT32 formatted SD card;
 - power down the Flux Capacitor,
 - insert this SD card into the slot and 
 - power up the Flux Capacitor; the sound-pack will be installed automatically.
