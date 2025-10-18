@@ -505,7 +505,7 @@ The FC supports the MQTT protocol version 3.1.1 for the following features:
 
 ### Control the FC via MQTT
 
-The FC can - to some extent - be controlled through messages sent to topic **bttf/fc/cmd**. Support commands are
+The FC can - to some extent - be controlled through messages sent to topic **bttf/fc/cmd**. Supported commands are
 - TIMETRAVEL: Start a [time travel](#time-travel)
 - FASTER, SLOWER: Make chase faster or slower. Only if speed knob is deactivated.
 - RESETSPEED: Reset chase speed to default. Only if speed knob is deactivated.
