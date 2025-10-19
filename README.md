@@ -71,7 +71,9 @@ The first step is to establish access to the FC's configuration web site ("Confi
 
 Your FC knows two ways of WiFi operation: Either it creates its own WiFi network, or it connects to a pre-existing WiFi network.
 
-As long as your FC is unconfigured, it creates its own WiFi network named "FC-AP". This mode of operation is called **"Access point mode"**, or "AP-mode". 
+As long as your FC is unconfigured, it creates its own WiFi network named "FC-AP". This mode of operation is called **"Access point mode"**, or "AP-mode". In this mode, other devices - such as computers/handhelds - can connect to your FC, but there is no BTTFN, no HA/MQTT.
+
+![APmode](img/apmode.png)
 
 It is ok to leave it in AP-mode, predominantly if used stand-alone. (To keep operating your FC in AP-mode, do not configure a WiFi network as described below, or check "Forget saved WiFi network" and click "Save" on the Config Portal's "WiFi Configuration" page.)
 
@@ -83,7 +85,11 @@ It is ok to leave it in AP-mode, predominantly if used stand-alone. (To keep ope
 
 ##### &#9654; Home setup with a pre-existing local WiFi network
 
-In this case, you can connect your FC to your home WiFi network: Click on "WiFi Configuration" and either select a network from the top of the page or enter a WiFi network name (SSID), and enter your WiFi password. After saving the WiFi network settings, your FC reboots and tries to connect to your selected WiFi network. If that fails, it will again start in access point mode.
+In this case, you can connect your FC to your home WiFi network. This allows for BTTFN and HA/MQTT.
+
+![STAmode-home](img/stamode-home.png)
+
+Click on "WiFi Configuration" and either select a network from the top of the page or enter a WiFi network name (SSID), and enter your WiFi password. After saving the WiFi network settings, your FC reboots and tries to connect to your selected WiFi network. If that fails, it will again start in access point mode.
 
 >If you have a [Time Circuits Display](https://tcd.out-a-ti.me) note that in order to have both FC and TCD communicate with each other, your FC must be connected to the same network your TCD is connected to. In order to use MQTT, your FC must be connected to the same network your broker is connected to.
 
@@ -93,7 +99,11 @@ In this case, you can connect your FC to your home WiFi network: Click on "WiFi 
 
 In this case and with no [Time Circuits Display](https://tcd.out-a-ti.me) at hand, keep your FC operating in AP-mode.
 
-If you have a TCD, you can connect your FC to the TCD's own WiFi network: Run the TCD in AP-Mode, and on your FC's Config Portal, click on "WiFi Configuration" and either select "TCD-AP" from the top of the page or enter "TCD-AP" under *Network name (SSID)*. If you password-protected your TCD-AP, enter this password below. See [here](#car-setup) for more details.
+If you have a TCD, you can connect your FC to the TCD's own WiFi network: 
+
+![STAmode-car](img/stamode-car.png)
+
+Run the TCD in AP-Mode, and on your FC's Config Portal, click on "WiFi Configuration" and either select "TCD-AP" from the top of the page or enter "TCD-AP" under *Network name (SSID)*. If you password-protected your TCD-AP, enter this password below. See [here](#car-setup) for more details.
 
 After completing WiFi setup, your FC is ready for use; you can also continue configuring it to your personal preferences through the Config Portal.
 
@@ -545,6 +555,8 @@ Limitations: MQTT Protocol version 3.1.1; TLS/SSL not supported; ".local" domain
 ## Car setup
 
 If your FC, along with a [Time Circuits Display](https://tcd.out-a-ti.me/), is mounted in a car, the following network configuration is recommended:
+
+![STAmode-car](img/stamode-car.png)
 
 #### TCD
 
