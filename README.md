@@ -71,7 +71,7 @@ The first step is to establish access to the FC's configuration web site ("Confi
 
 Your FC knows two ways of WiFi operation: Either it creates its own WiFi network, or it connects to a pre-existing WiFi network.
 
-As long as your FC is unconfigured, it creates its own WiFi network named "FC-AP". This mode of operation is called **"Access point mode"**, or "AP-mode". In this mode, other devices - such as computers/handhelds - can connect to your FC, but there is no BTTFN, no HA/MQTT.
+As long as your FC is unconfigured, it creates its own WiFi network named "FC-AP". This mode of operation is called **"Access point mode"**, or "AP-mode". In this mode, other devices - such as computers/handhelds - can connect to the FC, but the FC cannot connect or talk to other devices.
 
 ![APmode](img/apmode.png)
 
