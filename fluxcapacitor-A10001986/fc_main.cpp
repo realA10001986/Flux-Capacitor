@@ -91,6 +91,8 @@ static const uint16_t potSpeeds[POT_GRAN] = {
      80,  90, 100, 110, 120, 140, 160, 180, 200, 250,
     300, 350, 400, 450, 500
 };
+static uint16_t ttramp[50] = { 0 };
+static int ttrampidx = 0, ttrampsize = 0;
 
 // The IR-remote object
 static IRRemote ir_remote(0, IRREMOTE_PIN);
@@ -734,19 +736,19 @@ void main_loop()
 
         if(gpsSpeed >= 0) {
 
-            if(FPBUnitIsOn && !IRLearning && !bttfnTCDSeqCnt) {
+            if(!bttfnTCDSeqCnt && FPBUnitIsOn && !IRLearning) {
                 bttfnFCPollInt = BTTFN_POLL_INT_FAST;
             }
 
-            if(!TTrunning) {
+            if(!TTrunning || (TTP2 && fDone)) {
 
-                if(!usingGPSS || (now - lastGPSchange > 200)) {
+                if(!usingGPSS || (now - lastGPSchange > 100)) {   // 200
                 
                     uint16_t shouldBe = convertGPSSpeed(gpsSpeed);
                     uint16_t isNow = fcLEDs.getSpeed();
                     uint16_t toSet;
     
-                    if(abs(shouldBe - isNow) > 3) {
+                    if(shouldBe < 15 && abs(shouldBe - isNow) > 3) {
                         toSet = (shouldBe + isNow) / 2;
                     } else {
                         toSet = shouldBe;
@@ -849,11 +851,15 @@ void main_loop()
                 if(!networkAbort && (now - TTstart < P0duration)) {
 
                     if(TTFInt && (now - TTfUpdNow >= TTFInt)) {
+                        fcLEDs.setSpeed(ttramp[ttrampidx++]);
+                        if(ttrampidx == ttrampsize) TTFInt = 0;
+                        /*
                         int t = fcLEDs.getSpeed();
                         if(t >= 100)      t -= 50;
                         else if(t >= 20)  t -= 10;
                         else if(t > 2)    t--;
                         fcLEDs.setSpeed(t);
+                        */
                         TTfUpdNow = now;
                     }
                              
@@ -935,9 +941,6 @@ void main_loop()
                         if(!networkAbort) {
                             play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
                         }
-                        //if(playFLUX) {
-                        //    append_flux();
-                        //}
                     }
                 }
             }
@@ -971,6 +974,8 @@ void main_loop()
 
                 if(!fDone && now - TTfUpdNow >= 250) {
 
+                    // No pre-calc ramp here, TTSSpd might get adapted
+                    // while we run, need to keep an eye on it
                     if((t = fcLEDs.getSpeed()) < TTSSpd) {
                         if(t >= 50)      t += 50;
                         else if(t >= 10) t += 10;
@@ -1010,11 +1015,15 @@ void main_loop()
                 if(now - TTstart < P0_DUR) {
 
                     if(TTFInt && (now - TTfUpdNow >= TTFInt)) {
+                        fcLEDs.setSpeed(ttramp[ttrampidx++]);
+                        if(ttrampidx == ttrampsize) TTFInt = 0;
+                        /*
                         int t = fcLEDs.getSpeed();
                         if(t >= 100)      t -= 50;
                         else if(t >= 20)  t -= 10;
                         else if(t > 2)    t--;
                         fcLEDs.setSpeed(t);
+                        */
                         TTfUpdNow = now;
                     }
                              
@@ -1089,9 +1098,6 @@ void main_loop()
                     TTfUpdNow = TTcUpdNow = TTbUpdNow = now;
                     if(playTTsounds) {
                         play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
-                        if(playFLUX) {
-                            append_flux();
-                        }
                     }
                 }
             }
@@ -1125,6 +1131,8 @@ void main_loop()
                 }
 
                 if(!fDone && now - TTfUpdNow >= 250) {
+                    // No pre-calc ramp here, TTSSpd might get adapted
+                    // while we run, need to keep an eye on it
                     if((t = fcLEDs.getSpeed()) < TTSSpd) {
                         if(t >= 50)      t += 50;
                         else if(t >= 10) t += 10;
@@ -1134,6 +1142,9 @@ void main_loop()
                     } else {
                         fDone = true;
                         fcLEDs.setSpeed(TTSSpd);
+                        if(playFLUX) {
+                           append_flux();
+                        }
                     }
                 }
 
@@ -1168,9 +1179,9 @@ void main_loop()
         nmOld = tcdNM;
     }
 
-    // Wake up on GPS/RotEnc speed changes
+    // Wake up on RotEnc/Remote speed changes; on GPS only if old speed was <=0
     if(gpsSpeed != oldGpsSpeed) {
-        if(FPBUnitIsOn && !TTrunning && !IRLearning && spdIsRotEnc && gpsSpeed >= 0) {
+        if(FPBUnitIsOn && !TTrunning && !IRLearning && (spdIsRotEnc || oldGpsSpeed <= 0) && gpsSpeed >= 0) {
             wakeup();
         }
         oldGpsSpeed = gpsSpeed;
@@ -1201,6 +1212,7 @@ void main_loop()
             (!BTTFNBootTO && !lastBTTFNpacket && (now - powerupMillis > 60*1000)) ) {
             tcdNM = false;
             tcdFPO = false;
+            remoteAllowed = false;
             gpsSpeed = -1;
             lastBTTFNpacket = 0;
             BTTFNBootTO = true;
@@ -1307,35 +1319,39 @@ static void timeTravel(bool TCDtriggered, uint16_t P0Dur)
         tspd = TTSSpd;
     }
 
-    // Calculate number of steps for acceleration
+    // Calculate ramp for acceleration
+    ttrampidx = 0;
     while(tspd >= 100) {
         tspd -= 50;
-        i++;
+        ttramp[i++] = tspd;
     }
     while(tspd >= 20) {
         tspd -= 10;
-        i++;
+        ttramp[i++] = tspd;
     }
-    while(tspd > 2) {
+    while(tspd > 3) {
         tspd--;
-        i++;
+        if(tspd <= 8) ttramp[i++] = tspd; // Lower ones get twice the attention
+        ttramp[i++] = tspd;
     }
+    ttramp[i++] = 2;  // 2 reserved for peak, but ok as last step to introduce peak
+    ttrampsize = i;
     
     if(TCDtriggered) {    // TCD-triggered TT (GPIO, BTTFN, MQTT-pub) (synced with TCD)
         extTT = true;
         P0duration = P0Dur;
         #ifdef FC_DBG
-        Serial.printf("P0 duration is %d\n", P0duration);
+        Serial.printf("P0 duration is %d, steps %d\n", P0duration, i);
         #endif
-        if(i > 0) {
-            TTFInt = P0duration / i;
+        if(i > 1) {
+            TTFInt = P0duration / (i + 1);
         } else {
             TTFInt = 0;
         }
     } else {              // button/IR/MQTT-cmd triggered TT (stand-alone)
         extTT = false;
-        if(i > 0) {
-            TTFInt = P0_DUR / i;
+        if(i > 1) {
+            TTFInt = P0_DUR / (i + 1);
         } else {
             TTFInt = 0;
         }
@@ -1919,7 +1935,7 @@ static int execute(bool isIR)
             case 95:                              // *95  enter TCD keypad remote control mode
                 if(!irLocked) {                   //      yes, 'irLocked' - must not be entered while IR is locked
                     if(!TTrunning) {
-                        if(BTTFNConnected() && TCDSupportsRemKP && remoteAllowed) {
+                        if(BTTFNConnected() && remoteAllowed) {
                             remMode = true;
                             fcLEDs.SpecialSignal(FCSEQ_REMSTART);
                             // doInpReaction = 1;  // no, we show a signal instead
@@ -2111,19 +2127,22 @@ static void setPotSpeed()
 {
     unsigned long now = millis();
     
-    if(TTrunning || IRLearning)
+    if(IRLearning)
         return;
 
-    if(!startSpdPot || (now - startSpdPot > 200)) {
+    if(!TTrunning || (TTP2 && fDone)) {
 
-        uint16_t spd = getRawSpeed() / (((1 << POT_RESOLUTION) - 1) / POT_GRAN);
-        if(spd > POT_GRAN - 1) spd = POT_GRAN - 1;
-        lastPotspeed = spd = potSpeeds[spd];
-        if(fcLEDs.getSpeed() != spd) {
-            fcLEDs.setSpeed(spd);
+        if(!startSpdPot || (now - startSpdPot > 200)) {
+    
+            uint16_t spd = getRawSpeed() / (((1 << POT_RESOLUTION) - 1) / POT_GRAN);
+            if(spd > POT_GRAN - 1) spd = POT_GRAN - 1;
+            lastPotspeed = spd = potSpeeds[spd];
+            if(fcLEDs.getSpeed() != spd) {
+                fcLEDs.setSpeed(spd);
+            }
+            
+            startSpdPot = now;
         }
-        
-        startSpdPot = now;
     }
 }
 
@@ -2789,22 +2808,6 @@ static void BTTFNCheckPacket()
         }
         #endif
 
-        if(BTTFUDPBuf[5] & 0x02) {
-            gpsSpeed = (int16_t)(BTTFUDPBuf[18] | (BTTFUDPBuf[19] << 8));
-            if(gpsSpeed > 88) gpsSpeed = 88;
-            spdIsRotEnc = (BTTFUDPBuf[26] & (0x80|0x20)) ? true : false;    // Speed is from RotEnc or Remote
-        }
-
-        if(BTTFUDPBuf[5] & 0x10) {
-            tcdNM  = (BTTFUDPBuf[26] & 0x01) ? true : false;
-            tcdFPO = (BTTFUDPBuf[26] & 0x02) ? true : false;   // 1 means fake power off
-            remoteAllowed = (BTTFUDPBuf[26] & 0x08) ? true : false;
-        } else {
-            tcdNM = false;
-            tcdFPO = false;
-            remoteAllowed = false;
-        }
-
         if(BTTFUDPBuf[5] & 0x40) {
             bttfnReqStatus &= ~0x40;     // Do no longer poll capabilities
             #ifdef BTTFN_MC
@@ -2816,6 +2819,22 @@ static void BTTFNCheckPacket()
             if(BTTFUDPBuf[31] & 0x08) {
                 TCDSupportsRemKP = true;
             }
+        }
+
+        if(BTTFUDPBuf[5] & 0x02) {
+            gpsSpeed = (int16_t)(BTTFUDPBuf[18] | (BTTFUDPBuf[19] << 8));
+            if(gpsSpeed > 88) gpsSpeed = 88;
+            spdIsRotEnc = (BTTFUDPBuf[26] & (0x80|0x20)) ? true : false;    // Speed is from RotEnc or Remote
+        }
+
+        if(BTTFUDPBuf[5] & 0x10) {
+            tcdNM  = (BTTFUDPBuf[26] & 0x01) ? true : false;
+            tcdFPO = (BTTFUDPBuf[26] & 0x02) ? true : false;   // 1 means fake power off
+            remoteAllowed = (BTTFUDPBuf[26] & 0x08) ? TCDSupportsRemKP : false;
+        } else {
+            tcdNM = false;
+            tcdFPO = false;
+            remoteAllowed = false;
         }
 
         lastBTTFNpacket = mymillis;
@@ -2963,7 +2982,7 @@ static bool bttfn_trigger_tt()
 
 static bool bttfn_send_command(uint8_t cmd, uint8_t p1, uint8_t p2)
 {
-    if(!TCDSupportsRemKP || !remoteAllowed)
+    if(!remoteAllowed)
         return false;
         
     if(!BTTFNConnected())

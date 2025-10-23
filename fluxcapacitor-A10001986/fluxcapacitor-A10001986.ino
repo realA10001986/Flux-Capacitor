@@ -115,6 +115,10 @@
 
 /*  Changelog
  *   
+ *  2025/10/21 (A10001986) [1.85.1]
+ *    - Simplify remoteAllow logic
+ *    - Wakeup on GPS speed changes from <= 0 to >= 0
+ *    - Tweak chase speed ramp for time travel; increase speed adaption freq
  *  2025/10/17 (A10001986) [1.85]
  *    - New sound pack; new startup-sequence, and new re-entry sequence.
  *      Re-done due to flux sound level being adjustable now.
