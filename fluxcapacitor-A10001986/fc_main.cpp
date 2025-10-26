@@ -330,6 +330,7 @@ static WiFiUDP       bttfMcUDP;
 static UDP*          fcMcUDP;
 #endif
 static byte          BTTFUDPBuf[BTTF_PACKET_SIZE];
+static byte          BTTFUDPTBuf[BTTF_PACKET_SIZE];
 static unsigned long BTTFNUpdateNow = 0;
 static unsigned long bttfnFCPollInt = BTTFN_POLL_INT;
 static unsigned long BTFNTSAge = 0;
@@ -348,7 +349,6 @@ static bool          TCDSupportsRemKP = false;
 #ifdef BTTFN_MC
 static uint32_t      tcdHostNameHash = 0;
 static byte          BTTFMCBuf[BTTF_PACKET_SIZE];
-static uint8_t       bttfnMcMarker = 0;
 static IPAddress     bttfnMcIP(224, 0, 0, 224);
 #endif
 static uint32_t      bttfnSeqCnt[BTTFN_REM_MAX_COMMAND+1] = { 1 };
@@ -410,6 +410,7 @@ static bool bttfn_checkmc();
 #endif
 static void BTTFNCheckPacket();
 static bool BTTFNTriggerUpdate();
+static void BTTFNPreparePacketTemplate();
 static void BTTFNSendPacket();
 static bool BTTFNConnected();
 
@@ -1871,6 +1872,33 @@ static int execute(bool isIR)
             case 71:                              // *71 Taken by SID IR lock sequence
                 // Stay silent
                 break;
+            case 77:                              // *77 Restart WiFi after entering Power Save
+                if(!isIRLocked && !TTrunning) {
+                    bool wasActiveM = false, wasActiveF = false, waitShown = false;
+                    if(wifiOnWillBlock()) {
+                        if(haveMusic && mpActive) {
+                            mp_stop();
+                            wasActiveM = true;
+                        } else if(playingFlux) {
+                            wasActiveF = true;
+                        }
+                        stopAudio();
+                        showWaitSequence();
+                        waitShown = true;
+                        flushDelayedSave();
+                    }
+                    // Enable WiFi / even if in AP mode / with CP
+                    wifiOn(0, true, false);
+                    if(waitShown) endWaitSequence();
+                    else doInpReaction = 1;
+                    // Restart mp/flux if active before
+                    if(wasActiveF && contFlux()) play_flux();
+                    else if(wasActiveM)          mp_play();
+                    if(waitShown) ir_remote.loop(); // Flush IR afterwards
+                } else {
+                    doInpReaction = -1;
+                }
+                break;
             case 80:                              // *80 set default speed
                 if(!isIRLocked) {
                     doInpReaction = resetIRSpeed() ? 1 : -1;
@@ -2180,7 +2208,7 @@ bool switchMusicFolder(uint8_t nmf)
         saveMusFoldNum();
         mp_init(false);
         if(waitShown) {
-            fcLEDs.SpecialSignal(0);
+            endWaitSequence();
         }
         if(!haveMusic) {
             doSuccessSignal = false;
@@ -2559,6 +2587,8 @@ static void bttfn_setup()
     fcMcUDP = &bttfMcUDP;
     fcMcUDP->beginMulticast(bttfnMcIP, BTTF_DEFAULT_LOCAL_PORT + 2);
     #endif
+
+    BTTFNPreparePacketTemplate();
     
     BTTFNfailCount = 0;
     useBTTFN = true;
@@ -2625,6 +2655,25 @@ static void handle_tcd_notification(uint8_t *buf)
     uint32_t seqCnt;
     
     switch(buf[5]) {
+    case BTTFN_NOT_SPD:
+        seqCnt = GET32(buf, 12);
+        if(seqCnt == 1 || seqCnt > bttfnTCDSeqCnt) {
+            gpsSpeed = (int16_t)(buf[6] | (buf[7] << 8));
+            if(gpsSpeed > 88) gpsSpeed = 88;
+            switch(buf[8] | (buf[9] << 8)) {
+            case BTTFN_SSRC_GPS:
+                spdIsRotEnc = false;
+                break;
+            default:
+                spdIsRotEnc = true;
+            }
+        } else {
+            #ifdef FC_DBG
+            Serial.printf("Out-of-sequence packet received from TCD %d %d\n", seqCnt, bttfnTCDSeqCnt);
+            #endif
+        }
+        bttfnTCDSeqCnt = seqCnt;
+        break;
     case BTTFN_NOT_PREPARE:
         // Prepare for TT. Comes at some undefined point,
         // an undefined time before the actual tt, and
@@ -2673,25 +2722,6 @@ static void handle_tcd_notification(uint8_t *buf)
         if(!TTrunning && !IRLearning) {
             wakeup();
         }
-        break;
-    case BTTFN_NOT_SPD:
-        seqCnt = GET32(buf, 12);
-        if(seqCnt == 1 || seqCnt > bttfnTCDSeqCnt) {
-            gpsSpeed = (int16_t)(buf[6] | (buf[7] << 8));
-            if(gpsSpeed > 88) gpsSpeed = 88;
-            switch(buf[8] | (buf[9] << 8)) {
-            case BTTFN_SSRC_GPS:
-                spdIsRotEnc = false;
-                break;
-            default:
-                spdIsRotEnc = true;
-            }
-        } else {
-            #ifdef FC_DBG
-            Serial.printf("Out-of-sequence packet received from TCD %d %d\n", seqCnt, bttfnTCDSeqCnt);
-            #endif
-        }
-        bttfnTCDSeqCnt = seqCnt;
         break;
     }
 }
@@ -2812,7 +2842,6 @@ static void BTTFNCheckPacket()
             bttfnReqStatus &= ~0x40;     // Do no longer poll capabilities
             #ifdef BTTFN_MC
             if(BTTFUDPBuf[31] & 0x01) {
-                bttfnMcMarker = BTTFN_SUP_MC;
                 bttfnReqStatus &= ~0x02; // Do no longer poll speed, comes over multicast
             }
             #endif
@@ -2870,28 +2899,33 @@ static bool BTTFNTriggerUpdate()
     return true;
 }
 
-static void BTTFNPreparePacket()
+static void BTTFNPreparePacketTemplate()
 {
-    memset(BTTFUDPBuf, 0, BTTF_PACKET_SIZE);
+    memset(BTTFUDPTBuf, 0, BTTF_PACKET_SIZE);
 
     // ID
-    memcpy(BTTFUDPBuf, BTTFUDPHD, 4);
+    memcpy(BTTFUDPTBuf, BTTFUDPHD, 4);
 
-    // Tell the TCD about our hostname (0-term., 13 bytes total)
-    strncpy((char *)BTTFUDPBuf + 10, settings.hostName, 12);
-    BTTFUDPBuf[10+12] = 0;
+    // Tell the TCD about our hostname
+    // 13 bytes total. If hostname is longer, last in buf is '.'
+    memcpy(BTTFUDPTBuf + 10, settings.hostName, 13);
+    if(strlen(settings.hostName) > 13) BTTFUDPTBuf[10+12] = '.';
 
-    BTTFUDPBuf[10+13] = BTTFN_TYPE_FLUX;
+    BTTFUDPTBuf[10+13] = BTTFN_TYPE_FLUX;
 
     // Version, MC-marker
+    BTTFUDPTBuf[4] = BTTFN_VERSION;
     #ifdef BTTFN_MC
-    BTTFUDPBuf[4] = BTTFN_VERSION | bttfnMcMarker;  
-    #else
-    BTTFUDPBuf[4] = BTTFN_VERSION;
+    BTTFUDPTBuf[4] |= BTTFN_SUP_MC;
     #endif
 
     // Remote-ID
-    SET32(BTTFUDPBuf, 35, myRemID);                 
+    SET32(BTTFUDPTBuf, 35, myRemID);                 
+}
+
+static void BTTFNPreparePacket()
+{
+    memcpy(BTTFUDPBuf, BTTFUDPTBuf, BTTF_PACKET_SIZE);                
 }
 
 static void BTTFNDispatch()
@@ -2990,7 +3024,7 @@ static bool bttfn_send_command(uint8_t cmd, uint8_t p1, uint8_t p2)
 
     BTTFNPreparePacket();
     
-    BTTFUDPBuf[5] = 0x00;
+    //BTTFUDPBuf[5] = 0x00;     // 0 already
 
     SET32(BTTFUDPBuf, 6, bttfnSeqCnt[cmd]);         // Seq counter
     bttfnSeqCnt[cmd]++;

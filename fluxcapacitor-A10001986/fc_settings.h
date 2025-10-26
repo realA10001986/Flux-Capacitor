@@ -69,6 +69,7 @@ extern uint8_t musFolderNum;
 #define DEF_WIFI_RETRY      3     // 1-10; Default: 3 retries
 #define DEF_WIFI_TIMEOUT    7     // 7-25; Default: 7 seconds
 #define DEF_AP_CHANNEL      1     // 1-13; 0 = random(1-13)
+#define DEF_WIFI_APOFFDELAY 0
 
 #define DEF_PLAY_FLUX_SND   0     // 1: Play "flux" sound permanently, 0: Do not, 2, 3: 30/60 secs after event
 #define DEF_ORIG_SEQ        1     // 0: movie sequence for 6 lamps; 1: sequence uses 7th (non-existent) light
@@ -105,6 +106,7 @@ struct Settings {
     char systemID[8]        = "";
     char appw[10]           = "";
     char apChnl[4]          = MS(DEF_AP_CHANNEL);
+    char wifiAPOffDelay[4]  = MS(DEF_WIFI_APOFFDELAY);
     
     char playFLUXsnd[4]     = MS(DEF_PLAY_FLUX_SND);
     char origSeq[4]         = MS(DEF_ORIG_SEQ);

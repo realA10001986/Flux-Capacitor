@@ -449,6 +449,7 @@ static bool read_settings(File configFile, int cfgReadCount)
         wd |= CopyTextParm(json["systemID"], settings.systemID, sizeof(settings.systemID));
         wd |= CopyTextParm(json["appw"], settings.appw, sizeof(settings.appw));
         wd |= CopyCheckValidNumParm(json["apch"], settings.apChnl, sizeof(settings.apChnl), 0, 11, DEF_AP_CHANNEL);
+        wd |= CopyCheckValidNumParm(json["wAOD"], settings.wifiAPOffDelay, sizeof(settings.wifiAPOffDelay), 0, 99, DEF_WIFI_APOFFDELAY);
 
         // Settings
 
@@ -519,6 +520,7 @@ void write_settings()
     json["systemID"] = (const char *)settings.systemID;
     json["appw"] = (const char *)settings.appw;
     json["apch"] = (const char *)settings.apChnl;
+    json["wAOD"] = (const char *)settings.wifiAPOffDelay;
 
     json["playFLUXsnd"] = (const char *)settings.playFLUXsnd;
     json["origSeq"] = (const char *)settings.origSeq;
