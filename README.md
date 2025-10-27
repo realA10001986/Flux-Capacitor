@@ -81,15 +81,19 @@ It is ok to leave it in AP-mode, predominantly if used stand-alone. To keep oper
 
 >If you wish for your device to remain in AP-mode, please select a suitable WiFi channel on the Config Portal's "WiFi Configuration" page. See [here](#-wifi-channel).
 
+> In AP-mode, the FC can switch off WiFi to save power. See [here](#wifi-power-saving-features).
+
 #### &#9654; Home setup with a pre-existing local WiFi network
 
 In this case, you can connect your FC to your home WiFi network. This allows for inter-prop-communication ([BTTFN](#bttf-network-bttfn)) and [HA/MQTT](#home-assistant--mqtt).
 
 ![STAmode-home](img/stamode-home.png)
 
-Click on "WiFi Configuration" and either select a network from the top of the page or enter a WiFi network name (SSID), and enter your WiFi password. After saving the WiFi network settings, your FC reboots and tries to connect to your selected WiFi network. If that fails, it will again start in access point mode.
+Click on "WiFi Configuration" and either select a network from the top of the page or enter a WiFi network name (SSID), and enter your WiFi password. After saving the WiFi network settings, your FC reboots and tries to connect to your selected WiFi network. 
 
 >Your FC requests an IP address via DHCP, unless you entered valid data in the fields for static IP addresses (IP, gateway, netmask, DNS). If the device is inaccessible as a result of incorrect static IPs, wait until it has completed its startup sequence, then type \*123456OK on the IR remote; static IP data will be deleted and the device will return to DHCP after a reboot.
+
+If the FC fails to connect, it falls back to AP-mode. You can trigger another connection attempt by entering *77 followed by OK.
 
 #### &#9654; Places without a WiFi network
 
@@ -234,7 +238,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     <tr>
      <td align="center" colspan="3">Special sequences<br>(&#9166; = OK key)</td>
     </tr>
-   <tr><td>Function</td><td>Code on remote</td><td>Code on TCD</td></tr>
+    <tr><td>Function</td><td>Code on remote</td><td>Code on TCD</td></tr>
     <tr>
      <td align="left">Select original chase sequence</td>
      <td align="left">*10&#9166;</td><td>3010</td>
@@ -298,6 +302,10 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     <tr>
      <td align="left"><a href="#locking-ir-control">Disable/Enable</a> IR remote commands</td>
      <td align="left">*70&#9166;</td><td>3070</td>
+    </tr>
+    <tr>
+     <td align="left"><a href="#wifi-power-saving-features">Re-enable WiFi</a> or re-try to <a href="#-home-setup-with-a-pre-existing-local-wifi-network">connect to WiFi</a></td>
+     <td align="left">*77&#9166;</td><td>-</td>
     </tr>
     <tr>
      <td align="left">Reset chase speed to default (*)</td>
@@ -576,6 +584,16 @@ In order to access the FC's Config Portal in your car, connect your handheld or 
 
 This "car setup" can also be used in a home setup with no local WiFi network present.
 
+## WiFi power saving features
+
+The Config Portal offers an option for WiFi power saving for AP-mode (ie when the device acts as an access point). This option configures a timer after whose expiration WiFi is switched off; the device is no longer transmitting or receiving data over WiFi.
+
+The timer can be set to 0 (which disables it; WiFi is never switched off; this is the default), or 10-99 minutes. 
+
+After WiFi has been switched off due to timer expiration, it can be re-enabled by entering *77 followed by OK, in which case the timers are restarted (ie WiFi is again switched off after timer expiration).
+
+> This command is also used to trigger a re-connection attempt in case your configured WiFi network was not available when the FC was trying to connect, see [here](#-home-setup-with-a-pre-existing-local-wifi-network).
+
 ## Flash Wear
 
 Flash memory has a somewhat limited lifetime. It can be written to only between 10.000 and 100.000 times before becoming unreliable. The firmware writes to the internal flash memory when saving settings and other data. Every time you change settings, data is written to flash memory.
@@ -659,7 +677,11 @@ If a WiFi Scan was done (which can be triggered by clicking "WiFI Scan"),
 - a list of networks is displayed at the top of the page; click "Show All" to list all networks including their channel;
 - a "proposed channel" is displayed near the "WiFi channel" drop-down, based on a rather simple heuristic. The banner is green when a channel is excellent, grey when it is impeded by overlapping channels, and when that banner is red operation in AP mode is not recommended due to channels all being used.
 
-The channel proposition is based on all WiFi networks found; it does not take non-WiFi equipment (baby monitors, cordless phones, Bluetooth devices, microwave ovens, etc) into account. 
+The channel proposition is based on all WiFi networks found; it does not take non-WiFi equipment (baby monitors, cordless phones, Bluetooth devices, microwave ovens, etc) into account.
+
+##### &#9654; Power save timer
+
+See [here](#wifi-power-saving-features).
 
 ---
 
