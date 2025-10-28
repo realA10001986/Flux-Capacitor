@@ -77,10 +77,10 @@ As long as your FC is unconfigured, it creates its own WiFi network named "FC-AP
 
 It is ok to leave it in AP-mode, predominantly if used stand-alone. To keep operating your FC in AP-mode, simply _do not configure_ a WiFi network connection as described below.
 
->Please do not leave computers/handhelds permanently connected to the FC in AP-mode. These devices might think they are connected to the internet and therefore hammer the FC with DNS and HTTP requests which might lead to disruptions.
-
 <details>
 <summary>More...</summary>
+
+>Please do not leave computers/handhelds permanently connected to the FC in AP-mode. These devices might think they are connected to the internet and therefore hammer the FC with DNS and HTTP requests which might lead to disruptions.
 
 >If you wish for your device to remain in AP-mode, please select a suitable WiFi channel on the Config Portal's "WiFi Configuration" page. See [here](#-wifi-channel).
 
@@ -113,7 +113,7 @@ If you have a TCD, you can connect your FC to the TCD's own WiFi network:
 
 ![STAmode-car](img/stamode-car.png)
 
-Run the TCD in AP-Mode, and on your FC's Config Portal, click on "WiFi Configuration" and either select "TCD-AP" from the top of the page or enter "TCD-AP" under *Network name (SSID)*. If you password-protected your TCD-AP, enter this password below. See [here](#car-setup) for more details.
+This setup is meant for cars, but suitable for any place with no WiFi network. See [here](#car-setup) for details.
 
 After completing WiFi setup, your FC is ready for use; you can also continue configuring it to your personal preferences through the Config Portal.
 
