@@ -79,11 +79,16 @@ It is ok to leave it in AP-mode, predominantly if used stand-alone. To keep oper
 
 >Please do not leave computers/handhelds permanently connected to the FC in AP-mode. These devices might think they are connected to the internet and therefore hammer the FC with DNS and HTTP requests which might lead to disruptions.
 
+<details>
+<summary>More...</summary>
+
 >If you wish for your device to remain in AP-mode, please select a suitable WiFi channel on the Config Portal's "WiFi Configuration" page. See [here](#-wifi-channel).
 
 > In AP-mode, the FC can switch off WiFi to save power. See [here](#wifi-power-saving-features).
 
-#### &#9654; Home setup with a pre-existing local WiFi network
+</details>
+
+#### Home setup with a pre-existing local WiFi network
 
 In this case, you can connect your FC to your home WiFi network. This allows for inter-prop-communication ([BTTFN](#bttf-network-bttfn)) and [HA/MQTT](#home-assistant--mqtt).
 
@@ -91,11 +96,16 @@ In this case, you can connect your FC to your home WiFi network. This allows for
 
 Click on "WiFi Configuration" and either select a network from the top of the page or enter a WiFi network name (SSID), and enter your WiFi password. After saving the WiFi network settings, your FC reboots and tries to connect to your selected WiFi network. 
 
+<details>
+<summary>More...</summary>
+
 >Your FC requests an IP address via DHCP, unless you entered valid data in the fields for static IP addresses (IP, gateway, netmask, DNS). If the device is inaccessible as a result of incorrect static IPs, wait until it has completed its startup sequence, then type \*123456OK on the IR remote; static IP data will be deleted and the device will return to DHCP after a reboot.
+
+</details>
 
 If the FC fails to connect, it falls back to AP-mode. You can trigger another connection attempt by entering *77 followed by OK.
 
-#### &#9654; Places without a WiFi network
+#### Places without a WiFi network
 
 In this case and with no [Time Circuits Display](https://tcd.out-a-ti.me) at hand, keep your FC operating in AP-mode.
 
@@ -126,11 +136,11 @@ It can be accessed as follows:
 #### If FC is connected to a WiFi network
 
 - Connect your handheld/computer to the same (WiFi) network to which the FC is connected, and
-- navigate your browser to http://flux.local
+- navigate your browser to http://flux.local  <details><summary>More...</summary>
 
   >Accessing the Config Portal through this address requires the operating system of your handheld/computer to support Bonjour/mDNS: Windows 10 version TH2     (1511) [other sources say 1703] and later, Android 13 and later; MacOS and iOS since the dawn of time.
 
-  >If connecting to http://flux.local fails due to a name resolution error, you need to find out the FC's IP address: Type *90 followed by OK on the supplied remote control and listen, the IP address will be spoken out loud. Then, on your handheld or computer, navigate to http://a.b.c.d (a.b.c.d being the IP address as read out loud by the FC) in order to enter the Config Portal.
+  >If connecting to http://flux.local fails due to a name resolution error, you need to find out the FC's IP address: Type *90 followed by OK on the supplied remote control and listen, the IP address will be spoken out loud. Then, on your handheld or computer, navigate to http://a.b.c.d (a.b.c.d being the IP address as read out loud by the FC) in order to enter the Config Portal.</details>
 
 In the main menu, click on "Settings" to configure your Flux Capacitor. 
 
@@ -604,15 +614,15 @@ In order to reduce the number of write operations and thereby prolong the life o
 
 ### Main page
 
-##### &#9654; WiFi Configuration
+##### &#9193; WiFi Configuration
 
 This leads to the [WiFi configuration page](#wifi-configuration)
 
-##### &#9654; Settings
+##### &#9193; Settings
 
 This leads to the [Settings page](#settings).
 
-##### &#9654; Update
+##### &#9193; Update
 
 This leads to the firmware and audio update page. 
 
@@ -634,11 +644,11 @@ In order to connect your FC to your WiFi network, all you need to do is either t
 
 >By default, the FC requests an IP address via DHCP. However, you can also configure a static IP for the FC by entering the IP, netmask, gateway and DNS server. All four fields must be filled for a valid static IP configuration. If you want to stick to DHCP, leave those four fields empty. If you connect your FC to your Time Circuits Display acting as access point ("TCD-AP"), leave these all empty.
 
-##### &#9654; Forget Saved WiFi Network
+##### &#9193; Forget Saved WiFi Network
 
 Checking this box (and clicking SAVE) deletes the currently saved WiFi network (SSID and password as well as static IP data) and reboots the device; it will restart in "access point" (AP) mode. See [here](#connecting-to-a-wifi-network).
 
-##### &#9654; Hostname
+##### &#9193; Hostname
 
 The device's hostname in the WiFi network. Defaults to 'flux'. This also is the domain name at which the Config Portal is accessible from a browser in the same local network. The URL of the Config Portal then is http://<i>hostname</i>.local (the default is http://flux.local)
 
@@ -646,27 +656,27 @@ If you have more than one FC in your local network, please give them unique host
 
 _This setting applies to both AP-mode and when your FC is connected to a WiFi network._ 
 
-##### &#9654; WiFi connection attempts
+##### &#9193; WiFi connection attempts
 
 Number of times the firmware tries to reconnect to a WiFi network, before falling back to AP-mode. See [here](#connecting-to-a-wifi-network)
 
-##### &#9654; WiFi connection timeout
+##### &#9193; WiFi connection timeout
 
 Number of seconds before a timeout occurs when connecting to a WiFi network. When a timeout happens, another attempt is made (see immediately above), and if all attempts fail, the device falls back to AP-mode. See [here](#connecting-to-a-wifi-network)
 
 #### <ins>Settings for AP-mode</ins>
 
-##### &#9654; Network name (SSID) appendix
+##### &#9193; Network name (SSID) appendix
 
 By default, when your FC creates a WiFi network of its own ("AP-mode"), this network is named "FC-AP". In case you have multiple FCs in your vicinity, you can have a string appended to create a unique network name. If you, for instance, enter "-ABC" here, the WiFi network name will be "FC-AP-ABC". Characters A-Z, a-z, 0-9 and - are allowed.
 
-##### &#9654; Password
+##### &#9193; Password
 
 By default, and if this field is empty, the FC's own WiFi network ("FC-AP") will be unprotected. If you want to protect your FC access point, enter your password here. It needs to be 8 characters in length and only characters A-Z, a-z, 0-9 and - are allowed.
 
 If you forget this password and are thereby locked out of your FC, enter *123456 followed by OK on the IR remote control; this deletes the WiFi password. Then power-down and power-up your FC and the access point will start unprotected.
 
-##### &#9654; WiFi channel
+##### &#9193; WiFi channel
 
 Here you can select one out of 11 channels, or have the FC choose a random channel for you. The default channel is 1. Preferred are channels 1, 6 and 11.
 
@@ -679,7 +689,7 @@ If a WiFi Scan was done (which can be triggered by clicking "WiFI Scan"),
 
 The channel proposition is based on all WiFi networks found; it does not take non-WiFi equipment (baby monitors, cordless phones, Bluetooth devices, microwave ovens, etc) into account.
 
-##### &#9654; Power save timer
+##### &#9193; Power save timer
 
 See [here](#wifi-power-saving-features).
 
@@ -689,29 +699,29 @@ See [here](#wifi-power-saving-features).
 
 #### <ins>Basic settings</ins>
 
-##### &#9654; Default flux sound mode
+##### &#9193; Default flux sound mode
 
 Selects the power-up "flux" sound mode. "Auto: xx secs" enables the beep for xx seconds after triggering a time travel, upon power-on, and then the TCD sends a respective signal through BTTFN.
 
 Can be changed at any time by typing *00 (off), *01 (on), *02 (Auto 30secs) or *03 (Auto 60secs) followed by OK, or through the TCD's keypad. Note that a change through remote or TCD is not saved.
 
-##### &#9654; Movie sequence for 7 lights
+##### &#9193; Movie sequence for 7 lights
 
 The original flux capacitor circuit was designed for 7 lights per light bar; however, only 6 lights were installed. So there is a visual gap in the movie sequence. This option allows choosing between the 7-lights sequence (with gap), and a 6-lights sequence (without gap). Defaults to enabled.
 
-##### &#9654; Skip Box Light animation
+##### &#9193; Skip Box Light animation
 
 Normally, the Box LEDs flash during the time travel sequence. If you prefer to instead have them constantly on during a time travel, check this option.
 
-##### &#9654; Play time travel sounds
+##### &#9193; Play time travel sounds
 
 If other props are connected, they might bring their own time travel sound effects. In this case, you can uncheck this to disable the Flux Capacitor's own time travel sounds. Note that this only covers sounds played during time travel, not other sound effects.
 
-##### &#9654; Play TCD-alarm sounds
+##### &#9193; Play TCD-alarm sounds
 
 If a TCD is connected via BTTFN or MQTT, the FC visually signals when the TCD's alarm sounds. If you want the FC to play an alarm sound, check this option.
 
-##### &#9654; Screen saver timer
+##### &#9193; Screen saver timer
 
 Enter the number of minutes until the Screen Saver should become active when the FC is idle.
 
@@ -724,7 +734,7 @@ The music player will continue to run.
 
 #### <ins>Music Player settings</ins>
 
-##### &#9654; Shuffle at startup
+##### &#9193; Shuffle at startup
 
 When checked, songs are shuffled when the device is booted. When unchecked, songs will be played in order.
 
@@ -732,47 +742,47 @@ Shuffle mode can be changed at any time through the FC's remote control (*222 / 
 
 #### <ins>Settings for BTTFN communication</ins>
 
-##### &#9654; IP address or hostname of TCD
+##### &#9193; IP address or hostname of TCD
 
 If you want to have your FC to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the TCD's hostname - usually 'timecircuits' - or IP address here.
 
 If you connect your FC to the TCD's access point ("TCD-AP"), the TCD's IP address is 192.168.4.1.
 
-##### &#9654; Change chase speed with GPS speed
+##### &#9193; Change chase speed with GPS speed
 
 If this option is checked and your TCD is equipped with a GPS sensor or a rotary encoder, the FC will adapt its chase speed to current GPS speed or the reading of the encoder, respectively. 
 
 While the FC receives GPS speed (or the reading from a rotary encoder) from the TCD, IR controls and MQTT commands for chase speed are not entirely ignored: They have no visual effect, but they are saved.
 
-##### &#9654; Follow TCD night-mode
+##### &#9193; Follow TCD night-mode
 
 If this option is checked, and your TCD goes into night mode, the FC will activate the Screen Saver with a very short timeout, and reduce its audio volume.
 
-##### &#9654; Follow TCD fake power
+##### &#9193; Follow TCD fake power
 
 If this option is checked, and your TCD is equipped with a fake power switch, the FC will also fake-power up/down. If fake power is off, no LED is active and the FC will ignore all input from buttons, knobs and the IR control.
 
-##### &#9654; '0' and button trigger BTTFN-wide TT
+##### &#9193; '0' and button trigger BTTFN-wide TT
 
 If the FC is connected to a TCD through BTTFN, this option allows to trigger a synchronized time travel on all BTTFN-connected devices when pressing "0" on the IR remote control or pressing the Time Travel button, just as if the Time Travel was triggered by the TCD. If this option is unchecked, pressing "0" or the Time Travel button only triggers a Time Travel sequence on the FC.
 
 #### <ins>Home Assistant / MQTT settings</ins>
 
-##### &#9654; Use Home Assistant (MQTT 3.1.1)
+##### &#9193; Use Home Assistant (MQTT 3.1.1)
 
 If checked, the FC will connect to the broker (if configured) and send and receive messages via [MQTT](#home-assistant--mqtt)
 
-##### &#9654; Broker IP[:port] or domain[:port]
+##### &#9193; Broker IP[:port] or domain[:port]
 
 The broker server address. Can be a domain (eg. "myhome.me") or an IP address (eg "192.168.1.5"). The default port is 1883. If different port is to be used, it can be specified after the domain/IP and a colon ":", for example: "192.168.1.5:1884". Specifying the IP address is preferred over a domain since the DNS call adds to the network overhead. Note that ".local" (MDNS) domains are not supported.
 
-##### &#9654; User[:Password]
+##### &#9193; User[:Password]
 
 The username (and optionally the password) to be used when connecting to the broker. Can be left empty if the broker accepts anonymous logins.
 
 #### <ins>Settings for wired connections</ins>
 
-##### &#9654; TCD connected by wire
+##### &#9193; TCD connected by wire
 
 Check this if you have a Time Circuits Display connected by wire. Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place.
 
@@ -780,7 +790,7 @@ While you can connect both a button and the TCD to the "time travel" connector o
 
 Do NOT check this option if your TCD is connected wirelessly (BTTFN, MQTT).
 
-##### &#9654; TCD signals Time Travel without 5s lead
+##### &#9193; TCD signals Time Travel without 5s lead
 
 Usually, the TCD signals a time travel with a 5 second lead, in order to give a prop a chance to play an acceleration sequence before the actual time travel takes place. Since this 5 second lead is unique to CircuitSetup props, and people sometimes want to connect third party props to the TCD, the TCD has the option of skipping this 5 second lead. If that is the case, and your Flux Capacitor is connected by wire, you need to set this option.
 
@@ -788,7 +798,7 @@ If your FC is connected wirelessly, this option has no effect.
 
 #### <ins>Other settings</ins>
 
-##### &#9654; Save secondary settings on SD
+##### &#9193; Save secondary settings on SD
 
 If this is checked, secondary settings (volume, chase speed, minimum box light level, IR lock status, learned IR keys) are stored on the SD card (if one is present). This helps to minimize write operations to the internal flash memory and to prolong the lifetime of your Flux Capacitor. See [Flash Wear](#flash-wear).
 
@@ -805,15 +815,15 @@ This procedure ensures that all your settings are copied from the old to the new
 
 #### <ins>Hardware configuration settings</ins>
 
-##### &#9654; Use 'GPIO14' for box lights
+##### &#9193; Use 'GPIO14' for box lights
 
 Normally, [box lights](#box-lighting) are connected to the "Box LED" connectors. Check this option if your box lights are instead connected to the "GPIO14" connector.
 
-##### &#9654; Use speed knob by default
+##### &#9193; Use speed knob by default
 
 Check this if your FC has a pot for chasing speed selection and you want to use this pot. Note that if this option is checked, commands regarding chasing speed from the remote control are ignored.
 
-##### &#9654; Disable supplied IR remote control
+##### &#9193; Disable supplied IR remote control
 
 Check this to disable the supplied remote control; the FC will only accept commands from a learned IR remote (if applicable). 
 
