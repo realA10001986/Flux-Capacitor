@@ -43,7 +43,7 @@ If you are using a fresh ESP32 board, please see [fluxcapacitor-A10001986.ino](h
 
 The firmware comes with a sound-pack which needs to be installed separately. The sound-pack is not updated as often as the firmware itself. If you have previously installed the latest version of the sound-pack, you normally don't have to re-install it when you update the firmware. Only if either a the FC puts up a respective [signal](#appendix-b-led-signals) at startup, or your device is quiet after a firmware update, a re-installation/update is needed.
 
-The first step is to download "install/sound-pack-xxxxxxxx.zip" and extract it. It contains one file named "FCA.bin".
+The first step is to download "install/sound-pack-fcXX.zip" and extract it. It contains one file named "FCA.bin".
 
 Then there are two alternative ways to proceed. Note that both methods *require an SD card*.
 
