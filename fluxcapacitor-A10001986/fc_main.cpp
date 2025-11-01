@@ -400,7 +400,7 @@ static void ssEnd(bool doSound = true);
 static void ssRestartTimer();
 
 static bool contFlux();
-
+static void play_volchg();
 static void waitAudioDone(bool withIR);
 
 static void bttfn_setup();
@@ -540,7 +540,7 @@ void main_setup()
 
     if(!haveAudioFiles) {
         #ifdef FC_DBG
-        Serial.println("Current audio data not installed");
+        Serial.println("Matching sound pack not installed");
         #endif
         fcLEDs.SpecialSignal(FCSEQ_NOAUDIO);
         while(!fcLEDs.SpecialDone()) {
@@ -1673,6 +1673,7 @@ static void handleIRKey(int key)
             inc_vol();        
             volchanged = true;
             volchgnow = millis();
+            play_volchg();
         } else doInpReaction = -2;
         break;
     case 13:                          // arrow down: dec vol
@@ -1681,6 +1682,7 @@ static void handleIRKey(int key)
             dec_vol();
             volchanged = true;
             volchgnow = millis();
+            play_volchg();
         } else doInpReaction = -2;
         break;
     case 14:                          // arrow left: dec LED speed
@@ -1873,7 +1875,7 @@ static int execute(bool isIR)
                 // Stay silent
                 break;
             case 77:                              // *77 Restart WiFi after entering Power Save
-                if(!isIRLocked && !TTrunning) {
+                if(isIR && !isIRLocked && !TTrunning) {
                     bool wasActiveM = false, wasActiveF = false, waitShown = false;
                     if(wifiOnWillBlock()) {
                         if(haveMusic && mpActive) {
@@ -2456,6 +2458,9 @@ void wakeup()
 // Is never called if fake-powered-off
 void setFluxMode(int mode)
 {
+    bool nf = (mode != playFLUX);
+    unsigned long now = millis();
+    
     switch(mode) {
     case 0:
         if(playingFlux) {
@@ -2474,12 +2479,18 @@ void setFluxMode(int mode)
     case 2:
     case 3:
         if(playingFlux) {
-            fluxTimerNow = millis();
+            fluxTimerNow = now;
             fluxTimer = true;
         }
         playFLUX = mode;
         fluxTimeout = (mode == 2) ? FLUXM2_SECS*1000 : FLUXM3_SECS*1000;
         break;
+    }
+
+    if(nf) {
+        settings.playFLUXsnd[0] = playFLUX + '0';
+        volchanged = true;
+        volchgnow = now;
     }
 }
 
@@ -2504,6 +2515,17 @@ static bool contFlux()
     }
 
     return false;
+}
+
+static void play_volchg()
+{
+    if(playingFlux)
+        return;
+    if(mpActive)
+        return;
+    if(checkMP3Running())
+        return;
+    play_file("/volchg.mp3", PA_ALLOWSD);
 }
 
 static void waitAudioDone(bool withIR)

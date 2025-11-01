@@ -114,14 +114,23 @@
  */
 
 /*  Changelog
- *   
- *  2025/10/26 (A10001986)
+ *
+ *  2025/10/31 (A10001986) [1.86]
+ *    - Play sound on volume change (if nothing is played currently)
+ *    - New sound pack (FC04)
+ *  2025/10/30 (A10001986)
+ *    - Fix deleting a bad .bin file after upload
+ *    - Save flux sound mode when changed (10 seconds after change in fact) so
+ *      it's restored on power-up.
+ *  2025/10/29 (A10001986)
+ *    - Execute *77 only if coming from IR control .
+ *  2025/10/26 (A10001986) [1.85.2]
  *    - BTTFN: Fix hostname length issues; code optimizations; minor fix for mc 
  *      notifications. Breaks support for TCD firmwares < 3.2.
  *      Recommend to update all props' firmwares for similar fixes.
  *  2025/10/24 (A10001986)
  *    - Add WiFi power saving for AP-mode, and user-triggered WiFi connect retry. 
- *      Command sequence *77OK is to a) restart WiFi after entering PS mode, 2)
+ *      Command sequence *77OK is to 1) restart WiFi after entering PS mode, 2)
  *      trigger a connection attempt if configured WiFi could not be connected
  *      to during boot.
  *    - WM: Fix AP shutdown; handle mDNS

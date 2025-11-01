@@ -86,10 +86,10 @@
 #define DECLARE_D_JSON(x,n) DynamicJsonDocument n(x);
 #endif 
 
-#define NUM_AUDIOFILES 11+8
-#define SND_REQ_VERSION "FC03"
+#define NUM_AUDIOFILES 12+8
+#define SND_REQ_VERSION "FC04"
 #define AC_FMTV 2
-#define AC_TS   1204596 //1198327
+#define AC_TS   1207938
 #define AC_OHSZ (14 + ((NUM_AUDIOFILES+1)*(32+4)))
 
 static const char *CONFN  = "/FCA.bin";
@@ -104,7 +104,7 @@ static char       *uploadRealFileNames[MAX_SIM_UPLOADS] = { NULL };
 static const char *cfgName    = "/fcconfig.json";   // Main config (flash)
 static const char *idName     = "/fcid.json";       // FC remote ID (flash)
 static const char *ipCfgName  = "/fcipcfg.json";    // IP config (flash)
-static const char *volCfgName = "/fcvolcfg.json";   // Volume config (flash/SD)
+static const char *volCfgName = "/fcvolcfg.json";   // Volume/Flux level/Flux mode config (flash/SD)
 static const char *spdCfgName = "/fcspdcfg.json";   // Speed config (flash/SD)
 static const char *bllCfgName = "/fcbllcfg.json";   // Minimum box light level config (flash/SD)
 static const char *irlCfgName = "/fcirlcfg.json";   // IR lock (flash/SD)
@@ -155,6 +155,7 @@ uint8_t musFolderNum = 0;
 /* Cache */
 static uint8_t   prevSavedVol = 255;
 static unsigned int prevSavedFlx = 3;
+static int       prevSavedFlxM = 99;
 static uint16_t  prevSavedSpd = 999;
 static uint16_t  prevSavedBLL = 0;
 static uint8_t   prevSavedIM  = 0;
@@ -453,7 +454,7 @@ static bool read_settings(File configFile, int cfgReadCount)
 
         // Settings
 
-        wd |= CopyCheckValidNumParm(json["playFLUXsnd"], settings.playFLUXsnd, sizeof(settings.playFLUXsnd), 0, 3, DEF_PLAY_FLUX_SND);
+        CopyCheckValidNumParm(json["playFLUXsnd"], settings.playFLUXsnd, sizeof(settings.playFLUXsnd), 0, 3, DEF_PLAY_FLUX_SND);
         wd |= CopyCheckValidNumParm(json["origSeq"], settings.origSeq, sizeof(settings.origSeq), 0, 1, DEF_ORIG_SEQ);
         wd |= CopyCheckValidNumParm(json["skipTTBLAnim"], settings.skipTTBLAnim, sizeof(settings.skipTTBLAnim), 0, 1, DEF_STTBL_ANIM);
         wd |= CopyCheckValidNumParm(json["playTTsnds"], settings.playTTsnds, sizeof(settings.playTTsnds), 0, 1, DEF_PLAY_TT_SND);
@@ -522,7 +523,6 @@ void write_settings()
     json["apch"] = (const char *)settings.apChnl;
     json["wAOD"] = (const char *)settings.wifiAPOffDelay;
 
-    json["playFLUXsnd"] = (const char *)settings.playFLUXsnd;
     json["origSeq"] = (const char *)settings.origSeq;
     json["skipTTBLAnim"] = (const char *)settings.skipTTBLAnim;
     json["playTTsnds"] = (const char *)settings.playTTsnds;
@@ -596,7 +596,7 @@ static bool checkValidNumParm(char *text, int lowerLim, int upperLim, int setDef
 {
     int i, len = strlen(text);
 
-    if(len == 0) {
+    if(!len) {
         sprintf(text, "%d", setDefault);
         return true;
     }
@@ -630,7 +630,7 @@ static bool checkValidNumParmF(char *text, float lowerLim, float upperLim, float
     int i, len = strlen(text);
     float f;
 
-    if(len == 0) {
+    if(!len) {
         sprintf(text, "%.1f", setDefault);
         return true;
     }
@@ -776,7 +776,7 @@ void deleteIRKeys()
 }
 
 /*
- *  Load/save the Volume
+ *  Load/save the Volume & flux sound mode
  */
 
 bool loadCurVolume()
@@ -811,14 +811,21 @@ bool loadCurVolume()
                     fluxLvlIdx = ncv;
                 } 
             }
+            if(!CopyCheckValidNumParm(json["flxm"], settings.playFLUXsnd, sizeof(settings.playFLUXsnd), 0, 3, atoi(settings.playFLUXsnd))) {
+                uint8_t ncv = atoi(settings.playFLUXsnd);
+                if(ncv >= 0 && ncv <= 3) {
+                    playFLUX = ncv;
+                } 
+            }
         } 
         configFile.close();
     }
 
-    // Do not write a default file, use pre-set value
+    // Do not write a default file, use pre-set values
 
     prevSavedVol = curSoftVol;
     prevSavedFlx = fluxLvlIdx;
+    prevSavedFlxM = playFLUX;
 
     return true;
 }
@@ -828,9 +835,12 @@ void saveCurVolume(bool useCache)
     const char *funcName = "saveCurVolume";
     char buf[6];
     char flbuf[6];
+    char fmbuf[6];
     DECLARE_S_JSON(512,json);
 
-    if(useCache && (prevSavedVol == curSoftVol) && (prevSavedFlx == fluxLvlIdx)) {
+    if(useCache && (prevSavedVol == curSoftVol) && 
+                   (prevSavedFlx == fluxLvlIdx) &&
+                   (prevSavedFlxM == playFLUX)) {
         #ifdef FC_DBG
         Serial.printf("%s: Prev. saved vol identical, not writing\n", funcName);
         Serial.printf("%d %d / %d %d\n", prevSavedVol, curSoftVol, prevSavedFlx, fluxLvlIdx);
@@ -845,12 +855,15 @@ void saveCurVolume(bool useCache)
 
     sprintf(buf, "%d", curSoftVol);
     sprintf(flbuf, "%d", fluxLvlIdx);
+    sprintf(fmbuf, "%d", playFLUX);
     json["volume"] = (const char *)buf;
     json["flux"] = (const char *)flbuf;
+    json["flxm"] = (const char *)fmbuf;
 
     if(writeJSONCfgFile(json, volCfgName, configOnSD, funcName)) {
         prevSavedVol = curSoftVol;
         prevSavedFlx = fluxLvlIdx;
+        prevSavedFlxM = playFLUX;
     }
 }
 
@@ -1918,6 +1931,9 @@ void renameUploadFile(int idx)
         SD.remove(t);
         
         SD.rename(uploadFileName, t);
+
+        // Real name is now changed
+        strcpy(uploadFileName, t);
         
         free(t);
     }
