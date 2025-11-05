@@ -297,7 +297,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     </tr>
     <tr>
      <td align="left">Set minimum box light level (0-4)</td>
-     <td align="left">*400&#9166; - *34&#9166;</td><td>3400-3404</td>
+     <td align="left">*400&#9166; - *404&#9166;</td><td>3400-3404</td>
     </tr>
     <tr>
      <td align="left"><a href="#the-music-player">Music Player</a>: Select music folder (0-9)</td>
