@@ -68,8 +68,8 @@
 void audio_setup();
 void audio_loop();
 
-void play_file(const char *audio_file, uint16_t flags, float volumeFactor = 1.0);
-void append_file(const char *audio_file, uint16_t flags, float volumeFactor = 1.0);
+void play_file(const char *audio_file, uint32_t flags, float volumeFactor = 1.0);
+void append_file(const char *audio_file, uint32_t flags, float volumeFactor = 1.0);
 
 void play_flux();
 void append_flux();
@@ -80,9 +80,9 @@ void setFluxLevel(unsigned int levelIdx);
 
 bool check_file_SD(const char *audio_file);
 bool checkAudioDone();
-bool checkAudioStarted();
 bool checkMP3Running();
 void stopAudio();
+bool stop_key();
 bool append_pending();
 
 void inc_vol();

@@ -15,10 +15,10 @@
  ***                          Version Strings                          ***
  *************************************************************************/
 
-#define FC_VERSION       "V1.86"
-#define FC_VERSION_EXTRA "OCT312025"
+#define FC_VERSION       "V1.87"
+#define FC_VERSION_EXTRA "NOV142025"
 
-#define FC_DBG              // debug output on Serial   
+//#define FC_DBG              // debug output on Serial   
 
 /*************************************************************************
  ***                           Miscellaneous                           ***
@@ -32,9 +32,6 @@
 // without 5s lead" is set on the TCD, the FC option "TCD signals without 
 // lead" must be set, too.
 #define ETTO_LEAD 5000
-
-// Uncomment to include BTTFN discover support (multicast)
-#define BTTFN_MC
 
 // Use SPIFFS (if defined) or LittleFS (if undefined; esp32-arduino >= 2.x)
 //#define USE_SPIFFS

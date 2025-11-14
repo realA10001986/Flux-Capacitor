@@ -115,6 +115,42 @@
 
 /*  Changelog
  *
+ *  2025/11/14 (A10001986) [1.87]
+ *    - Remove BTTFN_MC conditional
+ *  2025/11/13 (A10001986)
+ *    - Show MP3-Rename progress through number of chase LEDs lit
+ *    - Move Music Player init into main_setup()
+ *    - Allow using TCD command codes 3xxx with MQTT-INJECT command
+ *    - Block BTTFN/MQTT commands while busy
+ *  2025/11/10 (A10001986)
+ *    - Support MQTT-"TIMETRAVEL" command for inter-prop communication with lead
+ *      time and time tunnel duration attached ("TIMETRAVEL_1234_9876") (TCD 3.9)
+ *    - Clean-up stand-alone time travel
+ *  2025/11/09 (A10001986)
+ *    - Add BTTFN_NOT_BUSY support (TCD 3.9)
+ *  2025/11/08 (A10001986)
+ *    - Allocate MQTT buffer only if MQTT is actually used
+ *  2025/11/07 (A10001986)
+ *    - Make TCD notifications synchronous (wakeup, prepareTT)
+ *    - MP3/File-Renamer: Ignore non-mp3 files
+ *    - Remove hack to skip web handling in on mp3-playback start, remove stopping
+ *      sound in AP mode on CP access.
+ *  2025/11/06 (A10001986)
+ *    - Allow INJECT_95; add command 97 (3097/INJECT_97) to remotely quit TCD
+ *      keypad remote control mode.
+ *  2025/11/05 (A10001986)
+ *    - Add MQTT command "INJECT_"
+ *  2025/11/04 (A10001986)
+ *    - Add MQTT commands PLAYKEY_x and STOPKEY (X=1-9)
+ *    - Add TCD commands 3501-3509 to play keyX.mp3 (X=1-9) (Old short-hands
+ *      300x for a subset of keyX playback remain as well.)
+ *    - Eliminate historical limitation of not having "key2/5/8.mp3". Can be played
+ *      through HA/MQTT (PLAYKEY_x) and TCD-commands (350x).
+ *    - Put MQTT commands in command queue instead of executing them directly.
+ *  2025/11/03 (A10001986) 
+ *    - Add MQTT commands PLAYKEY_x, STOPKEY to play keyX.mp3 (X=1-9)
+ *  2025/11/02 (A10001986)
+ *    - WM: Generate HTML for checkboxes on-the-fly.
  *  2025/10/31 (A10001986) [1.86]
  *    - Play sound on volume change (if nothing is played currently)
  *    - New sound pack (FC04)

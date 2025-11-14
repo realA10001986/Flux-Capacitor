@@ -136,8 +136,6 @@ static const char *osde = "</option></select></div>";
 static const char *ooe  = "</option><option value='";
 static const char custHTMLSel[] = " selected";
 
-static const char *aco = "autocomplete='off'";
-
 // double-% since this goes through sprintf!
 static const char bestAP[]   = "<div class='c' style='background-color:#%s;color:#fff;font-size:80%%;border-radius:5px'>Proposed channel at current location: %d<br>%s(Non-WiFi devices not taken into account)</div>";
 static const char badWiFi[]  = "<br><i>Operating in AP mode not recommended</i>";
@@ -152,7 +150,7 @@ static const char haveNoSD[] = "<div class='c' style='background-color:#dc3630;c
 #define HNTEXT "Hostname<br><span style='font-size:80%'>(Valid characters: a-z/0-9/-)</span>"
 #endif
 WiFiManagerParameter custom_hostName("hostname", HNTEXT, settings.hostName, 31, "pattern='[A-Za-z0-9\\-]+' placeholder='Example: fluxcapacitor'");
-WiFiManagerParameter custom_wifiConRetries("wifiret", "Connection attempts (1-10)", settings.wifiConRetries, 2, "type='number' min='1' max='10' autocomplete='off'", WFM_LABEL_BEFORE);
+WiFiManagerParameter custom_wifiConRetries("wifiret", "Connection attempts (1-10)", settings.wifiConRetries, 2, "type='number' min='1' max='10'");
 WiFiManagerParameter custom_wifiConTimeout("wificon", "Connection timeout (7-25[seconds])", settings.wifiConTimeout, 2, "type='number' min='7' max='25'");
 
 WiFiManagerParameter custom_sysID("sysID", "Network name (SSID) appendix<br><span style='font-size:80%'>Will be appended to \"FC-AP\" to create a unique SSID if multiple FCs are in range. [a-z/0-9/-]</span>", settings.systemID, 7, "pattern='[A-Za-z0-9\\-]+'");
@@ -167,40 +165,36 @@ WiFiManagerParameter custom_wifihint("<div style='margin:0;padding:0'>Enter *77O
 WiFiManagerParameter custom_aood("<div class='msg P'>Please <a href='/update'>install/update</a> sound pack</div>");
 
 WiFiManagerParameter custom_playFLUXSnd(wmBuildFluxMode);
-WiFiManagerParameter custom_origSeq("oSeq", "Movie sequence for 7 lights", settings.origSeq, 1, "autocomplete='off' title='When checked, the movie sequence includes a 7th, yet non-existent light' type='checkbox' class='mt5'", WFM_LABEL_AFTER);
-WiFiManagerParameter custom_sTTBLA("sTTBL", "Skip Box Light animation", settings.skipTTBLAnim, 1, "autocomplete='off' title='Check to skip the box light animation and just plainly switch it on during time travel' type='checkbox'", WFM_LABEL_AFTER);
-WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds", settings.playTTsnds, 1, "autocomplete='off' title='Check to have the device play time travel sounds. Uncheck if other props provide time travel sound.' type='checkbox'", WFM_LABEL_AFTER);
-WiFiManagerParameter custom_playALSnd("plyALS", "Play TCD-alarm sound", settings.playALsnd, 1, "autocomplete='off' title='Check to have the device play a sound then the TCD alarm sounds.' type='checkbox' class='mb10'", WFM_LABEL_AFTER);
-WiFiManagerParameter custom_ssDelay("ssDel", "Screen saver timer (minutes; 0=off)", settings.ssTimer, 3, "type='number' min='0' max='999' autocomplete='off'", WFM_LABEL_BEFORE);
+WiFiManagerParameter custom_origSeq("oSeq", "Movie sequence for 7 lights", settings.origSeq, 1, "title='When checked, the movie sequence includes a 7th, yet non-existent light' class='mt5'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_sTTBLA("sTTBL", "Skip Time-Travel Box Light animation", settings.skipTTBLAnim, 1, "title='Check to skip the box light animation and just plainly switch it on during time travel'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_playTTSnd("plyTTS", "Play time travel sounds", settings.playTTsnds, 1, "title='Check to have the device play time travel sounds. Uncheck if other props provide time travel sound.' ", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_playALSnd("plyALS", "Play TCD-alarm sound", settings.playALsnd, 1, "title='Check to have the device play a sound then the TCD alarm sounds.' class='mb10'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_ssDelay("ssDel", "Screen saver timer (minutes; 0=off)", settings.ssTimer, 3, "type='number' min='0' max='999'");
 
-WiFiManagerParameter custom_shuffle("musShu", "Shuffle mode enabled at startup", settings.shuffle, 1, "type='checkbox' class='mt5'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_shuffle("musShu", "Shuffle mode enabled at startup", settings.shuffle, 1, "class='mt5'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 
-#ifdef BTTFN_MC
 WiFiManagerParameter custom_tcdIP("tcdIP", "IP address or hostname of TCD", settings.tcdIP, 31, "pattern='(^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$)|([A-Za-z0-9\\-]+)' placeholder='Example: 192.168.4.1'");
-#else
-WiFiManagerParameter custom_tcdIP("tcdIP", "IP address of TCD", settings.tcdIP, 31, "pattern='^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$' placeholder='Example: 192.168.4.1'");
-#endif
-WiFiManagerParameter custom_uGPS("uGPS", "Adapt chase speed to GPS speed<br><span style='font-size:80%'>Speed from TCD (GPS, rotary encoder, remote control), if available, will overrule knob and IR remote</span>", settings.useGPSS, 1, "autocomplete='off' type='checkbox' class='mb0'", WFM_LABEL_AFTER);
-WiFiManagerParameter custom_uNM("uNM", "Follow TCD night-mode<br><span style='font-size:80%'>If checked, the Screen Saver will activate when TCD is in night-mode.</span>", settings.useNM, 1, "autocomplete='off' type='checkbox' class='mb0'", WFM_LABEL_AFTER);
-WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power", settings.useFPO, 1, "autocomplete='off' type='checkbox'", WFM_LABEL_AFTER);
-WiFiManagerParameter custom_bttfnTT("bttfnTT", "'0' and button trigger BTTFN-wide TT<br><span style='font-size:80%'>If checked, pressing '0' on the IR remote or pressing the Time Travel button triggers a BTTFN-wide TT</span>", settings.bttfnTT, 1, "autocomplete='off' type='checkbox' class='mb0'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_uGPS("uGPS", "Adapt chase speed to GPS speed<br><span style='font-size:80%'>Speed from TCD (GPS, rotary encoder, remote control), if available, will overrule knob and IR remote</span>", settings.useGPSS, 1, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_uNM("uNM", "Follow TCD night-mode<br><span style='font-size:80%'>If checked, the Screen Saver will activate when TCD is in night-mode.</span>", settings.useNM, 1, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power", settings.useFPO, 1, "", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_bttfnTT("bttfnTT", "'0' and button trigger BTTFN-wide TT<br><span style='font-size:80%'>If checked, pressing '0' on the IR remote or pressing the Time Travel button triggers a BTTFN-wide TT</span>", settings.bttfnTT, 1, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 
 #ifdef FC_HAVEMQTT
-WiFiManagerParameter custom_useMQTT("uMQTT", "Use Home Assistant (MQTT 3.1.1)", settings.useMQTT, 1, "type='checkbox' class='mt5 mb10'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_useMQTT("uMQTT", "Use Home Assistant (MQTT 3.1.1)", settings.useMQTT, 1, "class='mt5 mb10'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 WiFiManagerParameter custom_mqttServer("ha_server", "Broker IP[:port] or domain[:port]", settings.mqttServer, 79, "pattern='[a-zA-Z0-9\\.:\\-]+' placeholder='Example: 192.168.1.5'");
 WiFiManagerParameter custom_mqttUser("ha_usr", "User[:Password]", settings.mqttUser, 63, "placeholder='Example: ronald:mySecret'");
 #endif // HAVEMQTT
 
-WiFiManagerParameter custom_TCDpresent("TCDpres", "TCD connected by wire", settings.TCDpresent, 1, "autocomplete='off' title='Check this if you have a Time Circuits Display connected via wire' type='checkbox' class='mt5'", WFM_LABEL_AFTER);
-WiFiManagerParameter custom_noETTOL("uEtNL", "TCD signals Time Travel without 5s lead", settings.noETTOLead, 1, "autocomplete='off' type='checkbox' class='mt5' style='margin-left:20px;'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_TCDpresent("TCDpres", "TCD connected by wire", settings.TCDpresent, 1, "title='Check this if you have a Time Circuits Display connected via wire' class='mt5'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_noETTOL("uEtNL", "TCD signals Time Travel without 5s lead", settings.noETTOLead, 1, "class='mt5' style='margin-left:20px;'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 
 WiFiManagerParameter custom_haveSD(wmBuildHaveSD);
-WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save secondary settings on SD<br><span style='font-size:80%'>Check this to avoid flash wear</span>", settings.CfgOnSD, 1, "autocomplete='off' type='checkbox' class='mt5 mb0'", WFM_LABEL_AFTER);
-//WiFiManagerParameter custom_sdFrq("sdFrq", "4MHz SD clock speed<br><span style='font-size:80%'>Checking this might help in case of SD card problems</span>", settings.sdFreq, 1, "autocomplete='off' type='checkbox' style='margin-top:12px'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save secondary settings on SD<br><span style='font-size:80%'>Check this to avoid flash wear</span>", settings.CfgOnSD, 1, "class='mt5 mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+//WiFiManagerParameter custom_sdFrq("sdFrq", "4MHz SD clock speed<br><span style='font-size:80%'>Checking this might help in case of SD card problems</span>", settings.sdFreq, 1, "style='margin-top:12px'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 
-WiFiManagerParameter custom_swapBL("swapBL", "Use GPIO14 connector for box lights", settings.usePLforBL, 1, "autocomplete='off' title='Check if you connected your box lights to the GPIO14 connector instead of the Box LED connectors' type='checkbox' class='mt5'", WFM_LABEL_AFTER);
-WiFiManagerParameter custom_useSknob("sKnob", "Use speed knob by default", settings.useSknob, 1, "title='Check to use speed knob by default, instead of adjusting speed via IR remote control' type='checkbox'", WFM_LABEL_AFTER);
-WiFiManagerParameter custom_disDIR("dDIR", "Disable supplied IR control", settings.disDIR, 1, "title='Check to disable the supplied IR remote control' type='checkbox'", WFM_LABEL_AFTER);
+WiFiManagerParameter custom_swapBL("swapBL", "Use GPIO14 connector for box lights", settings.usePLforBL, 1, "title='Check if you connected your box lights to the GPIO14 connector instead of the Box LED connectors' class='mt5'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_useSknob("sKnob", "Use speed knob by default", settings.useSknob, 1, "title='Check to use speed knob by default, instead of adjusting speed via IR remote control'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_disDIR("dDIR", "Disable supplied IR control", settings.disDIR, 1, "title='Check to disable the supplied IR remote control'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 
 WiFiManagerParameter custom_sectstart_head("<div class='sects'>");
 WiFiManagerParameter custom_sectstart("</div><div class='sects'>");
@@ -247,9 +241,6 @@ static bool shouldDeleteIPConfig = false;
 // Did user configure a WiFi network to connect to?
 bool wifiHaveSTAConf = false;
 
-static unsigned long lastConnect = 0;
-static unsigned long consecutiveAPmodeFB = 0;
-
 // WiFi power management in AP mode
 bool          wifiInAPMode = false;
 bool          wifiAPIsOff = false;
@@ -272,12 +263,11 @@ static int  *opType = NULL;
 #ifdef FC_HAVEMQTT
 #define       MQTT_SHORT_INT  (30*1000)
 #define       MQTT_LONG_INT   (5*60*1000)
-static const char emptyStr[1] = { 0 };
-bool          useMQTT = false;
-char          *mqttUser = (char *)emptyStr;
-char          *mqttPass = (char *)emptyStr;
-char          *mqttServer = (char *)emptyStr;
-uint16_t      mqttPort = 1883;
+static const char    emptyStr[1] = { 0 };
+static bool          useMQTT = false;
+static char          *mqttUser = (char *)emptyStr;
+static char          *mqttPass = (char *)emptyStr;
+static char          *mqttServer = (char *)emptyStr;
 static unsigned long mqttReconnectNow = 0;
 static unsigned long mqttReconnectInt = MQTT_SHORT_INT;
 static uint16_t      mqttReconnFails = 0;
@@ -543,12 +533,15 @@ void wifi_setup2()
     
     if(useMQTT) {
 
+        uint16_t mqttPort = 1883;
         bool mqttRes = false;
         char *t;
         int tt;
 
         // No WiFi power save if we're using MQTT
         origWiFiOffDelay = wifiOffDelay = 0;
+
+        mqttClient.setBufferSize(MQTT_MAX_PACKET_SIZE);
 
         if((t = strchr(settings.mqttServer, ':'))) {
             size_t ts = (t - settings.mqttServer) + 1;
@@ -793,14 +786,7 @@ void wifi_loop()
         esp_restart();
     }
 
-    // For some reason (probably memory allocation doing some
-    // garbage collection), the first HTTPSend (triggered in
-    // wm.process()) after initiating mp3 playback takes
-    // unusally long, in bad cases 100s of ms. It's worse 
-    // closer to playback start.
-    // This hack skips Webserver-handling inside wm.process() 
-    // if an mp3 playback started within the last 3 seconds.
-    wm.process(!checkAudioStarted());
+    wm.process();
 
     // WiFi power management
     // If a delay > 0 is configured, WiFi is powered-down after timer has
@@ -880,8 +866,6 @@ static void wifiConnect(bool deferConfigPortal)
         wifiOnNow = millis();
         wifiAPIsOff = false;  // Sic! Allows checks like if(wifiAPIsOff || wifiIsOff)
 
-        //consecutiveAPmodeFB = 0;  // Reset counter of consecutive AP-mode fall-backs
-
     } else {
 
         #ifdef FC_DBG
@@ -923,14 +907,7 @@ static void wifiConnect(bool deferConfigPortal)
         wifiAPModeNow = millis();
         wifiIsOff = false;    // Sic!
 
-        /*
-        if(wifiHaveSTAConf) {    
-            consecutiveAPmodeFB++;  // increase counter of consecutive AP-mode fall-backs
-        }
-        */
     }
-
-    //lastConnect = millis();
 }
 
 static void wifiOff(bool force)
@@ -951,19 +928,13 @@ void wifiOn(unsigned long newDelay, bool alsoInAPMode, bool deferCP)
     unsigned long Now = millis();
     
     // wifiOn() is called when the user entered *77OK (with alsoInAPMode
-    // TRUE) [and - UNUSED - (with alsoInAPMode FALSE)].
+    // TRUE)
     //
     // *77OK serves two purposes: To re-enable WiFi if in power save mode, and 
     // to re-connect to a configured WiFi network if we failed to connect to 
     // that network at the last connection attempt. In both cases, the Config
     // Portal is started.
     //
-    // [Unused:
-    // The call with alsoInAPMode=FALSE should only re-connect if we are in 
-    // power-save  mode after being connected to a user-configured network, 
-    // or if we are in AP mode but the user had config'd a network. Should  
-    // only be called when a short freeze is feasible.]
-    //    
     // "wifiInAPMode" only tells us our latest mode; if the configured WiFi
     // network was - for whatever reason - was not available when we
     // tried to (re)connect, "wifiInAPMode" is true.
@@ -1006,67 +977,6 @@ void wifiOn(unsigned long newDelay, bool alsoInAPMode, bool deferCP)
             }
 
         }
-
-    } else {      // unused
-
-        /*
-         
-        // If no user-config'd network - no point, bail
-        if(!wifiHaveSTAConf) return;
-
-        if(wifiInAPMode) {  // We are in AP mode (because connection failed)
-
-            #ifdef FC_DBG
-            Serial.printf("wifiOn: consecutiveAPmodeFB %d\n", consecutiveAPmodeFB);
-            #endif
-
-            // Reset counter of consecutive AP-mode fallbacks
-            // after a couple of days
-            if(Now - lastConnect > 4*24*60*60*1000)
-                consecutiveAPmodeFB = 0;
-
-            // Give up after so many attempts
-            if(consecutiveAPmodeFB > 5)
-                return;
-
-            // Do not try to switch from AP- to STA-mode
-            // if last fall-back to AP-mode was less than
-            // 15 (for the first 2 attempts, then 90) minutes ago
-            if(Now - lastConnect < ((consecutiveAPmodeFB <= 2) ? 15*60*1000 : 90*60*1000))
-                return;
-
-            if(!wifiAPIsOff) {
-
-                // If ON, disable WiFi at this point
-                // (in hope of successful connection below)
-                wifiOff(true);
-
-            }
-
-        } else {            // We are in STA mode
-
-            // If WiFi is not off, check if caller wanted
-            // to start the CP, and do so, if not running
-            if(!wifiIsOff && (WiFi.status() == WL_CONNECTED)) {
-                if(!deferCP) {
-                    if(!wm.getWebPortalActive()) {
-                        wm.startWebPortal();
-                    }
-                }
-                // Add 60 seconds to timer in case the NTP
-                // request might fall off the edge
-                if(origWiFiOffDelay > 0) {
-                    if((Now - wifiOnNow >= wifiOffDelay) ||
-                       ((wifiOffDelay - (Now - wifiOnNow)) < (60*1000))) {
-                        wifiOnNow += (60*1000);
-                    }
-                }
-                return;
-            }
-
-        }
-
-        */
 
     }
 
@@ -1357,13 +1267,6 @@ void gpCallback(int reason)
     if(audioInitDone) {
         switch(reason) {
         case WM_LP_PREHTTPSEND:
-            if(wifiInAPMode) {
-                if(checkMP3Running()) {
-                    mp_stop();
-                    stopAudio();
-                    return;
-                }
-            } // fall through
         case WM_LP_NONE:
         case WM_LP_POSTHTTPSEND:
             audio_loop();
@@ -1885,6 +1788,17 @@ static void mqttLooper()
     audio_loop();
 }
 
+static uint16_t a2i(char *p)
+{
+    unsigned int t = 0;
+    t += (*p++ - '0') * 1000;
+    t += (*p++ - '0') * 100;
+    t += (*p++ - '0') * 10;
+    t += (*p - '0');
+
+    return (uint16_t)t;
+}
+
 static void mqttCallback(char *topic, byte *payload, unsigned int length)
 {
     int i = 0, j, ml = (length <= 255) ? length : 255;
@@ -1894,13 +1808,13 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
       "SLOWER",           // 1
       "RESETSPEED",       // 2            
       "TIMETRAVEL",       // 3
-      "CHASE_",           // 4 CHASE_0 .. CHASE_9
+      "CHASE_",           // 4   CHASE_0..CHASE_9
       "FLUX_OFF",         // 5
       "FLUX_ON",          // 6
       "FLUX_30",          // 7
       "FLUX_60",          // 8
-      "USER1",            // 9
-      "USER2",            // 10
+      "USER1",            // 9   also while off
+      "USER2",            // 10  also while off
       "MP_SHUFFLE_ON",    // 11
       "MP_SHUFFLE_OFF",   // 12
       "MP_PLAY",          // 13
@@ -1908,6 +1822,9 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
       "MP_NEXT",          // 15
       "MP_PREV",          // 16
       "MP_FOLDER_",       // 17  MP_FOLDER_0..MP_FOLDER_9
+      "PLAYKEY_",         // 18  PLAYKEY_1..PLAYKEY_9
+      "STOPKEY",          // 19
+      "INJECT_",          // 20
       NULL
     };
     static const char *cmdList2[] = {
@@ -1920,7 +1837,15 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
       NULL
     };
 
+    // Note: This might be called while we are in a
+    // wait-delay-loop. Best to just set flags here
+    // that are evaluated synchronously (=later).
+    // Do not stuff that messes with display, input,
+    // etc.
+
     if(!length) return;
+
+    if(fcBusy) return;
 
     memcpy(tempBuf, (const char *)payload, ml);
     tempBuf[ml] = 0;
@@ -1951,9 +1876,7 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
             // sound (if to be played)
             // We don't ignore this if TCD is connected by wire,
             // because this signal does not come via wire.
-            if(!TTrunning && !IRLearning) {
-                prepareTT();
-            }
+            doPrepareTT = true;
             break;
         case 1:
             // Trigger Time Travel (if not running already)
@@ -1963,7 +1886,13 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
                 networkTCDTT = true;
                 networkReentry = false;
                 networkAbort = false;
-                networkLead = ETTO_LEAD;
+                if(strlen(tempBuf) == 20) {
+                    networkLead = a2i(&tempBuf[11]);
+                    networkP1 = a2i(&tempBuf[16]);
+                } else {
+                    networkLead = ETTO_LEAD;
+                    networkP1 = 6600;
+                }
             }
             break;
         case 2:   // Re-entry
@@ -1985,20 +1914,13 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
             // Eval this at our convenience
             break;
         case 5:
-            if(!TTrunning && !IRLearning) {
-                wakeup();
-            }
+            doWakeup = true;
             break;
         }
        
     } else if(!strcmp(topic, "bttf/fc/cmd")) {
 
         // User commands
-
-        // Not taking commands under these circumstances:
-        // (FPBUnitIsOn checked for each command)
-        if(TTrunning || IRLearning)
-            return;
 
         while(cmdList[i]) {
             j = strlen(cmdList[i]);
@@ -2010,80 +1932,44 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
 
         if(!cmdList[i]) return;
 
+        // What needs to be handled here:
+        // - complete command parsing
+        // - stuff to execute when fake power is off
+        // All other stuff translated into command and queued
+
         switch(i) {
-        case 0:
-            if(!FPBUnitIsOn) return;
-            incIRSpeed();
-            break;
-        case 1:
-            if(!FPBUnitIsOn) return;
-            decIRSpeed();
-            break;
-        case 2:
-            if(!FPBUnitIsOn) return;
-            resetIRSpeed();
-            break;
-        case 3:
-            if(!FPBUnitIsOn) return;
-            // Trigger Time Travel; treated like button, not
-            // like TT from TCD.
-            networkTimeTravel = true;
-            networkTCDTT = false;
-            break;
         case 4:
-            if(!FPBUnitIsOn) return;
             if(strlen(tempBuf) > j && tempBuf[j] >= '0' && tempBuf[j] <= '9') {
-                setFluxPattern((uint8_t)(tempBuf[j] - '0'));
+                addCmdQueue(10 + (uint32_t)(tempBuf[j] - '0'));
             }
-            break;
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-            if(!FPBUnitIsOn) return;
-            setFluxMode(i - 5);
             break;
         case 9:
         case 10:
-            // Allow when off
-            showUserSignal(i - 8);
-            break;      
+            networkUserSignal = i - 8;
+            // Eval this at our convenience
+            break;
         case 11:
         case 12:
-            if(!FPBUnitIsOn) return;
-            if(haveMusic) mp_makeShuffle((i == 11));
-            break;
-        case 13: 
-            if(!FPBUnitIsOn) return;   
-            if(haveMusic) mp_play();
-            break;
-        case 14:
-            if(!FPBUnitIsOn) return;
-            if(haveMusic && mpActive) {
-                mp_stop();
-                if(playFLUX) {
-                    play_flux();
-                }
-            }
-            break;
-        case 15:
-            if(!FPBUnitIsOn) return;
-            if(haveMusic) mp_next(mpActive);
-            break;
-        case 16:
-            if(!FPBUnitIsOn) return;
-            if(haveMusic) mp_prev(mpActive);
+            addCmdQueue((i == 11) ? 555 : 222);
             break;
         case 17:
-            if(!FPBUnitIsOn) return;
-            if(haveSD) {
-                if(strlen(tempBuf) > j && tempBuf[j] >= '0' && tempBuf[j] <= '9') {
-                    switchMusicFolder((uint8_t)(tempBuf[j] - '0'));
-                }
+            if(strlen(tempBuf) > j && tempBuf[j] >= '0' && tempBuf[j] <= '9') {
+                addCmdQueue(50 + (uint32_t)(tempBuf[j] - '0'));
             }
             break;
+        case 18:
+            if(strlen(tempBuf) > j && tempBuf[j] >= '1' && tempBuf[j] <= '9') {
+                addCmdQueue(500 + (uint32_t)(tempBuf[j] - '0'));
+            }
+            break;
+        case 20:
+            if(strlen(tempBuf) > j) {
+                addCmdQueue(atoi(tempBuf+j) | 0x80000000);
+            }
+            break;
+        default:
+            addCmdQueue(1000 + i);
         }
-            
     } 
 }
 

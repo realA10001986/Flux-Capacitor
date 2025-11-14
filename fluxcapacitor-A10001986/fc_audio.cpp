@@ -75,8 +75,6 @@ static AudioOutputI2S *out;
 bool audioInitDone = false;
 bool audioMute     = false;
 
-unsigned long audioplaystart = 0;
-
 bool haveMusic            = false;
 bool mpActive             = false;
 static uint16_t maxMusic  = 0;
@@ -111,11 +109,11 @@ static int      sampleCnt = 0;
 bool            playingFlux = false;
 unsigned int    fluxLvlIdx = 3;
 float           fluxLevel = 1.0;
-uint16_t        key_playing = 0;
+uint32_t        key_playing = 0;
 
 static char     append_audio_file[256];
 static float    append_vol;
-static uint16_t append_flags;
+static uint32_t append_flags;
 static bool     appendFile = false;
 
 static char     keySnd[] = "/key3.mp3";   // not const
@@ -126,6 +124,7 @@ static bool     haveUserSnd[2] = { false, false };
 
 static const char *tcdrdone = "/TCD_DONE.TXT";   // leave "TCD", SD is interchangable this way
 unsigned long   renNow1;
+unsigned long   renNow2;
 
 static float    getVolume();
 
@@ -174,21 +173,10 @@ void audio_setup()
     mpShuffle = (settings.shuffle[0] != '0');
 
     // MusicPlayer init
-    if(haveSD) {
-        // Show "wait" if mp_init will take some noticable time
-        if(mp_checkForFolder(musFolderNum) == -1) {
-            showWaitSequence();
-            waitShown = true;
-        }
-    }
-    mp_init(true);
-    if(waitShown) {
-        endWaitSequence();
-    }
+    // done in main_setup()
 
     // Check for keyX sounds to avoid unsuccessful file-lookups every time
     for(int i = 1; i < 10; i++) {
-        if(i == 8) continue;
         keySnd[4] = '0' + i;
         haveKeySnd[i] = check_file_SD(keySnd);
     }
@@ -209,7 +197,6 @@ void audio_loop()
         if(!mp3->loop()) {
             mp3->stop();
             key_playing = 0;
-            audioplaystart = 0;
             if(appendFile) {
                 play_file(append_audio_file, append_flags, append_vol);
             } else if(mpActive) {
@@ -246,7 +233,7 @@ static int skipID3(char *buf)
     return 0;
 }
 
-void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
+void play_file(const char *audio_file, uint32_t flags, float volumeFactor)
 {
     char buf[10];
     int32_t curSeek = 0;
@@ -275,12 +262,11 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
     if(mp3->isRunning()) {
         mp3->stop();
     }
-    audioplaystart = 0;
 
     curVolFact  = volumeFactor;
     dynVol      = (flags & PA_DYNVOL) ? true : false;
     playingFlux = (flags & PA_ISFLUX) ? true : false;
-    key_playing = flags & 0xff00;
+    key_playing = flags & 0x1ff00;
 
     // Reset vol smoothing
     // (user might have turned the pot while no sound was played)
@@ -300,7 +286,6 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
 
         mp3->begin(mySD0L, out);
 
-        audioplaystart = millis();
         #ifdef FC_DBG
         Serial.println("Playing from SD");
         #endif
@@ -319,7 +304,6 @@ void play_file(const char *audio_file, uint16_t flags, float volumeFactor)
         
         mp3->begin(myFS0L, out);
 
-        audioplaystart = millis();
         #ifdef FC_DBG
         Serial.println("Playing from flash FS");
         #endif
@@ -349,14 +333,13 @@ void append_flux()
 
 bool play_key(int k, bool stopOnly)
 {
-    uint16_t pa_key = (k == 9) ? 0x8000 : (1 << (7+k));
+    uint32_t pa_key = (1 << (7+k));
     
     if(!haveKeySnd[k]) return false;    
 
     if(pa_key == key_playing) {
         mp3->stop();
         key_playing = 0;
-        audioplaystart = 0;
         return true;
     }
 
@@ -386,7 +369,7 @@ bool play_usersnd(int num)
  * Append file to currently played one
  * 
  */
-void append_file(const char *audio_file, uint16_t flags, float volumeFactor)
+void append_file(const char *audio_file, uint32_t flags, float volumeFactor)
 {
     strcpy(append_audio_file, audio_file);
     append_flags = flags;
@@ -547,24 +530,21 @@ void stopAudio()
     appendFile = false;   // Clear appended, stop means stop.
     playingFlux = false;
     key_playing = 0;
-    audioplaystart = 0;
+}
+
+bool stop_key()
+{
+    if(key_playing) {
+        mp3->stop();
+        key_playing = 0;
+        return true;
+    }
+    return false;
 }
 
 bool append_pending()
 {
     return appendFile;
-}
-
-bool checkAudioStarted()
-{
-    if(!audioplaystart)
-        return false;
-
-    if(millis() - audioplaystart < 3000) {
-        return true;
-    }
-
-    return false;
 }
 
 /*
@@ -711,7 +691,6 @@ bool mp_stop()
     if(mpActive) {
         mp3->stop();
         mpActive = false;
-        audioplaystart = 0;
     }
     
     return ret;
@@ -798,9 +777,13 @@ int mp_checkForFolder(int num)
     // -1 if folder exists but needs processing
     // -2 if musicX contains no audio files
     // -3 if musicX is not a folder
+    // -4 if no SD
 
     if(num < 0 || num > 9)
         return 0;
+
+    if(!haveSD)
+        return -4;
 
     // If folder does not exist, return 0
     sprintf(fnbuf, "/music%1d", num);
@@ -838,36 +821,57 @@ int mp_checkForFolder(int num)
  * Auto-renamer
  */
 
-// Check file is eligible for renaming:
+
+// Check file is eligable for renaming:
 // - not a hidden/exAtt file,
+// - file name ends with ".mp3"
 // - filename not already "/musicX/ddd.mp3"
 static bool mpren_checkFN(const char *buf)
 {
-    // Hidden or macOS exAttr file, ignore
+    // Hidden or macOS exAttr file? Ignore.
     if(buf[0] == '.') return true;
 
-    if(strlen(buf) != 7) return false;
+    size_t s = strlen(buf);
 
-    if(buf[3+0] != '.' || buf[3+3] != '3')
-        return false;
-    if(buf[3+1] != 'm' && buf[3+1] != 'M')
-        return false;
-    if(buf[3+2] != 'p' && buf[3+2] != 'P')
+    // Filename shorter than ".mp3"? Ignore.
+    if(s < 4) return true;
+
+    s -= 4;
+    // Not an mp3? Ignore.
+    if(buf[s] != '.' || buf[s+3] != '3')
+        return true;
+    if(buf[s+1] != 'm' && buf[s+1] != 'M')
+        return true;
+    if(buf[s+2] != 'p' && buf[s+2] != 'P')
+        return true;
+
+    // Now check for xxx.mp3 (xxx=000-999)
+
+    // Filename shorter or longer? Do it.
+    if(s != 3)
         return false;
 
+    // Filename not a 3-digit number? Do it.
     if(buf[0] < '0' || buf[0] > '9' ||
        buf[1] < '0' || buf[1] > '9' ||
        buf[2] < '0' || buf[2] > '9')
         return false;
 
+    // Otherwise ignore.
     return true;
 }
 
-static void mpren_looper(bool isSetup, bool checking)
-{       
-    if(millis() - renNow1 > 250) {
+static void mpren_looper(bool isSetup, bool checking, int perc)
+{
+    unsigned long now = millis();
+    if(now - renNow1 > 250) {
         wifi_loop();
-        renNow1 = millis();
+        delay(10);
+        renNow1 = now;
+    }
+    if(!checking && (now - renNow2 > 2000)) {
+        showMPRProgress(perc);
+        renNow2 = now;
     }
 }
 
@@ -896,7 +900,7 @@ static bool mp_renameFilesInDir(bool isSetup)
 #endif
     const char *funcName = "MusicPlayer/Renamer: ";
 
-    renNow1 = millis();
+    renNow1 = renNow2 = millis();
 
     // Build "DONE"-file name
     sprintf(fnbuf, "/music%1d", num);
@@ -965,7 +969,7 @@ static bool mp_renameFilesInDir(bool isSetup)
 #endif
     {
 
-        mpren_looper(isSetup, true);
+        mpren_looper(isSetup, true, 0);
 
 #ifdef HAVE_GETNEXTFILENAME
 
@@ -1075,7 +1079,7 @@ static bool mp_renameFilesInDir(bool isSetup)
 
         for(int i = 0; i < fileNum && count <= 999; i++) {
             
-            mpren_looper(isSetup, false);
+            mpren_looper(isSetup, (fileNum > 50) ? false : true, (fileNum - i) * 100 / fileNum);
 
             sprintf(fnbuf + 8, "%03d.mp3", count);
             strcpy(fnbuf2 + 8, a[i]);

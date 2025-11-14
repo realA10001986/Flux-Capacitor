@@ -83,6 +83,14 @@ extern bool networkReentry;
 extern bool networkAbort;
 extern bool networkAlarm;
 extern uint16_t networkLead;
+extern uint16_t networkP1;
+
+extern int networkUserSignal;
+
+extern bool doPrepareTT;
+extern bool doWakeup;
+
+extern bool fcBusy;
 
 extern uint32_t myRemID;
 
@@ -101,8 +109,6 @@ void showWaitSequence();
 void endWaitSequence();
 void showCopyError();
 
-void showUserSignal(int num);
-
 void allOff();
 void prepareReboot();
 
@@ -111,14 +117,19 @@ void copyIRarray(uint32_t *irkeys, int index);
 
 void setFluxMode(int mode);
 void startFluxTimer();
+void doKeySound(int key);
+void doStopKeySound();
 
-bool switchMusicFolder(uint8_t nmf);
+bool switchMusicFolder(uint8_t nmf, bool isSetup = false);
+void showMPRProgress(int perc);
 
 void mydelay(unsigned long mydel, bool withIR);
 
 void prepareTT();
 void wakeup();
 
+void addCmdQueue(uint32_t command);
 void bttfn_loop();
+
 
 #endif

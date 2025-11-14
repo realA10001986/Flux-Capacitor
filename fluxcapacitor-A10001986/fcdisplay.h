@@ -90,7 +90,13 @@ class PWMLED {
 #define FCSEQ_NOMUSIC    12
 #define FCSEQ_USER1      13
 #define FCSEQ_USER2      14
-#define FCSEQ_MAX        FCSEQ_USER2
+#define FCSEQ_PROG1      15
+#define FCSEQ_PROG2      16
+#define FCSEQ_PROG3      17
+#define FCSEQ_PROG4      18
+#define FCSEQ_PROG5      19
+#define FCSEQ_PROG6      20
+#define FCSEQ_MAX        FCSEQ_PROG6
 
 /*
  * FC LEDs class

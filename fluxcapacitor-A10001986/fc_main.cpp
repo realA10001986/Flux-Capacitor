@@ -129,6 +129,12 @@ bool networkReentry    = false;
 bool networkAbort      = false;
 bool networkAlarm      = false;
 uint16_t networkLead   = ETTO_LEAD;
+uint16_t networkP1     = 6600;
+
+static bool tcdIsBusy  = false;
+bool        fcBusy     = false;
+
+int  networkUserSignal = 0;
 
 static bool useGPSS     = false;
 static bool usingGPSS   = false;
@@ -144,6 +150,9 @@ static bool useFPO = false;
 static bool tcdFPO = false;
 
 static bool bttfnTT = true;
+
+bool doPrepareTT = false;
+bool doWakeup = false;
 
 static bool skipttblanim = false;
 
@@ -163,6 +172,7 @@ bool                 TTrunning = false;  // TT sequence is running
 static bool          extTT = false;      // TT was triggered by TCD
 static unsigned long TTstart = 0;
 static unsigned long P0duration = ETTO_LEAD;
+static unsigned long P1_maxtimeout = 10000;
 static bool          TTP0 = false;
 static bool          TTP1 = false;
 static bool          TTP2 = false;
@@ -193,9 +203,9 @@ static const int16_t bP1Seq[] = {
 
 // Durations of tt phases for internal tt
 #define P0_DUR          5000    // acceleration phase
-#define P1_DUR          5000    // time tunnel phase
+#define P1_DUR_TCD      6600    // time tunnel phase (synced; overruled by TCD network commands)
+#define P1_DUR          5000    // time tunnel phase (stand-alone)
 #define P2_DUR          3000    // re-entry phase (unused)
-#define TT_SNDLAT        400    // DO NOT CHANGE (latency for sound/mp3)
 
 bool         TCDconnected = false;
 static bool  noETTOLead = false;
@@ -219,6 +229,8 @@ static bool          ssActive = false;
 static bool          nmOld = false;
 static bool          fpoOld = false;
 bool                 FPBUnitIsOn = true;
+
+static uint8_t       mprensigold = 0;
 
 /*
  * Leave first two columns at 0 here, those will be filled
@@ -303,10 +315,11 @@ uint16_t lastPotspeed = FC_SPD_IDLE;
 #define BTTFN_NOT_AUX_CMD  11
 #define BTTFN_NOT_VSR_CMD  12
 #define BTTFN_NOT_SPD      15
+#define BTTFN_NOT_BUSY     16
 #define BTTFN_TYPE_ANY     0    // Any, unknown or no device
 #define BTTFN_TYPE_FLUX    1    // Flux Capacitor
 #define BTTFN_TYPE_SID     2    // SID
-#define BTTFN_TYPE_PCG     3    // Plutonium gauge panel
+#define BTTFN_TYPE_PCG     3    // Dash Gauges
 #define BTTFN_TYPE_VSR     4    // VSR
 #define BTTFN_TYPE_AUX     5    // Aux (user custom device)
 #define BTTFN_TYPE_REMOTE  6    // Futaba remote control
@@ -325,10 +338,8 @@ static const uint8_t BTTFUDPHD[4] = { 'B', 'T', 'T', 'F' };
 static bool          useBTTFN = false;
 static WiFiUDP       bttfUDP;
 static UDP*          fcUDP;
-#ifdef BTTFN_MC
 static WiFiUDP       bttfMcUDP;
 static UDP*          fcMcUDP;
-#endif
 static byte          BTTFUDPBuf[BTTF_PACKET_SIZE];
 static byte          BTTFUDPTBuf[BTTF_PACKET_SIZE];
 static unsigned long BTTFNUpdateNow = 0;
@@ -346,11 +357,9 @@ static IPAddress     bttfnTcdIP;
 static uint32_t      bttfnTCDSeqCnt = 0;
 static uint8_t       bttfnReqStatus = 0x52; // Request capabilities, status, speed
 static bool          TCDSupportsRemKP = false;
-#ifdef BTTFN_MC
 static uint32_t      tcdHostNameHash = 0;
 static byte          BTTFMCBuf[BTTF_PACKET_SIZE];
 static IPAddress     bttfnMcIP(224, 0, 0, 224);
-#endif
 static uint32_t      bttfnSeqCnt[BTTFN_REM_MAX_COMMAND+1] = { 1 };
 
 enum {
@@ -381,14 +390,14 @@ static void handleIRinput();
 static void handleIRKey(int command);
 static void handleRemoteCommand();
 static void clearInpBuf();
-static int  execute(bool isIR);
+static int  execute(bool isIR, bool injected);
 static void startIRfeedback();
 static void endIRfeedback();
 
 static uint16_t getRawSpeed();
 static void     setPotSpeed();
 
-static void timeTravel(bool TCDtriggered, uint16_t P0Dur);
+static void timeTravel(bool TCDtriggered, uint16_t P0Dur, uint16_t P1Dur = 0);
 static int convertGPSSpeed(int16_t spd);
 
 static void ttkeyScan();
@@ -399,15 +408,15 @@ static void ssStart();
 static void ssEnd(bool doSound = true);
 static void ssRestartTimer();
 
+static void showUserSignal(int num);
+
 static bool contFlux();
 static void play_volchg();
 static void waitAudioDone(bool withIR);
 
 static void bttfn_setup();
 static void bttfn_loop_quick();
-#ifdef BTTFN_MC
 static bool bttfn_checkmc();
-#endif
 static void BTTFNCheckPacket();
 static bool BTTFNTriggerUpdate();
 static void BTTFNPreparePacketTemplate();
@@ -533,11 +542,6 @@ void main_setup()
         // We never return here. The ESP is rebooted.
     }
 
-    #ifdef FC_DBG
-    Serial.println("Booting IR Receiver");
-    #endif
-    ir_remote.begin();
-
     if(!haveAudioFiles) {
         #ifdef FC_DBG
         Serial.println("Matching sound pack not installed");
@@ -547,6 +551,14 @@ void main_setup()
             mydelay(100, false);
         }
     }
+
+    // Init music player (don't check for SD here)
+    switchMusicFolder(musFolderNum, true);
+
+    #ifdef FC_DBG
+    Serial.println("Booting IR Receiver");
+    #endif
+    ir_remote.begin();
 
     fcLEDs.stop(true);
     fcLEDs.setSequence(fluxPat);
@@ -654,6 +666,9 @@ void main_loop()
             centerLED.setDC(0);
 
             flushDelayedSave();
+
+            doPrepareTT = false;
+            doWakeup = false;
             
         } else {
             // Power on: 
@@ -688,6 +703,20 @@ void main_loop()
     // Discard (incomplete) input from IR after 30 seconds of inactivity
     if(now - lastKeyPressed >= 30*1000) {
         clearInpBuf();
+    }
+
+    // Eval flags set in handle_tcd_notification
+    if(doPrepareTT) {
+        if(FPBUnitIsOn && !IRLearning && !TTrunning) {
+            prepareTT();
+        }
+        doPrepareTT = false;
+    }
+    if(doWakeup) {
+        if(FPBUnitIsOn && !IRLearning && !TTrunning) {
+            wakeup();
+        }
+        doWakeup = false;
     }
 
     // IR feedback
@@ -727,7 +756,9 @@ void main_loop()
         if(!noIR && ir_remote.loop()) {
             handleIRinput();
         }
-        handleRemoteCommand();
+        if(!IRLearning) {
+            handleRemoteCommand();
+        }
     }
 
     // Eval GPS/RotEnc speed
@@ -799,7 +830,7 @@ void main_loop()
     if(FPBUnitIsOn && !TTrunning) {
         ttkeyScan();
         if(isTTKeyHeld) {
-            ssEnd();
+            ssEnd(false); // No sound restart if user wants IR learning
             isTTKeyHeld = isTTKeyPressed = false;
             if(!IRLearning) {
                 startIRLearn();
@@ -822,7 +853,7 @@ void main_loop()
                     ssEnd(false);  // let TT() take care of restarting sound
                 }
                 if(TCDconnected || !bttfnTT || !bttfn_trigger_tt()) {
-                    timeTravel(TCDconnected, noETTOLead ? 0 : ETTO_LEAD);
+                    timeTravel(TCDconnected, (TCDconnected && noETTOLead) ? 0 : ETTO_LEAD);
                 }
             }
         }
@@ -831,7 +862,7 @@ void main_loop()
         if(networkTimeTravel) {
             networkTimeTravel = false;
             ssEnd(false);  // let TT() take care of restarting sound
-            timeTravel(networkTCDTT, networkLead);
+            timeTravel(networkTCDTT, networkLead, networkP1);
         }
     }
 
@@ -880,10 +911,11 @@ void main_loop()
                     }
                 }
             }
-            if(TTP1) {   // Peak/"time tunnel" - ends with pin going LOW or BTTFN/MQTT "REENTRY"
+            if(TTP1) {   // Peak/"time tunnel" - ends with pin going LOW or BTTFN/MQTT "REENTRY" (or a long timeout)
 
-                if( (networkTCDTT && (!networkReentry && !networkAbort)) || (!networkTCDTT && digitalRead(TT_IN_PIN))) 
-                {
+                if(((networkTCDTT && (!networkReentry && !networkAbort)) || 
+                    (!networkTCDTT && digitalRead(TT_IN_PIN)))               &&
+                    (now - TTstart <  P1_maxtimeout) ) {
 
                     int t;
 
@@ -1244,17 +1276,22 @@ void main_loop()
         }
     }
 
-    if(networkAlarm && !TTrunning && !IRLearning) {
-        networkAlarm = false;
-        if(atoi(settings.playALsnd) > 0) {
-            play_file("/alarm.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
-            if(FPBUnitIsOn && !ssActive && contFlux()) {
-                append_flux();
+    if(!TTrunning && !IRLearning) {
+        if(networkAlarm) {
+            networkAlarm = false;
+            if(atoi(settings.playALsnd) > 0) {
+                play_file("/alarm.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
+                if(FPBUnitIsOn && !ssActive && contFlux()) {
+                    append_flux();
+                }
             }
+            // No special handling for !FPBUnitIsOn needed, when
+            // special signal ends, it restores the old state
+            fcLEDs.SpecialSignal(FCSEQ_ALARM);
+        } else if(networkUserSignal) {
+            showUserSignal(networkUserSignal);
+            networkUserSignal = 0;
         }
-        // No special handling for !FPBUnitIsOn needed, when
-        // special signal ends, it restores the old state
-        fcLEDs.SpecialSignal(FCSEQ_ALARM);
     }
 }
 
@@ -1290,7 +1327,7 @@ void flushDelayedSave()
  * Time travel
  */
 
-static void timeTravel(bool TCDtriggered, uint16_t P0Dur)
+static void timeTravel(bool TCDtriggered, uint16_t P0Dur, uint16_t P1Dur)
 {
     int i = 0, tspd;
     
@@ -1310,6 +1347,13 @@ static void timeTravel(bool TCDtriggered, uint16_t P0Dur)
     TTstart = TTfUpdNow = millis();
     TTP0 = true;   // phase 0
     TTP1 = TTP2 = false;
+
+    // P1Dur, even if coming from TCD, is not used for timing, 
+    // but only to calculate steps and for a max timeout
+    if(!P1Dur) {
+        P1Dur = TCDtriggered ? P1_DUR_TCD : P1_DUR;
+    }
+    P1_maxtimeout = P1Dur + 3000;
 
     TTSSpd = tspd = fcLEDs.getSpeed();
 
@@ -1507,7 +1551,7 @@ static uint8_t read2digs(uint8_t idx)
     return ((inputBuffer[idx] - '0') * 10) + (inputBuffer[idx+1] - '0');
 }
 
-static void doKeySound(int key)
+void doKeySound(int key)
 {   
     if(!TTrunning) {
         if(play_key(key)) {
@@ -1518,15 +1562,54 @@ static void doKeySound(int key)
     }
 }
 
+void doStopKeySound()
+{
+    if(stop_key()) {
+        if(contFlux()) {
+            play_flux();
+        }
+    }
+}
+
+static void doMPPlay()
+{
+    if((!TTrunning || !playTTsounds) && haveMusic) { 
+        mp_play();
+    }
+}
+
+static void doMPStop()
+{
+    if(haveMusic) {
+        if(mp_stop()) {
+            if(!TTrunning && contFlux()) {
+                play_flux();
+            }
+        }
+    }
+}
+
+static void doMPNext()
+{
+    if((!TTrunning || !playTTsounds) && haveMusic) {
+        mp_next(mpActive);
+    }
+}
+
+static void doMPPrev()
+{
+    if((!TTrunning || !playTTsounds) && haveMusic) {
+        mp_prev(mpActive);
+    }
+}
+
 static void doKey1()
 {
     doKeySound(1);
 }
 static void doKey2()
 {
-    if((!TTrunning || !playTTsounds) && haveMusic) {
-        mp_prev(mpActive);
-    }
+    doMPPrev();
 }
 static void doKey3()
 {
@@ -1539,13 +1622,12 @@ static void doKey4()
 static void doKey5()
 {
     if(haveMusic) {
-        if(mpActive) {
-            mp_stop();
-            if(contFlux()) {
-                play_flux();
+        if(!TTrunning || !playTTsounds) {
+            if(mpActive) {
+                doMPStop();
+            } else {
+                doMPPlay();
             }
-        } else {
-            if(!TTrunning || !playTTsounds) mp_play();
         }
     }
 }
@@ -1559,9 +1641,7 @@ static void doKey7()
 }
 static void doKey8()
 {
-    if((!TTrunning || !playTTsounds) && haveMusic) {
-        mp_next(mpActive);
-    }
+    doMPNext();
 }
 static void doKey9()
 {
@@ -1694,7 +1774,7 @@ static void handleIRKey(int key)
         if(!incIRSpeed()) doInpReaction = -2;
         break;
     case 16:                          // ENTER: Execute code command
-        doInpReaction = execute(true);
+        doInpReaction = execute(true, false);
         clearInpBuf();
         break;
     default:
@@ -1718,6 +1798,7 @@ static void handleRemoteCommand()
 {
     uint32_t command = commandQueue[oCmdIdx];
     int      doInpReaction = 0;
+    bool     injected = false;
 
     if(!command)
         return;
@@ -1726,9 +1807,21 @@ static void handleRemoteCommand()
     oCmdIdx++;
     oCmdIdx &= 0x0f;
 
-    if(ssActive) {
-        ssEnd();
+    if(command & 0x80000000) {
+        injected = true;
+        command &= ~0x80000000;
+        // Allow user to use IR sequence or TCD code
+        if(command >= 3000 && command <= 3999) {
+            command -= 3000;
+        } else if(command >= 3000000 && command <= 3999999) {
+            command -= 3000000;
+        }
+        if(!command) return;
     }
+
+    // Don't start sound on command execution
+    ssEnd(false);
+    
     ssRestartTimer();
 
     // Some translation
@@ -1779,6 +1872,10 @@ static void handleRemoteCommand()
     } else if(command < 1000) {
       
         sprintf(inputBuffer, "%03d", command);
+
+    } else if(command < 10000) {
+      
+        sprintf(inputBuffer, "%04d", command);
         
     } else if(command < 100000) {
 
@@ -1790,38 +1887,43 @@ static void handleRemoteCommand()
 
     }
 
-    doInpReaction = execute(false);
+    doInpReaction = execute(false, injected);
 
     // Restore current IR input buffer
     memcpy(inputBuffer, inputBackup, sizeof(inputBuffer));
 
+    // Remote commands do now show positive IR feedback, only error
     if(doInpReaction < 0) {
         if(doInpReaction < -1 || TTrunning) {
             startIRErrFeedback();
         } else {
             fcLEDs.SpecialSignal(FCSEQ_BADINP);
         }
-    } else if(doInpReaction) {
+    } /*else if(doInpReaction && !injected) {
         startIRfeedback();
         irFeedBack = true;
         irFeedBackNow = millis();
         irFeedBackDur = 1000;
-    }
+    }*/
+
+    ssRestartTimer();
 }
 
-static int execute(bool isIR)
+static int execute(bool isIR, bool injected)
 {
     int  doInpReaction = 0;
-    bool isIRLocked = isIR ? irLocked : false;
+    bool isIRLocked = (isIR && !injected) ? irLocked : false;
     uint16_t temp;
     unsigned long now = millis();
 
     switch(strlen(inputBuffer)) {
+
     case 1:
         if(!isIRLocked) {
             doInpReaction = -1;
         }
         break;
+
     case 2:
         temp = atoi(inputBuffer);
         if(temp >= 10 && temp <= 19) {            // *10-*19 Set idle pattern
@@ -1875,7 +1977,7 @@ static int execute(bool isIR)
                 // Stay silent
                 break;
             case 77:                              // *77 Restart WiFi after entering Power Save
-                if(isIR && !isIRLocked && !TTrunning) {
+                if(isIR && !isIRLocked && !TTrunning && !injected) {
                     bool wasActiveM = false, wasActiveF = false, waitShown = false;
                     if(wifiOnWillBlock()) {
                         if(haveMusic && mpActive) {
@@ -1931,7 +2033,7 @@ static int execute(bool isIR)
                         uint8_t a, b, c, d;
                         bool wasActiveM = false, wasActiveF = false;
                         char ipbuf[16];
-                        char numfname[8] = "/x.mp3";
+                        char numfname[] = "/x.mp3";
                         if(haveMusic && mpActive) {
                             mp_stop();
                             wasActiveM = true;
@@ -1965,16 +2067,23 @@ static int execute(bool isIR)
             case 95:                              // *95  enter TCD keypad remote control mode
                 if(!irLocked) {                   //      yes, 'irLocked' - must not be entered while IR is locked
                     if(!TTrunning) {
-                        if(BTTFNConnected() && remoteAllowed) {
+                        if(BTTFNConnected() && remoteAllowed && !tcdIsBusy) {
                             remMode = true;
                             fcLEDs.SpecialSignal(FCSEQ_REMSTART);
-                            // doInpReaction = 1;  // no, we show a signal instead
                         } else {
                             doInpReaction = -1;
                         }
                     } else doInpReaction = -1;
                 }
                 break;
+            case 97:                              // 3097 quits TCD keypad remote control mode
+                if(!isIR) {                       //      command not possible through IR, naturally
+                    if(remMode) {
+                        remMode = remHoldKey = false;                    
+                        bttfn_send_command(BTTFN_REMCMD_KP_BYE, 0, 0);
+                    }
+                } else doInpReaction = -1;
+                break;    
             default:                              // *50 - *59 Set music folder number
                 if(!isIRLocked) {
                     if(!TTrunning) {
@@ -1990,6 +2099,7 @@ static int execute(bool isIR)
             }
         }
         break;
+
     case 3:
         if(!isIRLocked) {
             temp = atoi(inputBuffer);
@@ -2007,16 +2117,19 @@ static int execute(bool isIR)
                 } else {
                     doInpReaction = -1;
                 }
-            } else if(temp >= 400 && temp <= 404) {
-                if(!isIRLocked) {
-                    if(!TTrunning) {
-                        minBLL = temp - 400;
-                        boxLED.setDC(mbllArray[minBLL]);
-                        bllchanged = true;
-                        bllchgnow = now;
-                        doInpReaction = 1;
-                    } else doInpReaction = -1;
-                }
+            } else if(temp >= 400 && temp <= 404) {       // *400-*504 box light level
+                if(!TTrunning) {
+                    minBLL = temp - 400;
+                    boxLED.setDC(mbllArray[minBLL]);
+                    bllchanged = true;
+                    bllchgnow = now;
+                    doInpReaction = 1;
+                } else doInpReaction = -1;
+            } else if(temp >= 501 && temp <= 509) {       // *501-*509 play keyX
+                if(!TTrunning) {
+                    doKeySound(temp - 500);
+                    doInpReaction = 1;
+                } else doInpReaction = -1;
             } else {
                 if(!TTrunning) {
                     switch(temp) {
@@ -2033,16 +2146,68 @@ static int execute(bool isIR)
                             doInpReaction = 1;
                         } else doInpReaction = -1;
                         break;
-                    default:
+                    default:                              
                         doInpReaction = -1;
                     }
                 } else doInpReaction = -1;
             }
         }
         break;
+
+    case 4:                                               // 1000 - 9999 MQTT commands
+        #ifdef FC_HAVEMQTT
+        if(!isIR && !injected) {
+                  
+            temp = atoi(inputBuffer) - 1000;
+            
+            switch(temp) {
+            case 0:
+                incIRSpeed();
+                break;
+            case 1:
+                decIRSpeed();
+                break;
+            case 2:
+                resetIRSpeed();
+                break;
+            case 3:
+                // Trigger stand-alone Time Travel
+                if(!TTrunning) {
+                    timeTravel(false, ETTO_LEAD);
+                }
+                break;
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+                if(!TTrunning) {
+                    setFluxMode(temp - 5);
+                }
+                break;
+            case 13: 
+                doMPPlay();
+                break;
+            case 14:
+                doMPStop();
+                break;
+            case 15:
+                doMPNext();
+                break;
+            case 16:
+                doMPPrev();
+                break;
+            case 19:
+                doStopKeySound();
+                break;
+            }
+        }
+        #endif
+
+        break;
+        
     case 5:
         if(!isIRLocked) {
-            if(!strcmp(inputBuffer, "64738")) {
+            if(!strcmp(inputBuffer, "64738") && !injected) {
                 prepareReboot();
                 delay(500);
                 esp_restart();
@@ -2050,6 +2215,7 @@ static int execute(bool isIR)
             doInpReaction = -1;
         }
         break;
+
     case 6:
         if(!isIRLocked) {
             if(!TTrunning) {                          // *888xxx go to song #xxx
@@ -2059,7 +2225,7 @@ static int execute(bool isIR)
                         num = mp_gotonum(num, mpActive);
                         doInpReaction = 1;
                     } else doInpReaction = -1;
-                } else if(!strcmp(inputBuffer, "123456")) {
+                } else if(!strcmp(inputBuffer, "123456") && !injected) {
                     flushDelayedSave();
                     deleteIpSettings();               // *123456OK deletes IP settings
                     if(settings.appw[0]) {
@@ -2067,13 +2233,13 @@ static int execute(bool isIR)
                         write_settings();
                     }
                     doInpReaction = 1;
-                } else if(!strcmp(inputBuffer, "654321")) {
+                } else if(!strcmp(inputBuffer, "654321") && !injected) {
                     deleteIRKeys();                   // *654321OK deletes learned IR remote
                     for(int i = 0; i < NUM_IR_KEYS; i++) {
                         remote_codes[i][1] = 0;
                     }
                     doInpReaction = 1;
-                } else if(!strcmp(inputBuffer, "987654")) {
+                } else if(!strcmp(inputBuffer, "987654") && !injected) {
                     triggerIRLN = true;               // *987654OK initates IR learning
                     triggerIRLNNow = millis();
                     doInpReaction = 1;
@@ -2083,6 +2249,7 @@ static int execute(bool isIR)
             } else doInpReaction = -1;
         }
         break;
+
     default:
         if(!isIRLocked) {
             doInpReaction = -1;
@@ -2180,7 +2347,7 @@ static void setPotSpeed()
  * Switch music folder
  */
  
-bool switchMusicFolder(uint8_t nmf)
+bool switchMusicFolder(uint8_t nmf, bool isSetup)
 {
     bool wasActive = false;
     bool waitShown = false;
@@ -2188,41 +2355,66 @@ bool switchMusicFolder(uint8_t nmf)
 
     if(nmf > 9) return false;
     
-    if(nmf != musFolderNum) {
-        musFolderNum = nmf;
-        // Initializing the MP can take a while;
-        // need to stop all audio before calling
-        // mp_init()
-        if(haveMusic && mpActive) {
-            mp_stop();
-        } else if(playingFlux) {
-            wasActive = true;
+    if((musFolderNum != nmf) || isSetup) {
+        
+        fcBusy = true;
+        
+        if(!isSetup) {
+            musFolderNum = nmf;
+            // Initializing the MP can take a while;
+            // need to stop all audio before calling
+            // mp_init()
+            if(haveMusic && mpActive) {
+                mp_stop();
+            } else if(playingFlux) {
+                wasActive = true;
+            }
+            stopAudio();
         }
-        stopAudio();
-        if(mp_checkForFolder(musFolderNum) == -1) {
-            doSuccessSignal = false;
-            flushDelayedSave();
-            showWaitSequence();
-            waitShown = true;
-            play_file("/renaming.mp3", PA_INTRMUS|PA_ALLOWSD);
-            waitAudioDone(false);
+        if(haveSD) {
+            if(mp_checkForFolder(musFolderNum) == -1) {
+                doSuccessSignal = false;
+                flushDelayedSave();
+                showWaitSequence();
+                waitShown = true;
+                play_file("/renaming.mp3", PA_INTRMUS|PA_ALLOWSD);
+                waitAudioDone(false);
+            }
         }
-        saveMusFoldNum();
-        mp_init(false);
+        if(!isSetup) {
+            saveMusFoldNum();
+        }
+        mprensigold = 0;
+        mp_init(isSetup);
         if(waitShown) {
             endWaitSequence();
         }
-        if(!haveMusic) {
-            doSuccessSignal = false;
-            fcLEDs.SpecialSignal(FCSEQ_NOMUSIC);
-            //play_file("/nomusic.mp3", PA_INTRMUS|PA_ALLOWSD);
-            //waitAudioDone(false);
+        if(!isSetup) {
+            if(!haveMusic) {
+                doSuccessSignal = false;
+                fcLEDs.SpecialSignal(FCSEQ_NOMUSIC);
+            }
+            if(wasActive && contFlux()) play_flux();
+            ir_remote.loop(); // Flush IR afterwards
         }
-        if(wasActive && contFlux()) play_flux();
-        ir_remote.loop(); // Flush IR afterwards
+
+        fcBusy = false;
     }
 
     return doSuccessSignal;
+}
+
+void showMPRProgress(int perc)
+{
+    if(perc >= 100) perc = 99;
+    else if(perc < 0) perc = 0;
+
+    uint8_t mprensig = FCSEQ_PROG1 + (perc * 100 / 1666);
+
+    if(mprensigold != mprensig) {   
+        fcLEDs.SpecialSignal(mprensig);
+        mprensigold = mprensig;
+    }
 }
 
 /*
@@ -2308,7 +2500,7 @@ void showCopyError()
     fcLEDs.SpecialSignal(FCSEQ_ERRCOPY);
 }
 
-void showUserSignal(int num)
+static void showUserSignal(int num)
 {
     // num = 1 or 2
     fcLEDs.SpecialSignal((num == 1) ? FCSEQ_USER1 : FCSEQ_USER2);
@@ -2432,6 +2624,8 @@ void prepareTT()
         }
         startFluxTimer();
     }
+
+    doPrepareTT = false;
 }
 
 // Wakeup: Sent by TCD upon entering dest date,
@@ -2451,6 +2645,8 @@ void wakeup()
         }
         startFluxTimer();
     }
+
+    doWakeup = false;
 }
 
 // Flux sound mode
@@ -2571,7 +2767,7 @@ void mydelay(unsigned long mydel, bool withIR)
  * Basic Telematics Transmission Framework (BTTFN)
  */
 
-static void addCmdQueue(uint32_t command)
+void addCmdQueue(uint32_t command)
 {
     if(!command) return;
 
@@ -2591,13 +2787,9 @@ static void bttfn_setup()
     haveTCDIP = isIp(settings.tcdIP);
     
     if(!haveTCDIP) {
-        #ifdef BTTFN_MC
         tcdHostNameHash = 0;
         unsigned char *s = (unsigned char *)settings.tcdIP;
         for ( ; *s; ++s) tcdHostNameHash = 37 * tcdHostNameHash + tolower(*s);
-        #else
-        return;
-        #endif
     } else {
         bttfnTcdIP.fromString(settings.tcdIP);
     }
@@ -2605,10 +2797,8 @@ static void bttfn_setup()
     fcUDP = &bttfUDP;
     fcUDP->begin(BTTF_DEFAULT_LOCAL_PORT);
 
-    #ifdef BTTFN_MC
     fcMcUDP = &bttfMcUDP;
     fcMcUDP->beginMulticast(bttfnMcIP, BTTF_DEFAULT_LOCAL_PORT + 2);
-    #endif
 
     BTTFNPreparePacketTemplate();
     
@@ -2618,16 +2808,12 @@ static void bttfn_setup()
 
 void bttfn_loop()
 {   
-    #ifdef BTTFN_MC
     int t = 100;
-    #endif
     
     if(!useBTTFN)
         return;
 
-    #ifdef BTTFN_MC
     while(bttfn_checkmc() && t--) {}
-    #endif
             
     BTTFNCheckPacket();
     
@@ -2644,16 +2830,12 @@ void bttfn_loop()
 
 static void bttfn_loop_quick()
 {
-    #ifdef BTTFN_MC
     int t = 100;
-    #endif
     
     if(!useBTTFN)
         return;
 
-    #ifdef BTTFN_MC
     while(bttfn_checkmc() && t--) {}
-    #endif
 }
 
 static bool check_packet(uint8_t *buf)
@@ -2675,11 +2857,17 @@ static bool check_packet(uint8_t *buf)
 static void handle_tcd_notification(uint8_t *buf)
 {
     uint32_t seqCnt;
+
+    // Note: This might be called while we are in a
+    // wait-delay-loop. Best to just set flags here
+    // that are evaluated synchronously (=later).
+    // Do not stuff that messes with display, input,
+    // etc.
     
     switch(buf[5]) {
     case BTTFN_NOT_SPD:
         seqCnt = GET32(buf, 12);
-        if(seqCnt == 1 || seqCnt > bttfnTCDSeqCnt) {
+        if(seqCnt > bttfnTCDSeqCnt || seqCnt == 1) {
             gpsSpeed = (int16_t)(buf[6] | (buf[7] << 8));
             if(gpsSpeed > 88) gpsSpeed = 88;
             switch(buf[8] | (buf[9] << 8)) {
@@ -2704,19 +2892,18 @@ static void handle_tcd_notification(uint8_t *buf)
         // sound (if to be played)
         // We don't ignore this if TCD is connected by wire,
         // because this signal does not come via wire.
-        if(!TTrunning && !IRLearning) {
-            prepareTT();
-        }
+        doPrepareTT = true;
         break;
     case BTTFN_NOT_TT:
         // Trigger Time Travel (if not running already)
         // Ignore command if TCD is connected by wire
-        if(!TCDconnected && !TTrunning && !IRLearning) {
+        if(!TCDconnected && !TTrunning && !IRLearning && !fcBusy) {
             networkTimeTravel = true;
             networkTCDTT = true;
             networkReentry = false;
             networkAbort = false;
             networkLead = buf[6] | (buf[7] << 8);
+            networkP1 = buf[8] | (buf[9] << 8);
         }
         break;
     case BTTFN_NOT_REENTRY:
@@ -2735,20 +2922,21 @@ static void handle_tcd_notification(uint8_t *buf)
         break;
     case BTTFN_NOT_ALARM:
         networkAlarm = true;
-        // Eval this at our convenience
         break;
     case BTTFN_NOT_FLUX_CMD:
-        addCmdQueue(GET32(buf, 6));
+        if(!fcBusy) {
+            addCmdQueue(GET32(buf, 6));
+        }
         break;
     case BTTFN_NOT_WAKEUP:
-        if(!TTrunning && !IRLearning) {
-            wakeup();
-        }
+        doWakeup = true;
+        break;
+    case BTTFN_NOT_BUSY:
+        tcdIsBusy = !!(buf[8]);
         break;
     }
 }
 
-#ifdef BTTFN_MC
 static bool bttfn_checkmc()
 {
     int psize = fcMcUDP->parsePacket();
@@ -2769,30 +2957,25 @@ static bool bttfn_checkmc()
 
     if(haveTCDIP) {
         if(bttfnTcdIP != fcMcUDP->remoteIP())
-            return true; //false;
+            return true;
     } else {
         // Do not use tcdHostNameHash; let DISCOVER do its work
         // and wait for a result.
-        return true; //false;
+        return true;
     }
 
     if(!check_packet(BTTFMCBuf))
-        return true; //false;
+        return true;
 
     if((BTTFMCBuf[4] & 0x4f) == (BTTFN_VERSION | 0x40)) {
 
         // A notification from the TCD
         handle_tcd_notification(BTTFMCBuf);
     
-    } /*else {
-      
-        return false;
-
-    }*/
+    }
 
     return true;
 }
-#endif
 
 // Check for pending packet and parse it
 static void BTTFNCheckPacket()
@@ -2844,7 +3027,6 @@ static void BTTFNCheckPacket()
         // If it's our expected packet, no other is due for now
         BTTFNPacketDue = false;
 
-        #ifdef BTTFN_MC
         if(BTTFUDPBuf[5] & 0x80) {
             if(!haveTCDIP) {
                 bttfnTcdIP = fcUDP->remoteIP();
@@ -2858,15 +3040,12 @@ static void BTTFNCheckPacket()
                 #endif
             }
         }
-        #endif
 
         if(BTTFUDPBuf[5] & 0x40) {
             bttfnReqStatus &= ~0x40;     // Do no longer poll capabilities
-            #ifdef BTTFN_MC
             if(BTTFUDPBuf[31] & 0x01) {
                 bttfnReqStatus &= ~0x02; // Do no longer poll speed, comes over multicast
             }
-            #endif
             if(BTTFUDPBuf[31] & 0x08) {
                 TCDSupportsRemKP = true;
             }
@@ -2882,6 +3061,7 @@ static void BTTFNCheckPacket()
             tcdNM  = (BTTFUDPBuf[26] & 0x01) ? true : false;
             tcdFPO = (BTTFUDPBuf[26] & 0x02) ? true : false;   // 1 means fake power off
             remoteAllowed = (BTTFUDPBuf[26] & 0x08) ? TCDSupportsRemKP : false;
+            tcdIsBusy = (BTTFUDPBuf[26] & 0x10) ? true : false; 
         } else {
             tcdNM = false;
             tcdFPO = false;
@@ -2936,10 +3116,7 @@ static void BTTFNPreparePacketTemplate()
     BTTFUDPTBuf[10+13] = BTTFN_TYPE_FLUX;
 
     // Version, MC-marker
-    BTTFUDPTBuf[4] = BTTFN_VERSION;
-    #ifdef BTTFN_MC
-    BTTFUDPTBuf[4] |= BTTFN_SUP_MC;
-    #endif
+    BTTFUDPTBuf[4] = BTTFN_VERSION | BTTFN_SUP_MC;
 
     // Remote-ID
     SET32(BTTFUDPTBuf, 35, myRemID);                 
@@ -2958,18 +3135,14 @@ static void BTTFNDispatch()
     }
     BTTFUDPBuf[BTTF_PACKET_SIZE - 1] = a;
 
-    #ifdef BTTFN_MC
     if(haveTCDIP) {
-    #endif
         fcUDP->beginPacket(bttfnTcdIP, BTTF_DEFAULT_LOCAL_PORT);
-    #ifdef BTTFN_MC    
     } else {
         #ifdef FC_DBG
         Serial.printf("Sending multicast (hostname hash %x)\n", tcdHostNameHash);
         #endif
         fcUDP->beginPacket(bttfnMcIP, BTTF_DEFAULT_LOCAL_PORT + 1);
     }
-    #endif
     fcUDP->write(BTTFUDPBuf, BTTF_PACKET_SIZE);
     fcUDP->endPacket();
 }
@@ -2989,12 +3162,10 @@ static void BTTFNSendPacket()
     //BTTFUDPBuf[5] |= 0x20;             
     //BTTFUDPBuf[24] = BTTFN_TYPE_SID;
 
-    #ifdef BTTFN_MC
     if(!haveTCDIP) {
         BTTFUDPBuf[5] |= 0x80;
         SET32(BTTFUDPBuf, 31, tcdHostNameHash);
     }
-    #endif
 
     BTTFNDispatch();
 }
@@ -3004,10 +3175,8 @@ static bool BTTFNConnected()
     if(!useBTTFN)
         return false;
 
-    #ifdef BTTFN_MC
     if(!haveTCDIP)
         return false;
-    #endif
 
     if(WiFi.status() != WL_CONNECTED)
         return false;
@@ -3023,7 +3192,7 @@ static bool bttfn_trigger_tt()
     if(!BTTFNConnected())
         return false;
 
-    if(TTrunning || IRLearning)
+    if(TTrunning || IRLearning || tcdIsBusy)
         return false;
 
     BTTFNPreparePacket();
