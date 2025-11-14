@@ -596,7 +596,7 @@ The FC features two user chase-LED-signals that can be triggered by commands USE
 
 #### The INJECT_x command
 
-This command allows remote control of the FC through HA/MQTT in the same way as through the TCD keypad by injecting commands into the FC's command queue (hence the name). Commands are listed [here](#tcd-remote-command-reference); nearly all are supported. For example:
+This command allows remote control of the FC through HA/MQTT in the same way as through the TCD keypad by injecting commands into the FC's command queue (hence the name). Commands are listed [here](#commandref); nearly all are supported. For example:
 
 To set volume level to 10 (3310), issue the following command: **INJECT_3310**
 
