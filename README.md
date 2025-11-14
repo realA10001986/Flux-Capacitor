@@ -189,9 +189,9 @@ Each time you press a (recognized) key on the remote, an IR feedback LED will br
 
 Your FC can learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, especially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards, that remote is of that type and cannot be used.
 
-As of firmware 1.72, IR learning can be initiated by entering *987654 followed by OK on the standard IR remote.
+IR learning can be initiated by entering *987654 followed by OK on the standard IR remote.
 
->With earlier firmware versions, IR learning required a physical [Time Travel](#time-travel) button, and the option **_TCD connected by wire_** in the Config Portal needs to be unchecked. To start the learning process, hold the [Time Travel](#time-travel) button for a few seconds. 
+>Prior to firmware version 1.72, IR learning required a physical [Time Travel](#time-travel) button, and the option **_TCD connected by wire_** in the Config Portal needs to be unchecked. To start the learning process, hold the [Time Travel](#time-travel) button for a few seconds. 
 
 When IR learning is started, the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Afterwards, the IR feedback LED will keep blinking - this means the FC is ready to receive a key from your IR remote. Press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then, again while the IR feedback LED is blinking, press "1", wait for the acknowledgement, and so on. Enter your keys in the following order:
 
@@ -323,7 +323,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     </tr>
     <tr>
      <td align="left">Play "<a href="#additional-custom-sounds">keyX.mp3</a>" (X=1-9)</td>
-     <td align="left">*501&#9166; - *509&#9166; / 3501&#9166; -3509&#9166;</td>
+     <td align="left">*501&#9166; - *509&#9166;</td><td>3501&#9166; -3509&#9166;</td>
     </tr>
     <tr>
      <td align="left"><a href="#locking-ir-control">Disable/Enable</a> IR remote commands</td>
@@ -354,24 +354,26 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">-</td><td>3097</td>
     </tr>
     <tr>
-     <td align="left">Reboot the device</td>
+     <td align="left">Reboot the device (**)</td>
      <td align="left">*64738&#9166;</td><td>3064738</td>
     </tr>
     <tr>
-     <td align="left">Delete static IP address and AP WiFI password</td>
+     <td align="left">Delete static IP address and AP WiFI password (**)</td>
      <td align="left">*123456&#9166;</td><td>3123456</td>
     </tr>
     <tr>
-     <td align="left">Start IR remote <a href="#ir-learning">learning process</a></td>
+     <td align="left">Start IR remote <a href="#ir-learning">learning process (**)</a></td>
      <td align="left">*987654&#9166;</td><td>3987654</td>
     </tr>
     <tr>
-     <td align="left">Forget learned IR remote control</td>
+     <td align="left">Forget learned IR remote control (**)</td>
      <td align="left">*654321&#9166;</td><td>3654321</td>
     </tr>
 </table>
 
 (*) Chase speed changes are not executed if a speed knob is active. If the FC receives and uses GPS/Rotary Encoder/Futaba Remote Control speed from a TCD, the selected chase speed corresponds to 0mph; the available range between the currently selected chase speed and the maximum chase speed is what is mapped to TCD/Remote-speeds from 0 to 88mph.
+
+(**) Not supported through HA/MQTT [_INJECT_](#the-inject_x-command) command
 
 [Here](https://github.com/realA10001986/Flux-Capacitor/blob/main/CheatSheet.pdf) is a cheat sheet for printing or screen-use. (Note that MacOS' preview application has a bug that scrambles the links in the document. Acrobat Reader does it correctly.)
 
@@ -443,7 +445,7 @@ The firmware supports some additional user-provided sound effects, which it will
 
 - "user1.mp3", "user2.mp3": Played when the FC receives [MQTT commands](#home-assistant--mqtt) "USER1" and "USER2", respectively.
 - "key1.mp3", "key3.mp3", "key4.mp3", "key6.mp3", "key7.mp3", "key9.mp3": Will be played if you press the "1"/"3"/"4"/"6"/"7"/"9" button on your remote.
-- "key2.mp3", "key5.mp3", "key8.mp3": Can be played throgh commands from [TCD](#commandref) and [HA/MQTT](#control-the-remote-via-mqtt).
+- "key2.mp3", "key5.mp3", "key8.mp3": Can be played throgh commands from [TCD](#commandref) and [HA/MQTT](#control-the-fc-via-mqtt).
 
 > The seemingly odd way of accessing keyX files threough the IR remote is because of synchronicity with other props, especially the TCD and its keymap where the Music Player also occupies keys 2, 5, 8.
 
@@ -453,7 +455,7 @@ Those files are not provided here. You can use any mp3, with a bitrate of 128kpb
 
 Replacements and custom sounds can either be copied to the SD card using a computer, or uploaded through the Config Portal.
 
-Uploading through the Config Portal works exactly like [installing the default audio files](#sound-pack-installation); on the main menu, click "UPDATE". Afterwards choose one or more mp3 files to upload using the bottom file selector, and click "UPLOAD". The firmware will store the uploaded mp3 files on the SD card.
+Uploading through the Config Portal works exactly like [installing the sound-pack](#sound-pack-installation); on the main menu, click "UPDATE". Afterwards choose one or more mp3 files to upload using the bottom file selector, and click "UPLOAD". The firmware will store the uploaded mp3 files on the SD card.
 
 In order to delete a file from the SD card, upload a file whose name is prefixed with "delete-". For example: To delete "key3.mp3" from the SD card, upload a file named "delete-key3.mp3"; the file's contents does not matter, so it's easiest to use a newly created empty file. The firmware detects the "delete-" part and, instead of storing the uploaded file, it throws it away and deletes "key3.mp3" from the SD card.
 
@@ -524,7 +526,7 @@ Keys 0-9 as well as OK (=ENTER) will now be registered by the TCD as key presses
 
 "Holding" a key on the TCD keypad is emulated by pressing * followed by the key, for instance *1 (in order to toggle the TCD alarm). Only keys 0-9 can be "held".
 
-Pressing # quits TCD keypad remote control mode.
+Pressing # quits TCD keypad remote control mode, as does entering 3097 on the TCD keypad, or [INJECTing](#control-the-fc-via-mqtt) 3097 through HA/MQTT.
 
 >Since the TCD itself can remote control every other compatible prop (3xxx = Flux Capacitor, 6xxx = SID, 7xxx = Futaba Remote Control, 8xxx = VSR, 9xxx = Dash Gauges), and the IR remote can emulate the TCD keypad, it can essentially remote control every other prop.
 
@@ -569,7 +571,7 @@ The FC supports the MQTT protocol version 3.1.1 for the following features:
 
 ### Control the FC via MQTT
 
-The FC can - to some extent - be controlled through messages sent to topic **bttf/fc/cmd**. Supported commands are
+The FC can be controlled through messages sent to topic **bttf/fc/cmd**. Supported commands are
 - TIMETRAVEL: Start a [time travel](#time-travel)
 - FASTER, SLOWER: Make chase faster or slower. Only if speed knob is deactivated.
 - RESETSPEED: Reset chase speed to default. Only if speed knob is deactivated.
