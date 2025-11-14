@@ -477,7 +477,7 @@ By default, the songs are played in order, starting at 000.mp3, followed by 001.
 
 Entering \*888 followed by OK re-starts the player at song 000, and \*888xxx (xxx = three-digit number) jumps to song #xxx.
 
-See [here](#ir-remote-reference) for a list of controls of the music player.
+See [here](#remote-control-reference) for a list of controls of the music player.
 
 While the music player is playing music, other sound effects are disabled/muted. Initiating a time travel stops the music player. The TCD-triggered alarm will sound as usual and stop the music player.
 
