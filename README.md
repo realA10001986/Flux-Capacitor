@@ -1,7 +1,5 @@
 # Flux Capacitor
 
-_Documentation is currently reflecting version 1.87 which will be released shortly_
-
 This [repository](https://fc.out-a-ti.me) holds the most current firmware for CircuitSetup's excellent [Flux Capacitor](https://circuitsetup.us/product/delorean-time-machine-flux-capacitor-fully-assembled/). The Flux Capacitor is a key component of the Delorean Time Machine.
 
 You can buy a complete one or kit parts [here](https://circuitsetup.us/product-category/movie-props/).
