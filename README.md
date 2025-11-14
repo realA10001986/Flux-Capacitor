@@ -1,5 +1,7 @@
 # Flux Capacitor
 
+_Documentation is currently reflecting version 1.87 which will be released shortly_
+
 This [repository](https://fc.out-a-ti.me) holds the most current firmware for CircuitSetup's excellent [Flux Capacitor](https://circuitsetup.us/product/delorean-time-machine-flux-capacitor-fully-assembled/). The Flux Capacitor is a key component of the Delorean Time Machine.
 
 You can buy a complete one or kit parts [here](https://circuitsetup.us/product-category/movie-props/).
@@ -254,7 +256,7 @@ In order to only disable the supplied IR remote control, check the option **_Dis
 
 Numbers in brackets are the code to be entered on the TCD keypad if a TCD is connected via [BTTF-Network](#bttf-network-bttfn).
 
-<table>
+<table id='commandref'>
     <tr>
      <td align="center" colspan="3">Special sequences<br>(&#9166; = OK key)</td>
     </tr>
@@ -320,6 +322,10 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">*888xxx&#9166;</td><td>3888xxx</td>
     </tr>
     <tr>
+     <td align="left">Play "<a href="#additional-custom-sounds">keyX.mp3</a>" (X=1-9)</td>
+     <td align="left">*501&#9166; - *509&#9166; / 3501&#9166; -3509&#9166;</td>
+    </tr>
+    <tr>
      <td align="left"><a href="#locking-ir-control">Disable/Enable</a> IR remote commands</td>
      <td align="left">*70&#9166;</td><td>3070</td>
     </tr>
@@ -342,6 +348,10 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     <tr>
      <td align="left">Enter <a href="#remote-controlling-the-tcds-keypad">TCD keypad remote control mode</a></td>
      <td align="left">*95&#9166;</td><td>3095</td>
+    </tr>
+    <tr>
+     <td align="left">Quit <a href="#remote-controlling-the-tcds-keypad">TCD keypad remote control mode</a></td>
+     <td align="left">-</td><td>3097</td>
     </tr>
     <tr>
      <td align="left">Reboot the device</td>
@@ -433,8 +443,9 @@ The firmware supports some additional user-provided sound effects, which it will
 
 - "user1.mp3", "user2.mp3": Played when the FC receives [MQTT commands](#home-assistant--mqtt) "USER1" and "USER2", respectively.
 - "key1.mp3", "key3.mp3", "key4.mp3", "key6.mp3", "key7.mp3", "key9.mp3": Will be played if you press the "1"/"3"/"4"/"6"/"7"/"9" button on your remote.
+- "key2.mp3", "key5.mp3", "key8.mp3": Can be played throgh commands from [TCD](#commandref) and [HA/MQTT](#control-the-remote-via-mqtt).
 
-> The seemingly odd numbering of keyX files is because of synchronicity with other props, especially the TCD and its keymap where the Music Player also occupies keys 2, 5, 8.
+> The seemingly odd way of accessing keyX files threough the IR remote is because of synchronicity with other props, especially the TCD and its keymap where the Music Player also occupies keys 2, 5, 8.
 
 Those files are not provided here. You can use any mp3, with a bitrate of 128kpbs or less.
 
@@ -458,7 +469,7 @@ In order to be recognized, your mp3 files need to be organized in music folders 
 
 The names of the audio files must only consist of three-digit numbers, starting at 000.mp3, in consecutive order. No numbers should be left out. Each folder can hold up to 1000 files (000.mp3-999.mp3). *The maximum bitrate is 128kpbs.*
 
-Since manually renaming mp3 files is somewhat cumbersome, the firmware can do this for you - provided you can live with the files being sorted in alphabetical order: Just copy your files with their original filenames to the music folder; upon boot or upon selecting a folder containing such files, they will be renamed following the 3-digit name scheme (as mentioned: in alphabetic order). You can also add files to a music folder later, they will be renamed properly; when you do so, delete the file "TCD_DONE.TXT" from the music folder on the SD card so that the firmware knows that something has changed. The renaming process can take a while (10 minutes for 1000 files in bad cases). Mac users are advised to delete the ._ files from the SD before putting it back into the FC as this speeds up the process.
+Since manually renaming mp3 files is somewhat cumbersome, the firmware can do this for you - provided you can live with the files being sorted in alphabetical order: Just copy your files with their original filenames to the music folder; upon boot or upon selecting a folder containing such files, they will be renamed following the 3-digit name scheme (as mentioned: in alphabetic order). You can also add files to a music folder later, they will be renamed properly; when you do so, delete the file "TCD_DONE.TXT" from the music folder on the SD card so that the firmware knows that something has changed. The renaming process can take a while (11 minutes for 1000 files in bad cases). Mac users are advised to delete the ._ files from the SD before putting it back into the FC as this speeds up the process. _While the renaming is in progress, the FC's chase LEDs shows the fraction of files still left to be processed._
 
 To start and stop music playback, press 5 on your remote. Pressing 2 jumps to the previous song, pressing 8 to the next one.
 
@@ -574,8 +585,24 @@ The FC can - to some extent - be controlled through messages sent to topic **btt
 - MP_SHUFFLE_ON: Enables shuffle mode in [Music Player](#the-music-player)
 - MP_SHUFFLE_OFF: Disables shuffle mode in [Music Player](#the-music-player)
 - MP_FOLDER_x: x being 0-9, set folder number for [Music Player](#the-music-player)
+- USER1, USER2: User commands, see below
+- PLAYKEY_x: Play keyX.mp3 (from SD card), X being in the range from 1 to 9.
+- STOPKEY: Stop playback of keyX file. Does nothing if no keyX file is currently played back.
+- INJECT_x: See below.
 
-Additionally, the FC features two user chase-LED-signals that can be triggered by commands USER1 and USER2. These signals can be accompanied by sound, if "user1.mp3" and/or "user2.mp3" are present on the SD card. This can be used freely, like for HA-integrated doorbells, actuators, etc. 
+#### USER1, USER2
+
+The FC features two user chase-LED-signals that can be triggered by commands USER1 and USER2. These signals can be accompanied by sound, if "user1.mp3" and/or "user2.mp3" are present on the SD card. This can be used freely, like for HA-integrated doorbells, actuators, etc. 
+
+#### The INJECT_x command
+
+This command allows remote control of the FC through HA/MQTT in the same way as through the TCD keypad by injecting commands into the FC's command queue (hence the name). Commands are listed [here](#tcd-remote-command-reference); nearly all are supported. For example:
+
+To set volume level to 10 (3310), issue the following command: **INJECT_3310**
+
+To play "key2.mp3" (3502), issue **INJECT_3502**
+
+To select the 'music1' folder (3051), issue **INJECT_3051**
 
 ### Receive commands from Time Circuits Display
 
