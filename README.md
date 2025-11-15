@@ -445,7 +445,7 @@ The firmware supports some additional user-provided sound effects, which it will
 - "key1.mp3", "key3.mp3", "key4.mp3", "key6.mp3", "key7.mp3", "key9.mp3": Will be played if you press the "1"/"3"/"4"/"6"/"7"/"9" button on your remote, or through [TCD](#commandref) and [HA/MQTT](#control-the-fc-via-mqtt)
 - "key2.mp3", "key5.mp3", "key8.mp3": Can be played through commands from [TCD](#commandref) and [HA/MQTT](#control-the-fc-via-mqtt).
 
-> The seemingly odd way of accessing keyX files threough the IR remote is because of synchronicity with other props, especially the TCD and its keymap where the Music Player also occupies keys 2, 5, 8.
+> The seemingly odd way of accessing keyX files through the IR remote is because of synchronicity with other props, especially the TCD and its keymap where the Music Player also occupies keys 2, 5, 8.
 
 Those files are not provided here. You can use any mp3, with a bitrate of 128kpbs or less.
 
