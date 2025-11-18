@@ -174,13 +174,13 @@ WiFiManagerParameter custom_ssDelay("ssDel", "Screen saver timer (minutes; 0=off
 WiFiManagerParameter custom_shuffle("musShu", "Shuffle mode enabled at startup", settings.shuffle, 1, "class='mt5'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 
 WiFiManagerParameter custom_tcdIP("tcdIP", "IP address or hostname of TCD", settings.tcdIP, 31, "pattern='(^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$)|([A-Za-z0-9\\-]+)' placeholder='Example: 192.168.4.1'");
-WiFiManagerParameter custom_uGPS("uGPS", "Adapt chase speed to GPS speed<br><span style='font-size:80%'>Speed from TCD (GPS, rotary encoder, remote control), if available, will overrule knob and IR remote</span>", settings.useGPSS, 1, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_uGPS("uGPS", "Adapt chase speed to TCD-provided speed<br><span style='font-size:80%'>Speed from TCD (GPS, rotary encoder, remote control), if available, will overrule knob and IR remote</span>", settings.useGPSS, 1, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 WiFiManagerParameter custom_uNM("uNM", "Follow TCD night-mode<br><span style='font-size:80%'>If checked, the Screen Saver will activate when TCD is in night-mode.</span>", settings.useNM, 1, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power", settings.useFPO, 1, "", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 WiFiManagerParameter custom_bttfnTT("bttfnTT", "'0' and button trigger BTTFN-wide TT<br><span style='font-size:80%'>If checked, pressing '0' on the IR remote or pressing the Time Travel button triggers a BTTFN-wide TT</span>", settings.bttfnTT, 1, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 
 #ifdef FC_HAVEMQTT
-WiFiManagerParameter custom_useMQTT("uMQTT", "Use Home Assistant (MQTT 3.1.1)", settings.useMQTT, 1, "class='mt5 mb10'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_useMQTT("uMQTT", "Home Assistant support (MQTT 3.1.1)", settings.useMQTT, 1, "class='mt5 mb10'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 WiFiManagerParameter custom_mqttServer("ha_server", "Broker IP[:port] or domain[:port]", settings.mqttServer, 79, "pattern='[a-zA-Z0-9\\.:\\-]+' placeholder='Example: 192.168.1.5'");
 WiFiManagerParameter custom_mqttUser("ha_usr", "User[:Password]", settings.mqttUser, 63, "placeholder='Example: ronald:mySecret'");
 #endif // HAVEMQTT
@@ -723,7 +723,11 @@ void wifi_loop()
 
             // Parameters on Settings page
 
+            // "fluxmode" is now in volume settings
             getParam("fluxmode", settings.playFLUXsnd, 1, DEF_PLAY_FLUX_SND);
+            playFLUX = atoi(settings.playFLUXsnd);
+            saveCurVolume();
+            
             strcpyCB(settings.origSeq, &custom_origSeq);
             strcpyCB(settings.skipTTBLAnim, &custom_sTTBLA);
             strcpyCB(settings.playTTsnds, &custom_playTTSnd);
@@ -1845,8 +1849,6 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
 
     if(!length) return;
 
-    if(fcBusy) return;
-
     memcpy(tempBuf, (const char *)payload, ml);
     tempBuf[ml] = 0;
     for(j = 0; j < ml; j++) {
@@ -1881,7 +1883,7 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
         case 1:
             // Trigger Time Travel (if not running already)
             // Ignore command if TCD is connected by wire
-            if(!TCDconnected && !TTrunning && !IRLearning) {
+            if(!TCDconnected && !TTrunning && !IRLearning && !fcBusy) {
                 networkTimeTravel = true;
                 networkTCDTT = true;
                 networkReentry = false;
@@ -1918,7 +1920,7 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
             break;
         }
        
-    } else if(!strcmp(topic, "bttf/fc/cmd")) {
+    } else if(!fcBusy && !strcmp(topic, "bttf/fc/cmd")) {
 
         // User commands
 

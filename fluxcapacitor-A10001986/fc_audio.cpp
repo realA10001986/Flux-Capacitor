@@ -822,7 +822,7 @@ int mp_checkForFolder(int num)
  */
 
 
-// Check file is eligable for renaming:
+// Check file is eligible for renaming:
 // - not a hidden/exAtt file,
 // - file name ends with ".mp3"
 // - filename not already "/musicX/ddd.mp3"

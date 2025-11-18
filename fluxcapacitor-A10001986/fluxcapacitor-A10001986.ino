@@ -115,6 +115,16 @@
 
 /*  Changelog
  *
+ *  2025/11/17 (A10001986) [1.88]
+ *    - Fix saving of flux mode when changed in Config Portal
+ *  2025/11/16 (A10001986)
+ *    - Quit Keypad-remote-control-mode if TCD changes "allowed" status
+ *    - WM: Require HTTP_POST for params save pages. Also, check if request 
+ *      has parameter, do not overwrite current value with null (protects from 
+ *      overwriting settings by errorneous page reloads)
+ *    - Consider ourselves "busy" while reading out IP address
+ *  2025/11/15 (A10001986)
+ *    - Rename option "Adapt to GPS speed" to "Adapt to TCD-provided speed"
  *  2025/11/14 (A10001986) [1.87]
  *    - Remove BTTFN_MC conditional
  *  2025/11/13 (A10001986)
