@@ -586,12 +586,12 @@ void WiFiManager::setupHTTPServer()
 
     server->on(R_root,       std::bind(&WiFiManager::handleRoot, this));
     server->on(R_wifi,       std::bind(&WiFiManager::handleWifi, this, true));
-    server->on(R_wifisave,   std::bind(&WiFiManager::handleWifiSave, this));
+    server->on(R_wifisave,   HTTP_POST, std::bind(&WiFiManager::handleWifiSave, this));
     server->on(R_param,      std::bind(&WiFiManager::handleParam, this));
-    server->on(R_paramsave,  std::bind(&WiFiManager::handleParamSave, this));
+    server->on(R_paramsave,  HTTP_POST, std::bind(&WiFiManager::handleParamSave, this));
     #ifdef WM_PARAM2
     server->on(R_param2,     std::bind(&WiFiManager::handleParam2, this));
-    server->on(R_param2save, std::bind(&WiFiManager::handleParam2Save, this));
+    server->on(R_param2save, HTTP_POST, std::bind(&WiFiManager::handleParam2Save, this));
     #endif
     server->on(R_update,     std::bind(&WiFiManager::handleUpdate, this));
     server->on(R_updatedone, HTTP_POST, std::bind(&WiFiManager::handleUpdateDone, this), std::bind(&WiFiManager::handleUpdating, this));
@@ -1315,7 +1315,7 @@ unsigned int WiFiManager::getParamOutSize(WiFiManagerParameter** params,
                 case WFM_LABEL_BEFORE:
                 case WFM_LABEL_AFTER:
                     mysize += STRLEN(HTTP_FORM_LABEL) + STRLEN(HTTP_FORM_PARAM);
-                    mysize += STRLEN(HTTP_BR);
+                    if(!(params[i]->getFlags() & WFM_NO_BR)) mysize += STRLEN(HTTP_BR);
                     mysize -= (8*3);  // tokens
                     break;
                 default:
@@ -1410,13 +1410,13 @@ void WiFiManager::getParamOut(String &page, WiFiManagerParameter** params,
                 switch (params[i]->getFlags() & WFM_LABEL_MASK) {
                 case WFM_LABEL_BEFORE:
                     pitem = FPSTR(HTTP_FORM_LABEL);
-                    pitem += FPSTR(HTTP_BR);
+                    if(!(params[i]->getFlags() & WFM_NO_BR)) pitem += FPSTR(HTTP_BR);
                     pitem += FPSTR(HTTP_FORM_PARAM);
                     break;
                 case WFM_LABEL_AFTER:
                     pitem = FPSTR(HTTP_FORM_PARAM);
                     pitem += FPSTR(HTTP_FORM_LABEL);
-                    pitem += FPSTR(HTTP_BR);
+                    if(!(params[i]->getFlags() & WFM_NO_BR)) pitem += FPSTR(HTTP_BR);
                     break;
                 default:
                     // WFM_NO_LABEL
@@ -1490,17 +1490,23 @@ void WiFiManager::doParamSave(WiFiManagerParameter** params, int paramsCount)
                 Serial.printf("doSaveParms: skipped parm %d\n", i);
                 #endif
                 continue;
-            } else {
-                #ifdef _A10001986_DBG
-                Serial.printf("doSaveParms: doing parm %s\n", params[i]->getID());
-                #endif
             }
 
             // read parameter from server
             String value = server->arg(params[i]->getID());
 
-            // store it in params array; +1 for null termination
-            value.toCharArray(params[i]->_value, params[i]->_length + 1);
+            if(value == "" && (params[i]->getFlags() & WFM_IS_CHKBOX)) {
+                strcpy(params[i]->_value, "0");
+                #ifdef _A10001986_DBG
+                Serial.printf("doSaveParms: checkbox '%s' set to 0\n", params[i]->getID());
+                #endif
+            } else {
+                // store it in params array; +1 for null termination
+                value.toCharArray(params[i]->_value, params[i]->_length + 1);
+                #ifdef _A10001986_DBG
+                Serial.printf("doSaveParms: '%s' set to '%s'\n", params[i]->getID(), params[i]->_value);
+                #endif
+            }
 
             if(!(i % 30) && _gpcallback) {
                 _gpcallback(WM_LP_NONE);
