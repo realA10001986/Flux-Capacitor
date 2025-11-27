@@ -474,8 +474,6 @@ void main_setup()
         fluxTimeout = FLUXM3_SECS*1000;
     } else if(playFLUX == 2) 
         fluxTimeout = FLUXM2_SECS*1000;
-    
-    // [formerly started CP here]
 
     // Swap "box light" <> "GPIO14"
     PLforBL = (atoi(settings.usePLforBL) > 0);
@@ -761,7 +759,7 @@ void main_loop()
         }
     }
 
-    // Eval GPS/RotEnc speed
+    // Eval TCD-provided speed
     // We track speed even when off, so we are immediately
     // up to speed when coming back.
     if(useGPSS) {
@@ -793,6 +791,7 @@ void main_loop()
                     //Serial.printf("%d %d %d (%d)\n", shouldBe, isNow, toSet, gpsSpeed);
 
                     lastGPSchange = now;
+
                 }
 
                 usingGPSS = true;
@@ -885,29 +884,27 @@ void main_loop()
                     if(TTFInt && (now - TTfUpdNow >= TTFInt)) {
                         fcLEDs.setSpeed(ttramp[ttrampidx++]);
                         if(ttrampidx == ttrampsize) TTFInt = 0;
-                        /*
-                        int t = fcLEDs.getSpeed();
-                        if(t >= 100)      t -= 50;
-                        else if(t >= 20)  t -= 10;
-                        else if(t > 2)    t--;
-                        fcLEDs.setSpeed(t);
-                        */
                         TTfUpdNow = now;
                     }
                              
                 } else {
-
-                    if(fcLEDs.getSpeed() != 2) {
-                        fcLEDs.setSpeed(2);
-                    }
 
                     TTP0 = false;
                     TTP1 = true;
                     bP1idx = 0;
                     TTstart = now;
                     noIR = true;
-                    if(playTTsounds && !networkAbort) {
-                        play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
+
+                    if(!networkAbort) {
+
+                        if(fcLEDs.getSpeed() != 2) {
+                            fcLEDs.setSpeed(2);
+                        }
+                        
+                        if(playTTsounds) {
+                            play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
+                        }
+
                     }
                 }
             }
@@ -964,14 +961,24 @@ void main_loop()
                     TTP2 = true;
                     cDone = bDone = fDone = false;
                     TTfUpdNow = TTcUpdNow = TTbUpdNow = now;
-                    // For GPS and RotEnc, let normal loop take
+
+                    // For TCD-provided speed, let normal loop take
                     // care of returning to "current" speed; here
-                    // we only switch down one notch.
+                    // we only switch down one notch if we were 
+                    // at max. Otherwise we set it so that P2
+                    // quits to let the loop take care of slowing
+                    // down to actual speed
                     if(usingGPSS && gpsSpeed >= 0) {
-                          TTSSpd = 3;
+                        Serial.printf("TTP1: usingGPSS && gpsSpeed >= 0: %d\n", gpsSpeed);
+                        TTSSpd = fcLEDs.getSpeed();
+                        if(TTSSpd == 2) {
+                            TTSSpd = 3;
+                        }
                     }
-                    if(playTTsounds) {
-                        if(!networkAbort) {
+
+                    // If speed is max, we were aborted in P1, so play sound
+                    if(!networkAbort || (fcLEDs.getSpeed() == 2)) {
+                        if(playTTsounds) {
                             play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
                         }
                     }
@@ -2874,15 +2881,22 @@ static void handle_tcd_notification(uint8_t *buf)
     case BTTFN_NOT_SPD:
         seqCnt = GET32(buf, 12);
         if(seqCnt > bttfnTCDSeqCnt || seqCnt == 1) {
-            gpsSpeed = (int16_t)(buf[6] | (buf[7] << 8));
-            if(gpsSpeed > 88) gpsSpeed = 88;
             switch(buf[8] | (buf[9] << 8)) {
             case BTTFN_SSRC_GPS:
                 spdIsRotEnc = false;
                 break;
+            case BTTFN_SSRC_P1:
+                // If packets come out-of-order, we might
+                // get this one before TTrunning, and we
+                // don't want the loop to switch to
+                // usingGPSS only because of P1 speed
+                if(!TTrunning) return;
+                // fall through
             default:
-                spdIsRotEnc = true;
+                spdIsRotEnc = true;  // Also for Remote
             }
+            gpsSpeed = (int16_t)(buf[6] | (buf[7] << 8));
+            if(gpsSpeed > 88) gpsSpeed = 88;
         } else {
             #ifdef FC_DBG
             Serial.printf("Out-of-sequence packet received from TCD %d %d\n", seqCnt, bttfnTCDSeqCnt);

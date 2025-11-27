@@ -472,6 +472,7 @@ static bool read_settings(File configFile, int cfgReadCount)
         #ifdef FC_HAVEMQTT
         wd |= CopyCheckValidNumParm(json["useMQTT"], settings.useMQTT, sizeof(settings.useMQTT), 0, 1, 0);
         wd |= CopyTextParm(json["mqttServer"], settings.mqttServer, sizeof(settings.mqttServer));
+        wd |= CopyCheckValidNumParm(json["mqttV"], settings.mqttVers, sizeof(settings.mqttVers), 0, 1, 0);
         wd |= CopyTextParm(json["mqttUser"], settings.mqttUser, sizeof(settings.mqttUser));
         #endif
         
@@ -540,6 +541,7 @@ void write_settings()
     #ifdef FC_HAVEMQTT
     json["useMQTT"] = (const char *)settings.useMQTT;
     json["mqttServer"] = (const char *)settings.mqttServer;
+    json["mqttV"] = (const char *)settings.mqttVers;
     json["mqttUser"] = (const char *)settings.mqttUser;
     #endif
 

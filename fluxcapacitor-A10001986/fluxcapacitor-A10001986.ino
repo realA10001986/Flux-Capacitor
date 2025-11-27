@@ -115,6 +115,20 @@
 
 /*  Changelog
  *
+ *  2025/11/26 (A10001986) [1.89]
+ *    - Prevent P1-speed from becoming the reason to switch to adapting to
+ *      TCD-provided speed in speedo-less time-travel sequences
+ *  2025/11/22 (A10001986)
+ *    - Sync'd TT: Handle abort in P0
+ *  2025/11/21 (A10001986)
+ *    - WM: Minor HTML tweaks; make page width dynamic for better display
+ *      on handheld devices
+ *  2025/11/19 (A10001986)
+ *    - Add support for MQTT v5.0 (tested with mosquitto only). Has no
+ *      advantages over 3.1.1 (but more overhead), only there to use brokers
+ *      that lack support for 3.1.1.
+ *    - Move HA/MQTT settings to separate page
+ *    - Add MQTT connection state info on HA/MQTT Settings page
  *  2025/11/17 (A10001986) [1.88]
  *    - Fix saving of flux mode when changed in Config Portal
  *  2025/11/16 (A10001986)
