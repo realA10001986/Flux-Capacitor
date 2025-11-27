@@ -887,7 +887,7 @@ Note that this only disables the supplied remote, unlike [IR locking](#locking-i
 
 <table>
     <tr>
-     <td align="left">$${\color{red}&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;$$<br>$${\color{orange}&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#8635;$$</td>
+     <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#8635;</td>
      <td align="left">Please wait, busy</td>
     </tr>
  <tr>
