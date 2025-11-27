@@ -1313,9 +1313,10 @@ unsigned int WiFiManager::getParamOutSize(WiFiManagerParameter** params,
 
                 switch(params[i]->getFlags() & WFM_LABEL_MASK) {
                 case WFM_LABEL_BEFORE:
+                    if(!(params[i]->getFlags() & WFM_NO_BR)) mysize += STRLEN(HTTP_BR);
                 case WFM_LABEL_AFTER:
                     mysize += STRLEN(HTTP_FORM_LABEL) + STRLEN(HTTP_FORM_PARAM);
-                    if(!(params[i]->getFlags() & WFM_NO_BR)) mysize += STRLEN(HTTP_BR);
+                    mysize += STRLEN(HTTP_BR);
                     mysize -= (8*3);  // tokens
                     break;
                 default:
@@ -1412,11 +1413,12 @@ void WiFiManager::getParamOut(String &page, WiFiManagerParameter** params,
                     pitem = FPSTR(HTTP_FORM_LABEL);
                     if(!(params[i]->getFlags() & WFM_NO_BR)) pitem += FPSTR(HTTP_BR);
                     pitem += FPSTR(HTTP_FORM_PARAM);
+                    pitem += FPSTR(HTTP_BR);
                     break;
                 case WFM_LABEL_AFTER:
                     pitem = FPSTR(HTTP_FORM_PARAM);
                     pitem += FPSTR(HTTP_FORM_LABEL);
-                    if(!(params[i]->getFlags() & WFM_NO_BR)) pitem += FPSTR(HTTP_BR);
+                    pitem += FPSTR(HTTP_BR);
                     break;
                 default:
                     // WFM_NO_LABEL
@@ -2022,7 +2024,9 @@ void WiFiManager::getIpForm(String& page, const char *id, const char *title, IPA
     item.reserve(s + 8);
 
     item = FPSTR(HTTP_FORM_LABEL);
+    item += FPSTR(HTTP_BR);
     item += FPSTR(HTTP_FORM_PARAM);
+    item += FPSTR(HTTP_BR);
     item.replace(FPSTR(T_i), id);
     item.replace(FPSTR(T_n), id);
     item.replace(FPSTR(T_t), title);
@@ -2047,14 +2051,14 @@ unsigned int WiFiManager::getStaticLen()
         mySize += STRLEN(HTTP_FORM_SECT_HEAD);
     }
     if(showSta) {
-        mySize += (3 * (STRLEN(HTTP_FORM_LABEL) + STRLEN(HTTP_FORM_PARAM) - (8*3)));
+        mySize += (3 * (STRLEN(HTTP_FORM_LABEL) + STRLEN(HTTP_FORM_PARAM) - (8*3) + (2*STRLEN(HTTP_BR))));
         mySize += (3*STRLEN(S_ip)) + STRLEN(S_staticip) + 2 + 15;
         mySize += STRLEN(HTTP_FORM_WIFI_PH);
         mySize += (3*STRLEN(S_sn)) + STRLEN(S_subnet) + 2 + 15;
         mySize += (3*STRLEN(S_gw)) + STRLEN(S_staticgw) + 2 + 15;
     }
     if(showDns) {
-        mySize += STRLEN(HTTP_FORM_LABEL) + STRLEN(HTTP_FORM_PARAM) - (8*3);
+        mySize += STRLEN(HTTP_FORM_LABEL) + STRLEN(HTTP_FORM_PARAM) - (8*3) + (2*STRLEN(HTTP_BR));
         mySize += (3*STRLEN(S_dns)) + STRLEN(S_staticdns) + 2 + 15;
     }
     if(showSta || showDns) {
