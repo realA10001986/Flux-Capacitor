@@ -808,7 +808,7 @@ If you want to have your FC to communicate with a Time Circuits Display wireless
 
 If you connect your FC to the TCD's access point ("TCD-AP"), the TCD's IP address is 192.168.4.1.
 
-##### &#9193; Change chase speed with GPS speed
+##### &#9193; Adapt chase speed to TCD-provided speed
 
 If this option is checked and your TCD is equipped with a GPS sensor or a rotary encoder, the FC will adapt its chase speed to current GPS speed or the reading of the encoder, respectively. 
 
