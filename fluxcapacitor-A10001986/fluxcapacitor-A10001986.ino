@@ -113,7 +113,10 @@
  *     reboot.
  */
 
-/*
+/*  Changelog
+ *   
+ *  2026/01/09 (A10001986) [1.91]
+ *    - BTTFN: Fix keep-alive logic and re-connection after a TCD-reboot.
  *  2026/01/09 (A10001986) [1.90]
  *    - BTTFN enhancements in sync with TCD capabilities
  *    - Code refinements
