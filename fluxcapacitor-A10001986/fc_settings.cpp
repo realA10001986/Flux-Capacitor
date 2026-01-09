@@ -1,7 +1,7 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023-2025 Thomas Winischhofer (A10001986)
+ * (C) 2023-2026 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *
@@ -203,7 +203,9 @@ static void firmware_update();
  */
 void settings_setup()
 {
+    #ifdef FC_DBG
     const char *funcName = "settings_setup";
+    #endif
     bool writedefault = false;
     bool SDres = false;
     int alienVER = -1;
@@ -354,7 +356,7 @@ void settings_setup()
     if(!loadId()) {
         myRemID = createId();
         #ifdef FC_DBG
-        Serial.printf("Created Remote ID: 0x%lx\n", myRemID);
+        Serial.printf("Created Remote ID: 0x%x\n", myRemID);
         #endif
         saveId();
     }
@@ -405,7 +407,7 @@ static bool read_settings(File configFile, int cfgReadCount)
     #if ARDUINOJSON_VERSION_MAJOR < 7
     jsonSize = json.memoryUsage();
     if(jsonSize > JSON_SIZE) {
-        Serial.printf("ERROR: Config file too large (%d vs %d), memory corrupted, awaiting doom.\n", funcName, jsonSize, JSON_SIZE);
+        Serial.printf("ERROR: Config file too large (%d vs %d), memory corrupted, awaiting doom.\n", jsonSize, JSON_SIZE);
     }
     
     #ifdef FC_DBG
@@ -717,7 +719,6 @@ static bool loadIRkeysFromFile(File configFile, int index)
 
 static bool loadIRKeys()
 {
-    uint32_t ir_keys[NUM_IR_KEYS];
     File     configFile;
 
     // Load user keys from SD
@@ -803,19 +804,19 @@ bool loadCurVolume()
         if(!readJSONCfgFile(json, configFile, funcName)) {
             if(!CopyCheckValidNumParm(json["volume"], temp, sizeof(temp), 0, 255, DEFAULT_VOLUME)) {
                 uint8_t ncv = atoi(temp);
-                if((ncv >= 0 && ncv <= 19) || ncv == 255) {
+                if(ncv <= 19 || ncv == 255) {
                     curSoftVol = ncv;
                 } 
             }
             if(!CopyCheckValidNumParm(json["flux"], temp, sizeof(temp), 0, 3, DEFAULT_FLUX_LEVEL)) {
                 uint8_t ncv = atoi(temp);
-                if(ncv >= 0 && ncv <= 3) {
+                if(ncv <= 3) {
                     fluxLvlIdx = ncv;
                 } 
             }
             if(!CopyCheckValidNumParm(json["flxm"], settings.playFLUXsnd, sizeof(settings.playFLUXsnd), 0, 3, atoi(settings.playFLUXsnd))) {
                 uint8_t ncv = atoi(settings.playFLUXsnd);
-                if(ncv >= 0 && ncv <= 3) {
+                if(ncv <= 3) {
                     playFLUX = ncv;
                 } 
             }
@@ -1307,7 +1308,7 @@ static bool loadId()
                 myRemID = (uint32_t)json["ID"];
         
                 #ifdef FC_DBG
-                Serial.printf("Loaded Remote ID: 0x%lx\n", myRemID);
+                Serial.printf("Loaded Remote ID: 0x%x\n", myRemID);
                 #endif
         
                 invalid = (myRemID == 0);
@@ -1381,7 +1382,6 @@ bool check_if_default_audio_present()
     uint8_t dbuf[16];
     File file;
     size_t ts;
-    int i;
 
     ic = false;
     
@@ -1665,6 +1665,7 @@ static void rewriteSecondarySettings()
     #endif
     
     writeIpSettings();
+    saveId();
 
     // Create current settings on flash FS
     // regardless of SD-option
@@ -1780,8 +1781,6 @@ static bool writeFileToFS(const char *fn, uint8_t *buf, int len)
 
 static char *allocateUploadFileName(const char *fn, int idx)
 {
-    char *t = NULL;
-
     if(uploadFileNames[idx]) {
         free(uploadFileNames[idx]);
     }

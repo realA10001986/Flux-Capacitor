@@ -1,7 +1,7 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023-2025 Thomas Winischhofer (A10001986)
+ * (C) 2023-2026 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *
@@ -68,8 +68,8 @@
 void audio_setup();
 void audio_loop();
 
-void play_file(const char *audio_file, uint32_t flags, float volumeFactor = 1.0);
-void append_file(const char *audio_file, uint32_t flags, float volumeFactor = 1.0);
+void play_file(const char *audio_file, uint32_t flags, float volumeFactor = 1.0f);
+void append_file(const char *audio_file, uint32_t flags, float volumeFactor = 1.0f);
 
 void play_flux();
 void append_flux();

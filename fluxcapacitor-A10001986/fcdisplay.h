@@ -1,7 +1,7 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023-2025 Thomas Winischhofer (A10001986)
+ * (C) 2023-2026 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *

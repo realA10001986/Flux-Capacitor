@@ -1,7 +1,7 @@
 /*
  * -------------------------------------------------------------------
  * CircuitSetup.us Flux Capacitor
- * (C) 2023-2025 Thomas Winischhofer (A10001986)
+ * (C) 2023-2026 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *
@@ -83,14 +83,14 @@ static int  mpCurrIdx     = 0;
 static bool mpShuffle     = false;
 
 static const float volTable[20] = {
-    0.00, 0.02, 0.04, 0.06,
-    0.08, 0.10, 0.13, 0.16,
-    0.19, 0.22, 0.26, 0.30,
-    0.35, 0.40, 0.50, 0.60,
-    0.70, 0.80, 0.90, 1.00
+    0.00f, 0.02f, 0.04f, 0.06f,
+    0.08f, 0.10f, 0.13f, 0.16f,
+    0.19f, 0.22f, 0.26f, 0.30f,
+    0.35f, 0.40f, 0.50f, 0.60f,
+    0.70f, 0.80f, 0.90f, 1.00f
 };
 static const float fluxLevels[4] = {
-    0.30, 0.50, 0.75, 1.0
+    0.30f, 0.50f, 0.75f, 1.0f
 };
 // Resolution for pot, 9-12 allowed
 #define POT_RESOLUTION 9
@@ -102,13 +102,13 @@ static int      anaReadCount = 0;
 static long     prev_avg, prev_raw, prev_raw2;
 static uint32_t g(uint32_t a, int o) { return a << (PA_MASK - o); }
 
-static float    curVolFact = 1.0;
+static float    curVolFact = 1.0f;
 static bool     dynVol     = true;
 static int      sampleCnt = 0;
 
 bool            playingFlux = false;
 unsigned int    fluxLvlIdx = 3;
-float           fluxLevel = 1.0;
+float           fluxLevel = 1.0f;
 uint32_t        key_playing = 0;
 
 static char     append_audio_file[256];
@@ -142,9 +142,7 @@ static void     mpren_quickSort(char **a, int s, int e);
  * audio_setup()
  */
 void audio_setup()
-{
-    bool waitShown = false;
-    
+{   
     #ifdef FC_DBG
     audioLogger = &Serial;
     #endif
@@ -154,7 +152,7 @@ void audio_setup()
     analogSetWidth(POT_RESOLUTION);
 
     out = new AudioOutputI2S(0, 0, 32, 0);
-    out->SetOutputModeMono(true);
+    out->SetOutputModeMono(false); // Hardware does auto-mono
     out->SetPinout(I2S_BCLK_PIN, I2S_LRCLK_PIN, I2S_DIN_PIN);
 
     mp3  = new AudioGeneratorMP3();
@@ -459,7 +457,7 @@ static float getRawVolume()
 
     vol_val = (float)avg / (float)((1<<POT_RESOLUTION)-1);
 
-    if((raw + prev_raw + prev_raw2 > 0) && vol_val < 0.01) vol_val = 0.01;
+    if((raw + prev_raw + prev_raw2 > 0) && vol_val < 0.01f) vol_val = 0.01f;
 
     prev_raw2 = prev_raw;
     prev_raw = raw;
@@ -480,15 +478,15 @@ static float getVolume()
     }
 
     // If user muted, return 0
-    if(vol_val == 0.0) return vol_val;
+    if(vol_val == 0.0f) return vol_val;
 
     vol_val *= curVolFact;
 
-    if(fluxNM) vol_val *= 0.3;
+    if(fluxNM) vol_val *= 0.3f;
       
     // Do not totally mute
     // 0.02 is the lowest audible gain
-    if(vol_val < 0.02) vol_val = 0.02;
+    if(vol_val < 0.02f) vol_val = 0.02f;
 
     return vol_val;
 }
@@ -565,8 +563,6 @@ void mp_init(bool isSetup)
     mpCurrIdx = 0;
     
     if(haveSD) {
-        int i, j;
-
         #ifdef FC_DBG
         Serial.println("MusicPlayer: Checking for music files");
         #endif
@@ -755,7 +751,7 @@ static bool mp_play_int(bool force)
 
     mp_buildFileName(fnbuf, playList[mpCurrIdx]);
     if(SD.exists(fnbuf)) {
-        if(force) play_file(fnbuf, PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0);
+        if(force) play_file(fnbuf, PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0f);
         return true;
     }
     return false;
@@ -887,7 +883,6 @@ static bool mp_renameFilesInDir(bool isSetup)
     int fileNum = 0;
     int strLength;
     int nameOffs = 8;
-    int allocBufs = 1;
     int allocBufIdx = 0;
     const unsigned long bufSizes[8] = {
         16384, 16384, 8192, 8192, 8192, 8192, 8192, 4096 
@@ -1142,7 +1137,7 @@ static bool mpren_strLT(const char *a, const char *b)
         unsigned char bbb = mpren_toUpper(*b);
         if(aaa < bbb) return true;
         if(aaa > bbb) return false;
-        *a++; *b++;
+        a++; b++;
     }
 
     return false;
