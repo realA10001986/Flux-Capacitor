@@ -532,7 +532,7 @@ Pressing # quits TCD keypad remote control mode, as does issuing command 3097 on
 
 >Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place. A wireless connection over BTTFN/WiFi is much more powerful and therefore recommended over a wired connection.
 
-For a connection by wire, connect GND and GPIO on the Flux Capacitor's "Time Travel" connector to the TCD like in the table below:
+For a connection by wire, connect "GND" and "TT IN" (labeled "GPIO" on earlier boards) on the Flux Capacitor's "Time Travel" connector to the TCD like in the table below:
 
 <table>
     <tr>
