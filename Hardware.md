@@ -32,7 +32,7 @@ As a speaker, I used [this](https://www.amazon.com/ACEIRMC-Loundspeaker-JST-PH2-
 
 <img width="300" alt="Speaker" src="Hardware/img/speaker.png">
 
-The USB connector is the end of an USB extension cable like this one; I simply trimmed it to fit into the bracket.
+The USB connector is not required for normal use (I installed for firmware development reasons only). I used an USB extension cable like this one; I simply trimmed it to fit into the bracket. Note: Newer CircuitSetup boards come with an USB-C connector on the Control Board instead of the previous Micro-USB.
 
 <img width="300" alt="USB extension" src="Hardware/img/usbcable.png">
 
