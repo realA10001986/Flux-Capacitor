@@ -114,7 +114,23 @@
  */
 
 /*  Changelog
- *   
+ *
+ *  2026/02/15 (A10001986) [1.100]
+ *    - New file format settings. This version of the firmware converts old to new.
+ *    - "Shuffle" setting changes through *222/*555 are saved (SD required).
+ *      (Shuffle option removed from CP)
+ *    - Add option to show positive IR feedback (=successful commands) on display.
+ *      Can be changed through Config Portal or *62 (every change is saved).
+ *    - Add option to show command entry IR feedback on display. Can be changed 
+ *      through Config Portal or *63 (every change is saved).
+ *    - Most of event signal changed to make them consistent with SID, and more
+ *      intuitive. Errors generally blink, (positive) confirmations are steady.
+ *    - Display MAC address (STA) on WiFi Configuration Page
+ *    - BTTFN: Avoid falling back to stand-alone mode too early when TCD stops
+ *      sending packets.
+ *    - Config files are now only written if actually changed which prolongs
+ *      Flash life-span.
+ *    - Code optimizations and fixes.
  *  2026/01/09 (A10001986) [1.91]
  *    - BTTFN: Fix keep-alive logic and re-connection after a TCD-reboot.
  *  2026/01/09 (A10001986) [1.90]
@@ -654,3 +670,7 @@ void loop()
     audio_loop();
     bttfn_loop();
 }
+
+#if defined(FC_DBG) || defined(FC_DBG_NET)
+#warning "Debug output is enabled. Binary not suitable for release."
+#endif

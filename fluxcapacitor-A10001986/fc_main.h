@@ -54,6 +54,9 @@
 
 // Number of IR keys
 #define NUM_IR_KEYS 17
+#define NUM_REM_TYPES 2
+#define REM_KEYS_LEARNED 0
+#define REM_KEYS_DEFAULT 1
 
 // FC LEDs 
 #define FC_SPD_MAX 3     // 30ms
@@ -64,7 +67,10 @@ extern unsigned long powerupMillis;
 
 extern uint16_t minBLL;
 extern uint16_t lastIRspeed;
-extern bool     irLocked;
+
+extern bool irLocked;
+extern bool irShowPosFBDisplay;
+extern bool irShowCmdFBDisplay;
 
 extern bool TCDconnected;
 
@@ -91,6 +97,8 @@ extern bool doPrepareTT;
 extern bool doWakeup;
 
 extern bool fcBusy;
+
+extern bool showUpdAvail;
 
 extern uint32_t myRemID;
 

@@ -77,26 +77,29 @@ class PWMLED {
 
 // Special sequences
 #define FCSEQ_STARTUP    1
-#define FCSEQ_NOAUDIO    2
-#define FCSEQ_WAIT       3
-#define FCSEQ_BADINP     4
-#define FCSEQ_ALARM      5
-#define FCSEQ_LEARNSTART 6
-#define FCSEQ_LEARNNEXT  7
-#define FCSEQ_LEARNDONE  8
-#define FCSEQ_ERRCOPY    9
-#define FCSEQ_REMSTART   10
-#define FCSEQ_REMEND     11
+#define FCSEQ_WAIT       2
+#define FCSEQ_IROK       3
+#define FCSEQ_LEARNSTART 4
+#define FCSEQ_LEARNNEXT  5
+#define FCSEQ_LEARNDONE  6
+#define FCSEQ_REMSTART   7
+#define FCSEQ_REMEND     8
+#define FCSEQ_NOAUDIO    9
+#define FCSEQ_ERRCOPY    10
+#define FCSEQ_BADINP     11
 #define FCSEQ_NOMUSIC    12
-#define FCSEQ_USER1      13
-#define FCSEQ_USER2      14
-#define FCSEQ_PROG1      15
-#define FCSEQ_PROG2      16
-#define FCSEQ_PROG3      17
-#define FCSEQ_PROG4      18
-#define FCSEQ_PROG5      19
-#define FCSEQ_PROG6      20
-#define FCSEQ_MAX        FCSEQ_PROG6
+#define FCSEQ_ALARM      13
+#define FCSEQ_USER1      14
+#define FCSEQ_USER2      15
+#define FCSEQ_UPDAVAIL   16
+#define FCSEQ_PROG1      17
+#define FCSEQ_PROG2      18
+#define FCSEQ_PROG3      19
+#define FCSEQ_PROG4      20
+#define FCSEQ_PROG5      21
+#define FCSEQ_PROG6      22
+#define FCSEQ_CMDSTRT    23
+#define FCSEQ_MAX        (FCSEQ_CMDSTRT+6)
 
 /*
  * FC LEDs class

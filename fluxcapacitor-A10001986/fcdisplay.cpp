@@ -232,14 +232,15 @@ static const byte* chaseArrs[10];
 #define SS_ONESHOT 0xfffe   // Always needs to have "all off" as last step
 #define SS_LOOP    0
 #define SS_END     0xffff
+#define IFCFBDUR   500
 static volatile bool     _specialsig = false;
 static volatile bool     _wasSpecial = false;
 static volatile bool     _specialOS = false;
 static volatile uint8_t  _specialsignum = 0;
 static volatile uint8_t  _specialidx = 0;
 static volatile int16_t  _specialticks = 0;
-static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
-        {                                               // 1: startup
+static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][26] = {
+        {                                               // 1: startup     [left outer, right inner]
           SS_ONESHOT,
           0b100000, 14, 0b110000, 14, 0b111000, 14,
           0b111100, 14, 0b111110, 14, 0b111111, 30,
@@ -247,24 +248,65 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
           0b110000, 27, 0b100000, 55, 0b000000, 105, 
           SS_END          
         },
-        {                                               // 2: error: no audio files installed (128)
+        {                                               // 2: wait (eg installing sound pack / formatting FS / fw update...)
+          SS_LOOP,
+          0b100000,  50, 0b000001,  50, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 3: Positive IR feedback
+          0b001100, 200, 0b000000,  50, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 4: IR learning start
+          0b000000,  20,
+          0b111111, 200, 0b000000,   1, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 5: IR learning ok, next
+          0b000000,  10,
+          0b110011, 100, 0b000000,   1, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 6: IR learning finished
+          0b000000,  10,
+          0b001100, 300, 0b000000,  50, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 7: RemMode started
+          0b000000,  50,
+          0b100000, 200, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 8: RemMode quit
+          0b000000,  50,
+          0b110000, 200, SS_END
+        },
+        {                                               // 9: error: sound pack not installed/current
           SS_ONESHOT,
-          0b000000, 100, 
+          0b000000,  50, 
+          0b000001, 100, 0b000000, 100,
           0b000001, 100, 0b000000, 100,
           0b000001, 100, 0b000000, 100, SS_END
         },
-        {                                               // 3: wait: installing audio files / formatting FS / fw update
-          SS_LOOP,
-          0b100000, 50, 0b000001, 50, SS_END
+        {
+          SS_LOOP,                                      // 10: Error when installing sound pack 
+          0b000000,  50, 0b000011,  50, SS_END
         },
         {
-          SS_ONESHOT,                                   // 4: error: Bad IR input (1)
-          0b000000, 100,
-          0b100000, 25, 0b000000, 25,
-          0b100000, 25, 0b000000, 25, SS_END
+          SS_ONESHOT,                                   // 11: error: Bad/Unsucessful IR input
+          0b000000, 50,
+          0b100001, 25, 0b000000, 25,
+          0b100001, 25, 0b000000, 25, SS_END
         },
         {
-          SS_ONESHOT,                                   // 5: Alarm (BTTFN/MQTT)
+          SS_ONESHOT,                                   // 12: No music in current music folder
+          0b000000,  50,
+          0b000101,  50, 0b000000,  50,
+          0b000101,  50, 0b000000,  50,
+          0b000101,  50, 0b000000,  50, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 13: Alarm (BTTFN/MQTT)
           0b000111,  50, 
           0b111000,  50,
           0b000111,  50, 
@@ -277,46 +319,7 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
           SS_END
         },
         {
-          SS_ONESHOT,                                   // 6: IR learning start
-          0b000000,  20,
-          0b111111, 100, 0b000000, 100,
-          0b111111, 100, 0b000000,   1, SS_END
-        },
-        {
-          SS_ONESHOT,                                   // 7: IR learning ok, next
-          0b000000,  10,
-          0b001100,  50, 0b000000,  50,
-          0b001100,  50, 0b000000,   1, SS_END
-        },
-        {
-          SS_ONESHOT,                                   // 8: IR learning finished
-          0b000000,  10,
-          0b111111,  50, 0b000000,  50,
-          0b111111,  50, 0b000000,  50, SS_END
-        },
-        {
-          SS_LOOP,                                      // 9: Error when copying audio files
-          0b110000,  20, 0b000011,  20, SS_END
-        },
-        {
-          SS_ONESHOT,                                   // 10: RemMode started
-          0b000000,  10,
-          0b101010,  50, 0b000000,  50,
-          0b101010,  50, 0b000000,  50, SS_END
-        },
-        {
-          SS_ONESHOT,                                   // 11: RemMode quit
-          0b000000,  10,
-          0b010101,  50, 0b000000,  50, SS_END
-        },
-        {
-          SS_ONESHOT,                                   // 12: No music in current music folder
-          0b000000,  10,
-          0b000101,  50, 0b000000,  50,
-          0b000101,  50, 0b000000,  50, SS_END
-        },
-        {
-          SS_ONESHOT,                                   // 13: User signal 1, triggered by MQTT command
+          SS_ONESHOT,                                   // 14: User signal 1, triggered by MQTT command
           0b000000,  10,
           0b000111,  50, 0b000000,  50,
           0b000111,  50, 0b000000,  50,
@@ -325,7 +328,7 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
           0b000111,  50, 0b000000,  50, SS_END
         },
         {
-          SS_ONESHOT,                                   // 14: User signal 2, triggered by MQTT command
+          SS_ONESHOT,                                   // 15: User signal 2, triggered by MQTT command
           0b000000,  10,
           0b111000,  50, 0b000000,  50,
           0b111000,  50, 0b000000,  50,
@@ -334,28 +337,61 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][32] = {
           0b111000,  50, 0b000000,  50, SS_END
         },
         {
-          SS_LOOP,                                      // 15: Progress 1 on renaming audio files
-          0b000001,  500, 0b000000,  50, SS_END
+          SS_ONESHOT,                                   // 16: Update available
+          0b000000,  20, 
+          0b010101,  75, 0b000000,  50, SS_END
         },
         {
-          SS_LOOP,                                      // 16: Progress 2 on renaming audio files
-          0b000011,  500, 0b000000,  50, SS_END
+          SS_LOOP,                                      // 17: Progress 1 on renaming audio files
+          0b100000,  500, 0b000000,  50, SS_END
         },
         {
-          SS_LOOP,                                      // 17: Progress 3 on renaming audio files
-          0b000111,  500, 0b000000,  50, SS_END
+          SS_LOOP,                                      // 18: Progress 2 on renaming audio files
+          0b110000,  500, 0b000000,  50, SS_END
         },
         {
-          SS_LOOP,                                      // 18: Progress 4 on renaming audio files
-          0b001111,  500, 0b000000,  50, SS_END
+          SS_LOOP,                                      // 19: Progress 3 on renaming audio files
+          0b111000,  500, 0b000000,  50, SS_END
         },
         {
-          SS_LOOP,                                      // 19: Progress 5 on renaming audio files
-          0b011111,  500, 0b000000,  50, SS_END
+          SS_LOOP,                                      // 20: Progress 4 on renaming audio files
+          0b111100,  500, 0b000000,  50, SS_END
         },
         {
-          SS_LOOP,                                      // 20: Progress 6 on renaming audio files
+          SS_LOOP,                                      // 21: Progress 5 on renaming audio files
+          0b111110,  500, 0b000000,  50, SS_END
+        },
+        {
+          SS_LOOP,                                      // 22: Progress 6 on renaming audio files
           0b111111,  500, 0b000000,  50, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 23: IR command entry feedback 0
+          0b000000,  IFCFBDUR, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 24: IR command entry feedback 1
+          0b000001,  IFCFBDUR, 0b000000, 25, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 25: IR command entry feedback 2
+          0b000011,  IFCFBDUR, 0b000000, 25, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 26: IR command entry feedback 3
+          0b000111,  IFCFBDUR, 0b000000, 25, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 27: IR command entry feedback 4
+          0b001111,  IFCFBDUR, 0b000000, 25, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 28: IR command entry feedback 5
+          0b011111,  IFCFBDUR, 0b000000, 25, SS_END
+        },
+        {
+          SS_ONESHOT,                                   // 29: IR command entry feedback 6
+          0b111111,  IFCFBDUR, 0b000000, 25, SS_END
         }
 };        
 

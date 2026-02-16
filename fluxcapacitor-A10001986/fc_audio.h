@@ -103,6 +103,7 @@ extern bool    audioMute;
 
 extern bool    haveMusic;
 extern bool    mpActive;
+extern bool    mpShuffle;
 
 extern bool    playingFlux;
 extern unsigned int fluxLvlIdx;

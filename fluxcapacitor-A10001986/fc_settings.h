@@ -55,6 +55,7 @@
 extern bool haveFS;
 extern bool haveSD;
 extern bool FlashROMode;
+extern const char rspv[];
 
 extern bool haveAudioFiles;
 
@@ -76,9 +77,9 @@ extern uint8_t musFolderNum;
 #define DEF_STTBL_ANIM      0     // 1: Skip box light animation in tt; 0: Play anim
 #define DEF_PLAY_TT_SND     1     // 1: Play time travel sounds (0: Do not; for use with external equipment)
 #define DEF_PLAY_ALM_SND    0     // 1: Play TCD-alarm sound, 0: do not
+#define DEF_IRFB            1     // 0: Don't show positive IR feedback on display; 1: do
+#define DEF_IRCFB           1     // 0: Don't show command entry feedback; 1: do
 #define DEF_SS_TIMER        0     // "Screen saver" timeout in minutes; 0 = ss off
-
-#define DEF_SHUFFLE         0     // Music Player: Do not shuffle by default
 
 #define DEF_TCD_IP          ""    // TCD ip address for networked polling
 #define DEF_USE_GPSS        0     // 0: Ignore GPS speed; 1: Use it for chase speed
@@ -107,15 +108,12 @@ struct Settings {
     char appw[10]           = "";
     char apChnl[4]          = MS(DEF_AP_CHANNEL);
     char wifiAPOffDelay[4]  = MS(DEF_WIFI_APOFFDELAY);
-    
-    char playFLUXsnd[4]     = MS(DEF_PLAY_FLUX_SND);
+
     char origSeq[4]         = MS(DEF_ORIG_SEQ);
     char skipTTBLAnim[4]    = MS(DEF_STTBL_ANIM); 
     char playTTsnds[4]      = MS(DEF_PLAY_TT_SND);
     char playALsnd[4]       = MS(DEF_PLAY_ALM_SND);
     char ssTimer[6]         = MS(DEF_SS_TIMER);
-
-    char shuffle[4]         = MS(DEF_SHUFFLE);
     
     char tcdIP[32]          = DEF_TCD_IP;
     char useGPSS[4]         = MS(DEF_USE_GPSS);
@@ -139,6 +137,11 @@ struct Settings {
     char usePLforBL[4]      = MS(DEF_BLEDSWAP);
     char useSknob[4]        = MS(DEF_SKNOB);
     char disDIR[4]          = MS(DEF_DISDIR);
+
+    // Kludge for CP
+    char playFLUXsnd[4]     = MS(DEF_PLAY_FLUX_SND);
+    char PIRFB[4]           = MS(DEF_IRFB);
+    char PIRCFB[4]          = MS(DEF_IRCFB);
 };
 
 struct IPSettings {
@@ -158,32 +161,51 @@ void unmount_fs();
 void write_settings();
 bool checkConfigExists();
 
-bool saveIRKeys();
+bool evalBool(char *s);
+
+void saveIRKeys();
 void deleteIRKeys();
 
-bool loadCurVolume();
-void saveCurVolume(bool useCache = true);
+void updateVolSettings();
+void loadCurVolume();
+void storeCurVolume();
+void saveCurVolume();
 
-bool loadCurSpeed();
-void saveCurSpeed(bool useCache = true);
+void loadCurSpeed();
+void storeCurSpeed();
+void saveCurSpeed();
 
-bool loadBLLevel();
-void saveBLLevel(bool useCache = true);
+void loadBLLevel();
+void storeBLLevel();
+void saveBLLevel();
 
-bool loadIdlePat();
-void saveIdlePat(bool useCache = true);
+void loadIRLock();
+void storeIRLock();
+void saveIRLock();
 
-bool loadIRLock();
-void saveIRLock(bool useCache = true);
+void loadPosIRFB();
+void savePosIRFB();
 
-bool loadMusFoldNum();
+void loadIRCFB();
+void saveIRCFB();
+
+void saveUpdAvail();
+
+void saveAllSecCP();
+
+void loadIdlePat();
+void storeIdlePat();
+void saveIdlePat();
+
+void loadMusFoldNum();
 void saveMusFoldNum();
+
+void loadShuffle();
+void saveShuffle();
 
 bool loadIpSettings();
 void writeIpSettings();
 void deleteIpSettings();
-
-void copySettings();
 
 bool check_if_default_audio_present();
 bool prepareCopyAudioFiles();
@@ -191,6 +213,8 @@ void doCopyAudioFiles();
 
 bool check_allow_CPA();
 void delete_ID_file();
+
+void moveSettings();
 
 #define MAX_SIM_UPLOADS 16
 #define UPL_OPENERR 1

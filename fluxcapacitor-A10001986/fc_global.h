@@ -15,10 +15,8 @@
  ***                          Version Strings                          ***
  *************************************************************************/
 
-#define FC_VERSION       "V1.91"
-#define FC_VERSION_EXTRA "JAN092026"
-
-//#define FC_DBG              // debug output on Serial   
+#define FC_VERSION       "V1.100"
+#define FC_VERSION_EXTRA "FEB152026"
 
 /*************************************************************************
  ***                           Miscellaneous                           ***
@@ -39,6 +37,13 @@
 // Uncomment this if using a FC control board v1.2
 // Comment for all later versions
 //#define BOARD_1_2
+
+/*************************************************************************
+ ***                               Debug                               ***
+ *************************************************************************/
+
+//#define FC_DBG              // Generic except below
+//#define FC_DBG_NET          // Prop network related
 
 /*************************************************************************
  ***                  esp32-arduino version detection                  ***
