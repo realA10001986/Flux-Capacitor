@@ -101,11 +101,11 @@ Click on "WiFi Configuration" and either select a network from the top of the pa
 <details>
 <summary>More...</summary>
 
->Your FC requests an IP address via DHCP, unless you entered valid data in the fields for static IP addresses (IP, gateway, netmask, DNS). If the device is inaccessible as a result of incorrect static IPs, wait until it has completed its startup sequence, then type \*123456OK on the IR remote; static IP data will be deleted and the device will return to DHCP after a reboot.
+>Your FC requests an IP address via DHCP, unless you entered valid data in the fields for static IP addresses (IP, gateway, netmask, DNS). If the device is inaccessible as a result of incorrect static IPs, wait until it has completed its startup sequence, then type \*123456ok on the IR remote; static IP data will be deleted and the device will return to DHCP after a reboot.
 
 </details>
 
-If the FC fails to connect, it falls back to AP-mode. You can trigger another connection attempt by entering *77 followed by OK.
+If the FC fails to connect, it falls back to AP-mode. You can trigger another connection attempt by entering *77ok.
 
 #### Places without a WiFi network
 
@@ -142,7 +142,7 @@ It can be accessed as follows:
 
   >Accessing the Config Portal through this address requires the operating system of your handheld/computer to support Bonjour/mDNS: Windows 10 version TH2     (1511) [other sources say 1703] and later, Android 13 and later; MacOS and iOS since the dawn of time.
 
-  >If connecting to http://flux.local fails due to a name resolution error, you need to find out the FC's IP address: Type *90 followed by OK on the supplied remote control and listen, the IP address will be spoken out loud. Then, on your handheld or computer, navigate to http://a.b.c.d (a.b.c.d being the IP address as read out loud by the FC) in order to enter the Config Portal.</details>
+  >If connecting to http://flux.local fails due to a name resolution error, you need to find out the FC's IP address: Type *90ok on the supplied remote control and listen, the IP address will be spoken out loud. Then, on your handheld or computer, navigate to http://a.b.c.d (a.b.c.d being the IP address as read out loud by the FC) in order to enter the Config Portal.</details>
 
 In the main menu, click on "Settings" to configure your Flux Capacitor. 
 
@@ -181,17 +181,24 @@ Your FC kit includes an IR remote control. This remote works out-of-the-box and 
 
 | ![Default IR remote control](img/irremote.jpg) |
 |:--:| 
-| *The default IR remote control* |
+| *The FC's standard IR remote control* |
 
 Each time you press a (recognized) key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the bright center LED.
+
+Apart from the feedback LED, your FC will also show some feedback signals through the chase LEDs:
+- By default, when initiating a command sequence by pressing \*, the FC will start to show each key pressed afterwards by lighting up another chase LED. This kind of feedback can be disabled using command sequence *63ok or in the Config Portal;
+- By default, after executing a command, the FC will show a "success" signal. This kind of feedback can be disabled using command sequence *62ok or in the Config Portal;
+- If a command was unsuccessful or not recognized, a "bad input" signal will be shown.
+
+See [here](#appendix-b-led-signals) for all supported signals.
 
 ### IR Learning
 
 Your FC can learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, especially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards, that remote is of that type and cannot be used.
 
-IR learning can be initiated by entering *987654 followed by OK on the standard IR remote.
+IR learning can be initiated by entering *987654ok on the standard IR remote.
 
->Prior to firmware version 1.72, IR learning required a physical [Time Travel](#time-travel) button, and the option **_TCD connected by wire_** in the Config Portal needs to be unchecked. To start the learning process, hold the [Time Travel](#time-travel) button for a few seconds. 
+>Alternatively, IR learning can be started by pressing and holding a connected [Time Travel](#time-travel) button for a few seconds (while the option **_TCD connected by wire_** in the Config Portal is unchecked).
 
 When IR learning is started, the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Afterwards, the IR feedback LED will keep blinking - this means the FC is ready to receive a key from your IR remote. Press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then, again while the IR feedback LED is blinking, press "1", wait for the acknowledgement, and so on. Enter your keys in the following order:
 
@@ -199,13 +206,13 @@ When IR learning is started, the chasing LEDs stop and [blink twice](#appendix-b
 
 If your remote control lacks the \* (starts command sequence) and \# (aborts command sequence) keys, you can use any other key, of course. \* could be eg. "menu" or "setup", \# could be "exit" or "return".
 
-If no key is pressed for 10 seconds, the learning process aborts, as does briefly pressing the Time Travel button. In those cases, the keys already learned are forgotten and nothing is saved.
+If no key is pressed for 10 seconds, the learning process aborts (as does briefly pressing the Time Travel button): The keys already learned are forgotten and nothing is saved.
 
-To make the FC forget a learned IR remote control, type *654321 followed by OK.
+To make the FC forget a learned IR remote control, type *654321ok.
 
 ### Locking IR control
 
-You can have your FC ignore IR commands from any IR remote control (be it the default supplied one, be it one you had the FC learn) by entering *70 followed by OK. After this sequence, the FC will ignore all IR commands until *70OK is entered again. The purpose of this function is to enable you to use the same remote for your FC and other props (such as SID).
+You can have your FC ignore IR commands from any IR remote control (be it the default supplied one, be it one you had the FC learn) by entering *70ok. After this sequence, the FC will ignore all IR commands until *70ok is entered again. The purpose of this function is to enable you to use the same remote for your FC and other props (such as SID).
 
 Note that the status of the IR lock is saved 10 seconds after its last change, and is persistent across reboots.
 
@@ -244,7 +251,7 @@ In order to only disable the supplied IR remote control, check the option **_Dis
     </tr>
     <tr>
      <td align="center">&#8592;<br>Decrease chase speed (*)</td>
-     <td align="center">OK<br>Execute command</td>
+     <td align="center">OK<br>Execute command sequence</td>
      <td align="center">&#8594;<br>Increase chase speed (*)</td>
     </tr>
     <tr>
@@ -258,7 +265,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
 
 <table id='commandref'>
     <tr>
-     <td align="center" colspan="3">Special sequences<br>(&#9166; = OK key)</td>
+     <td align="center" colspan="3">Command sequences<br>(&#9166; = OK key)</td>
     </tr>
     <tr><td>Function</td><td>Code on remote</td><td>Code on TCD</td></tr>
     <tr>
@@ -326,6 +333,14 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">*501&#9166; - *509&#9166;</td><td>3501&#9166; -3509&#9166;</td>
     </tr>
     <tr>
+     <td align="left">Enable/disable positive IR feedback</td>
+     <td align="left">*62&#9166;</td><td>3062</td>
+    </tr>
+    <tr>
+     <td align="left">Enable/disable IR command entry feedback</td>
+     <td align="left">*63&#9166;</td><td>3063</td>
+    </tr>
+    <tr>
      <td align="left"><a href="#locking-ir-control">Disable/Enable</a> IR remote commands</td>
      <td align="left">*70&#9166;</td><td>3070</td>
     </tr>
@@ -358,6 +373,10 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">*64738&#9166;</td><td>3064738</td>
     </tr>
     <tr>
+     <td align="left">Toggle firmware update signals at power-up</td>
+     <td align="left">*53281&#9166;</td><td>3053281</td>
+    </tr>
+    <tr>
      <td align="left">Delete static IP address and AP WiFI password (**)</td>
      <td align="left">*123456&#9166;</td><td>3123456</td>
     </tr>
@@ -387,9 +406,9 @@ The flux sound can be permanently disabled, permanently enabled, or enabled for 
 - after switching on the FC (real or fake power),
 - after a BTTFN event that has impact on the FC (eg. changing speed through a rotary encoder on the TCD)
 
-The different modes are selected in the [Config Portal](#appendix-a-the-config-portal) or by typing *20 (disabled), *21 (enabled), *22 (enabled for 30 secs) or *23 (enabled for 60 secs), followed by OK.
+The different modes are selected in the [Config Portal](#appendix-a-the-config-portal) or by typing *20ok (disabled), *21ok (enabled), *22ok (enabled for 30 secs) or *23ok (enabled for 60 secs).
 
-The flux sound's volume level, relative to general volume, can be adjusted in four levels by typing *30 (lowest) to *33 (highest), followed by OK. 
+The flux sound's volume level, relative to general volume, can be adjusted in four levels by typing *30ok (lowest) to *33ok (highest). 
 
 Both settings, mode and level, are saved 10 seconds after the last change (see also [here](#powering-down-the-fc)).
 
@@ -397,7 +416,7 @@ Both settings, mode and level, are saved 10 seconds after the last change (see a
 
 The FC features connectors for box lights, ie LEDs that light up the inside of the FC during the time travel sequence. Those should be installed, they are essential part of the time travel sequence. The kit from CircuitSetup contains suitable high-power LEDs for box lighting, and all four of those must be connected to the "Box LED" connectors. Their ideal location is in each corner, as close to the front (door) as possible.
 
-In normal operation, those LEDs are off. You can, however, configure a minimum box light level to light up the box a little bit if you find it too dark. This level can be chosen out of five, by entering *400 through *404 followed by OK. This settings is saved 10 seconds after the last change (see also [here](#powering-down-the-fc)).
+In normal operation, those LEDs are off. You can, however, configure a minimum box light level to light up the box a little bit if you find it too dark. This level can be chosen out of five, by entering *400ok through *404ok. This settings is saved 10 seconds after the last change (see also [here](#powering-down-the-fc)).
 
 <details>
 <summary>More...</summary>
@@ -410,7 +429,7 @@ In normal operation, those LEDs are off. You can, however, configure a minimum b
 
 To travel through time, type "0" on the remote control. The Flux Capacitor will play its time travel sequence.
 
-You can also connect a physical button to your FC; the button must connect "TT IN" ("GPIO" on earlier versions) to "3.3V" on the "Time Travel" connector. Pressing this button briefly will trigger a time travel.
+You can also connect an external Time Travel button to your FC; the button must connect "TT IN" ("GPIO" on earlier versions) to "3.3V" on the "Time Travel" connector. Pressing this button briefly will trigger a time travel.
 
 Other ways of triggering a time travel are available if a [Time Circuits Display](#connecting-a-time-circuits-display) is connected.
 
@@ -475,9 +494,9 @@ Since manually renaming mp3 files is somewhat cumbersome, the firmware can do th
 
 To start and stop music playback, press 5 on your remote. Pressing 2 jumps to the previous song, pressing 8 to the next one.
 
-By default, the songs are played in order, starting at 000.mp3, followed by 001.mp3 and so on. By entering \*555 and pressing OK, you can switch to shuffle mode, in which the songs are played in random order. Type \*222 followed by OK to switch back to consecutive mode.
+By default, the songs are played in order, starting at 000.mp3, followed by 001.mp3 and so on. By entering \*555ok, you can switch to shuffle mode, in which the songs are played in random order. Type \*222ok to switch back to consecutive mode. Shuffle mode is saved and persistent.
 
-Entering \*888 followed by OK re-starts the player at song 000, and \*888xxx (xxx = three-digit number) jumps to song #xxx.
+Entering \*888ok re-starts the player at song 000, and \*888xxxok (xxx = three-digit number) jumps to song #xxx.
 
 See [here](#remote-control-reference) for a list of controls of the music player.
 
@@ -520,7 +539,7 @@ You can use BTTF-Network and MQTT at the [same time](#receive-commands-from-time
 
 The FC can, through its IR remote control, remote control the TCD keypad. The TCD will react to pressing a key on the IR remote as if that key was pressed on the TCD keypad.
 
-In order to start TCD keypad remote control, type *95OK on the FC's IR remote control (or issue command 3095 from the TCD or through [HA/MQTT](#control-the-fc-via-mqtt)).
+In order to start TCD keypad remote control, type *95ok on the FC's IR remote control (or issue command 3095 from the TCD or through [HA/MQTT](#control-the-fc-via-mqtt)).
 
 Keys 0-9 as well as OK (=ENTER) on your IR remote control will now be registered by the TCD as key presses.
 
@@ -658,7 +677,7 @@ The Config Portal offers an option for WiFi power saving for AP-mode (ie when th
 
 The timer can be set to 0 (which disables it; WiFi is never switched off; this is the default), or 10-99 minutes. 
 
-After WiFi has been switched off due to timer expiration, it can be re-enabled by entering *77 followed by OK, in which case the timers are restarted (ie WiFi is again switched off after timer expiration).
+After WiFi has been switched off due to timer expiration, it can be re-enabled by entering *77ok, in which case the timers are restarted (ie WiFi is again switched off after timer expiration).
 
 > This command is also used to trigger a re-connection attempt in case your configured WiFi network was not available when the FC was trying to connect, see [here](#home-setup-with-a-pre-existing-local-wifi-network).
 
@@ -736,7 +755,7 @@ By default, when your FC creates a WiFi network of its own ("AP-mode"), this net
 
 By default, and if this field is empty, the FC's own WiFi network ("FC-AP") will be unprotected. If you want to protect your FC access point, enter your password here. It needs to be 8 characters in length and only characters A-Z, a-z, 0-9 and - are allowed.
 
-If you forget this password and are thereby locked out of your FC, enter *123456 followed by OK on the IR remote control; this deletes the WiFi password. Then power-down and power-up your FC and the access point will start unprotected.
+If you forget this password and are thereby locked out of your FC, enter *123456ok on the IR remote control; this deletes the WiFi password. Then power-down and power-up your FC and the access point will start unprotected.
 
 ##### &#9193; WiFi channel
 
@@ -765,7 +784,7 @@ See [here](#wifi-power-saving-features).
 
 Selects the "flux" sound mode. "Auto: xx secs" enables the beep for xx seconds after triggering a time travel, upon power-on, and then the TCD sends a respective signal through BTTFN.
 
-Can be changed at any time by typing *00 (off), *01 (on), *02 (Auto 30secs) or *03 (Auto 60secs) followed by OK, or through the TCD's keypad. Note that a change through IR remote or TCD is saved 10 seconds after the last change (see [here](#powering-down-the-fc)).
+Can be changed at any time by typing *00ok (off), *01ok (on), *02ok (Auto 30secs) or *03ok (Auto 60secs), or through the TCD's keypad. Note that a change through IR remote or TCD is saved 10 seconds after the last change (see [here](#powering-down-the-fc)).
 
 ##### &#9193; Movie sequence for 7 lights
 
@@ -783,6 +802,18 @@ If other props are connected, they might bring their own time travel sound effec
 
 If a TCD is connected via BTTFN or MQTT, the FC visually signals when the TCD's alarm sounds. If you want the FC to play an alarm sound, check this option.
 
+##### &#9193; Show positive IR feedback
+
+If this option is checked, the FC will show a signal through the chase LEDs upon a successful command sequence. 
+
+This setting can also be toggled by *62ok. This option has no impact on the small IR feedback LED in the center of the FC.
+
+See [here](#appendix-b-led-signals) for all supported signals.
+
+##### &#9193; Show IR command entry feedback
+
+If this option is checked, the FC will, upon pressing \* on the IR remote control, show command sequence entry progress by lighting up another chase LED on each key pressed. This setting can also be toggled by *63ok.
+
 ##### &#9193; Screen saver timer
 
 Enter the number of minutes until the Screen Saver should become active when the FC is idle.
@@ -793,14 +824,6 @@ The Screen Saver, when active, stops the flux sound and disables all LEDs, until
 - on a connected TCD, a destination date is entered (only if TCD is wirelessly connected) or a time travel event is triggered (also when wired).
 
 The music player will continue to run.
-
-#### <ins>Music Player settings</ins>
-
-##### &#9193; Shuffle at startup
-
-When checked, songs are shuffled when the device is booted. When unchecked, songs will be played in order.
-
-Shuffle mode can be changed at any time through the FC's remote control (*222 / *555) or via TCD (3222/3555); however, a change through remote or TCD is not saved.
 
 #### <ins>Settings for BTTFN communication</ins>
 
@@ -899,48 +922,65 @@ The username (and optionally the password) to be used when connecting to the bro
 
 <table>
     <tr>
+     <td align="left">&#9679; &#9679; &#9675; &#9675; &#9679; &#9679;</td>
+     <td align="left">Successful input from IR (optional)</td>
+    </tr>
+    <tr>
+     <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&&#9675; &#9679; &#9679; &#9679; &#9679; &#9675;</td>
+     <td align="left">Bad/unsuccessful input from IR</td>
+    </tr>
+    <tr>
      <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#8635;</td>
      <td align="left">Please wait, busy</td>
     </tr>
- <tr>
-     <td align="left">&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
+    <tr>
+     <td align="left">&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;</td>
      <td align="left">Error: Sound pack <a href="#sound-pack-installation">not installed</a> or outdated</td>
     </tr>
-<tr>
-     <td align="left">&#9675; &#9675; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9675; &#9675;<br>&#8635;</td>
+    <tr>
+     <td align="left">&#9679; &#9679; &#9679; &#9679; &#9675; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#8635;</td>
      <td align="left">Error: Sound pack installation error</td>
     </tr>
- <tr>
-     <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
-     <td align="left">Error: Unknown/illegal input from remote control</td>
-    </tr>
- <tr>
-     <td align="left">&#9675; &#9675; &#9675; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9675; &#9675; &#9675;<br>&#8635;</td>
+    <tr>
+     <td align="left">&#9679; &#9679; &#9679; &#9675; &#9675; &#9675;<br>&#9675; &#9675; &#9675; &#9679; &#9679; &#9679;<br>&#8635;</td>
      <td align="left"><a href="#receive-commands-from-time-circuits-display">Alarm</a> (from TCD via BTTFN/MQTT)</td>
     </tr>
-<tr>
-     <td align="left">&#9675; &#9675; &#9675; &#9675; &#9675; &#9675; (1000ms)<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679; (1000ms)<br>&#9675; &#9675; &#9675; &#9675; &#9675; &#9675; (1000ms)<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679; (1000ms)</td>
+    <tr>
+     <td align="left">&#9675; &#9675; &#9675; &#9675; &#9675; &#9675; (2000ms)</td>
      <td align="left"><a href="#ir-remote-control">IR Learning</a>: Start</td>
     </tr>
-<tr>
-     <td align="left">&#9679; &#9679; &#9675; &#9675; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9675; &#9675; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
+    <tr>
+     <td align="left">&#9675; &#9675; &#9679; &#9679; &#9675; &#9675;<br></td>
      <td align="left"><a href="#ir-remote-control">IR Learning</a>: Next</td>
     </tr>
-<tr>
-     <td align="left">&#9675; &#9675; &#9675; &#9675; &#9675; &#9675; (500ms)<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679; (500ms)<br>&#9675; &#9675; &#9675; &#9675; &#9675; &#9675; (500ms)<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679; (500ms)</td>
+    <tr>
+     <td align="left">&#9679; &#9679; &#9675; &#9675; &#9679; &#9679;</td>
      <td align="left"><a href="#ir-remote-control">IR Learning</a>: Done</td>
     </tr>
-<tr>
-     <td align="left">&#9675; &#9679; &#9675; &#9679; &#9675; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9675; &#9679; &#9675; &#9679; &#9675; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
+    
+    <tr>
+     <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
      <td align="left"><a href="#remote-controlling-the-tcds-keypad">TCD remote control mode</a> started</td>
     </tr>
-<tr>
-     <td align="left">&#9679; &#9675; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br></td>
+    <tr>
+     <td align="left">&#9675; &#9675; &#9679; &#9679; &#9679; &#9679;</td>
      <td align="left"><a href="#remote-controlling-the-tcds-keypad">TCD remote control mode</a> end</td>
     </tr>
-<tr>
-     <td align="left">&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br></td>
+    <tr>
+     <td align="left">&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
      <td align="left">No music files in currently selected <a href="#the-music-player">music folder</a></td>
+    </tr>
+    <tr>
+     <td align="left">&#9675; &#9675; &#9675; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#8635; 5x</td>
+     <td align="left">User signal 1</td>
+    </tr>
+    <tr>
+     <td align="left"> &#9679; &#9679; &#9679; &#9675; &#9675; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#8635; 5x</td>
+     <td align="left">User signal 2</td>
+    </tr>
+    <tr>
+     <td align="left"> &#9679; &#9675; &#9679; &#9675; &#9679; &#9675;</td>
+     <td align="left">Firmware update available; shown briefly at power-up (optional)</td>
     </tr>
 </table>
 
