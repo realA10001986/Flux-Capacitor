@@ -926,7 +926,7 @@ The username (and optionally the password) to be used when connecting to the bro
      <td align="left">Successful input from IR (optional)</td>
     </tr>
     <tr>
-     <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&&#9675; &#9679; &#9679; &#9679; &#9679; &#9675;</td>
+     <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9675; &#9679; &#9679; &#9679; &#9679; &#9675;</td>
      <td align="left">Bad/unsuccessful input from IR</td>
     </tr>
     <tr>
@@ -957,7 +957,6 @@ The username (and optionally the password) to be used when connecting to the bro
      <td align="left">&#9679; &#9679; &#9675; &#9675; &#9679; &#9679;</td>
      <td align="left"><a href="#ir-remote-control">IR Learning</a>: Done</td>
     </tr>
-    
     <tr>
      <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
      <td align="left"><a href="#remote-controlling-the-tcds-keypad">TCD remote control mode</a> started</td>
