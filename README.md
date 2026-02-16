@@ -43,7 +43,7 @@ If you are using a fresh ESP32 board, please see [fluxcapacitor-A10001986.ino](h
 
 ### Sound-pack installation
 
-The firmware comes with a sound-pack which needs to be installed separately. The sound-pack is not updated as often as the firmware itself. If you have previously installed the latest version of the sound-pack, you normally don't have to re-install it when you update the firmware. Only if the FC puts up a respective [signal](#appendix-b-led-signals) at startup, a re-installation/update is needed.
+The firmware comes with a sound-pack which needs to be installed separately. The sound-pack is not updated as often as the firmware itself. If you have previously installed the latest version of the sound-pack, you normally don't have to re-install it when you update the firmware. There will be a message in the Config Portal and a respective [signal](#appendix-b-led-signals) at startup when a new sound-pack needs to be installed.
 
 The first step is to extract "sound-pack-fcXX.zip" (which is included in the Release package). It contains one file, named "FCA.bin".
 
@@ -185,7 +185,7 @@ Your FC kit includes an IR remote control. This remote works out-of-the-box and 
 
 Each time you press a (recognized) key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the bright center LED.
 
-Apart from the feedback LED, your FC will also show some feedback signals through the chase LEDs:
+Apart from the feedback LED, your FC will also show some feedback signals through its chase LEDs:
 - By default, when initiating a command sequence by pressing \*, the FC will start to show each key pressed afterwards by lighting up another chase LED. This kind of feedback can be disabled using command sequence *63ok or in the Config Portal;
 - By default, after executing a command, the FC will show a "success" signal. This kind of feedback can be disabled using command sequence *62ok or in the Config Portal;
 - If a command was unsuccessful or not recognized, a "bad input" signal will be shown.
@@ -200,7 +200,7 @@ IR learning can be initiated by entering *987654ok on the standard IR remote.
 
 >Alternatively, IR learning can be started by pressing and holding a connected [Time Travel](#time-travel) button for a few seconds (while the option **_TCD connected by wire_** in the Config Portal is unchecked).
 
-When IR learning is started, the chasing LEDs stop and [blink twice](#appendix-b-led-signals). Afterwards, the IR feedback LED will keep blinking - this means the FC is ready to receive a key from your IR remote. Press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then, again while the IR feedback LED is blinking, press "1", wait for the acknowledgement, and so on. Enter your keys in the following order:
+When IR learning is started, the chase LEDs stop and [light all up](#appendix-b-led-signals). Afterwards, the IR feedback LED will keep blinking - this means the FC is ready to receive a key from your IR remote. Press "0" on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then, again while the IR feedback LED is blinking, press "1", wait for the acknowledgement, and so on. Enter your keys in the following order:
 
 ```0 - 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - * - # - Arrow up - Arrow down - Arrow left - Arrow right - OK``` 
 
@@ -212,7 +212,7 @@ To make the FC forget a learned IR remote control, type *654321ok.
 
 ### Locking IR control
 
-You can have your FC ignore IR commands from any IR remote control (be it the default supplied one, be it one you had the FC learn) by entering *70ok. After this sequence, the FC will ignore all IR commands until *70ok is entered again. The purpose of this function is to enable you to use the same remote for your FC and other props (such as SID).
+You can have your FC ignore IR commands from any IR remote control (be it the default supplied one, be it one you had the FC learn) by entering *70ok. After this sequence, the FC will ignore all IR commands until *70ok is entered again. The purpose of this function is to enable you to use the same remote for your FC and other props.
 
 Note that the status of the IR lock is saved 10 seconds after its last change, and is persistent across reboots.
 
@@ -496,7 +496,7 @@ To start and stop music playback, press 5 on your remote. Pressing 2 jumps to th
 
 By default, the songs are played in order, starting at 000.mp3, followed by 001.mp3 and so on. By entering \*555ok, you can switch to shuffle mode, in which the songs are played in random order. Type \*222ok to switch back to consecutive mode. Shuffle mode is saved and persistent.
 
-Entering \*888ok re-starts the player at song 000, and \*888xxxok (xxx = three-digit number) jumps to song #xxx.
+Entering \*888ok re-starts the player at song #000, and \*888xxxok (xxx = three-digit number) jumps to song #xxx.
 
 See [here](#remote-control-reference) for a list of controls of the music player.
 
@@ -613,7 +613,7 @@ The FC can be controlled through messages sent to topic **bttf/fc/cmd**. Support
 
 #### USER1, USER2
 
-The FC features two user chase-LED-signals that can be triggered by commands USER1 and USER2. These signals can be accompanied by sound, if "user1.mp3" and/or "user2.mp3" are present on the SD card. This can be used freely, like for HA-integrated doorbells, actuators, etc. 
+The FC features two user [chase-LED-signals](#appendix-b-led-signals) that can be triggered by commands USER1 and USER2. These signals can be accompanied by sound, if "user1.mp3" and/or "user2.mp3" are present on the SD card. This can be used freely, like for HA-integrated doorbells, actuators, etc. 
 
 #### The INJECT_x command
 
@@ -966,7 +966,7 @@ The username (and optionally the password) to be used when connecting to the bro
      <td align="left"><a href="#remote-controlling-the-tcds-keypad">TCD remote control mode</a> end</td>
     </tr>
     <tr>
-     <td align="left">&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;</td>
+     <td align="left">&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9675; &#9679; &#9675;</td>
      <td align="left">No music files in currently selected <a href="#the-music-player">music folder</a></td>
     </tr>
     <tr>
