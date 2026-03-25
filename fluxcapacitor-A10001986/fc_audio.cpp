@@ -276,7 +276,7 @@ void play_file(const char *audio_file, uint32_t flags, float volumeFactor)
     buf[0] = 0;
 
     if(haveSD && ((flags & PA_ALLOWSD) || FlashROMode) && mySD0L->open(audio_file)) {
-        mySD0L->setPlayLoop((flags & PA_LOOP));
+        mySD0L->setPlayLoop(!!(flags & PA_LOOP));
         mySD0L->read((void *)buf, 10);
         curSeek = skipID3(buf);
         mySD0L->setStartPos(curSeek);
@@ -294,7 +294,7 @@ void play_file(const char *audio_file, uint32_t flags, float volumeFactor)
       else if(haveFS && myFS0L->open(audio_file))
     #endif
     {
-        myFS0L->setPlayLoop((flags & PA_LOOP));
+        myFS0L->setPlayLoop(!!(flags & PA_LOOP));
         myFS0L->read((void *)buf, 10);
         curSeek = skipID3(buf);
         myFS0L->setStartPos(curSeek);

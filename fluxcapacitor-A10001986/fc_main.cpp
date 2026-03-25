@@ -273,8 +273,8 @@ static unsigned long irFeedBackDur = IR_FEEDBACK_DUR;
 static bool          irErrFeedBack = false;
 static unsigned long irErrFeedBackNow = 0;
 static int           irErrFBState = 0;
-bool                 irShowPosFBDisplay = false;
-bool                 irShowCmdFBDisplay = false;
+bool                 irShowPosFBDisplay = true;
+bool                 irShowCmdFBDisplay = true;
 
 bool                 irLocked = false;
 static bool          noIR = false;      // for temporary disabling IR reception
@@ -2879,6 +2879,12 @@ void mydelay(unsigned long mydel, bool withIR)
     }
 }
 
+unsigned long millisNonZero()
+{
+    unsigned long now = millis();
+    if(!now) now--;
+    return now;
+}
 
 /*
  * Basic Telematics Transmission Framework (BTTFN)
@@ -3109,7 +3115,7 @@ static bool bttfn_checkmc()
 // Check for pending packet and parse it
 static void BTTFNCheckPacket()
 {
-    unsigned long mymillis = millis();
+    unsigned long mymillis = millisNonZero();
     
     int psize = fcUDP->parsePacket();
     if(!psize) {
@@ -3229,7 +3235,7 @@ static bool BTTFNSendRequest()
 {
     BTTFNPacketDue = false;
 
-    BTTFNUpdateNow = millis();
+    BTTFNUpdateNow = millisNonZero();
 
     if(WiFi.status() != WL_CONNECTED) {
         BTTFNWiFiUp = false;
@@ -3325,7 +3331,7 @@ static bool bttfn_send_command(uint8_t cmd, uint8_t p1, uint8_t p2)
     Serial.printf("Sent command %d\n", cmd);
     #endif
 
-    BTTFNLastCmdSent = millis();
+    BTTFNLastCmdSent = millisNonZero();
 
     return true;
 }
@@ -3369,7 +3375,7 @@ void bttfn_loop()
     
     while(bttfn_checkmc() && t--) {}
 
-    unsigned long now = millis();
+    unsigned long now = millisNonZero();
             
     BTTFNCheckPacket();
 

@@ -115,15 +115,31 @@
 
 /*  Changelog
  *
+ *  2026/03/25 (A10001986) [1.101]
+ *    ********************************************************************************
+ *    ** If updating from below 1.100, please install 1.100  first to have your     **
+ *    ** settings converted. If 1.100 is skipped, many of your settings (static IP, **
+ *    ** volume, chase speed, flux sound mode/level, box light level, ir lock) will ** 
+ *    ** be restored to default values. It suffices to install 1.100 and boot once; **
+ *    ** you can then immediately  update to a later version.                       **
+ *    ** https://github.com/realA10001986/Flux-Capacitor/releases/tag/V1.100        **
+ *    ********************************************************************************
+ *    - MQTT: Disable if server can't be resolved
+ *    - WiFi: Allow defining a BSSID (AP MAC address) to connect to a specific AP
+ *      if multiple APs with identical SSID are available.
+ *    - WiFi: Do not power down AP long as a client is connected
+ *    - Brush up Config Portal a bit
+ *    - Code optimizations and fixes.
  *  2026/02/15 (A10001986) [1.100]
- *    - New file format settings. This version of the firmware converts old to new.
+ *    - New file format for secondary and IP settings. This version of the firmware
+ *      converts old to new.
  *    - "Shuffle" setting changes through *222/*555 are saved (SD required).
  *      (Shuffle option removed from CP)
  *    - Add option to show positive IR feedback (=successful commands) on display.
  *      Can be changed through Config Portal or *62 (every change is saved).
  *    - Add option to show command entry IR feedback on display. Can be changed 
  *      through Config Portal or *63 (every change is saved).
- *    - Most of event signal changed to make them consistent with SID, and more
+ *    - Most of event signals changed to make them consistent with SID, and more
  *      intuitive. Errors generally blink, (positive) confirmations are steady.
  *    - Display MAC address (STA) on WiFi Configuration Page
  *    - BTTFN: Avoid falling back to stand-alone mode too early when TCD stops

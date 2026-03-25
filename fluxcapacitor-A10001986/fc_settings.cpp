@@ -128,6 +128,8 @@ static struct [[gnu::packed]] {
     uint8_t  irShowPosFBDisplay = DEF_IRFB;
     uint8_t  irShowCmdFBDisplay = DEF_IRCFB;
     uint8_t  showUpdAvail       = 1;
+    uint8_t  updateV            = 0;
+    uint8_t  updateR            = 0;
 } secSettings;
 
 // Tertiary settings (SD only)
@@ -218,8 +220,8 @@ static uint8_t*  (*r)(uint8_t *, uint32_t, int);
 static bool read_settings(File configFile, int cfgReadCount);
 
 static bool CopyTextParm(const char *json, char *setting, int setSize);
-static bool CopyCheckValidNumParm(const char *json, char *text, uint8_t psize, int lowerLim, int upperLim, int setDefault);
-static bool CopyCheckValidNumParmF(const char *json, char *text, uint8_t psize, float lowerLim, float upperLim, float setDefault);
+static bool CopyCheckValidNumParm(const char *json, char *text, int psize, int lowerLim, int upperLim, int setDefault);
+static bool CopyCheckValidNumParmF(const char *json, char *text, int psize, float lowerLim, float upperLim, float setDefault);
 static bool checkValidNumParm(char *text, int lowerLim, int upperLim, int setDefault);
 static bool checkValidNumParmF(char *text, float lowerLim, float upperLim, float setDefault);
 
@@ -297,7 +299,7 @@ void settings_setup()
     if(haveFS) {
       
         #ifdef FC_DBG
-        Serial.printf("ok.\nFlashFS: %d total, %d used\n", MYNVS.totalBytes(), MYNVS.usedBytes());
+        Serial.printf("ok.\nFlashFS: %d total, %d used, %d free\n", MYNVS.totalBytes(), MYNVS.usedBytes(), MYNVS.totalBytes() - MYNVS.usedBytes());
         #endif
 
         #ifdef SETTINGS_TRANSITION_2
@@ -519,14 +521,19 @@ static bool read_settings(File configFile, int cfgReadCount)
         if(!cfgReadCount) {
             memset(settings.ssid, 0, sizeof(settings.ssid));
             memset(settings.pass, 0, sizeof(settings.pass));
+            memset(settings.bssid, 0, sizeof(settings.bssid));
         }
 
         if(json["ssid"]) {
             memset(settings.ssid, 0, sizeof(settings.ssid));
             memset(settings.pass, 0, sizeof(settings.pass));
+            memset(settings.bssid, 0, sizeof(settings.bssid));
             strncpy(settings.ssid, json["ssid"], sizeof(settings.ssid) - 1);
             if(json["pass"]) {
                 strncpy(settings.pass, json["pass"], sizeof(settings.pass) - 1);
+            }
+            if(json["bssid"]) {
+                strncpy(settings.bssid, json["bssid"], sizeof(settings.bssid) - 1);
             }
         } else {
             if(!cfgReadCount) {
@@ -541,7 +548,6 @@ static bool read_settings(File configFile, int cfgReadCount)
 
         wd |= CopyTextParm(json["hostName"], settings.hostName, sizeof(settings.hostName));
         wd |= CopyCheckValidNumParm(json["wifiConRetries"], settings.wifiConRetries, sizeof(settings.wifiConRetries), 1, 10, DEF_WIFI_RETRY);
-        wd |= CopyCheckValidNumParm(json["wifiConTimeout"], settings.wifiConTimeout, sizeof(settings.wifiConTimeout), 7, 25, DEF_WIFI_TIMEOUT);
 
         wd |= CopyTextParm(json["systemID"], settings.systemID, sizeof(settings.systemID));
         wd |= CopyTextParm(json["appw"], settings.appw, sizeof(settings.appw));
@@ -607,11 +613,11 @@ void write_settings()
     if(settings.ssid[0] || settings.ssid[1] != 'X') {
         json["ssid"] = (const char *)settings.ssid;
         json["pass"] = (const char *)settings.pass;
+        json["bssid"] = (const char *)settings.bssid;
     }
 
     json["hostName"] = (const char *)settings.hostName;
     json["wifiConRetries"] = (const char *)settings.wifiConRetries;
-    json["wifiConTimeout"] = (const char *)settings.wifiConTimeout;
     
     json["systemID"] = (const char *)settings.systemID;
     json["appw"] = (const char *)settings.appw;
@@ -668,7 +674,7 @@ static bool CopyTextParm(const char *json, char *setting, int setSize)
     return false;
 }
 
-static bool CopyCheckValidNumParm(const char *json, char *text, uint8_t psize, int lowerLim, int upperLim, int setDefault)
+static bool CopyCheckValidNumParm(const char *json, char *text, int psize, int lowerLim, int upperLim, int setDefault)
 {
     if(!json) return true;
 
@@ -677,7 +683,7 @@ static bool CopyCheckValidNumParm(const char *json, char *text, uint8_t psize, i
     return checkValidNumParm(text, lowerLim, upperLim, setDefault);
 }
 
-static bool CopyCheckValidNumParmF(const char *json, char *text, uint8_t psize, float lowerLim, float upperLim, float setDefault)
+static bool CopyCheckValidNumParmF(const char *json, char *text, int psize, float lowerLim, float upperLim, float setDefault)
 {
     if(!json) return true;
 
@@ -1135,6 +1141,27 @@ void saveUpdAvail()
     saveSecSettings(true);
 }
 
+/*
+ *  Load/save curr version
+ */
+
+void loadUpdVers(int &v, int& r)
+{
+    if(haveSecSettings) {
+        v = secSettings.updateV;
+        r = secSettings.updateR;
+    } else {
+        v = r = 0;
+    }
+}
+
+void saveUpdVers(int v, int r)
+{
+    secSettings.updateV = v;
+    secSettings.updateR = r;
+    saveSecSettings(true);
+}
+
 // Special for CP where several settings are possibly
 // changed at the same time. We don't want to write the
 // file more than once.
@@ -1283,7 +1310,7 @@ bool loadIpSettings()
         #ifdef FC_DBG
         Serial.println("loadIpSettings: Loaded bin settings");
         #endif
-        if(strlen(ipsettings.ip)) {
+        if(*ipsettings.ip) {
             if(checkIPConfig()) {
                 ipHash = calcHash((uint8_t *)&ipsettings, sizeof(ipsettings));
                 return true;
@@ -1336,7 +1363,7 @@ void writeIpSettings()
     if(!haveFS && !FlashROMode)
         return;
 
-    if(!strlen(ipsettings.ip))
+    if(!*ipsettings.ip)
         return;
 
     uint32_t nh = calcHash((uint8_t *)&ipsettings, sizeof(ipsettings));

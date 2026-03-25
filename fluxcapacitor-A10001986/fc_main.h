@@ -132,6 +132,7 @@ bool switchMusicFolder(uint8_t nmf, bool isSetup = false);
 void showMPRProgress(int perc);
 
 void mydelay(unsigned long mydel, bool withIR);
+unsigned long millisNonZero();
 
 void prepareTT();
 void wakeup();
