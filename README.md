@@ -13,7 +13,7 @@ Here is my FC, built around the [Control Board](https://circuitsetup.us/product/
 |:--:|
 | Click to watch the video |
 
-The Flux Capacitor can be used stand-alone, or in connection with CircuitSetup's [Time Circuits Display](https://tcd.out-a-ti.me). If [built properly](Hardware.md), the Flux Capacitor is perfectly fit for mounting in your Delorean.
+The Flux Capacitor can be used stand-alone, or in connection with CircuitSetup's [Time Circuits Display](https://circuitsetup.us/product/complete-time-circuits-display-kit/). If [built properly](Hardware.md), the Flux Capacitor is perfectly fit for mounting in your Delorean.
 
 Features include
 - movie-accurate default flux sequence, plus 9 alternative flux sequences
@@ -87,7 +87,7 @@ If the FC fails to connect, it falls back to AP-mode. You can trigger another co
 
 #### Places without a WiFi network
 
-In this case and with no [Time Circuits Display](https://tcd.out-a-ti.me) at hand, keep your FC operating in AP-mode.
+In this case and with no [Time Circuits Display](https://circuitsetup.us/product/complete-time-circuits-display-kit/) at hand, keep your FC operating in AP-mode.
 
 If you have a TCD, you can connect your FC to the TCD's own WiFi network: 
 
