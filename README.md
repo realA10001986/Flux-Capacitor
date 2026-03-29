@@ -399,7 +399,7 @@ In normal operation, those LEDs are off. You can, however, configure a minimum b
 <details>
 <summary>More...</summary>
   
-> As an alternative to the included LEDs, one could use four pieces of 3W High-Power KEYES LED modules and drive them via the GPIO14 connector. Since those draw quite much power, their power pins should be connected directly to the power supply (provided you drive your FC at 5V; otherwise you need to grab the power from the control board), and only the "PWD" input should be wired to the "IO14" pin of the "GPIO14" connector. If you use the GPIO14 connector for your box LEDs, check the [Use GPIO14 for Box Lights](#-use-gpio14-for-box-lights) option in the Config Portal.
+> As an alternative to the included LEDs one could use four pieces of 3W High-Power KEYES LED modules and drive them via the GPIO14 connector. Since those draw quite much power, their power pins must be connected directly to the power supply (provided you drive your FC at 5V; otherwise you need to install a separate voltage converter from 12V to 5V; _do not grab the 5V from the Control Board, those LEDs draw too much power for the Control Board's power converter to handle._), and only the "PWD" input should be wired to the "IO14" pin of the "GPIO14" connector. If you use the GPIO14 connector for your box LEDs, check the [Use GPIO14 for Box Lights](#-use-gpio14-for-box-lights) option in the Config Portal.
 
 </details>
 
