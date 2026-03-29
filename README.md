@@ -996,5 +996,5 @@ The username (and optionally the password) to be used when connecting to the bro
 </table>
 
 ---
-_Text & images: (C) Thomas Winischhofer ("A10001986"). See LICENSE._ Source: https://fc.out-a-ti.me  
-_Other props: [Time Circuits Display](https://tcd.out-a-ti.me) ... [SID](https://sid.out-a-ti.me) ... [Dash Gauges](https://dg.out-a-ti.me) ... [VSR](https://vsr.out-a-ti.me) ... [Remote Control](https://remote.out-a-ti.me) ... [TFC](https://tfc.out-a-ti.me)_
+_Text & images: (C) Thomas Winischhofer ("A10001986"). See LICENSE._ [Source](https://fc.out-a%2dti.me)  
+_Other props: [Time Circuits Display](https://tcd.out-a%2dti.me) ... [SID](https://sid.out-a%2dti.me) ... [Dash Gauges](https://dg.out-a%2dti.me) ... [VSR](https://vsr.out-a%2dti.me) ... [Remote Control](https://remote.out-a%2dti.me) ... [TFC](https://tfc.out-a%2dti.me)_
