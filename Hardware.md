@@ -40,7 +40,7 @@ The power connector is an adapter like this, which fits nicely into the bracket:
 
 <img width="300" alt="Power connector" src="Hardware/img/dcadapters.png">
 
-Since the bright LEDs draw considerable power, it is recommended to drive the FC at 12V-20V (as opposed to 5V).
+Since the bright LEDs draw considerable power, it is recommended to use a 4A power supply with a short cable.
 
 ## Torr relays & co
 
