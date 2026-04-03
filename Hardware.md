@@ -28,7 +28,7 @@ From left to right:
 - Speaker (using Radbench's speaker grill "Speaker_Grill_RBv1")
 - USB and power (using Radbench's bracket "PowerUsbMount")
 
-As a speaker, I used [this](https://www.amazon.com/ACEIRMC-Loundspeaker-JST-PH2-0-Interface-Electronic/dp/B0BTM1VCBM/ref=sr_1_8) one; I cut off the latches and glued it onto the back side of the [back board](https://circuitsetup.us/product/flux-capacitor-backing-board).
+As a speaker, I used [this](https://www.amazon.com/ACEIRMC-Loundspeaker-JST-PH2-0-Interface-Electronic/dp/B0BTM1VCBM/ref=sr_1_8) one; I cut off the protruding screw mounts and glued it onto the back side of the [back board](https://circuitsetup.us/product/flux-capacitor-backing-board).
 
 <img width="300" alt="Speaker" src="Hardware/img/speaker.png">
 
