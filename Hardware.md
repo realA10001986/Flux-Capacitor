@@ -17,7 +17,7 @@ The Original FC's box, as used in the movies, has six large holes at the bottom.
 
 Instead, I used the buttom for the controls and connectors.
 
-Since the SD card on the control board is inaccessible after assembling the FC (but required to install the audio files, and possibly used for music files), I used a microSD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B09MS85FQ3/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time.
+Since the SD card on the control board is inaccessible after assembling the FC (but required to install/update the sound-pack), I used a microSD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B09MS85FQ3/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time.
 
 ![bottom](Hardware/img/bottom.jpg)
 
@@ -44,11 +44,11 @@ Since the bright LEDs draw considerable power, it is recommended to drive the FC
 
 ## Torr relays & co
 
-The CircuitSetup back board is made to fit the Torr relay replicas and accessories from [Radbench](https://www.thingiverse.com/thing:5164173)'s collection, such as cable boots, L-brackets and acrylic "light-bars".
+The CircuitSetup back board is basically suitable to fit the Torr relay replicas and accessories from [Radbench](https://www.thingiverse.com/thing:5164173)'s collection, such as L-brackets and acrylic "light-bars".
 
-Since I try to avoid 3D-printed parts as much as possible, I went for replicas made from brass by user [stuff565](https://www.ebay.co.uk/usr/stuff565) on ebay (he is a well known member of the Delorean Time Machine Builders scene). Suitable boots for the ignition cables are available [here](https://movieprops.blog/shop/) or (sometimes) from [maxthemad](https://www.ebay.co.uk/usr/maxthemad).
+Since I try to avoid 3D-printed parts as much as possible, I went for replicas made from brass by user [stuff565](https://www.ebay.co.uk/usr/stuff565) on ebay (he is a well known member of the Delorean Time Machine Builders scene, and active in the [Flux Capacitor Prop Building](https://www.facebook.com/groups/180140257458567/) group on Facebook). Suitable boots for the ignition cables are available [here](https://movieprops.blog/shop/).
 
-If you go this route, you need to enlarge the holes in CircuitSetup's back board to fit the tubes, and due to their weight, the "relays" need to be screwed onto the back board. The resin inside the relay replicas is fine for screws, a bit of pre-drilling is recommended. I used three screws per "relay".
+If you go this route, you need to drill new or enlarge preexisting holes in CircuitSetup's back board to fit the tubes, and due to their weight, the "relays" need to be screwed onto the back board. The resin inside the relay replicas is fine for screws, a bit of pre-drilling is recommended. I used three screws per "relay".
 
 Also, for the brass relay replicas, 
 - the L-bracket and the cable boots needs to be larger, and
