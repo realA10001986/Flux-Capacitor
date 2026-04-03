@@ -74,7 +74,7 @@ Big pipe on top: On the Original, allegedly Lasco 2"; I used a Genova 30720 (2")
 
 The black pipe on the left and the hose on the right are fully custom made; the hose is enclosed in parts used in compressed air equipment. Both are attached using screws.
 
-If you avoid 3D-printed parts in general (or use a UV- and heat-resistant resin) and attach parts properly, the FC is perfectly fine to be mounted in an actual Delorean.
+If you avoid 3D-printed parts in general (or use a UV- and heat-resistant filament/resin) and attach parts properly, the FC is perfectly fine to be mounted in an actual Delorean.
 
 
 _Text & images: (C) Thomas Winischhofer ("A10001986"). See LICENSE._ Source: https://fc.out-a-ti.me
