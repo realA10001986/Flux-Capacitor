@@ -2,9 +2,9 @@
 
 This [repository](https://fc.out-a-ti.me) holds the most current firmware for CircuitSetup's excellent [Flux Capacitor](https://circuitsetup.us/product/delorean-time-machine-flux-capacitor-fully-assembled/). The Flux Capacitor is a key component of the Delorean Time Machine.
 
-You can buy a complete one or kit parts [here](https://circuitsetup.us/product-category/movie-props/).
+You can buy a complete one or kits [here](https://circuitsetup.us/product-category/movie-props/).
 
-Here is my FC, built around the [Control Board](https://circuitsetup.us/product/flux-capacitor-light-sound-kit/) and the other parts of the kit ([backing board](https://circuitsetup.us/product/flux-capacitor-backing-board/), [window kit](https://circuitsetup.us/product/flux-capacitor-window-kit/); see [here](Hardware.md) for more information on the other parts used):
+Below depicted FC was built using CircuitSetup's [Control Board](https://circuitsetup.us/product/flux-capacitor-light-sound-kit/), [backing board](https://circuitsetup.us/product/flux-capacitor-backing-board/) and [window kit](https://circuitsetup.us/product/flux-capacitor-window-kit/). See [here](Hardware.md) for more information on the other parts used.
 
 ![My Flux Capacitor](img/myfc.jpg)
 ![My Flux Capacitor](img/myfc2.jpg)
