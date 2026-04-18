@@ -8,7 +8,7 @@
  * WiFi and Config Portal handling
  *
  * -------------------------------------------------------------------
- * License: MIT NON-AI
+ * License: Modified MIT NON-AI
  * 
  * Permission is hereby granted, free of charge, to any person 
  * obtaining a copy of this software and associated documentation 
@@ -20,6 +20,9 @@
  *
  * The above copyright notice and this permission notice shall be 
  * included in all copies or substantial portions of the Software.
+ * 
+ * Links inside the Software pointing to the original source must not 
+ * be changed or removed.
  *
  * In addition, the following restrictions apply:
  * 
@@ -260,15 +263,13 @@ static const int8_t wifiMenu[] = {
 #define UNI_VERSION FC_VERSION 
 #define UNI_VERSION_EXTRA FC_VERSION_EXTRA
 #define WEBHOME "fc"
-#define PARM2TITLE WM_PARAM2_TITLE
-#define PARM3TITLE ""
 #define CURRVERSION FC_VERSION
-static const char r_link[] = "fcr.out-a-ti.me";
-static const char apName[]  = "FC-AP";
+static const char apName[] = "FC-AP";
 
 static const char myTitle[] = AA_TITLE;
 static const char myHead[]  = "<link rel='icon' type='image/png' href='data:image/png;base64," AA_ICON "'><script>window.onload=function(){xxx='" AA_TITLE "';yyy='?';wr=ge('wrap');if(wr){aa=ge('h3');if(aa){yyy=aa.innerHTML;aa.remove();dlel('h1')}zz=(Math.random()>0.8);dd=document.createElement('div');dd.classList.add('tpm0');dd.innerHTML='<div class=\"tpm\" onClick=\"shsp(1);window.location=\\'/\\'\"><div class=\"tpm2\"><img id=\"spi\" src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABAAQMAAACQp+OdAAAABlBMVEUAAABKnW0vhlhrAAAAAXRSTlMAQObYZgAAA'+(zz?'GBJREFUKM990aEVgCAABmF9BiIjsIIbsJYNRmMURiASePwSDPD0vPT12347GRejIfaOOIQwigSrRHDKBK9CCKoEqQF2qQMOSQAzEL9hB9ICNyMv8DPKgjCjLtAD+AV4dQM7O4VX9m1RYAAAAABJRU5ErkJggg==':'HtJREFUKM990bENwyAUBuFnuXDpNh0rZIBIrJUqMBqjMAIlBeIihQIF/fZVX39229PscYG32esCzeyjsXUzNHZsI0ocxJ0kcZIOsoQjnxQJT3FUiUD1NAloga6wQQd+4B/7QBQ4BpLAOZAn3IIy4RfUibCgTTDq+peG6AvsL/jPTu1L9wAAAABJRU5ErkJggg==')+'\" class=\"tpm3\"></div><H1 class=\"tpmh1\"'+(zz?' style=\"margin-left:1.4em\"':'')+'>'+xxx+'</H1>'+'<H3 class=\"tpmh3\"'+(zz?' style=\"padding-left:5em\"':'')+'>'+yyy+'</div></div>';wr.insertBefore(dd,wr.firstChild);wr.style.position='relative'}var lc=ge('lc');if(lc){lc.style.transform='rotate('+(358+[0,1,3,4,5][Math.floor(Math.random()*4)])+'deg)'}}</script><style>H1{font-family:Bahnschrift,-apple-system,'Segoe UI Semibold',Roboto,'Helvetica Neue',Arial,Verdana,sans-serif;margin:0;text-align:center;}H3{margin:0 0 5px 0;text-align:center;}input{border:thin inset}em > small{display:inline}form{margin-block-end:0;}.tpm{background-color:#fff;cursor:pointer;border:1px solid black;border-radius:5px;padding:0 0 0 0px;min-width:18em;}.tpm2{position:absolute;top:-0.7em;z-index:130;left:0.7em;}.tpm3{width:4em;height:4em;}.tpmh1{font-variant-caps:all-small-caps;font-weight:normal;margin-left:2.2em;overflow:clip;}.tpmh3{background:#000;font-size:0.6em;color:#ffa;padding-left:7.2em;margin-left:0.5em;margin-right:0.5em;border-radius:5px;overflow:hidden;white-space:nowrap}.tpm0{position:relative;width:20em;padding:5px 0px 5px 0px;margin:0 auto 0 auto;}.cmp0{margin:0;padding:0;}.sel0{font-size:90%;width:auto;margin-left:10px;vertical-align:baseline;}.mt5{margin-top:5px!important}.mb10{margin-bottom:10px!important}.mb0{margin-bottom:0px!important}.mb15{margin-bottom:15px!important}.ml20{margin-left:20px}.ss>label span{font-size:80%}</style>";
-static const char* myCustMenu = "<img style='display:block;margin:10px auto 5px auto;' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQsAAAAsCAMAAABFVW1aAAAAQlBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACO4fbyAAAAFXRSTlMAgMBAd0Twu98QIDGuY1KekNBwiMxE8vI7AAAG9klEQVRo3uSY3Y7cIAyFA5EQkP9IvP+r1sZn7CFMdrLtZa1qMxBjH744QDq0lke2abjaNMLycGdJHAaz8VwnvZX0MtRLhm+2mOPLkrpmFsMNWG6UvLw7g1c2ZcjgToSFTRDqRFipFlztdUVsuyTwBea0y7zDJoHEPEiuobZqavoxiseCVh27cgyLWV42VtdT7npuWHpTogPi+iYmLtCLWUGZKSpbZl+IZW4Rui3RJgFhR3rKAt4WKEw18XsggXDyeHFMdez2I4vjIQvFBlve9W7GYtTwDYscNAg8EMNZ1scsIAaBAHuIBbZLgwZi+gtdpBF+ZFHyYxZwtYa3WMriKLChYbEVmNSF9+wXRVl0Dq2WRXRsth403l4yOuchZuHrtvOEEw9nJLM4OvwlW68sNseWZfonfDN1QcDYKOF4bg/qGt2Ocb7eidSYXyxyVUSBkNyx0fMP7OTmEuAoOifkFlapYSH9rcGbgUcNtMgUZ4FwSmuvjl4QU2MGi+3KAqiFxSEZNFWnRKojBQRExSOVa5XpErQuknyACa9hcjqFbM8BL/v4lAUiI1ASgSRpQ6a9ehzcRyY6wSLcs2DLj1igCx4zTR85WmWjhu9YnJaVuyEeAcdfsdiKFRgEJsmAgbiH+fkXdUq5/sji/C0LTPOWxfmZxdyw0IBWF9NjFpGiNXWxGMy5VsRETf7juZdvSakQ/nsWPpT5X1ns+pREQ1g/sWDfexYzx7iwCJ5subKIsnatGuhkjGBhWblJfY49bYc4SrywODjJVINFEpE6FqZEWWS8h/07kqJVJXY2n1+qOMguAyjv+JFFlPV3+7inuisLdCOQbkFXFpGaRIlxICFLd4St21PtWEb/ehamBPvIVt6X/YS1s94JHOVyvgh2dGBPPV/sysJ2OlhIv2ARJwTCXHoWnjnRL8o52ilqouY9i1TK/JWFnWHsMZ7qxalsiqeGNxZ2HD37ukCIPDxjEbwvoG/Hzp7FRkPnEqk+/KnvtadmvGfB1fudBX43j9G85qQsyKaj3r+wGPJcG7lnEXyUeE/Xzux1hfKcrGMhl9mTsy9HnTzG7tR9u4/wUWX7tnZGj927O4NHH+GqLFAaI1SZjXJe+7B2Tgj4iAVyTQgUpGBtH9GNiUTvPPmNs75lumeRiPHXfQQ7urKYR3g5ZlmysjAYZ8eiCnHqGHQxxib5OxajBFJlryl6dTm4x2FftUz3LCrI7yxW++D1ptcOOS0L7nM9Cxbi4YhaQMCdGumvWEAZcCK1rgUrO0UuIs30I4vlOws74vYshqNdO9nWri4MERzTYbs+wGCOHQvrhXfajIUq28RrBxrq5g68FDZ2+pFFesICpdizkBciKwtPQtLcrRc7DmVg4T2S9idJYxE82269to/YSVeVrdx5MIFgy3+S+ojNmbU/a/lJvxh7FqYELFCKn1hkcQBYWWj1P098NVbAuwWWPJi9xXhJWhYwf2EBm6/fqcPRbHiMCGUDyZqp31OtyM6ehSkBi+ZTCtZ/pzIy2P4ufMgWz1iclxVg+QWLYJWYcGadAgaYq0eg/ZLpnkV+wAJfDD2L5oOAqYsdqWGx2LEILOI8NikDXR+z8LueaKBMTzAB86wpPerDXTLdsxiOrywQe/nIIr8vie5gQVWrsaDRtYLnPPxn9ocdOxYAAABAANafv28EGWwYO43fBgAAWDNWszMpCATr0E0Dih6g3v9VV76eBXWdwx5MvjqMTVI/Y2WAZH49crVd0SECh0oGsugxHChntq62F1etx1PKwXOSytI91Neirh8jUFar+eY01f5I8mN+kQwOillVvIjIA9n/q4FDqIBSjqGjTvLGjgUaeEBAg7LDIIwHgeJriuvHiLWP4e401Z7U+JO/nSQjofryRZQN0oNTsIcuFFvgJBsXLNILlKxr9i7kI+oDJak2qua/erhVYdtyqXenqfak2hXGs2RwGBO2glfhYbvJYxewcxf+cgtXX1+6sJDQF664dbFywcBwmurRQQW4XiSzi4zXIdygzKcumln7vEuO4cxkrMm/3egimhk6l/XahRt5XaPRm5OrZ1Jo2ChnyeCsZBO8iyUYEAWnLn4gPsQNE6WR7dZFRxfpznzvouOhi+nkjJm0MlXms2RwkkSy4k0soSVIUN25/LNH9v2eno2qrA97RFNYv+4RYwIenFw9kwpLi1eJc3yMxHvwKiDssIfzIjIja/6QD2rtLx0WoNy7gPC5C68VSBscw2mqPQmZK+tFMhK6V3u1C2Mzq32S53uEu180HS3YGkKCMFhjmedFdVH82kUKbBYiHMNpqj2pW3C7Sj6cxLgaDS/Cxg/i6z2iowuJn/NDAmnLPC/MudvXLrAYGdxmOl3V1j8qeZN8OGn3zP/BH6Wx/qV3/+q3AAAAAElFTkSuQmCC'><div style='font-size:0.75em;line-height:1.2em;font-weight:bold;text-align:center;text-transform:uppercase'>" UNI_VERSION " (" UNI_VERSION_EXTRA ")<br>Powered by A10001986 <a href='https://" WEBHOME ".out-a-ti.me' target=_blank>[Home/Updates]</a></div>";
+static const char* myCustMenu = "<a href='https://circuitsetup.us' target=_blank><img style='display:block;margin:10px auto 5px auto;' src='data:image/png;base64,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'></a><div style='font-size:0.75em;line-height:1.2em;font-weight:bold;text-align:center;text-transform:uppercase'>" UNI_VERSION " (" UNI_VERSION_EXTRA ")<br>Powered by <a href='https://out-a-ti.me' target=_blank>A10001986</a> <a href='https://" WEBHOME ".out-a-ti.me' target=_blank>[Home/Updates]</a></div>";
+static const char r_link[]  = WEBHOME "r.out-a-ti.me";
 
 static char newversion[8];
 static unsigned long lastUpdateCheck = 0;
@@ -349,7 +350,7 @@ static void updateConfigPortalValues();
 
 static IPAddress stringToIp(char *str);
 
-static void getServerParam(String name, char *destBuf, size_t length, int defaultVal);
+static void getServerParam(const char *name, char *destBuf, size_t length, int minval, int maxval, int defaultVal);
 static bool myisspace(char mychar);
 static char* strcpytrim(char* destination, const char* source, bool doFilter = false);
 static void mystrcpy(char *sv, WiFiManagerParameter *el);
@@ -1280,7 +1281,7 @@ static void saveWiFiCallback(const char *ssid, const char *pass, const char *bss
     // Other parameters on WiFi Config page that
     // need grabbing directly from the server
 
-    getServerParam("apchnl", settings.apChnl, 2, DEF_AP_CHANNEL);
+    getServerParam("apchnl", settings.apChnl, 2, 0, 11, DEF_AP_CHANNEL);
     
     wifiLoopSaveAction |= WLA_WIFI;
 }
@@ -1294,12 +1295,12 @@ static void saveParamsCallback(int paramspage)
 
     switch(paramspage) {
     case 1:
-        getServerParam("fluxmode", settings.playFLUXsnd, 1, DEF_PLAY_FLUX_SND);
+        getServerParam("fluxmode", settings.playFLUXsnd, 1, 0, 3, DEF_PLAY_FLUX_SND);
         playFLUX = atoi(settings.playFLUXsnd);
         break;
     case 2:
         #ifdef FC_HAVEMQTT
-        getServerParam("mprot", settings.mqttVers, 1, 0);
+        getServerParam("mprot", settings.mqttVers, 1, 0, 1, 0);
         #endif
         break;
     }
@@ -1519,51 +1520,11 @@ static const char *wmBuildSelect(const char *dest, int op, const char **src, int
 static const char *wmBuildFluxMode(const char *dest, int op)
 {
     return wmBuildSelect(dest, op, fluxCustHTMLSrc, 6, settings.playFLUXsnd, false);
-
-    /*
-    if(op == WM_CP_DESTROY) {
-        if(dest) free((void *)dest);
-        return NULL;
-    }
-
-    unsigned int l = calcSelectMenu(fluxCustHTMLSrc, 6, settings.playFLUXsnd);
-
-    if(op == WM_CP_LEN) {
-        wmLenBuf = l;
-        return (const char *)&wmLenBuf;
-    }
-    
-    char *str = (char *)malloc(l);
-
-    buildSelectMenu(str, fluxCustHTMLSrc, 6, settings.playFLUXsnd);
-
-    return str;
-    */
 }
 
 static const char *wmBuildApChnl(const char *dest, int op)
 {
     return wmBuildSelect(dest, op, apChannelCustHTMLSrc, 14, settings.apChnl, false);
-
-    /*
-    if(op == WM_CP_DESTROY) {
-        if(dest) free((void *)dest);
-        return NULL;
-    }
-
-    unsigned int l = calcSelectMenu(apChannelCustHTMLSrc, 14, settings.apChnl);
-    
-    if(op == WM_CP_LEN) {
-        wmLenBuf = l;
-        return (const char *)&wmLenBuf;
-    }
-    
-    char *str = (char *)malloc(l);
-
-    buildSelectMenu(str, apChannelCustHTMLSrc, 14, settings.apChnl);
-    
-    return str;
-    */
 }
 
 static const char *wmBuildBestApChnl(const char *dest, int op)
@@ -1607,26 +1568,6 @@ static const char *wmBuildHaveSD(const char *dest, int op)
 static const char *wmBuildMQTTprot(const char *dest, int op)
 {
     return wmBuildSelect(dest, op, mqttpCustHTMLSrc, 4, settings.mqttVers, false);
-
-    /*
-    if(op == WM_CP_DESTROY) {
-        if(dest) free((void *)dest);
-        return NULL;
-    }
-
-    unsigned int l = calcSelectMenu(mqttpCustHTMLSrc, 4, settings.mqttVers);
-
-    if(op == WM_CP_LEN) {
-        wmLenBuf = l;
-        return (const char *)&wmLenBuf;
-    }
-    
-    char *str = (char *)malloc(l);
-
-    buildSelectMenu(str, mqttpCustHTMLSrc, 4, settings.mqttVers);
-    
-    return str;
-    */
 }
 
 static const char *wmBuildMQTTstate(const char *dest, int op)
@@ -2044,13 +1985,25 @@ static IPAddress stringToIp(char *str)
  * Read parameter from server, for customhmtl input
  * length = text length, without 0-term
  */
-static void getServerParam(String name, char *destBuf, size_t length, int defaultVal)
+
+static bool isNumString(char *s)
 {
-    memset(destBuf, 0, length+1);
-    if(wm.server->hasArg(name)) {
-        strncpy(destBuf, wm.server->arg(name).c_str(), length);
+    for( ; *s; ++s) {
+        if(*s < '0' || *s > '9') return false;
     }
-    if(!*destBuf) {
+    return true;
+}
+
+static void getServerParam(const char *name, char *destBuf, size_t length, int minval, int maxval, int defaultVal)
+{
+    int i;
+    memset(destBuf, 0, length + 1);
+    strncpy(destBuf, wm.server->arg(name).c_str(), length);
+    if(*destBuf) {
+        if(isNumString(destBuf)) i = atoi(destBuf);
+        else *destBuf = 0;
+    }
+    if(!*destBuf || i < minval || i > maxval) {
         sprintf(destBuf, "%d", defaultVal);
     }
 }

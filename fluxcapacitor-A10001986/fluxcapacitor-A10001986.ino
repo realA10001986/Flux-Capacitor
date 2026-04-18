@@ -5,7 +5,7 @@
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
  *
- * License: MIT NON-AI
+ * License: Modified MIT NON-AI
  * 
  * Permission is hereby granted, free of charge, to any person 
  * obtaining a copy of this software and associated documentation 
@@ -17,6 +17,9 @@
  *
  * The above copyright notice and this permission notice shall be 
  * included in all copies or substantial portions of the Software.
+ * 
+ * Links inside the Software pointing to the original source must not 
+ * be changed or removed.
  *
  * In addition, the following restrictions apply:
  * 
@@ -103,8 +106,8 @@
  *
  * - Install the sound-pack: 
  *   Method 1:
- *   - Go to Config Portal, click "Update" and upload the sound-pack (FCA.bin, extracted
- *     from install/sound-pack-xxxxxxxx.zip) through the bottom file selector.
+ *   - Go to Config Portal, click "Update & Upload" and upload the sound-pack (FCA.bin,
+ *     extracted from install/sound-pack-fcXX.zip) through the bottom file selector.
  *     An SD card must be present in the slot during this operation.
  *   Method 2:
  *   - Copy FCA.bin to the top folder of a FAT32 (not ExFAT!) formatted SD card (max 
@@ -115,11 +118,22 @@
 
 /*  Changelog
  *
+ *  2026/04/18 (A10001986) [1.102]
+ *    ********************************************************************************
+ *    ** If updating from below 1.100, please install 1.100  first to have your     **
+ *    ** settings converted. If 1.100 is skipped, many of your settings (static IP, **
+ *    ** volume, chase speed, flux sound mode/level, box light level, ir lock) will **
+ *    ** be restored to default values. It suffices to install 1.100 and boot once; **
+ *    ** you can then immediately  update to a later version.                       **
+ *    ** https://github.com/realA10001986/Flux-Capacitor/releases/tag/V1.100        **
+ *    ********************************************************************************
+ *    - Fix cutting off custom startup sound through wakeup() when fake-powered on
+ *      through the Remote.
  *  2026/03/25 (A10001986) [1.101]
  *    ********************************************************************************
  *    ** If updating from below 1.100, please install 1.100  first to have your     **
  *    ** settings converted. If 1.100 is skipped, many of your settings (static IP, **
- *    ** volume, chase speed, flux sound mode/level, box light level, ir lock) will ** 
+ *    ** volume, chase speed, flux sound mode/level, box light level, ir lock) will **
  *    ** be restored to default values. It suffices to install 1.100 and boot once; **
  *    ** you can then immediately  update to a later version.                       **
  *    ** https://github.com/realA10001986/Flux-Capacitor/releases/tag/V1.100        **

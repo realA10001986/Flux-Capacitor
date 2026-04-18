@@ -8,18 +8,21 @@
  * Sound handling
  *
  * -------------------------------------------------------------------
- * License: MIT NON-AI
+ * License: Modified MIT NON-AI
  * 
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the
- * Software, and to permit persons to whom the Software is furnished to
+ * Permission is hereby granted, free of charge, to any person 
+ * obtaining a copy of this software and associated documentation 
+ * files (the "Software"), to deal in the Software without restriction, 
+ * including without limitation the rights to use, copy, modify, 
+ * merge, publish, distribute, sublicense, and/or sell copies of the 
+ * Software, and to permit persons to whom the Software is furnished to 
  * do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be
+ * The above copyright notice and this permission notice shall be 
  * included in all copies or substantial portions of the Software.
+ * 
+ * Links inside the Software pointing to the original source must not 
+ * be changed or removed.
  *
  * In addition, the following restrictions apply:
  * 
@@ -73,6 +76,9 @@ void append_file(const char *audio_file, uint32_t flags, float volumeFactor = 1.
 
 void play_flux();
 void append_flux();
+bool append_pending();
+bool flux_pending();
+
 bool play_key(int k, bool stopOnly = false);
 bool play_usersnd(int num);
 
@@ -83,7 +89,7 @@ bool checkAudioDone();
 bool checkMP3Running();
 void stopAudio();
 bool stop_key();
-bool append_pending();
+
 
 void inc_vol();
 void dec_vol();

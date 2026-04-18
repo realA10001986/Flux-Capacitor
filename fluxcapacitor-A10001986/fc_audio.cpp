@@ -8,18 +8,21 @@
  * Sound handling
  *
  * -------------------------------------------------------------------
- * License: MIT NON-AI
+ * License: Modified MIT NON-AI
  * 
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the
- * Software, and to permit persons to whom the Software is furnished to
+ * Permission is hereby granted, free of charge, to any person 
+ * obtaining a copy of this software and associated documentation 
+ * files (the "Software"), to deal in the Software without restriction, 
+ * including without limitation the rights to use, copy, modify, 
+ * merge, publish, distribute, sublicense, and/or sell copies of the 
+ * Software, and to permit persons to whom the Software is furnished to 
  * do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be
+ * The above copyright notice and this permission notice shall be 
  * included in all copies or substantial portions of the Software.
+ * 
+ * Links inside the Software pointing to the original source must not 
+ * be changed or removed.
  *
  * In addition, the following restrictions apply:
  * 
@@ -379,6 +382,16 @@ void append_file(const char *audio_file, uint32_t flags, float volumeFactor)
     #endif
 }
 
+bool append_pending()
+{
+    return appendFile;
+}
+
+bool flux_pending()
+{
+    return (appendFile && (append_flags & PA_ISFLUX));
+}
+
 /*
  * External volume setters
  */
@@ -538,11 +551,6 @@ bool stop_key()
         return true;
     }
     return false;
-}
-
-bool append_pending()
-{
-    return appendFile;
 }
 
 /*

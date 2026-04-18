@@ -8,7 +8,7 @@
  * Main controller
  *
  * -------------------------------------------------------------------
- * License: MIT NON-AI
+ * License: Modified MIT NON-AI
  * 
  * Permission is hereby granted, free of charge, to any person 
  * obtaining a copy of this software and associated documentation 
@@ -20,6 +20,9 @@
  *
  * The above copyright notice and this permission notice shall be 
  * included in all copies or substantial portions of the Software.
+ * 
+ * Links inside the Software pointing to the original source must not 
+ * be changed or removed.
  *
  * In addition, the following restrictions apply:
  * 
@@ -2745,7 +2748,7 @@ void prepareTT()
 // Wakeup: Sent by TCD upon entering dest date,
 // return from tt, triggering delayed tt via ETT
 // For audio-visually synchronized behavior
-// Also called when GPS/RotEnc speed is changed
+// Also called when GPS/RotEnc/Remote speed is changed
 void wakeup()
 {
     // End screen saver
@@ -2755,9 +2758,15 @@ void wakeup()
     // unless mp is active
     if(!mpActive && playFLUX) {
         if(!playingFlux) {
-           play_flux();
+            // Don't interrupt ongoing sound, append it instead
+            if(checkAudioDone()) {
+                play_flux();
+            } else {
+                append_flux();
+            }
+        } else {
+            startFluxTimer();
         }
-        startFluxTimer();
     }
 
     doWakeup = false;

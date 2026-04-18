@@ -8,7 +8,7 @@
  * Settings & file handling
  * 
  * -------------------------------------------------------------------
- * License: MIT NON-AI
+ * License: Modified MIT NON-AI
  * 
  * Permission is hereby granted, free of charge, to any person 
  * obtaining a copy of this software and associated documentation 
@@ -20,6 +20,9 @@
  *
  * The above copyright notice and this permission notice shall be 
  * included in all copies or substantial portions of the Software.
+ * 
+ * Links inside the Software pointing to the original source must not 
+ * be changed or removed.
  *
  * In addition, the following restrictions apply:
  * 
@@ -79,10 +82,10 @@
 // If defined, old settings files will be used
 // and converted if no new settings file is found.
 // Keep this defined for a few versions/months.
-#define SETTINGS_TRANSITION
+//#define SETTINGS_TRANSITION
 // Stage 2: Assume new settings are present, but
 // still delete obsolete files.
-//#define SETTINGS_TRANSITION_2
+#define SETTINGS_TRANSITION_2
 
 #ifdef SETTINGS_TRANSITION
 #undef SETTINGS_TRANSITION_2
@@ -556,7 +559,6 @@ static bool read_settings(File configFile, int cfgReadCount)
 
         // Settings
 
-        CopyCheckValidNumParm(json["playFLUXsnd"], settings.playFLUXsnd, sizeof(settings.playFLUXsnd), 0, 3, DEF_PLAY_FLUX_SND);
         wd |= CopyCheckValidNumParm(json["origSeq"], settings.origSeq, sizeof(settings.origSeq), 0, 1, DEF_ORIG_SEQ);
         wd |= CopyCheckValidNumParm(json["skipTTBLAnim"], settings.skipTTBLAnim, sizeof(settings.skipTTBLAnim), 0, 1, DEF_STTBL_ANIM);
         wd |= CopyCheckValidNumParm(json["playTTsnds"], settings.playTTsnds, sizeof(settings.playTTsnds), 0, 1, DEF_PLAY_TT_SND);
