@@ -18,7 +18,7 @@ The Flux Capacitor can be used stand-alone, or in connection with CircuitSetup's
 Features include
 - movie-accurate default flux sequence, plus 9 alternative flux sequences
 - optional [flux](#the-flux-sound) sound (4 modes)
-- [Time Travel](#time-travel) function, triggered by button, [Time Circuits Display](https://circuitsetup.us/product/complete-time-circuits-display-kit/) (TCD) or via [MQTT](#home-assistant--mqtt)
+- [Time Travel](#time-travel) function, triggered by button, [Time Circuits Display](https://circuitsetup.us/product/complete-time-circuits-display-kit/) (TCD) or via [Home Assistant](#home-assistant--mqtt)
 - [IR remote controlled](#ir-remote-control); can learn keys from third-party remote
 - [music player](#the-music-player): Play mp3 files located on an SD card
 - [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player
@@ -346,6 +346,14 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">Quit <a href="#remote-controlling-the-tcds-keypad">TCD keypad remote control mode</a></td>
      <td align="left">-</td><td>3097</td>
     </tr>
+   <tr>
+     <td align="left">Disable <a href='#car-setup'>car mode</a><sup>1</sup></td>
+     <td align="left">*990&#9166;</td><td>6990</td>
+    </tr>
+    <tr>
+     <td align="left">Enable <a href='#car-setup'>car mode</a><sup>1</sup></td>
+     <td align="left">*991&#9166;</td><td>6991</td>
+    </tr>
     <tr>
      <td align="left">Reboot the device (**)</td>
      <td align="left">*64738&#9166;</td><td>3064738</td>
@@ -490,9 +498,13 @@ The TCD can communicate with the FC wirelessly, via the built-in "**B**asic-**T*
 |:--:|
 | Click to watch the video |
 
-BTTFN requires the props all to be connected to the same network, such as, for example, your home WiFi network. BTTFN does not work over the Internet.
+BTTFN requires the props all to be connected to the same network, such as, for example, your home WiFi network, or the TCD acting as access point. BTTFN does not work over the Internet.
 
-![STAmode-bttfn](img/stamode-bttfn.png)
+![STAmode-home](img/stamode-home.png)
+
+<p>&nbsp;</p>
+
+![STAmode-car](img/stamode-car.png)
 
 <details>
 <summary>More...</summary>
@@ -500,14 +512,14 @@ BTTFN requires the props all to be connected to the same network, such as, for e
 >The term "WiFi network" is used for both "WiFi network" and "ip subnet" here for simplicity reasons. However, for BTTFN communication, the devices must be on the same IP subnet, regardless of how they take part in it: They can be connected to different WiFi networks, if those WiFi networks are part of the same ip subnet.
 </details>
 
-In order to connect your FC to the TCD using BTTFN, just enter the TCD's IP address or hostname in the **_IP address or hostname of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required.
+In order to connect your FC to the TCD using BTTFN, just enter the TCD's hostname - usually "timecircuits" - in the **_Hostname or IP address of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required. 
   
 Afterwards, the FC and the TCD can communicate wirelessly and 
 - play time travel sequences in sync,
 - both play an alarm-sequence when the TCD's alarm occurs,
 - the FC can be remote controlled through the TCD's keypad (command codes 3xxx),
 - the FC can remote control the TCD's keypad (see [below](#remote-controlling-the-tcds-keypad))
-- the FC queries the TCD for GPS speed if desired to adapt chase speed to GPS speed,
+- the FC queries the TCD for speed (GPS, rotary encoder, Remote) if desired to adapt its idle pattern to speed,
 - the FC queries the TCD for fake power and night mode, in order to react accordingly if so configured,
 - pressing "0" on the IR remote control or the FC's Time Travel button can trigger a synchronized Time Travel on all BTTFN-connected devices, just like if that Time Travel was triggered through the TCD.
 
@@ -625,29 +637,31 @@ Limitations: TLS/SSL not supported; ".local" domains (MDNS) not supported; serve
 
 ## Car setup
 
-If your FC, along with a [Time Circuits Display](https://tcd.out-a-ti.me/), is mounted in a car, the following network configuration is recommended:
+If your FC, along with a [Time Circuits Display](https://tcd.out-a-ti.me/), is mounted in a car or other places without a local WiFi network, the following network configuration is recommended:
 
 ![STAmode-car](img/stamode-car2.png)
 
+This configuration can easily achieved by putting both the TCD and the SID in *Car Mode*:
+
 #### TCD
 
-- Run your TCD in [*car mode*](https://tcd.out-a-ti.me/#car-mode);
-- disable WiFi power-saving on the TCD by setting **_Power save timer_** to 0 (zero) in the "AP-mode settings" section on the WiFi Configuration page.
+- Set **_Power save timer_** to 0 (zero) in the "AP-mode settings" section on the *WiFi Configuration* page
+- Put your TCD in [*Car Mode*](https://tcd.out-a-ti.me/#car-mode) by issuing keypad command 991.
 
 #### Flux Capacitor
 
-Enter the Config Portal on the FC, click on *Settings* and
-  - enter *192.168.4.1* into the field **_IP address or hostname of TCD_** under BTTFN settings;
-  - click on *Save*.
+One-time configuration steps:
+- Enter the Config Portal on the FC, click on *Settings* and check that the hostname of the TCD (usually "timecircuits") is present in the  **_Hostname or IP address of TCD_** under *Wireless communication (BTTF-Network)* settings; do not use an IP address.
+- Furthermore, on the *WiFi Configuration* page, check that the TCD's WiFi network name (SSID; usually "TCD-AP") and password (if the TCD is configured with a password) are present under *Car mode settings*.
 
-After the FC has restarted, re-enter the FC's Config Portal (while the TCD is powered and in *car mode*) and
-  - click on *WiFi Configuration*,
-  - select the TCD's access point name in the list at the top ("TCD-AP"; if there is no list, click on "Scan for Networks") or enter *TCD-AP* into the *Network name (SSID)* field; if you password-protected your TCD's AP, enter this password in the *password* field. Leave all other fields empty,
-  - click on *Save*.
+If everthing is in place, you can enable Car mode on the FC by typing *991ok on the remote. The FC will reboot and attempt to connect to the TCD's AP.
 
-In order to access the FC's Config Portal in your car, connect your handheld or computer to the TCD's WiFi access point ("TCD-AP"), and direct your browser to http://flux.local ; if that does not work, go to the TCD's keypad menu, press ENTER until "BTTFN CLIENTS" is shown, hold ENTER, and look for the FC's IP address there; then direct your browser to that IP by using the URL http://a.b.c.d (a-d being the IP address displayed on the TCD display).
+You can switch between your "normal" (home, iPhone, ..) WiFi connection and Car mode by entering *990ok or *991ok, respectively.
 
-This "car setup" can also be used in a home setup with no local WiFi network present.
+In order to access the FC's Config Portal in Car mode, connect your handheld or computer to the TCD's WiFi network ("TCD-AP"), and direct your browser to http://flux.local.
+
+  ><details><summary>If that fails...</summary>
+  >If connecting to http://flux.local fails due to a name resolution error, go to the TCD's keypad menu, navigate to "BTTFN CLIENTS", and look for the FC's IP address there; then direct your browser to that IP by using the URL http://a.b.c.d (a-d being the IP address displayed on the TCD display)</details>
 
 ## WiFi power saving features
 
@@ -735,13 +749,23 @@ Through this page you can either connect your FC to your local WiFi network, or 
 
 In order to connect your FC to your WiFi network, all you need to do is either to click on one of the networks listed at the top or to enter a __Network name (SSID)__, and optionally a __password__ (WPAx). If there is no list displayed, click on "Scan for Networks".
 
->By default, the FC requests an IP address via DHCP. However, you can also configure a static IP for the FC by entering the IP, netmask, gateway and DNS server. All four fields must be filled for a valid static IP configuration. If you want to stick to DHCP, leave those four fields empty. If you connect your FC to your Time Circuits Display acting as access point ("TCD-AP"), leave these all empty.
+>By default, the FC requests an IP address via DHCP. However, you can also configure a static IP for the FC by entering the IP, netmask, gateway and DNS server. All four fields must be filled for a valid static IP configuration. If you want to stick to DHCP, leave those four fields empty.
 
 If there are several APs with identical SSID in your area, you can select a specific AP to use by its BSSID (AP's MAC address). You can either manually find out your AP's BSSID and enter it, or have it filled out automatically: Click "Scan for networks", then "Show all". If you click on an AP, its BSSID will be copied into BSSID field in the form below. To see which AP is which, hover over the name to see its BSSID as a tooltip.
 
 ##### &#9193; Forget Saved WiFi Network
 
 Checking this box (and clicking SAVE) deletes the currently saved WiFi network (SSID and password as well as static IP data) and reboots the device; it will restart in "access point" (AP) mode. See [here](#connecting-to-a-wifi-network).
+
+##### &#9193; Car mode settings
+
+In Car mode, the device connects to the TCD-AP as configured here instead of the WiFi network configured above. 
+
+Enter your TCD's network name (usually "TCD-AP") in **_Network name (SSID) of TCD-AP_** and the TCD's AP password (if configured on the TCD) in **_Password for TCD-AP_**. 
+
+>In the unlikely case, multiple TCD's are in range, you can single out your TCD by its BSSID. The TCD displays its BSSID on its *WiFi Configuration* page (starting version 3.23).
+
+If you want to enter Car mode immediately, check **_Enable car mode_**. You can also later enable Car mode by typing *991ok on the remote. *990ok disables Car mode.
 
 ##### &#9193; Hostname
 
@@ -837,11 +861,9 @@ The music player will continue to run.
 
 #### <ins>Settings for BTTFN communication</ins>
 
-##### &#9193; IP address or hostname of TCD
+##### &#9193; Hostname or IP address of TCD
 
-If you want to have your FC to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the TCD's hostname - usually 'timecircuits' - or IP address here.
-
-If you connect your FC to the TCD's access point ("TCD-AP"), the TCD's IP address is 192.168.4.1.
+If you want to have your FC to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the TCD's hostname - usually 'timecircuits' - or IP address here. Hostname is preferred because it makes the setup independent of the network environment.
 
 ##### &#9193; Adapt chase speed to TCD-provided speed
 
