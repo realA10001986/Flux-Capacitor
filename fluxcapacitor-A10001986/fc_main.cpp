@@ -214,15 +214,10 @@ static const int16_t bP1Seq[] = {
 bool         TCDconnected = false;
 static bool  noETTOLead = false;
 
-static bool          volchanged = false;
 static unsigned long volchgnow = 0;
-static bool          spdchanged = false;
 static unsigned long spdchgnow = 0;
-static bool          bllchanged = false;
 static unsigned long bllchgnow = 0;
-static bool          ipachanged = false;
 static unsigned long ipachgnow = 0;
-static bool          irlchanged = false;
 static unsigned long irlchgnow = 0;
 
 static unsigned long ssLastActivity = 0;
@@ -376,9 +371,13 @@ static IPAddress     bttfnTcdIP;
 static uint32_t      bttfnTCDSeqCnt = 0;
 static uint32_t      bttfnTCDDataSeqCnt = 0;
 static uint32_t      bttfnSessionID = 0;
+int                  bttfnHaveTCDSSID = 0;
+char                 TCDSSID[8] = { 0 };
+uint8_t              TCDpwMarker = 0;
 static uint8_t       bttfnReqStatus = 0x52; // Request capabilities, status, speed
 static bool          TCDSupportsRemKP = false;
 static bool          TCDSupportsNOTData = false;
+static bool          TCDSupportsSSID = false;
 static bool          bttfnDataNotEnabled = false;
 static uint32_t      tcdHostNameHash = 0;
 static byte          BTTFMCBuf[BTTF_PACKET_SIZE];
@@ -674,7 +673,7 @@ void main_loop()
 
     // Follow TCD fake power
     if(useFPO && (tcdFPO != fpoOld)) {
-        if(tcdFPO) {
+        if((fpoOld = tcdFPO)) {
             // Power off:
             FPBUnitIsOn = false;
             
@@ -725,6 +724,7 @@ void main_loop()
                  mydelay(20, false);
             }
 
+            TTKey.reset();
             isTTKeyHeld = isTTKeyPressed = false;
             networkTimeTravel = false;
 
@@ -734,7 +734,6 @@ void main_loop()
             ir_remote.loop();
  
         }
-        fpoOld = tcdFPO;
     }
     
     // Discard (incomplete) input from IR after 30 seconds of inactivity
@@ -904,6 +903,9 @@ void main_loop()
                 timeTravel(networkTCDTT, networkLead, networkP1);
             }
         }
+    } else {
+        isTTKeyHeld = isTTKeyPressed = false;
+        TTKey.reset();
     }
 
     now = millis();
@@ -1302,25 +1304,25 @@ void main_loop()
     }
 
     if(!TTrunning) {
-        if(volchanged && (now - volchgnow > 10000)) {
+        if(volchgnow && (now - volchgnow > 10000)) {
             // Save volume 10 seconds after last change
-            volchanged = false;
+            volchgnow = 0;
             saveCurVolume();
-        } else if(spdchanged && (now - spdchgnow > 10000)) {
+        } else if(spdchgnow && (now - spdchgnow > 10000)) {
             // Save speed 10 seconds after last change
-            spdchanged = false;
+            spdchgnow = 0;
             saveCurSpeed();
-        } else if(bllchanged && (now - bllchgnow > 10000)) {
+        } else if(bllchgnow && (now - bllchgnow > 10000)) {
             // Save mbll 10 seconds after last change
-            bllchanged = false;
+            bllchgnow = 0;
             saveBLLevel();
-        } else if(irlchanged && (now - irlchgnow > 10000)) {
+        } else if(irlchgnow && (now - irlchgnow > 10000)) {
             // Save irlock 10 seconds after last change
-            irlchanged = false;
+            irlchgnow = 0;
             saveIRLock();
-        } else if(ipachanged && (now - ipachgnow > 10000)) {
+        } else if(ipachgnow && (now - ipachgnow > 10000)) {
             // Save idle pattern 10 seconds after last change
-            ipachanged = false;
+            ipachgnow = 0;
             saveIdlePat();
         }
     }
@@ -1346,28 +1348,28 @@ void main_loop()
 
 void flushDelayedSave()
 {
-    if(volchanged) {
-        volchanged = false;
+    if(volchgnow) {
+        volchgnow = 0;
         saveCurVolume();
     }
 
-    if(spdchanged) {
-        spdchanged = false;
+    if(spdchgnow) {
+        spdchgnow = 0;
         saveCurSpeed();
     }
 
-    if(bllchanged) {
-        bllchanged = false;
+    if(bllchgnow) {
+        bllchgnow = 0;
         saveBLLevel();
     }
 
-    if(irlchanged) {
-        irlchanged = false;
+    if(irlchgnow) {
+        irlchgnow = 0;
         saveIRLock();
     }
 
-    if(ipachanged) {
-        ipachanged = false;
+    if(ipachgnow) {
+        ipachgnow = 0;
         saveIdlePat();
     }
 }
@@ -1992,7 +1994,7 @@ static int execute(bool isIR, bool injected)
     int  doInpReaction = 0;
     bool isIRLocked = (isIR && !injected) ? irLocked : false;
     uint16_t temp;
-    unsigned long now = millis();
+    unsigned long now = millisNonZero();
 
     switch(strlen(inputBuffer)) {
 
@@ -2060,7 +2062,6 @@ static int execute(bool isIR, bool injected)
                     bttfn_send_command(BTTFN_REMCMD_KP_BYE, 0, 0);
                 }
                 irLocked = !irLocked;
-                irlchanged = true;
                 irlchgnow = now;
                 storeIRLock();
                 if(!irLocked && isIR) {
@@ -2223,7 +2224,6 @@ static int execute(bool isIR, bool injected)
                 if(!TTrunning) {
                     minBLL = temp - 400;
                     boxLED.setDC(mbllArray[minBLL]);
-                    bllchanged = true;
                     bllchgnow = now;
                     storeBLLevel();
                     doInpReaction = 1;
@@ -2248,6 +2248,24 @@ static int execute(bool isIR, bool injected)
                             mp_gotonum(0, mpActive);
                             doInpReaction = 1;
                         } else doInpReaction = -1;
+                        break;
+                    case 990:                             // *990/991: Disable/enable car mode
+                    case 991:
+                        if(!injected) {
+                            bool ocm = carMode;          
+                            if(temp == 991) {
+                                if(*settings.cm_ssid) carMode = true;
+                            } else {
+                                carMode = false;
+                            }
+                            if(ocm != carMode) {
+                                saveCarMode();
+                                prepareReboot();
+                                delay(500);
+                                esp_restart();
+                            }
+                            doInpReaction = 1;
+                        }
                         break;
                     default:                              
                         doInpReaction = -1;
@@ -2548,8 +2566,7 @@ bool decIRSpeed()
             fcLEDs.setSpeed(tempi);
         }
         lastIRspeed = tempi;
-        spdchanged = true;
-        spdchgnow = millis();
+        spdchgnow = millisNonZero();
         storeCurSpeed();
         return true;
     }
@@ -2570,8 +2587,7 @@ bool incIRSpeed()
             fcLEDs.setSpeed(tempi);
         }
         lastIRspeed = tempi;
-        spdchanged = true;
-        spdchgnow = millis();
+        spdchgnow = millisNonZero();
         storeCurSpeed();
         return true;
     }
@@ -2585,8 +2601,7 @@ bool resetIRSpeed()
             fcLEDs.setSpeed(FC_SPD_IDLE);
         }
         lastIRspeed = FC_SPD_IDLE;
-        spdchanged = true;
-        spdchgnow = millis();
+        spdchgnow = millisNonZero();
         storeCurSpeed();
         return true;
     }
@@ -2597,8 +2612,7 @@ void setFluxPattern(uint8_t i)
 {
     fluxPat = i;
     fcLEDs.setSequence(i);
-    ipachanged = true;
-    ipachgnow = millis();
+    ipachgnow = millisNonZero();
     storeIdlePat();
 }
 
@@ -2834,8 +2848,7 @@ static bool contFlux()
 
 static void volWasChanged()
 {
-    volchanged = true;
-    volchgnow = millis();
+    volchgnow = millisNonZero();
     storeCurVolume();
 }
 
@@ -2929,11 +2942,10 @@ static void bttfn_eval_response(uint8_t *buf, bool checkCaps)
         if(buf[31] & 0x01) {
             bttfnReqStatus &= ~0x02; // Do no longer poll speed, comes over multicast
         }
-        if(buf[31] & 0x08) {
-            TCDSupportsRemKP = true;
-        }
+        TCDSupportsRemKP = !!(buf[31] & 0x08);
         if(buf[31] & 0x10) {
             TCDSupportsNOTData = true;
+            TCDSupportsSSID = !!(buf[31] & 0x40);
         }
     }
 
@@ -2954,6 +2966,13 @@ static void bttfn_eval_response(uint8_t *buf, bool checkCaps)
         tcdFPO = false;
         remoteAllowed = remMode = remHoldKey = false;
     }
+
+    if(!bttfnHaveTCDSSID && !checkCaps && TCDSupportsSSID) {
+        bttfnHaveTCDSSID = 1;
+        memcpy((void *)TCDSSID, (void *)&buf[41], 6);
+        TCDSSID[6] = buf[18];
+        TCDpwMarker = buf[19] & 0x01;
+    }
 }
 
 static void handle_tcd_notification(uint8_t *buf)
@@ -2973,6 +2992,7 @@ static void handle_tcd_notification(uint8_t *buf)
             if(bttfnSessionID && (bttfnSessionID != seqCnt)) {
                 lastBTTFNKA = bttfnLastNotData - BTTFN_KA_INTERVAL + (BTTFN_KA_OFFSET*1000);
                 bttfnTCDDataSeqCnt = 1;
+                bttfnHaveTCDSSID = 0;
             }
             bttfnSessionID = seqCnt;
             seqCnt = GET32(buf, 6);
@@ -3410,9 +3430,9 @@ void bttfn_loop()
             bttfnDataNotEnabled = false;
             bttfnTCDDataSeqCnt = 1;
             // Re-do DISCOVER, TCD might have got new IP address
-            if(tcdHostNameHash) {
-                haveTCDIP = false;
-            }
+            if(tcdHostNameHash) haveTCDIP = false;
+            // Don't assume TCD comes back with same SSID/pwMarker
+            bttfnHaveTCDSSID = 0;
             // Avoid immediate return to stand-alone in main_loop()
             lastBTTFNpacket = now;
             #ifdef FC_DBG_NET

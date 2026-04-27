@@ -118,6 +118,21 @@
 
 /*  Changelog
  *
+ *  2026/04/27 (A10001986) [1.103]
+ *    ********************************************************************************
+ *    ** If updating from below 1.100, please install 1.100  first to have your     **
+ *    ** settings converted. If 1.100 is skipped, many of your settings (static IP, **
+ *    ** volume, chase speed, flux sound mode/level, box light level, ir lock) will **
+ *    ** be restored to default values. It suffices to install 1.100 and boot once; **
+ *    ** you can then immediately  update to a later version.                       **
+ *    ** https://github.com/realA10001986/Flux-Capacitor/releases/tag/V1.100        **
+ *    ********************************************************************************
+ *    - Add Car Mode: In addition to existing WiFi network connection settings, you 
+ *      can now pre-configure TCD-AP SSID and password in WiFi Settings and quickly
+ *      switch between normal (home, iPhone...) WiFi connection and Car WiFi connection 
+ *      (through TCD-AP) by commands *990 (normal) and *991 (Car) or through the
+ *      Config Portal.
+ *    - Fix race condition in Fake Power logic
  *  2026/04/18 (A10001986) [1.102]
  *    ********************************************************************************
  *    ** If updating from below 1.100, please install 1.100  first to have your     **

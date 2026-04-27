@@ -55,106 +55,8 @@
 #ifndef _FC_SETTINGS_H
 #define _FC_SETTINGS_H
 
-extern bool haveFS;
-extern bool haveSD;
-extern bool FlashROMode;
-extern const char rspv[];
-
-extern bool haveAudioFiles;
-
-extern uint8_t musFolderNum;
-
 #define MS(s) XMS(s)
 #define XMS(s) #s
-
-// Default settings
-
-#define DEF_HOSTNAME        "flux"
-#define DEF_WIFI_RETRY      3     // 1-10; Default: 3 retries
-#define DEF_AP_CHANNEL      1     // 1-13; 0 = random(1-13)
-#define DEF_WIFI_APOFFDELAY 0
-
-#define DEF_PLAY_FLUX_SND   0     // 1: Play "flux" sound permanently, 0: Do not, 2, 3: 30/60 secs after event
-#define DEF_ORIG_SEQ        1     // 0: movie sequence for 6 lamps; 1: sequence uses 7th (non-existent) light
-#define DEF_STTBL_ANIM      0     // 1: Skip box light animation in tt; 0: Play anim
-#define DEF_PLAY_TT_SND     1     // 1: Play time travel sounds (0: Do not; for use with external equipment)
-#define DEF_PLAY_ALM_SND    0     // 1: Play TCD-alarm sound, 0: do not
-#define DEF_IRFB            1     // 0: Don't show positive IR feedback on display; 1: do
-#define DEF_IRCFB           1     // 0: Don't show command entry feedback; 1: do
-#define DEF_SS_TIMER        0     // "Screen saver" timeout in minutes; 0 = ss off
-
-#define DEF_TCD_IP          ""    // TCD ip address for networked polling
-#define DEF_USE_GPSS        0     // 0: Ignore GPS speed; 1: Use it for chase speed
-#define DEF_USE_NM          0     // 0: Ignore TCD night mode; 1: Follow TCD night mode
-#define DEF_USE_FPO         0     // 0: Ignore TCD fake power; 1: Follow TCD fake power
-#define DEF_BTTFN_TT        1     // 0: '0' on IR remote and TT button trigger stand-alone TT; 1: They trigger BTTFN-wide TT
-
-#define DEF_TCD_PRES        0     // 0: No TCD connected, 1: connected via GPIO
-#define DEF_NO_ETTO_LEAD    0     // Default: 0: TCD signals TT with ETTO_LEAD lead time; 1 without
-
-#define DEF_CFG_ON_SD       1     // Default: Save secondary settings on SD card
-#define DEF_SD_FREQ         0     // SD/SPI frequency: Default 16MHz
-
-#define DEF_BLEDSWAP        0     // 0: Use box led connectors for box leds; 1: use "panel light" connector (both PWM!)
-#define DEF_SKNOB           0     // 0: Don't use knob for chase speed; 1: do
-#define DEF_DISDIR          0     // 0: Do not disable default IR remote control; 1: do
-
-struct Settings {
-    char ssid[34]           = "";
-    char pass[66]           = "";
-    char bssid[18]          = "";
-    
-    char hostName[32]       = DEF_HOSTNAME;
-    char wifiConRetries[4]  = MS(DEF_WIFI_RETRY);
-    char systemID[8]        = "";
-    char appw[10]           = "";
-    char apChnl[4]          = MS(DEF_AP_CHANNEL);
-    char wifiAPOffDelay[4]  = MS(DEF_WIFI_APOFFDELAY);
-
-    char origSeq[2]         = MS(DEF_ORIG_SEQ);
-    char skipTTBLAnim[2]    = MS(DEF_STTBL_ANIM); 
-    char playTTsnds[2]      = MS(DEF_PLAY_TT_SND);
-    char playALsnd[2]       = MS(DEF_PLAY_ALM_SND);
-    char ssTimer[4]         = MS(DEF_SS_TIMER);
-    
-    char tcdIP[32]          = DEF_TCD_IP;
-    char useGPSS[2]         = MS(DEF_USE_GPSS);
-    char useNM[2]           = MS(DEF_USE_NM);
-    char useFPO[2]          = MS(DEF_USE_FPO);
-    char bttfnTT[2]         = MS(DEF_BTTFN_TT); 
-
-    char TCDpresent[2]      = MS(DEF_TCD_PRES);
-    char noETTOLead[2]      = MS(DEF_NO_ETTO_LEAD);
-
-    char CfgOnSD[2]         = MS(DEF_CFG_ON_SD);
-    char sdFreq[2]          = MS(DEF_SD_FREQ);
-
-    char usePLforBL[2]      = MS(DEF_BLEDSWAP);
-    char useSknob[2]        = MS(DEF_SKNOB);
-    char disDIR[2]          = MS(DEF_DISDIR);
-
-#ifdef FC_HAVEMQTT  
-    char useMQTT[2]         = "0";
-    char mqttVers[2]        = "0"; // 0 = 3.1.1, 1 = 5.0
-    char mqttServer[80]     = "";  // ip or domain [:port]  
-    char mqttUser[128]      = "";  // user[:pass] (UTF8)
-#endif       
-
-    // Kludge for CP
-    char playFLUXsnd[2]     = MS(DEF_PLAY_FLUX_SND);
-    char PIRFB[2]           = MS(DEF_IRFB);
-    char PIRCFB[2]          = MS(DEF_IRCFB);
-};
-
-struct IPSettings {
-    char ip[20]       = "";
-    char gateway[20]  = "";
-    char netmask[20]  = "";
-    char dns[20]      = "";
-};
-
-extern struct Settings settings;
-extern struct IPSettings ipsettings;
 
 void settings_setup();
 
@@ -198,6 +100,8 @@ void saveUpdVers(int v, int r);
 
 void saveAllSecCP();
 
+void saveCarMode();
+
 void loadIdlePat();
 void storeIdlePat();
 void saveIdlePat();
@@ -238,5 +142,108 @@ void   renameUploadFile(int idx);
 char   *getUploadFileName(int idx);
 int    getUploadFileNameLen(int idx);
 void   freeUploadFileNames();
+
+// Default settings
+
+#define DEF_HOSTNAME        "flux"
+#define DEF_WIFI_RETRY      3     // 1-10; Default: 3 retries
+#define DEF_AP_CHANNEL      1     // 1-13; 0 = random(1-13)
+#define DEF_WIFI_APOFFDELAY 0
+
+#define DEF_PLAY_FLUX_SND   0     // 1: Play "flux" sound permanently, 0: Do not, 2, 3: 30/60 secs after event
+#define DEF_ORIG_SEQ        1     // 0: movie sequence for 6 lamps; 1: sequence uses 7th (non-existent) light
+#define DEF_STTBL_ANIM      0     // 1: Skip box light animation in tt; 0: Play anim
+#define DEF_PLAY_TT_SND     1     // 1: Play time travel sounds (0: Do not; for use with external equipment)
+#define DEF_PLAY_ALM_SND    0     // 1: Play TCD-alarm sound, 0: do not
+#define DEF_IRFB            1     // 0: Don't show positive IR feedback on display; 1: do
+#define DEF_IRCFB           1     // 0: Don't show command entry feedback; 1: do
+#define DEF_SS_TIMER        0     // "Screen saver" timeout in minutes; 0 = ss off
+
+#define DEF_TCD_IP          ""    // TCD hostname (or ip address) for BTTFN
+#define DEF_USE_GPSS        0     // 0: Ignore GPS speed; 1: Use it for chase speed
+#define DEF_USE_NM          0     // 0: Ignore TCD night mode; 1: Follow TCD night mode
+#define DEF_USE_FPO         0     // 0: Ignore TCD fake power; 1: Follow TCD fake power
+#define DEF_BTTFN_TT        1     // 0: '0' on IR remote and TT button trigger stand-alone TT; 1: They trigger BTTFN-wide TT
+
+#define DEF_TCD_PRES        0     // 0: No TCD connected, 1: connected via GPIO
+#define DEF_NO_ETTO_LEAD    0     // Default: 0: TCD signals TT with ETTO_LEAD lead time; 1 without
+
+#define DEF_CFG_ON_SD       1     // Default: Save secondary settings on SD card
+#define DEF_SD_FREQ         0     // SD/SPI frequency: Default 16MHz
+
+#define DEF_BLEDSWAP        0     // 0: Use box led connectors for box leds; 1: use "panel light" connector (both PWM!)
+#define DEF_SKNOB           0     // 0: Don't use knob for chase speed; 1: do
+#define DEF_DISDIR          0     // 0: Do not disable default IR remote control; 1: do
+
+struct Settings {
+    char ssid[34]           = "";
+    char pass[66]           = "";
+    char bssid[18]          = "";
+
+    char cm_ssid[14]        = "TCD-AP";
+    char cm_pass[10]        = "";
+    char cm_bssid[18]       = "";
+    
+    char hostName[32]       = DEF_HOSTNAME;
+    char wifiConRetries[4]  = MS(DEF_WIFI_RETRY);
+    char systemID[8]        = "";
+    char appw[10]           = "";
+    char apChnl[4]          = MS(DEF_AP_CHANNEL);
+    char wifiAPOffDelay[4]  = MS(DEF_WIFI_APOFFDELAY);
+
+    char origSeq[2]         = MS(DEF_ORIG_SEQ);
+    char skipTTBLAnim[2]    = MS(DEF_STTBL_ANIM); 
+    char playTTsnds[2]      = MS(DEF_PLAY_TT_SND);
+    char playALsnd[2]       = MS(DEF_PLAY_ALM_SND);
+    char ssTimer[4]         = MS(DEF_SS_TIMER);
+    
+    char tcdIP[32]          = DEF_TCD_IP;
+    char useGPSS[2]         = MS(DEF_USE_GPSS);
+    char useNM[2]           = MS(DEF_USE_NM);
+    char useFPO[2]          = MS(DEF_USE_FPO);
+    char bttfnTT[2]         = MS(DEF_BTTFN_TT); 
+
+    char TCDpresent[2]      = MS(DEF_TCD_PRES);
+    char noETTOLead[2]      = MS(DEF_NO_ETTO_LEAD);
+
+    char CfgOnSD[2]         = MS(DEF_CFG_ON_SD);
+    char sdFreq[2]          = MS(DEF_SD_FREQ);
+
+    char usePLforBL[2]      = MS(DEF_BLEDSWAP);
+    char useSknob[2]        = MS(DEF_SKNOB);
+    char disDIR[2]          = MS(DEF_DISDIR);
+
+#ifdef FC_HAVEMQTT  
+    char useMQTT[2]         = "0";
+    char mqttVers[2]        = "0"; // 0 = 3.1.1, 1 = 5.0
+    char mqttServer[80]     = "";  // ip or domain [:port]  
+    char mqttUser[128]      = "";  // user[:pass] (UTF8)
+#endif       
+
+    // Kludge for CP
+    char playFLUXsnd[2]     = MS(DEF_PLAY_FLUX_SND);
+    char PIRFB[2]           = MS(DEF_IRFB);
+    char PIRCFB[2]          = MS(DEF_IRCFB);
+    char ecmKludge[2]       = "0";  // MUST BE 0
+};
+
+struct IPSettings {
+    char ip[20]       = "";
+    char gateway[20]  = "";
+    char netmask[20]  = "";
+    char dns[20]      = "";
+};
+
+extern struct   Settings settings;
+extern struct   IPSettings ipsettings;
+
+extern bool     haveFS;
+extern bool     haveSD;
+extern bool     FlashROMode;
+extern const char rspv[];
+
+extern bool     haveAudioFiles;
+
+extern uint8_t  musFolderNum;
 
 #endif

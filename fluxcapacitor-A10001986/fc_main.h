@@ -66,45 +66,6 @@
 #define FC_SPD_MIN 500   // 5000ms
 #define FC_SPD_IDLE 20
 
-extern unsigned long powerupMillis;
-
-extern uint16_t minBLL;
-extern uint16_t lastIRspeed;
-
-extern bool irLocked;
-extern bool irShowPosFBDisplay;
-extern bool irShowCmdFBDisplay;
-
-extern bool TCDconnected;
-
-extern bool FPBUnitIsOn;
-extern bool fluxNM;
-
-extern uint8_t fluxPat;
-
-extern bool TTrunning;
-extern int  playFLUX;
-extern bool IRLearning;
-
-extern bool networkTimeTravel;
-extern bool networkTCDTT;
-extern bool networkReentry;
-extern bool networkAbort;
-extern bool networkAlarm;
-extern uint16_t networkLead;
-extern uint16_t networkP1;
-
-extern int networkUserSignal;
-
-extern bool doPrepareTT;
-extern bool doWakeup;
-
-extern bool fcBusy;
-
-extern bool showUpdAvail;
-
-extern uint32_t myRemID;
-
 void main_boot();
 void main_setup();
 void main_loop();
@@ -143,5 +104,47 @@ void wakeup();
 void addCmdQueue(uint32_t command);
 void bttfn_loop();
 
+extern unsigned long powerupMillis;
+
+extern uint16_t minBLL;
+extern uint16_t lastIRspeed;
+
+extern bool irLocked;
+extern bool irShowPosFBDisplay;
+extern bool irShowCmdFBDisplay;
+
+extern bool TCDconnected;
+
+extern bool FPBUnitIsOn;
+extern bool fluxNM;
+
+extern uint8_t fluxPat;
+
+extern bool TTrunning;
+extern int  playFLUX;
+extern bool IRLearning;
+
+extern bool networkTimeTravel;
+extern bool networkTCDTT;
+extern bool networkReentry;
+extern bool networkAbort;
+extern bool networkAlarm;
+extern uint16_t networkLead;
+extern uint16_t networkP1;
+
+extern int networkUserSignal;
+
+extern uint32_t myRemID;
+
+extern bool doPrepareTT;
+extern bool doWakeup;
+
+extern bool fcBusy;
+
+extern bool showUpdAvail;
+
+extern int     bttfnHaveTCDSSID;
+extern char    TCDSSID[];
+extern uint8_t TCDpwMarker;
 
 #endif

@@ -133,6 +133,7 @@ static struct [[gnu::packed]] {
     uint8_t  showUpdAvail       = 1;
     uint8_t  updateV            = 0;
     uint8_t  updateR            = 0;
+    uint8_t  carMode            = 0;
 } secSettings;
 
 // Tertiary settings (SD only)
@@ -231,6 +232,8 @@ static bool checkValidNumParmF(char *text, float lowerLim, float upperLim, float
 static bool loadIRKeys();
 
 static void loadUpdAvail();
+
+static void loadCarMode();
 
 static bool     loadId();
 static uint32_t createId();
@@ -464,6 +467,11 @@ void settings_setup()
     // Load user-config's and learned IR keys
     loadIRKeys();
 
+    // Load car mode
+    if(*settings.cm_ssid) {
+        loadCarMode();
+    }
+
     loadUpdAvail();
 
     // Check if SD contains the default sound files
@@ -549,6 +557,10 @@ static bool read_settings(File configFile, int cfgReadCount)
             }
         }
 
+        wd |= CopyTextParm(json["cmsid"], settings.cm_ssid, sizeof(settings.cm_ssid));
+        wd |= CopyTextParm(json["cmpwd"], settings.cm_pass, sizeof(settings.cm_pass));
+        wd |= CopyTextParm(json["cmbid"], settings.cm_bssid, sizeof(settings.cm_bssid));
+
         wd |= CopyTextParm(json["hostName"], settings.hostName, sizeof(settings.hostName));
         wd |= CopyCheckValidNumParm(json["wifiConRetries"], settings.wifiConRetries, sizeof(settings.wifiConRetries), 1, 10, DEF_WIFI_RETRY);
 
@@ -617,6 +629,10 @@ void write_settings()
         json["pass"] = (const char *)settings.pass;
         json["bssid"] = (const char *)settings.bssid;
     }
+
+    json["cmsid"] = (const char *)settings.cm_ssid;
+    json["cmpwd"] = (const char *)settings.cm_pass;
+    json["cmbid"] = (const char *)settings.cm_bssid;
 
     json["hostName"] = (const char *)settings.hostName;
     json["wifiConRetries"] = (const char *)settings.wifiConRetries;
@@ -1174,6 +1190,24 @@ void saveAllSecCP()
     secSettings.irShowCmdFBDisplay = irShowCmdFBDisplay ? 1 : 0;
     saveSecSettings(true);
 }
+
+/*
+ *  Load/save carMode
+ */
+
+static void loadCarMode()
+{
+    if(haveSecSettings) {
+        carMode = !!secSettings.carMode;
+    }
+}
+
+void saveCarMode()
+{
+    secSettings.carMode = carMode ? 1 : 0;
+    saveSecSettings(true);
+}
+
 
 /*
  *  Load/save idle pattern (SD only)

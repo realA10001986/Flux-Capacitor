@@ -55,13 +55,7 @@
 #ifndef _FC_WIFI_H
 #define _FC_WIFI_H
 
-extern bool wifiSetupDone;
-extern bool wifiIsOff;
-extern bool wifiAPIsOff;
-extern bool wifiInAPMode;
-
 void wifi_setup();
-void wifi_setup2();
 void wifi_loop();
 void wifiOn(unsigned long newDelay = 0, bool alsoInAPMode = false, bool deferConfigPortal = false);
 bool wifiOnWillBlock();
@@ -74,5 +68,12 @@ bool wifi_getIP(uint8_t& a, uint8_t& b, uint8_t& c, uint8_t& d);
 bool isIp(char *str);
 
 bool checkIPConfig();
+
+extern bool wifiSetupDone;
+extern bool wifiIsOff;
+extern bool wifiAPIsOff;
+extern bool wifiInAPMode;
+
+extern bool carMode;
 
 #endif
