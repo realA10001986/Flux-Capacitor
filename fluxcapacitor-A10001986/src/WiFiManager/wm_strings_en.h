@@ -132,7 +132,8 @@ static const char HTTP_STYLE_SET[]  PROGMEM =
     "label{display:inline-block;vertical-align:text-top;margin:0 10px 0 0;padding:0 10px 0 0;white-space:normal}"
     ".hl{margin:0 0 7px 0;padding:0}"
     ".ss{background-color:#e4e4e4;border-radius:7px;margin-bottom:20px;padding:7px 10px 7px 10px;white-space:nowrap}"
-    "label.mp0{margin:0;padding:0}";
+    "label.mp0{margin:0;padding:0}"
+    ".is{margin:15px 0 0 0;padding:0}";
 
 static const char HTTP_STYLE_UPL[]  PROGMEM =
     "input[type='file']{background:#fff;border:1px solid " HTTP_BLUE "}"
@@ -180,12 +181,12 @@ static const char HTTP_FORM_PARAM_HEAD[]  PROGMEM = "<hr>";
 static const char HTTP_FORM_PARAM[]       PROGMEM = "<input id='{i}' name='{n}' {l} value='{v}' {c} {f}>";
 static const char HTTP_FORM_END[]         PROGMEM = "<button type='submit'>Save</button></form>";
 
-static const char HTTP_FORM_WIFI[]        PROGMEM = "<div class='ss'><div class='hl'>WiFi connection: Network selection</div><label for='s'>Network name (SSID)</label><br><input id='s' name='s' maxlength='32' autocorrect='off' autocapitalize='none' placeholder='{V}' oninput='var x=ge(\"fg\");var y=ge(\"p\");y.disabled=false;if(!this.value.length&&this.placeholder.length){if(x&&!y.value.length){x.style.display=\"\"}y.placeholder=y.getAttribute(\"data-ph\")||\"********\";}else{if(x){x.style.display=\"none\"}y.placeholder=\"\"}'><br><label for='p'>Password</label><br><input id='p' name='p' maxlength='64' type='password' placeholder='{p}' data-ph='{p}' oninput='var x=ge(\"fg\");if(x){var y=ge(\"s\");if(!y.value.length&&y.placeholder.length){if(this.value.length){x.style.display=\"none\"}else{x.style.display=\"\"}}}'><br><label><input type='checkbox' onclick='f()' style='margin:0px 5px 10px 0px'>Show password when typing</label><br><label for='s'>BSSID (Access Point MAC)<br><span>Leave this empty unless you have multiple APs with the same SSID and want to connect to a specific AP: Click 'Scan for Networks', 'Show All' and select AP. Format: <i>XX:XX:XX:XX:XX:XX</i></span></label><br><input id='b' name='b' maxlength='17' autocorrect='off' autocomplete='off' value='{h}' pattern='^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$'><br>";
-#define HTTP_FORM_WIFI_END                HTTP_DIV_END
+static const char HTTP_FORM_WIFI[]        PROGMEM = "<div class='ss'><div class='hl'>WiFi connection</div><label for='s'>Network name (SSID)</label><br><input id='s' name='s' maxlength='32' autocorrect='off' autocapitalize='none' placeholder='{V}' oninput='var x=ge(\"fg\");var y=ge(\"p\");y.disabled=false;if(!this.value.length&&this.placeholder.length){if(x&&!y.value.length){x.style.display=\"\"}y.placeholder=y.getAttribute(\"data-ph\")||\"********\";}else{if(x){x.style.display=\"none\"}y.placeholder=\"\"}'><br><label for='p'>Password</label><br><input id='p' name='p' maxlength='64' type='password' placeholder='{p}' data-ph='{p}' oninput='var x=ge(\"fg\");if(x){var y=ge(\"s\");if(!y.value.length&&y.placeholder.length){if(this.value.length){x.style.display=\"none\"}else{x.style.display=\"\"}}}'><br><label><input type='checkbox' onclick='f()' style='margin:0px 5px 10px 0px'>Show password when typing</label><br><label for='s'>BSSID (Access Point MAC)<br><span>Leave this empty unless you have multiple APs with the same SSID and want to connect to a specific AP: Click 'Scan for Networks', 'Show All' and select AP.</span></label><br><input id='b' name='b' maxlength='17' autocorrect='off' autocomplete='off' value='{h}' pattern='^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$' placeholder='XX:XX:XX:XX:XX:XX'><br>";
+#define           HTTP_FORM_WIFI_END      HTTP_DIV_END
 static const char HTTP_WIFI_ITEM[]        PROGMEM = "<div><a href='#p' onclick='return {t}(this)' data-ssid='{V}' title='{R}'>{v}</a>{c}<div role='img' aria-label='{r}dBm' title='{r}dBm' class='q q-{q} {i}'></div></div>";
-static const char HTTP_FORM_SECT_HEAD[]   PROGMEM = "<div class='ss'><div class='hl'>WiFi connection: Static IP settings</div>";
-#define HTTP_FORM_SECT_FOOT               HTTP_DIV_END
-static const char HTTP_FORM_WIFI_PH[]     PROGMEM = "placeholder='Leave this section empty for DHCP'";
+static const char HTTP_FORM_SECT_HEAD[]   PROGMEM = "<div class='is'>";
+#define           HTTP_FORM_SECT_FOOT     HTTP_DIV_END
+static const char HTTP_FORM_WIFI_PH[]     PROGMEM = "placeholder='Leave this and next three empty for DHCP'";
 static const char HTTP_MSG_NONETWORKS[]   PROGMEM = "<div class='msg'>No networks found.</div>";
 static const char HTTP_MSG_SCANFAIL[]     PROGMEM = "<div class='msg D'>Scan failed.<br>Click 'Scan for Networks' to retry.</div>";
 static const char HTTP_MSG_NOSCAN[]       PROGMEM = "<div class='msg'>Device busy, WiFi scan prohibited. Try again later.</div>";
@@ -194,11 +195,16 @@ static const char HTTP_ERASE_BUTTON[]     PROGMEM = "<div id='fg' class='c' styl
 static const char HTTP_SHOWALL[]          PROGMEM = "<div class='c'><button class='s' id='sab' form='saf' type='submit'>Show all</button></div>";
 static const char HTTP_SHOWALL_FORM[]     PROGMEM = "<form id='saf' action='/wifi?showall=1' method='POST' onsubmit='return dbpw(\"sab\")'></form>";
 
+#ifdef WM_CCM
+static const char HTTP_DCM_LINK[]         PROGMEM = "<form action='/wifisave?cmo=1' method='POST'><button value='1'>Disable Car Mode</button></form>";
+static const char HTTP_CCMOFF[]           PROGMEM = "<div id='lc' class='msg S'>Car Mode disabled. Rebooting.<br>";
+#endif
+
 static const char HTTP_PARAMSAVED[]       PROGMEM = "<div id='lc' class='msg S'>Settings saved. Rebooting.<br>";
 static const char HTTP_SAVED_NORMAL[]     PROGMEM = "Trying to connect to network.<br>In case of error, device boots in AP mode.";
 static const char HTTP_SAVED_CARMODE[]    PROGMEM = "<br>Device is run in <strong>car mode</strong> and will <em>not</em><br>connect to WiFi network after reboot.";
 static const char HTTP_SAVED_ERASED[]     PROGMEM = "WiFi network credentials deleted.<br>Restarting in AP mode.<br>";
-#define HTTP_PARAMSAVED_END               HTTP_DIV_END
+#define           HTTP_PARAMSAVED_END     HTTP_DIV_END
 
 static const char HTTP_UPDATE_FORM[]      PROGMEM = "<form method='POST' enctype='multipart/form-data' action=";
 static const char HTTP_UPDATE1[]          PROGMEM = "'u' onsubmit=\"uplsub('upbu','uacb');\" onchange=\"uplchg(this,'upbu');\"><div class='ss c' style='line-height:140%'>Firmware update<br>";
@@ -229,11 +235,11 @@ static const char HTTP_UPLOAD_SDMSG[]     PROGMEM = "<br>SD card required for so
 #endif
 
 static const char HTTP_UPDATE_FAIL1[]     PROGMEM = "<div class='msg D'><strong>Upload failed.</strong><br>";
-#define HTTP_UPDATE_FAIL2                 HTTP_DIV_END
+#define           HTTP_UPDATE_FAIL2       HTTP_DIV_END
 static const char HTTP_UPDATE_SUCCESS[]   PROGMEM = "<div id='lc' class='msg S'><strong>Upload complete.</strong><br>Device rebooting.</div>";
 
 static const char HTTP_STATUS_HEAD[]      PROGMEM = "<div class='sta'><span class='{c}'>&#x25CF;</span> ";
-#define HTTP_STATUS_TAIL                  HTTP_DIV_END
+#define           HTTP_STATUS_TAIL        HTTP_DIV_END
 static const char HTTP_STATUS_ON[]        PROGMEM = "{v}{I}{V}<br>{i}";
 static const char HTTP_STATUS_BADBSSID[]  PROGMEM = "<br>AP with given BSSID not found";
 static const char HTTP_STATUS_OFF[]       PROGMEM = "{v}<br>{r}Operating in {V}mode";
@@ -249,10 +255,10 @@ static const char HTTP_BR[]               PROGMEM = "<br>";
 static const char HTTP_END[]              PROGMEM = "</div></body></html>";
 static const char HTML_CHKBOX[]           PROGMEM = "type='checkbox' autocomplete='off'";  // ac=off to fix FF idiocy
 static const char HTTP_SECT_HEAD[]        PROGMEM = "<div class='ss'>";
-#define HTTP_SECT_START                   HTTP_DIV_END        // + HTTP_SECT_HEAD
-#define HTTP_SECT_FOOT                    HTTP_DIV_END
+#define           HTTP_SECT_START         HTTP_DIV_END        // + HTTP_SECT_HEAD
+#define           HTTP_SECT_FOOT          HTTP_DIV_END
 static const char HTTP_HL_S[]             PROGMEM = "<div class='hl'>";
-#define HTTP_HL_E                         HTTP_DIV_END
+#define           HTTP_HL_E               HTTP_DIV_END
 
 static const char HTTP_BSSID_FOOT[]       PROGMEM = " <abbr title='BSSID %s'>&#8505;</abbr>";
 
@@ -280,7 +286,7 @@ static const char S_passph[]       PROGMEM = "********";
 static const char S_staticip[]     PROGMEM = "Static IP";
 static const char S_staticgw[]     PROGMEM = "Static gateway";
 static const char S_staticdns[]    PROGMEM = "Static DNS";
-static const char S_subnet[]       PROGMEM = "Subnet mask";
+static const char S_subnet[]       PROGMEM = "Static subnet mask";
 
 static const char S_brand[]        PROGMEM = "WiFiManager";
 
