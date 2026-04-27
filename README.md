@@ -867,9 +867,9 @@ If you want to have your FC to communicate with a Time Circuits Display wireless
 
 ##### &#9193; Adapt chase speed to TCD-provided speed
 
-If this option is checked and your TCD is equipped with a GPS sensor or a rotary encoder, the FC will adapt its chase speed to current GPS speed or the reading of the encoder, respectively. 
+If this option is checked and your TCD is equipped with a GPS sensor or a rotary encoder, or a [Futaba Remote](https://remote.out-a-ti.me) is present, the FC will adapt its chase speed to current speed as transmitted by the TCD.
 
-While the FC receives GPS speed (or the reading from a rotary encoder) from the TCD, IR controls and MQTT commands for chase speed are not entirely ignored: They have no visual effect, but they are saved.
+While the FC receives speed from the TCD, IR controls and MQTT commands for chase speed are not entirely ignored: They have no visual effect, but they are saved.
 
 ##### &#9193; Follow TCD night-mode
 
