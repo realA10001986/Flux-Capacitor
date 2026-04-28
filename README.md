@@ -527,7 +527,7 @@ The FC can, through its IR remote control, remote control the TCD keypad. The TC
 
 As a prerequisite, the TCD must be set to permit remote control. This is done on the TCD through keypad command 995.
 
-To start TCD keypad remote control, type *95ok on the FC's IR remote control (or issue command 3095 from the TCD or through [HA/MQTT](#control-the-fc-via-mqtt)).
+To start TCD keypad remote control, type *95ok on the FC's IR remote control or issue keypad command 3095 on the TCD.
 
 Keys 0-9 as well as OK (=ENTER) on your IR remote control will now be registered by the TCD as key presses.
 
