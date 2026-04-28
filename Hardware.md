@@ -1,6 +1,8 @@
 # Flux Capacitor Hardware & Build Information
 
-CircuitSetup provides complete [Flux Capacitors](https://circuitsetup.us/product/delorean-time-machine-flux-capacitor-fully-assembled/) occasionally, and kit parts such as the [electronics](https://circuitsetup.us/product/flux-capacitor-light-sound-pcb), a [window kit](https://circuitsetup.us/product/flux-capacitor-window-kit) and the [back board](https://circuitsetup.us/product/flux-capacitor-backing-board) on a regular basis. Here is some information on the other parts you'll need in addition to the kits:
+CircuitSetup provides complete [Flux Capacitors](https://circuitsetup.us/product/delorean-time-machine-flux-capacitor-fully-assembled/) occasionally, and kit parts such as the [electronics](https://circuitsetup.us/product/flux-capacitor-light-sound-pcb), a [window kit](https://circuitsetup.us/product/flux-capacitor-window-kit) and the [back board](https://circuitsetup.us/product/flux-capacitor-backing-board) on a regular basis. 
+
+Here is some information on the other parts you'll need in addition to the kits:
 
 ## Box
 
@@ -75,6 +77,10 @@ Big pipe on top: On the Original, allegedly Lasco 2"; I used a Genova 30720 (2")
 The black pipe on the left and the hose on the right are fully custom made; the hose is enclosed in parts used in compressed air equipment. Both are attached using screws.
 
 If you avoid 3D-printed parts in general (or use a UV- and heat-resistant filament/resin) and attach parts properly, the FC is perfectly fine to be mounted in an actual Delorean.
+
+## Power supply
+
+Since the bright LEDs draw considerable power, it is recommended to use a 4A power supply and a short cable with large wire diameters (min AWG16) between the power supply and the FC. A long/thin cable, due to its resistance, might cause under-voltage and therefore problems like LEDs behaving erratically or even crashes of the FC's CPU.
 
 
 _Text & images: (C) Thomas Winischhofer ("A10001986"). See LICENSE._ Source: https://fc.out-a-ti.me
