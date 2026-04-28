@@ -153,7 +153,7 @@ Try to avoid powering down the FC
 - when it is clearly busy (such as when copying or renaming audio files);
 - within 15 seconds after changing settings (eg Flux mode, Flux level, box light level, volume, speed, IR lock, chase sequence, ...) through the IR remote control or the TCD keypad.
 
-### IR remote control
+### IR Remote Control
 
 Your FC kit includes an IR remote control. This remote works out-of-the-box and needs no setup. 
 
@@ -172,7 +172,7 @@ See [here](#appendix-b-led-signals) for all supported signals.
 
 ### IR Learning
 
-Your FC can learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, especially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards, that remote is of that type and cannot be used.
+Your FC can learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, especially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards or appear to the pressed repeatedly while held, that remote is of that type and cannot be used.
 
 IR learning can be initiated by entering *987654ok on the standard IR remote.
 
@@ -188,7 +188,7 @@ If no key is pressed for 10 seconds, the learning process aborts (as does briefl
 
 To make the FC forget a learned IR remote control, type *654321ok.
 
-### Locking IR control
+### Locking IR Control
 
 You can have your FC ignore IR commands from any IR remote control (be it the default supplied one, be it one you had the FC learn) by entering *70ok. After this sequence, the FC will ignore all IR commands until *70ok is entered again. The purpose of this function is to enable you to use the same remote for your FC and other props.
 
@@ -196,7 +196,7 @@ Note that the status of the IR lock is saved 10 seconds after its last change, a
 
 In order to only disable the supplied IR remote control, check the option **_Disable supplied IR remote control_** in the [Config Portal](#-disable-supplied-ir-remote-control). In that case, any learned remote will still work.
 
-### Remote control reference
+### Remote Control Reference
 
 <table>
     <tr>
@@ -382,7 +382,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
 
 [Here](CheatSheet.pdf) is a cheat sheet for printing or screen-use. (Note that MacOS' preview application has a bug that scrambles the links in the document. Acrobat Reader does it correctly.)
 
-## The Flux sound
+## The Flux Sound
 
 By default, the FC plays a "flux" sound continuously.
 
@@ -398,7 +398,7 @@ The flux sound's volume level, relative to general volume, can be adjusted in fo
 
 Both settings, mode and level, are saved 10 seconds after the last change (see also [here](#powering-down-the-fc)).
 
-## Box lighting
+## Box Lighting
 
 The FC features connectors for box lights, ie LEDs that light up the inside of the FC during the time travel sequence. Those should be installed, they are essential part of the time travel sequence. The kit from CircuitSetup contains suitable high-power LEDs for box lighting, and all four of those must be connected to the "Box LED" connectors. Their ideal location is in each corner, as close to the front (door) as possible.
 
@@ -411,7 +411,7 @@ In normal operation, those LEDs are off. You can, however, configure a minimum b
 
 </details>
 
-## Time travel
+## Time Travel
 
 To travel through time, type "0" on the remote control. The Flux Capacitor will play its time travel sequence.
 
@@ -419,7 +419,7 @@ You can also connect an external Time Travel button to your FC; the button must 
 
 Other ways of triggering a time travel are available if a [Time Circuits Display](#connecting-a-time-circuits-display) is connected.
 
-## SD card
+## SD Card
 
 >Preface note on SD cards: For unknown reasons, some SD cards simply do not work with this device. For instance, I had no luck with Sandisk Ultra 32GB and  "Intenso" cards. If your SD card is not recognized, check if it is formatted in FAT32 format (not exFAT!). Also, the size must not exceed 32GB (as larger cards cannot be formatted with FAT32). Transcend, Sandisk Industrial, Verbatim Premium and Samsung Pro Endurance SDHC cards work fine in my experience.
 
