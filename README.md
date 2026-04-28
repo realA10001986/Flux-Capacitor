@@ -519,7 +519,7 @@ Afterwards, the FC and the TCD can communicate wirelessly and
 - both play an alarm-sequence when the TCD's alarm occurs,
 - the FC can be remote controlled through the TCD's keypad (command codes 3xxx),
 - the FC can remote control the TCD's keypad (see [below](#remote-controlling-the-tcds-keypad))
-- the FC queries the TCD for speed (GPS, rotary encoder, Remote) if desired to adapt its idle pattern to speed,
+- the FC queries the TCD for speed (GPS, rotary encoder, Remote), if desired, to adapt its chase speed,
 - the FC queries the TCD for fake power and night mode, in order to react accordingly if so configured,
 - pressing "0" on the IR remote control or the FC's Time Travel button can trigger a synchronized Time Travel on all BTTFN-connected devices, just like if that Time Travel was triggered through the TCD.
 
