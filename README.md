@@ -512,7 +512,7 @@ BTTFN requires the props all to be connected to the same network, such as, for e
 >The term "WiFi network" is used for both "WiFi network" and "ip subnet" here for simplicity reasons. However, for BTTFN communication, the devices must be on the same IP subnet, regardless of how they take part in it: They can be connected to different WiFi networks, if those WiFi networks are part of the same ip subnet.
 </details>
 
-In order to connect your FC to the TCD using BTTFN, just enter the TCD's hostname - usually "timecircuits" - in the **_Hostname or IP address of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required. 
+In order to connect your FC to the TCD, just enter the TCD's hostname - usually "timecircuits" - in the **_Hostname or IP address of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required. 
   
 Afterwards, the FC and the TCD can communicate wirelessly and 
 - play time travel sequences in sync,
