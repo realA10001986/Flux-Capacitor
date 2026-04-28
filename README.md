@@ -635,7 +635,7 @@ If your broker does not allow anonymous logins, a username and password can be s
 
 Limitations: TLS/SSL not supported; ".local" domains (MDNS) not supported; server/broker must respond to PING (ICMP) echo requests. For proper operation with low latency, it is recommended that the broker is on your local network. MQTT is disabled when your FC is operated in AP-mode or when connected to the TCD run in AP-Mode (TCD-AP).
 
-## Car setup
+## Car Setup
 
 If your FC, along with a [Time Circuits Display](https://tcd.out-a-ti.me/), is mounted in a car or other places without a local WiFi network, the following network configuration is recommended:
 
@@ -663,7 +663,7 @@ In order to access the FC's Config Portal in Car mode, connect your handheld or 
   ><details><summary>If that fails...</summary>
   >If connecting to http://flux.local fails due to a name resolution error, go to the TCD's keypad menu, navigate to "BTTFN CLIENTS", and look for the FC's IP address there; then direct your browser to that IP by using the URL http://a.b.c.d (a-d being the IP address displayed on the TCD display)</details>
 
-## WiFi power saving features
+## WiFi Power Saving Features
 
 The Config Portal offers an option for WiFi power saving for AP-mode (ie when the device acts as an access point). This option configures a timer after whose expiration WiFi is switched off; the device is no longer transmitting or receiving data over WiFi.
 
