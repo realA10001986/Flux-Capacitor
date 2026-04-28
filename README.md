@@ -462,7 +462,7 @@ Replacements and custom sounds can either be copied to the SD card using a compu
 
 Uploading through the Config Portal works exactly like [installing the sound-pack](#sound-pack-installation); on the main menu, click "Update & Upload". Afterwards choose one or more mp3 files to upload using the bottom file selector, and click "UPLOAD". The firmware will store the uploaded mp3 files on the SD card.
 
-In order to delete a file from the SD card, upload a file whose name is prefixed with "delete-". For example: To delete "key3.mp3" from the SD card, upload a file named "delete-key3.mp3"; the file's contents does not matter, so it's easiest to use a newly created empty file. The firmware detects the "delete-" part and, instead of storing the uploaded file, it throws it away and deletes "key3.mp3" from the SD card.
+To delete a file from the SD card, upload a file whose name is prefixed with "delete-". For example: To delete "key3.mp3" from the SD card, upload a file named "delete-key3.mp3"; the file's contents does not matter, so it's easiest to use a newly created empty file. The firmware detects the "delete-" part and, instead of storing the uploaded file, it throws it away and deletes "key3.mp3" from the SD card.
 
 For technical reasons, the FC must reboot after mp3 files are uploaded in this way.
 
@@ -472,7 +472,7 @@ Please remember that the maximum bitrate for mp3 files is 128kbps. Also note tha
 
 The firmware contains a simple music player to play mp3 files located on the SD card. 
 
-In order to be recognized, your mp3 files need to be organized in music folders named *music0* through *music9*. The folder number is 0 by default, ie the player starts searching for music in folder *music0*. This folder number can be changed using the remote control or through the TCD keypad (305x).
+To be recognized, your mp3 files need to be organized in music folders named *music0* through *music9*. The folder number is 0 by default, ie the player starts searching for music in folder *music0*. This folder number can be changed using the remote control or through the TCD keypad (305x).
 
 The names of the audio files must only consist of three-digit numbers, starting at 000.mp3, in consecutive order. No numbers should be left out. Each folder can hold up to 1000 files (000.mp3-999.mp3). *The maximum bitrate is 128kpbs.*
 
@@ -512,7 +512,7 @@ BTTFN requires the props all to be connected to the same network, such as, for e
 >The term "WiFi network" is used for both "WiFi network" and "ip subnet" here for simplicity reasons. However, for BTTFN communication, the devices must be on the same IP subnet, regardless of how they take part in it: They can be connected to different WiFi networks, if those WiFi networks are part of the same ip subnet.
 </details>
 
-In order to connect your FC to the TCD, just enter the TCD's hostname - usually "timecircuits" - in the **_Hostname or IP address of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required. 
+To connect your FC to the TCD, just enter the TCD's hostname - usually "timecircuits" - in the **_Hostname or IP address of TCD_** field in the FC's Config Portal. On the TCD, no special configuration is required. 
   
 Afterwards, the FC and the TCD can communicate wirelessly and 
 - play time travel sequences in sync,
@@ -531,11 +531,11 @@ The FC can, through its IR remote control, remote control the TCD keypad. The TC
 
 As a prerequisite, the TCD must be set to permit remote control. This is done on the TCD through keypad command 995.
 
-In order to start TCD keypad remote control, type *95ok on the FC's IR remote control (or issue command 3095 from the TCD or through [HA/MQTT](#control-the-fc-via-mqtt)).
+To start TCD keypad remote control, type *95ok on the FC's IR remote control (or issue command 3095 from the TCD or through [HA/MQTT](#control-the-fc-via-mqtt)).
 
 Keys 0-9 as well as OK (=ENTER) on your IR remote control will now be registered by the TCD as key presses.
 
-"Holding" a key on the TCD keypad is emulated by pressing * followed by the key, for instance *1 (in order to toggle the TCD alarm). Holding "OK" is only accepted by the TCD to stop the alarm, but not for entering the keypad menu.
+"Holding" a key on the TCD keypad is emulated by pressing * followed by the key, for instance *1 (to toggle the TCD alarm). Holding "OK" is only accepted by the TCD to stop the alarm, but not for entering the keypad menu.
 
 Pressing # quits TCD keypad remote control mode, as does issuing command 3097 on the TCD or through HA/MQTT.
 
@@ -660,7 +660,7 @@ If everything is in place, you can enable Car mode on the FC by typing *991ok on
 
 You can switch between your "normal" (home, iPhone, ..) WiFi connection and Car mode by entering *990ok or *991ok, respectively.
 
-In order to access the FC's Config Portal in Car mode, connect your handheld or computer to the TCD's WiFi network ("TCD-AP"), and direct your browser to http://flux.local.
+To access the FC's Config Portal in Car mode, connect your handheld or computer to the TCD's WiFi network ("TCD-AP"), and direct your browser to http://flux.local.
 
   ><details><summary>If that fails...</summary>
   >If connecting to http://flux.local fails due to a name resolution error, go to the TCD's keypad menu, navigate to "BTTFN CLIENTS", and look for the FC's IP address there; then direct your browser to that IP by using the URL http://a.b.c.d (a-d being the IP address displayed on the TCD display)</details>
@@ -679,7 +679,7 @@ After WiFi has been switched off due to timer expiration, it can be re-enabled b
 
 Flash memory has a somewhat limited lifetime. It can be written to only between 10.000 and 100.000 times before becoming unreliable. The firmware writes to the internal flash memory when saving settings and other data. Every time you change settings, data is written to flash memory.
 
-In order to reduce the number of write operations and thereby prolong the life of your Flux Capacitor, it is recommended to use a good-quality SD card and to check **_[Save secondary settings on SD](#-save-secondary-settings-on-sd)_** in the Config Portal; secondary settings as well as learned IR codes are then stored on the SD card (which also suffers from wear but is easy to replace). See [here](#-save-secondary-settings-on-sd) for more information.
+To reduce the number of write operations and thereby prolong the life of your Flux Capacitor, it is recommended to use a good-quality SD card and to check **_[Save secondary settings on SD](#-save-secondary-settings-on-sd)_** in the Config Portal; secondary settings as well as learned IR codes are then stored on the SD card (which also suffers from wear but is easy to replace). See [here](#-save-secondary-settings-on-sd) for more information.
 
 ## Firmware Installation / Firmware Update
 
@@ -733,7 +733,7 @@ This leads to the [HomeAssistant/MQTT Settings page](#hamqtt-settings).
 
 This leads to the firmware update and audio upload page.
 
-In order to upload a new firmware, such as published in the [Release packages](https://github.com/realA10001986/Flux-Capacitor/releases), select the "**fluxcapacitor-A10001986-Vx.xxx.bin**" or "**Flux_Capacitor_vX.YY.bin**" file as contained in the Release package in the _top_ file selector and click *Update*.
+To upload a new firmware, such as published in the [Release packages](https://github.com/realA10001986/Flux-Capacitor/releases), select the "**fluxcapacitor-A10001986-Vx.xxx.bin**" or "**Flux_Capacitor_vX.YY.bin**" file as contained in the Release package in the _top_ file selector and click *Update*.
 
 You can also install the FC's sound-pack on this page; download the sound-pack (which is included in every [Release package](https://github.com/realA10001986/Flux-Capacitor/releases)), extract it and select the resulting FCA.bin file in the _bottom_ file selector. Finally, click *Upload*. Note that an SD card is required for this operation.
 
@@ -749,7 +749,7 @@ Through this page you can either connect your FC to your local WiFi network, or 
 
 #### <ins>Connecting to an existing WiFi network</ins>
 
-In order to connect your FC to your WiFi network, all you need to do is either to click on one of the networks listed at the top or to enter a __Network name (SSID)__, and optionally a __password__ (WPAx). If there is no list displayed, click on "Scan for Networks".
+To connect your FC to your WiFi network, all you need to do is either to click on one of the networks listed at the top or to enter a __Network name (SSID)__, and optionally a __password__ (WPAx). If there is no list displayed, click on "Scan for Networks".
 
 >By default, the FC requests an IP address via DHCP. However, you can also configure a static IP for the FC by entering the IP, netmask, gateway and DNS server. All four fields must be filled for a valid static IP configuration. If you want to stick to DHCP, leave those four fields empty.
 
