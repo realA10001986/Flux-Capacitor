@@ -654,7 +654,7 @@ One-time configuration steps:
 - Enter the Config Portal on the FC, click on *Settings* and check that the hostname of the TCD (usually "timecircuits") is present in the  **_Hostname or IP address of TCD_** under *Wireless communication (BTTF-Network)* settings; do not use an IP address.
 - Furthermore, on the *WiFi Configuration* page, check that the TCD's WiFi network name (SSID; usually "TCD-AP") and password (if the TCD is configured with a password) are present under *Car mode settings*.
 
-If everthing is in place, you can enable Car mode on the FC by typing *991ok on the remote. The FC will reboot and attempt to connect to the TCD's AP.
+If everything is in place, you can enable Car mode on the FC by typing *991ok on the remote. The FC will reboot and attempt to connect to the TCD's AP.
 
 You can switch between your "normal" (home, iPhone, ..) WiFi connection and Car mode by entering *990ok or *991ok, respectively.
 
