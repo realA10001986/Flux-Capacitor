@@ -529,6 +529,8 @@ You can use BTTF-Network and MQTT at the [same time](#receive-commands-from-time
 
 The FC can, through its IR remote control, remote control the TCD keypad. The TCD will react to pressing a key on the IR remote as if that key was pressed on the TCD keypad.
 
+As a prerequisite, the TCD must be set to permit remote control. This is done through keypad command 995.
+
 In order to start TCD keypad remote control, type *95ok on the FC's IR remote control (or issue command 3095 from the TCD or through [HA/MQTT](#control-the-fc-via-mqtt)).
 
 Keys 0-9 as well as OK (=ENTER) on your IR remote control will now be registered by the TCD as key presses.
