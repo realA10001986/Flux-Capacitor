@@ -200,7 +200,7 @@ In order to only disable the supplied IR remote control, check the option **_Dis
     </tr>
     <tr>
      <td align="center">1<br><a href="#additional-custom-sounds">Play "key1.mp3"</a><br>[3001]</td>
-     <td align="center">2<br><a href="#the-music-player">Music Player</a>: Previous song<br>[3002]</td>
+     <td align="center">2<br><a href="#the-music-player">Music Player</a>: Previous track<br>[3002]</td>
      <td align="center">3<br><a href="#additional-custom-sounds">Play "key3.mp3"</a><br>[3003]</td>
     </tr>
     <tr>
@@ -210,7 +210,7 @@ In order to only disable the supplied IR remote control, check the option **_Dis
     </tr>
     <tr>
      <td align="center">7<br><a href="#additional-custom-sounds">Play "key7.mp3"</a><br>[3007]</td>
-     <td align="center">8<br><a href="#the-music-player">Music Player</a>: Next song<br>[3008]</td>
+     <td align="center">8<br><a href="#the-music-player">Music Player</a>: Next track<br>[3008]</td>
      <td align="center">9<br><a href="#additional-custom-sounds">Play "key9.mp3"</a><br>[3009]</td>
     </tr>
     <tr>
@@ -295,11 +295,11 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">*555&#9166;</td><td>3555</td>
     </tr> 
     <tr>
-     <td align="left"><a href="#the-music-player">Music Player</a>: Go to song 0</td>
+     <td align="left"><a href="#the-music-player">Music Player</a>: Go to track 0</td>
      <td align="left">*888&#9166;</td><td>3888</td>
     </tr>
     <tr>
-     <td align="left"><a href="#the-music-player">Music Player</a>: Go to song xxx</td>
+     <td align="left"><a href="#the-music-player">Music Player</a>: Go to track xxx</td>
      <td align="left">*888xxx&#9166;</td><td>3888xxx</td>
     </tr>
     <tr>
@@ -462,23 +462,27 @@ To delete a file from the SD card, upload a file whose name is prefixed with "de
 
 For technical reasons, the FC must reboot after mp3 files are uploaded in this way.
 
-Please remember that the maximum bitrate for mp3 files is 128kbps. Also note that the uploaded file is stored to the root folder of the SD card, so this way of uploading cannot be used to upload songs for the Music Player. 
+Please remember that the maximum bitrate for mp3 files is 128kbps. Also note that the uploaded file is stored to the root folder of the SD card, so this way of uploading cannot be used to upload music files for the Music Player. 
 
 ## The Music Player
 
 The firmware contains a simple music player to play mp3 files located on the SD card. 
 
-To be recognized, your mp3 files need to be organized in music folders named *music0* through *music9*. The folder number is 0 by default, ie the player starts searching for music in folder *music0*. This folder number can be changed using the remote control or through the TCD keypad (305x).
+*The maximum bitrate is __128kpbs__. The free [Adapter](https://macroplant.com/adapter/audio-converter) tool can re-encode your mp3 files in batches.*
 
-The names of the audio files must only consist of three-digit numbers, starting at 000.mp3, in consecutive order. No numbers should be left out. Each folder can hold up to 1000 files (000.mp3-999.mp3). *The maximum bitrate is 128kpbs.*
+To be recognized, your mp3 files need to be organized in music folders named *music0* through *music9*. The folder number is 0 by default, i.e. the player starts searching for music in folder *music0*. This folder number can be changed using the remote control or through the TCD keypad (305x).
 
-Since manually renaming mp3 files is somewhat cumbersome, the firmware can do this for you - provided you can live with the files being sorted in alphabetical order: Just copy your files with their original filenames to the music folder; upon boot or upon selecting a folder containing such files, they will be renamed following the 3-digit name scheme (as mentioned: in alphabetic order). You can also add files to a music folder later, they will be renamed properly; when you do so, delete the file "TCD_DONE.TXT" from the music folder on the SD card so that the firmware knows that something has changed. The renaming process can take a while (11 minutes for 1000 files in bad cases). Mac users are advised to delete the ._ files from the SD before putting it back into the FC as this speeds up the process. _While the renaming is in progress, the FC's chase LEDs shows the fraction of files still left to be processed._
+The names of the audio files must only consist of three-digit numbers, starting at 000.mp3, in consecutive order. No numbers should be left out. Each folder can hold up to 1000 files (000.mp3-999.mp3). 
 
-To start and stop music playback, press 5 on your remote. Pressing 2 jumps to the previous song, pressing 8 to the next one.
+Since manually renaming mp3 files is somewhat cumbersome, the firmware can do this for you: Just copy your files with their original filenames to the music folder; when selecting a folder containing such files, they will be sorted alphabetically and renamed according to the 3-digit name scheme. (If you want your tracks in a specific order, you must rename them, for instance by inserting a letter or number at the start.) The renaming process can take a while (11 minutes for 1000 files in bad cases). Mac users are advised to delete the ._ files from the SD before putting it back into the FC as this speeds up the process. While the renaming is in progress, the FC's chase LEDs show the fraction of files still left to be processed.
 
-By default, the songs are played in order, starting at 000.mp3, followed by 001.mp3 and so on. By entering \*555ok, you can switch to shuffle mode, in which the songs are played in random order. Type \*222ok to switch back to consecutive mode. Shuffle mode is saved and persistent.
+To add files to a music folder later, just copy them to the folder and delete the file "TCD_DONE.TXT" (so that the firmware knows that something has changed). 
 
-Entering \*888ok re-starts the player at song #000, and \*888xxxok (xxx = three-digit number) jumps to song #xxx.
+To start and stop music playback, press 5 on your remote. Pressing 2 jumps to the previous track, pressing 8 to the next one.
+
+By default, the tracks are played in order, starting at 000.mp3, followed by 001.mp3 and so on. By entering \*555ok, you can switch to shuffle mode, in which the tracks are played in random order. Type \*222ok to switch back to consecutive mode. Shuffle mode is saved and persistent.
+
+Entering \*888ok re-starts the player at track #000, and \*888xxxok (xxx = three-digit number) jumps to track #xxx.
 
 See [here](#remote-control-reference) for a list of controls of the music player.
 
@@ -589,12 +593,12 @@ The FC can be controlled through messages sent to topic **bttf/fc/cmd**. Support
 - FLUX_60 Enables the [flux sound](#the-flux-sound) for 60 seconds
 - MP_PLAY: Starts the [Music Player](#the-music-player)
 - MP_STOP: Stops the [Music Player](#the-music-player)
-- MP_NEXT: Jump to next song
-- MP_PREV: Jump to previous song
+- MP_NEXT: Jump to next [Music Player](#the-music-player) track
+- MP_PREV: Jump to previous [Music Player](#the-music-player) track
 - MP_SHUFFLE_ON: Enables shuffle mode in [Music Player](#the-music-player)
 - MP_SHUFFLE_OFF: Disables shuffle mode in [Music Player](#the-music-player)
 - MP_FOLDER_x: x being 0-9, set folder number for [Music Player](#the-music-player)
-- MP_REQSTATUS: Publish current music player state to bttf/fc/mpstatus
+- MP_REQSTATUS: Publish current music player status to bttf/fc/mpstatus
 - VOLUME_UP, VOLUME_DOWN: Increase/decrease volume by a notch
 - VOLUME_SET_x: Set volume to x% (x=0-100)
 - USER1, USER2: User commands, see below
