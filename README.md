@@ -959,11 +959,11 @@ The username (and optionally the password) to be used when connecting to the bro
 
 ##### &#9193; Publish Music Player status to bttf/fc/mpstatus
 
-This option enables the Music Player's so-called backchannel. This backchannel can be used, in combination with the Music Player related MQTT commands, to comfortably remote-control the FC's music player.
+This option enables the Music Player's backchannel. The backchannel carries feedback and status information on the Music Player which can be used to comfortably remote-control the FC's Music Player through HomeAssistant/MQTT.
 
-Should be left unchecked if not used.
+This option should be left unchecked if not used.
 
-Backchannel data is sent to _bttf/fc/mpstatus_ on every change. It can also be triggered by sending __MP_REQSTATUS__ to _bttf/fc/cmd_.
+Backchannel data is sent to _bttf/fc/mpstatus_ on every change. It can also be triggered at any point by sending __MP_REQSTATUS__ to _bttf/fc/cmd_.
 
 The data published on the backchannel is a JSON object, containing the following keys:
 - __S__: State. _Value_ can be "P" for playing, "I" for idle, and "O" for off/busy. In 'off' state, the FC does not take commands.
