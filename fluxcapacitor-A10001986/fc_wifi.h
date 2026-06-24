@@ -69,11 +69,21 @@ bool isIp(char *str);
 
 bool checkIPConfig();
 
+#ifdef FC_HAVEMQTT
+bool mqttConnected();
+bool mqttPublish(const char *topic, const char *pl, unsigned int len);
+#endif
+
 extern bool wifiSetupDone;
 extern bool wifiIsOff;
 extern bool wifiAPIsOff;
 extern bool wifiInAPMode;
 
 extern bool carMode;
+
+#ifdef FC_HAVEMQTT
+extern bool useMQTT;
+extern bool pubMP;
+#endif
 
 #endif

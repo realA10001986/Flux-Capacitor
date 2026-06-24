@@ -15,8 +15,8 @@
  ***                          Version Strings                          ***
  *************************************************************************/
 
-#define FC_VERSION       "V1.103"           // Do NOT change format.
-#define FC_VERSION_EXTRA "APR272026"
+#define FC_VERSION       "V1.104"           // Do NOT change format.
+#define FC_VERSION_EXTRA "JUN242026"
 
 /*************************************************************************
  ***                           Miscellaneous                           ***
@@ -30,9 +30,6 @@
 // without 5s lead" is set on the TCD, the FC option "TCD signals without 
 // lead" must be set, too.
 #define ETTO_LEAD 5000
-
-// Use SPIFFS (if defined) or LittleFS (if undefined; esp32-arduino >= 2.x)
-//#define USE_SPIFFS
 
 // Uncomment this if using a FC control board v1.2
 // Comment for all later versions

@@ -98,9 +98,6 @@ void showMPRProgress(int perc);
 void mydelay(unsigned long mydel, bool withIR);
 unsigned long millisNonZero();
 
-void prepareTT();
-void wakeup();
-
 void addCmdQueue(uint32_t command);
 void bttfn_loop();
 

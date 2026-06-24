@@ -218,6 +218,7 @@ struct Settings {
     char mqttVers[2]        = "0"; // 0 = 3.1.1, 1 = 5.0
     char mqttServer[80]     = "";  // ip or domain [:port]  
     char mqttUser[128]      = "";  // user[:pass] (UTF8)
+    char pubMP[2]           = "0"; // 1:Publish music player status to bttf/fc/mpstatus, 0: Don't
 #endif       
 
     // Kludge for CP

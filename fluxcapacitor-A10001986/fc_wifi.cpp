@@ -204,7 +204,7 @@ WiFiManagerParameter custom_ssidcm("ssidcm", "Network name (SSID) of TCD-AP", se
 WiFiManagerParameter custom_passcm("passcm", "Password for TCD-AP", settings.cm_pass, 8, "minlength='8' pattern='[A-Za-z0-9\\-]+'");
 WiFiManagerParameter custom_tcdssid(wmBuildTCDSSID);
 WiFiManagerParameter custom_bssidcm("bsidcm", "TCD-AP BSSID (optional)", settings.cm_bssid, 17, "pattern='^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$' placeholder='XX:XX:XX:XX:XX:XX'");
-WiFiManagerParameter custom_ecm("ecm", "Enable Car Mode", settings.ecmKludge, "", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_ecm("ecm", "Enable Car Mode now", settings.ecmKludge, "", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 
 #if defined(FC_MDNS) || defined(WM_MDNS)
 #define HNTEXT "Hostname<br><span>The Config Portal is accessible at http://<i>hostname</i>.local<br>(Valid characters: a-z/0-9/-)</span>"
@@ -260,7 +260,8 @@ WiFiManagerParameter custom_useMQTT("uMQTT", "Home Assistant support (MQTT)", se
 WiFiManagerParameter custom_state(wmBuildMQTTstate);
 WiFiManagerParameter custom_mqttServer("ha_server", "Broker IP[:port] or domain[:port]", settings.mqttServer, 79, "pattern='[a-zA-Z0-9\\.:\\-]+' placeholder='Example: 192.168.1.5'");
 WiFiManagerParameter custom_mqttVers(wmBuildMQTTprot);
-WiFiManagerParameter custom_mqttUser("ha_usr", "User[:Password]", settings.mqttUser, 63, "placeholder='Example: ronald:mySecret'", WFM_LABEL_BEFORE|WFM_FOOT);
+WiFiManagerParameter custom_mqttUser("ha_usr", "User[:Password]", settings.mqttUser, 63, "placeholder='Example: ronald:mySecret'", WFM_LABEL_BEFORE);
+WiFiManagerParameter custom_pubMP("pMP", "Publish Music Player status to bttf/fc/mpstatus", settings.pubMP, "class='mt5'", WFM_LABEL_AFTER|WFM_IS_CHKBOX|WFM_SECTS|WFM_FOOT);
 #endif // HAVEMQTT
 
 static const int8_t wifiMenu[] = {
@@ -337,7 +338,7 @@ static int  *opType = NULL;
 #define       MQTT_SHORT_INT  (30*1000)
 #define       MQTT_LONG_INT   (5*60*1000)
 static const char    emptyStr[1] = { 0 };
-static bool          useMQTT = false;
+bool                 useMQTT = false;
 static char          *mqttUser = (char *)emptyStr;
 static char          *mqttPass = (char *)emptyStr;
 static char          *mqttServer = (char *)emptyStr;
@@ -352,6 +353,7 @@ static bool          mqttPingDone = false;
 static unsigned long mqttPingNow = 0;
 static unsigned long mqttPingInt = MQTT_SHORT_INT;
 static uint16_t      mqttPingsExpired = 0;
+bool                 pubMP = false;
 #endif
 
 static unsigned int wmLenBuf = 0;
@@ -430,8 +432,6 @@ void wifi_setup()
       &custom_wifiAPOffDelay,
       &custom_wifihint,
 
-      //&custom_sectend_foot,
-
       NULL
       
     };
@@ -440,7 +440,6 @@ void wifi_setup()
 
       &custom_hsel,
       
-      //&custom_sectstart_head,// 7
       &custom_playFLUXSnd,
       &custom_origSeq,
       &custom_sTTBLA,
@@ -457,21 +456,16 @@ void wifi_setup()
       &custom_uFPO,
       &custom_bttfnTT,
   
-      //&custom_sectstart,     // 3
       &custom_TCDpresent,
       &custom_noETTOL,
       
-      //&custom_sectstart,     // 2 (3)
       &custom_haveSD,
       &custom_CfgOnSD,
       //&custom_sdFrq,
   
-      //&custom_sectstart,     // 4
       &custom_swapBL,
       &custom_useSknob,
       &custom_disDIR,
-      
-      //&custom_sectend_foot,  // 1
 
       NULL
     };
@@ -479,14 +473,13 @@ void wifi_setup()
     #ifdef FC_HAVEMQTT
     WiFiManagerParameter *parm2Array[] = {
 
-      //&custom_sectstart_head, 
       &custom_useMQTT,
       &custom_state,
       &custom_mqttServer,
       &custom_mqttVers,
       &custom_mqttUser,
 
-      //&custom_sectend_foot,
+      &custom_pubMP,
 
       NULL
     };
@@ -681,6 +674,8 @@ void wifi_setup()
 
         char *t;
 
+        pubMP = evalBool(settings.pubMP);
+
         // No WiFi power save if we're using MQTT
         origWiFiOffDelay = wifiOffDelay = 0;
 
@@ -780,12 +775,13 @@ void wifi_loop()
         carMode = !!(wifiLoopSaveAction & WLA_SET_CM_ON);
         if(!*settings.cm_ssid) carMode = false;
         if(carMode != ocm) {
-            mp_stop();
+            fcBusy = true;  // Force MP "off" state
+            mp_stop(true);
             stopAudio();
             saveCarMode();
             if(!(wifiLoopSaveAction & WLA_SET)) {
                 prepareReboot();
-                delay(500);
+                delay(1000);
                 esp_restart();
             }
         }
@@ -796,7 +792,8 @@ void wifi_loop()
 
         int temp;
 
-        mp_stop();
+        fcBusy = true;    // Force MP "off" state
+        mp_stop(true);
         stopAudio();
 
         // Save settings and restart esp32
@@ -910,6 +907,7 @@ void wifi_loop()
             evalCB(settings.useMQTT, &custom_useMQTT);
             strcpytrim(settings.mqttServer, custom_mqttServer.getValue());
             strcpyutf8(settings.mqttUser, custom_mqttUser.getValue(), sizeof(settings.mqttUser));
+            evalCB(settings.pubMP, &custom_pubMP);
             #endif
             
         }
@@ -1205,7 +1203,8 @@ bool wifiOnWillBlock()
             }
         }
     } else {            // We are in STA mode
-        if(!wifiIsOff) return false;
+        if(!wifiIsOff && (WiFi.status() == WL_CONNECTED)) 
+            return false;
     }
 
     return true;
@@ -1395,7 +1394,8 @@ static void preUpdateCallback()
     wifiAPOffDelay = 0;
     origWiFiOffDelay = 0;
 
-    mp_stop();
+    fcBusy = true;    // Force MP "off" state
+    mp_stop(true);
     stopAudio();
 
     flushDelayedSave();
@@ -1523,6 +1523,7 @@ static void updateConfigPortalValues()
     setCBVal(&custom_useMQTT, settings.useMQTT);
     custom_mqttServer.setValue(settings.mqttServer);
     custom_mqttUser.setValue(settings.mqttUser);
+    setCBVal(&custom_pubMP, settings.pubMP);
     #endif
 }
 
@@ -1807,7 +1808,7 @@ static void doReboot()
 {
     delay(1000);
     prepareReboot();
-    delay(500);
+    delay(1000);
     esp_restart();
 }
 
@@ -1842,7 +1843,7 @@ static void handleUploading()
     if(upload.status == UPLOAD_FILE_START) {
 
           String c = upload.filename;
-          const char *illChrs = "|~><:*?\" ";
+          static const char *illChrs = "|~><:*?\" ";
           int temp;
           char tempc;
 
@@ -1925,8 +1926,8 @@ static void handleUploading()
 
 static void handleUploadDone()
 {
-    const char *ebuf = "ERROR";
-    const char *dbuf = "DONE";
+    static const char *ebuf = "ERROR";
+    static const char *dbuf = "DONE";
     char *buf = NULL;
     bool haveErrs = false;
     bool haveAC = false;
@@ -2271,27 +2272,31 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
     int i = 0, j, ml = (length <= 255) ? length : 255;
     char tempBuf[256];
     static const char *cmdList[] = {
-      "FASTER",           // 0
-      "SLOWER",           // 1
-      "RESETSPEED",       // 2            
-      "TIMETRAVEL",       // 3
-      "CHASE_",           // 4   CHASE_0..CHASE_9
-      "FLUX_OFF",         // 5
-      "FLUX_ON",          // 6
-      "FLUX_30",          // 7
-      "FLUX_60",          // 8
-      "USER1",            // 9   also while off
-      "USER2",            // 10  also while off
-      "MP_SHUFFLE_ON",    // 11
-      "MP_SHUFFLE_OFF",   // 12
-      "MP_PLAY",          // 13
-      "MP_STOP",          // 14
-      "MP_NEXT",          // 15
-      "MP_PREV",          // 16
-      "MP_FOLDER_",       // 17  MP_FOLDER_0..MP_FOLDER_9
-      "PLAYKEY_",         // 18  PLAYKEY_1..PLAYKEY_9
-      "STOPKEY",          // 19
-      "INJECT_",          // 20
+      "\x01" "FASTER",           // 0
+      "\x01" "SLOWER",           // 1
+      "\x01" "RESETSPEED",       // 2            
+      "\x01" "TIMETRAVEL",       // 3
+      "\x01" "CHASE_",           // 4   CHASE_0..CHASE_9
+      "\x41" "FLUX_OFF",         // 5
+      "\x41" "FLUX_ON",          // 6
+      "\x41" "FLUX_30",          // 7
+      "\x41" "FLUX_60",          // 8
+      "\xc1" "USER1",            // 9   also while off or busy
+      "\xc1" "USER2",            // 10  also while off or busy
+      "\x41" "MP_SHUFFLE_ON",    // 11
+      "\x41" "MP_SHUFFLE_OFF",   // 12
+      "\x01" "MP_PLAY",          // 13
+      "\x41" "MP_STOP",          // 14
+      "\x01" "MP_NEXT",          // 15
+      "\x01" "MP_PREV",          // 16
+      "\x01" "MP_FOLDER_",       // 17  MP_FOLDER_0..MP_FOLDER_9
+      "\x01" "PLAYKEY_",         // 18  PLAYKEY_1..PLAYKEY_9
+      "\x41" "STOPKEY",          // 19
+      "\x01" "INJECT_",          // 20
+      "\x01" "VOLUME_UP",        // 21
+      "\x01" "VOLUME_DOWN",      // 22
+      "\x01" "VOLUME_SET_",      // 23  VOLUME_SET_0..VOLUME_SET_100
+      "\xc1" "MP_REQSTATUS",     // 24  also while off or busy
       NULL
     };
     static const char *cmdList2[] = {
@@ -2383,13 +2388,17 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
             break;
         }
        
-    } else if(!fcBusy && !strcmp(topic, "bttf/fc/cmd")) {
+    } else if(!strcmp(topic, "bttf/fc/cmd")) {
 
         // User commands
 
+        int tblen = 0;
+        uint8_t k = 0;
+
         while(cmdList[i]) {
-            j = strlen(cmdList[i]);
-            if((length >= j) && !strncmp((const char *)tempBuf, cmdList[i], j)) {
+            k = (uint8_t)*cmdList[i];
+            j = strlen(cmdList[i] + 1);
+            if((length >= j) && !strncmp((const char *)tempBuf, cmdList[i] + 1, j)) {
                 break;
             }
             i++;          
@@ -2397,14 +2406,22 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
 
         if(!cmdList[i]) return;
 
+        if(!FPBUnitIsOn && (!(k & 0x80)))
+            return;
+
+        if(fcBusy && (!(k & 0x40)))
+            return;
+
         // What needs to be handled here:
         // - complete command parsing
         // - stuff to execute when fake power is off
         // All other stuff translated into command and queued
 
+        tblen = strlen(tempBuf);
+
         switch(i) {
         case 4:
-            if(strlen(tempBuf) > j && tempBuf[j] >= '0' && tempBuf[j] <= '9') {
+            if(tblen > j && tempBuf[j] >= '0' && tempBuf[j] <= '9') {
                 addCmdQueue(10 + (uint32_t)(tempBuf[j] - '0'));
             }
             break;
@@ -2418,19 +2435,32 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
             addCmdQueue((i == 11) ? 555 : 222);
             break;
         case 17:
-            if(strlen(tempBuf) > j && tempBuf[j] >= '0' && tempBuf[j] <= '9') {
+            if(tblen > j && tempBuf[j] >= '0' && tempBuf[j] <= '9') {
                 addCmdQueue(50 + (uint32_t)(tempBuf[j] - '0'));
             }
             break;
         case 18:
-            if(strlen(tempBuf) > j && tempBuf[j] >= '1' && tempBuf[j] <= '9') {
+            if(tblen > j && tempBuf[j] >= '1' && tempBuf[j] <= '9') {
                 addCmdQueue(500 + (uint32_t)(tempBuf[j] - '0'));
             }
             break;
         case 20:
-            if(strlen(tempBuf) > j) {
+            if(tblen > j) {
                 addCmdQueue(atoi(tempBuf+j) | 0x80000000);
             }
+            break;
+        case 23:
+            if(aud_state.curVolume != 255) {
+                if(tblen > j && tempBuf[j] >= '0' && tempBuf[j] <= '9') {
+                    int p = atoi(tempBuf+j);
+                    if(p >= 0 && p <= 100) {
+                        addCmdQueue(300 + ((VOL_LEVELS - 1) * p / 100));
+                    }
+                }
+            }
+            break;
+        case 24:
+            mp_sendStatus(1);
             break;
         default:
             addCmdQueue(1000 + i);
@@ -2538,20 +2568,26 @@ static void mqttSubscribe()
             Serial.println("MQTT: Failed to subscribe to command topics");
             #endif
         }
+
+        // Send out music player status as soon as possible
+        mp_sendStatus(1);
+        
         mqttSubAttempted = true;
     }
 }
 
-bool mqttState()
+bool mqttConnected()
 {
-    return (useMQTT && mqttClient.connected());
+    return (useMQTT && (mqttClient.state() == MQTT_CONNECTED));
 }
 
-void mqttPublish(const char *topic, const char *pl, unsigned int len)
+bool mqttPublish(const char *topic, const char *pl, unsigned int len)
 {
     if(useMQTT) {
-        mqttClient.publish(topic, (uint8_t *)pl, len, false);
+        return mqttClient.publish(topic, (uint8_t *)pl, len, false);
     }
+
+    return true;
 }           
 
 #endif

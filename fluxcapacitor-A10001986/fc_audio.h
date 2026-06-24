@@ -57,6 +57,7 @@
 
 // Default volume (index or 255 for knob)
 #define DEFAULT_VOLUME 6
+#define VOL_LEVELS 21
 
 #define DEFAULT_FLUX_LEVEL 3
 
@@ -65,6 +66,7 @@
 #define PA_ALLOWSD 0x0004
 #define PA_DYNVOL  0x0008
 #define PA_ISFLUX  0x0010
+#define PA_MUSIC   0x0020
 // upper 8 bits all taken
 #define PA_MASK    (PA_LOOP|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL|PA_ISFLUX)
 
@@ -90,31 +92,39 @@ bool checkMP3Running();
 void stopAudio();
 bool stop_key();
 
-
-void inc_vol();
-void dec_vol();
+bool inc_vol();
+bool dec_vol();
 
 void     mp_init(bool isSetup);
 void     mp_play(bool forcePlay = true);
-bool     mp_stop();
+bool     mp_stop(bool forceStatus = false);
 void     mp_next(bool forcePlay = false);
 void     mp_prev(bool forcePlay = false);
 int      mp_gotonum(int num, bool force = false);
 void     mp_makeShuffle(bool enable);
 int      mp_checkForFolder(int num);
 uint8_t* m(uint8_t *a, uint32_t s, int e);
+#ifdef FC_HAVEMQTT
+void     mp_sendStatus(int force = 0);
+#endif
+
+typedef struct {
+    int state;
+    int curVolume;
+    int curTrack;
+    int maxMusic;
+    int mpShuffle;
+} Aud_State;
+extern Aud_State aud_state;
 
 extern bool    audioInitDone;
 extern bool    audioMute;
 
 extern bool    haveMusic;
 extern bool    mpActive;
-extern bool    mpShuffle;
 
 extern bool    playingFlux;
 extern unsigned int fluxLvlIdx;
 extern float   fluxLevel;
-
-extern uint8_t curSoftVol;
 
 #endif

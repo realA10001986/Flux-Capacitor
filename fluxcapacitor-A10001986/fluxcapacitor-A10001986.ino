@@ -118,6 +118,21 @@
 
 /*  Changelog
  *
+ *  2026/06/24 (A10001986) [1.104]
+ *    ********************************************************************************
+ *    ** If updating from below 1.100, please install 1.100  first to have your     **
+ *    ** settings converted. If 1.100 is skipped, many of your settings (static IP, **
+ *    ** volume, chase speed, flux sound mode/level, box light level, ir lock) will **
+ *    ** be restored to default values. It suffices to install 1.100 and boot once; **
+ *    ** you can then immediately  update to a later version.                       **
+ *    ** https://github.com/realA10001986/Flux-Capacitor/releases/tag/V1.100        **
+ *    ********************************************************************************
+ *    - IR learning timeout increased to 20 seconds
+ *    - MQTT: Add "VOLUME_UP"/"VOLUME_DOWN"/"VOLUME_SET_xxx" commands
+ *    - MQTT: Add publishing Music Player status to bttf/fc/mpstatus
+ *    - MQTT: Don't queue and instead ignore (most) commands while fake-off or busy
+ *    - Music Player: Use new sorting algorithm as the old one caused a crash on a 
+ *      large number of already sorted files (due to excessive recursion).
  *  2026/04/27 (A10001986) [1.103]
  *    ********************************************************************************
  *    ** If updating from below 1.100, please install 1.100  first to have your     **

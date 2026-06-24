@@ -445,11 +445,14 @@ static void ssStart();
 static void ssEnd(bool doSound = true);
 static void ssRestartTimer();
 
+static void prepareTT();
+static void wakeup();
+
 static void showUserSignal(int num);
 
 static bool contFlux();
 static void play_volchg();
-static void volWasChanged();
+static void volWasChanged(bool actualVol = true);
 static void waitAudioDone(bool withIR);
 
 static bool bttfn_connected();
@@ -565,6 +568,7 @@ void main_setup()
     #endif
     if(check_allow_CPA()) {
         showWaitSequence();
+        fcBusy = true;  // Force MP "off" state, if state happens to be sent
         if(prepareCopyAudioFiles()) {
             play_file("/_installing.mp3", PA_ALLOWSD, 1.0f);
             waitAudioDone(false);
@@ -682,8 +686,8 @@ void main_loop()
             }
             TTrunning = false;
             noIR = false;
-            
-            mp_stop();
+
+            mp_stop(true);
             stopAudio();
             fluxTimer = false;
 
@@ -730,6 +734,10 @@ void main_loop()
 
             ssRestartTimer();
             ssActive = false;
+
+            #ifdef FC_HAVEMQTT
+            mp_sendStatus();
+            #endif
 
             ir_remote.loop();
  
@@ -779,7 +787,7 @@ void main_loop()
             IRLearnBlink ? endIRfeedback() : startIRfeedback();
             IRFBLearnNow = now;
         }
-        if(now - IRLearnNow > 10000) {
+        if(now - IRLearnNow > 20000) {
             endIRLearn(true);
             #ifdef FC_DBG
             Serial.println("main_loop: IR learning timed out");
@@ -1241,6 +1249,8 @@ void main_loop()
                     ssRestartTimer();
                     ir_remote.loop();
 
+                    // Let audio_loop take care of updating MP status
+
                 }
             }
           
@@ -1387,6 +1397,10 @@ static void timeTravel(bool TCDtriggered, uint16_t P0Dur, uint16_t P1Dur)
 
     flushDelayedSave();
 
+    TTrunning = true;
+
+    // All props stop the musicplayer on TT if playTTsounds is true
+    // (regardless of whether they are playing sound immediately or not)
     if(playTTsounds) {
         if(mp_stop() || !playingFlux) {
            play_flux();
@@ -1394,7 +1408,6 @@ static void timeTravel(bool TCDtriggered, uint16_t P0Dur, uint16_t P1Dur)
         fluxTimer = false;  // Disable timer for tt phase 0
     }
         
-    TTrunning = true;
     TTstart = TTfUpdNow = millis();
     TTP0 = true;   // phase 0
     TTP1 = TTP2 = false;
@@ -1452,6 +1465,8 @@ static void timeTravel(bool TCDtriggered, uint16_t P0Dur, uint16_t P1Dur)
             TTFInt = 0;
         }
     }
+
+    // Let audio_loop take care of updating MP status
 }
 
 static int convertGPSSpeed(int16_t spd)
@@ -1604,7 +1619,7 @@ static uint8_t read2digs(uint8_t idx)
 
 void doKeySound(int key)
 {   
-    if(!TTrunning) {
+    if(!TTrunning || !playTTsounds) {
         if(play_key(key)) {
             if(contFlux()) {
                 append_flux();
@@ -1624,32 +1639,30 @@ void doStopKeySound()
 
 static void doMPPlay()
 {
-    if((!TTrunning || !playTTsounds) && haveMusic) { 
+    if(!TTrunning || !playTTsounds) { 
         mp_play();
     }
 }
 
 static void doMPStop()
 {
-    if(haveMusic) {
-        if(mp_stop()) {
-            if(!TTrunning && contFlux()) {
-                play_flux();
-            }
+    if(mp_stop()) {
+        if(!TTrunning && contFlux()) {
+            play_flux();
         }
     }
 }
 
 static void doMPNext()
 {
-    if((!TTrunning || !playTTsounds) && haveMusic) {
+    if(!TTrunning || !playTTsounds) {
         mp_next(mpActive);
     }
 }
 
 static void doMPPrev()
 {
-    if((!TTrunning || !playTTsounds) && haveMusic) {
+    if(!TTrunning || !playTTsounds) {
         mp_prev(mpActive);
     }
 }
@@ -1672,13 +1685,11 @@ static void doKey4()
 }
 static void doKey5()
 {
-    if(haveMusic) {
-        if(!TTrunning || !playTTsounds) {
-            if(mpActive) {
-                doMPStop();
-            } else {
-                doMPPlay();
-            }
+    if(!TTrunning || !playTTsounds) {
+        if(mpActive) {
+            doMPStop();
+        } else {
+            doMPPlay();
         }
     }
 }
@@ -1813,17 +1824,19 @@ static void handleIRKey(int key)
         break;
     case 12:                          // arrow up: inc vol
         if(irLocked) return;
-        if(curSoftVol != 255) {
-            inc_vol();        
-            volWasChanged();
+        if(aud_state.curVolume != 255) {
+            if(inc_vol()) {
+                volWasChanged();
+            }
             play_volchg();
         } else doInpReaction = -2;
         break;
     case 13:                          // arrow down: dec vol
         if(irLocked) return;
-        if(curSoftVol != 255) {
-            dec_vol();
-            volWasChanged();
+        if(aud_state.curVolume != 255) {
+            if(dec_vol()) {
+                volWasChanged();
+            }
             play_volchg();
         } else doInpReaction = -2;
         break;
@@ -2030,7 +2043,7 @@ static int execute(bool isIR, bool injected)
             case 33:
                 if(!isIRLocked) {
                     setFluxLevel(temp - 30);
-                    volWasChanged();
+                    volWasChanged(false);
                     doInpReaction = TTrunning ? -1 : 1;
                 }
                 break;
@@ -2079,12 +2092,8 @@ static int execute(bool isIR, bool injected)
                 if(isIR && !isIRLocked && !TTrunning && !injected) {
                     bool wasActiveM = false, wasActiveF = false, waitShown = false;
                     if(wifiOnWillBlock()) {
-                        if(haveMusic && mpActive) {
-                            mp_stop();
-                            wasActiveM = true;
-                        } else if(playingFlux) {
-                            wasActiveF = true;
-                        }
+                        wasActiveM = mp_stop();
+                        wasActiveF = playingFlux;
                         stopAudio();
                         showWaitSequence();
                         waitShown = true;
@@ -2130,21 +2139,23 @@ static int execute(bool isIR, bool injected)
                 if(!isIRLocked) {
                     if(!TTrunning) {
                         uint8_t a, b, c, d;
-                        bool wasActiveM = false, wasActiveF = false;
                         char ipbuf[16];
                         char numfname[] = "/x.mp3";
-                        if(haveMusic && mpActive) {
-                            mp_stop();
-                            wasActiveM = true;
-                        } else if(playingFlux) {
-                            wasActiveF = true;
-                        }
+
+                        fcBusy = true;
+                        
+                        bool wasActiveM = mp_stop(true);
+                        bool wasActiveF = playingFlux;
                         stopAudio();
+                        
                         flushDelayedSave();
+                        #ifdef FC_HAVEMQTT
+                        if(!wasActiveM) mp_sendStatus();
+                        #endif
+                        
                         wifi_getIP(a, b, c, d);
                         sprintf(ipbuf, "%d.%d.%d.%d", a, b, c, d);
                         numfname[1] = ipbuf[0];
-                        fcBusy = true;
                         play_file(numfname, PA_INTRMUS|PA_ALLOWSD);
                         for(int i = 1; i < strlen(ipbuf); i++) {
                             if(ipbuf[i] == '.') {
@@ -2158,10 +2169,15 @@ static int execute(bool isIR, bool injected)
                             }
                         }
                         waitAudioDone(false);
-                        if(wasActiveF && contFlux()) play_flux();
-                        else if(wasActiveM)          mp_play();
+
                         fcBusy = false;
+
+                        if(wasActiveM) mp_play(); 
+                        else if(wasActiveF && contFlux()) play_flux();
+                        // Let audio_loop take care of updating MP status (if not playing at this point)
+
                         ir_remote.loop(); // Flush IR afterwards
+
                     } else doInpReaction = -1;
                 }
                 break;
@@ -2209,13 +2225,13 @@ static int execute(bool isIR, bool injected)
         if(!isIRLocked) {
             temp = atoi(inputBuffer);
             if(temp >= 300 && temp <= 399) {
-                temp -= 300;                              // 300-319/399: Set fixed volume level / enable knob
+                temp -= 300;                              // 300-320/399: Set fixed volume level / enable knob
                 doInpReaction = 1;
                 if(temp == 99) {
-                    curSoftVol = 255;
+                    aud_state.curVolume = 255;
                     volWasChanged();
-                } else if(temp <= 19) {
-                    curSoftVol = temp;
+                } else if(temp <= VOL_LEVELS - 1) {
+                    aud_state.curVolume = temp;
                     volWasChanged();
                 } else {
                     doInpReaction = -1;
@@ -2245,7 +2261,7 @@ static int execute(bool isIR, bool injected)
                         break;
                     case 888:                             // *888 go to song #0
                         if(haveMusic) {
-                            mp_gotonum(0, mpActive);
+                            mp_gotonum(0, true);
                             doInpReaction = 1;
                         } else doInpReaction = -1;
                         break;
@@ -2261,7 +2277,7 @@ static int execute(bool isIR, bool injected)
                             if(ocm != carMode) {
                                 saveCarMode();
                                 prepareReboot();
-                                delay(500);
+                                delay(1000);
                                 esp_restart();
                             }
                             doInpReaction = 1;
@@ -2320,6 +2336,22 @@ static int execute(bool isIR, bool injected)
             case 19:
                 doStopKeySound();
                 break;
+            case 21:
+                if(aud_state.curVolume != 255) {
+                    if(inc_vol()) {
+                        volWasChanged();
+                    }
+                    play_volchg();
+                } else doInpReaction = -2;
+                break;
+            case 22:
+                if(aud_state.curVolume != 255) {
+                    if(dec_vol()) {
+                        volWasChanged();
+                    }
+                    play_volchg();
+                } else doInpReaction = -2;
+                break;
             }
         }
         #endif
@@ -2337,7 +2369,7 @@ static int execute(bool isIR, bool injected)
             case 64738:
                 if(!injected) {
                     prepareReboot();
-                    delay(500);
+                    delay(1000);
                     esp_restart();
                 }
                 // fall through
@@ -2353,7 +2385,7 @@ static int execute(bool isIR, bool injected)
                 if(!strncmp(inputBuffer, "888", 3)) {
                     if(haveMusic) {
                         uint16_t num = ((inputBuffer[3] - '0') * 100) + read2digs(4);
-                        num = mp_gotonum(num, mpActive);
+                        num = mp_gotonum(num, true);
                         doInpReaction = 1;
                     } else doInpReaction = -1;
                 } else if(!strcmp(inputBuffer, "123456") && !injected) {
@@ -2495,11 +2527,8 @@ bool switchMusicFolder(uint8_t nmf, bool isSetup)
             // Initializing the MP can take a while;
             // need to stop all audio before calling
             // mp_init()
-            if(haveMusic && mpActive) {
-                mp_stop();
-            } else if(playingFlux) {
-                wasActive = true;
-            }
+            wasActive = playingFlux;
+            mp_stop(true);
             stopAudio();
         }
         if(haveSD) {
@@ -2530,6 +2559,8 @@ bool switchMusicFolder(uint8_t nmf, bool isSetup)
         }
 
         fcBusy = false;
+
+        // Let audio_loop take care of updating MP status
     }
 
     return doSuccessSignal;
@@ -2651,7 +2682,8 @@ void allOff()
 
 void prepareReboot()
 {
-    mp_stop();
+    fcBusy = true;
+    mp_stop(true);
     stopAudio();
     allOff();
     endIRfeedback();
@@ -2737,33 +2769,31 @@ static void ssEnd(bool doSound)
     ssActive = false;
 }
 
-void prepareTT()
+static void prepareTT()
 {
     ssEnd(false);
 
-    // Start flux sound (if so configured; we check
-    // playTTsounds and not playFlux, since we expect
+    // Start flux sound (if so configured; we also check
+    // playTTsounds and not only playFLUX, since we expect
     // a timetravel, part of which is the flux sound), 
     // but honor the configured timer; we don't know
     // when (or if) the actual tt comes; the TCD will
     // count up the speed in the meantime, but
     // even the minimum of 30 seconds should always
     // cover the gap.
-    if(playTTsounds) {
+    if(playTTsounds && playFLUX) {
         if(mp_stop() || !playingFlux) {
            play_flux();
         }
         startFluxTimer();
     }
-
-    doPrepareTT = false;
 }
 
 // Wakeup: Sent by TCD upon entering dest date,
 // return from tt, triggering delayed tt via ETT
 // For audio-visually synchronized behavior
 // Also called when GPS/RotEnc/Remote speed is changed
-void wakeup()
+static void wakeup()
 {
     // End screen saver
     ssEnd(false);
@@ -2783,6 +2813,8 @@ void wakeup()
         }
     }
 
+    // Clear here since this is called from two
+    // places, no need to execute this twice
     doWakeup = false;
 }
 
@@ -2820,7 +2852,7 @@ void setFluxMode(int mode)
         break;
     }
 
-    if(nf) volWasChanged();
+    if(nf) volWasChanged(false);
 }
 
 void startFluxTimer()
@@ -2846,10 +2878,13 @@ static bool contFlux()
     return false;
 }
 
-static void volWasChanged()
+static void volWasChanged(bool actualVol)
 {
     volchgnow = millisNonZero();
     storeCurVolume();
+    #ifdef FC_HAVEMQTT
+    if(actualVol) mp_sendStatus();
+    #endif
 }
 
 static void play_volchg()
