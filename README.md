@@ -180,7 +180,7 @@ When IR learning is started, the chase LEDs stop and [light all up](#appendix-b-
 
 If your remote control lacks the \* (starts command sequence) and \# (aborts command sequence) keys, you can use any other key, of course. \* could be eg. "menu" or "setup", \# could be "exit" or "return".
 
-If no key is pressed for 10 seconds, the learning process aborts (as does briefly pressing the Time Travel button): The keys already learned are forgotten and nothing is saved.
+If no key is pressed for 20 seconds, the learning process aborts (as does briefly pressing the Time Travel button): The keys already learned are forgotten and nothing is saved.
 
 To make the FC forget a learned IR remote control, type *654321ok.
 
@@ -272,7 +272,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     </tr>
      <tr>
      <td align="left">Select audio volume level (00-19)</td>
-     <td align="left">*300&#9166; - *319&#9166;</td><td>3300-3319</td>
+     <td align="left">*300&#9166; - *320&#9166;</td><td>3300-3320</td>
     </tr>
     <tr>
      <td align="left">Enable built-in volume knob</td>
@@ -594,6 +594,9 @@ The FC can be controlled through messages sent to topic **bttf/fc/cmd**. Support
 - MP_SHUFFLE_ON: Enables shuffle mode in [Music Player](#the-music-player)
 - MP_SHUFFLE_OFF: Disables shuffle mode in [Music Player](#the-music-player)
 - MP_FOLDER_x: x being 0-9, set folder number for [Music Player](#the-music-player)
+- MP_REQSTATUS: Publish current music player state to bttf/fc/mpstatus
+- VOLUME_UP, VOLUME_DOWN: Increase/decrease volume by a notch
+- VOLUME_SET_x: Set volume to x% (x=0-100)
 - USER1, USER2: User commands, see below
 - PLAYKEY_x: Play keyX.mp3 (from SD card), X being in the range from 1 to 9.
 - STOPKEY: Stop playback of keyX file. Does nothing if no keyX file is currently played back.
@@ -950,6 +953,22 @@ The firmware supports MQTT 3.1.1 and 5.0. There is no difference in features, so
 
 The username (and optionally the password) to be used when connecting to the broker. Can be left empty if the broker accepts anonymous logins.
 
+##### &#9193; Publish Music Player status to bttf/fc/mpstatus
+
+This option enables the Music Player's so-called backchannel. This backchannel can be used, in combination with the Music Player related MQTT commands, to comfortably remote-control the FC's music player.
+
+Should be left unchecked if not used.
+
+The data published on the backchannel is a JSON object, containing the following keys:
+- __S__: State. _Value_ can be "P" for playing, "I" for idle, and "O" for off/busy. In 'off' state, the FC does not take commands.
+- __C__: Current track. _Value_ is an unsigned integer >= 0 as a string.
+- __F__: First track. This tells the remote control where to start counting track numbers. _Value_ is always 0 (zero) as a string.
+- __L__: Last track. This tells the remote control the last and highest possible track number. _Value_ is an unsigned integer >= 0 and <= 999 as a string.
+- __V__: Volume. This is an integer as a string. If -1, volume control is unavailable. Otherwise 0-100.
+- __SH__: Shuffle. This is an integer as a string, either "0" for 'off', or "1" for 'on'.
+
+An example on how to use this backchannel is the upcoming [Jukebox](https://jb.out-a-ti.me).
+
 ## Appendix B: LED signals
 
 <table>
@@ -1018,3 +1037,4 @@ The username (and optionally the password) to be used when connecting to the bro
 ---
 _Text & images: (C) Thomas Winischhofer ("A10001986"). See LICENSE._ [Source](https://fc.out-a%2dti.me)  
 _Other props: [Time Circuits Display](https://tcd.out-a%2dti.me) ... [SID](https://sid.out-a%2dti.me) ... [Dash Gauges](https://dg.out-a%2dti.me) ... [VSR](https://vsr.out-a%2dti.me) ... [Remote Control](https://remote.out-a%2dti.me) ... [TFC](https://tfc.out-a%2dti.me)_
+. 
