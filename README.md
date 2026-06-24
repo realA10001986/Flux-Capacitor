@@ -598,7 +598,7 @@ The FC can be controlled through messages sent to topic **bttf/fc/cmd**. Support
 - MP_SHUFFLE_ON: Enables shuffle mode in [Music Player](#the-music-player)
 - MP_SHUFFLE_OFF: Disables shuffle mode in [Music Player](#the-music-player)
 - MP_FOLDER_x: x being 0-9, set folder number for [Music Player](#the-music-player)
-- MP_REQSTATUS: Publish current music player status to bttf/fc/mpstatus
+- MP_REQSTATUS: Publish current [music player status](#-publish-music-player-status-to-bttffcmpstatus) to bttf/fc/mpstatus
 - VOLUME_UP, VOLUME_DOWN: Increase/decrease volume by a notch
 - VOLUME_SET_x: Set volume to x% (x=0-100)
 - USER1, USER2: User commands, see below
@@ -962,6 +962,8 @@ The username (and optionally the password) to be used when connecting to the bro
 This option enables the Music Player's so-called backchannel. This backchannel can be used, in combination with the Music Player related MQTT commands, to comfortably remote-control the FC's music player.
 
 Should be left unchecked if not used.
+
+Backchannel data is sent to _bttf/fc/mpstatus_ on every change. It can also be triggered by sending __MP_REQSTATUS__ to _bttf/fc/cmd_.
 
 The data published on the backchannel is a JSON object, containing the following keys:
 - __S__: State. _Value_ can be "P" for playing, "I" for idle, and "O" for off/busy. In 'off' state, the FC does not take commands.
