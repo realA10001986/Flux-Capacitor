@@ -586,7 +586,7 @@ The FC can be controlled through messages sent to topic **bttf/fc/cmd**. Support
 - TIMETRAVEL: Start a [time travel](#time-travel)
 - FASTER, SLOWER: Make chase faster or slower. Only if speed knob is deactivated.
 - RESETSPEED: Reset chase speed to default. Only if speed knob is deactivated.
-- CHASE_x: x being 0-9, change chase pattern
+- CHASE_x: x being 0-9, select chase pattern
 - FLUX_OFF: Disables the [flux sound](#the-flux-sound)
 - FLUX_ON: Enables the [flux sound](#the-flux-sound)
 - FLUX_30: Enables the [flux sound](#the-flux-sound) for 30 seconds
