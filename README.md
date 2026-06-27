@@ -578,6 +578,8 @@ Next, head to the Config Portal and set the option **_TCD connected by wire_**. 
 
 ## Home Assistant / MQTT
 
+By means of MQTT, the FC can be remote controlled through commands sent to **bttf/fc/cmd**.
+
 The FC supports MQTT protocol versions 3.1.1 and 5.0.
 
 ### Control the FC via MQTT
