@@ -640,7 +640,7 @@ If your FC, along with a [Time Circuits Display](https://tcd.out-a-ti.me/), is m
 
 ![STAmode-car](img/stamode-car2.png)
 
-This configuration can easily achieved by putting both the TCD and the SID in *Car Mode*:
+This configuration can easily achieved by putting both the TCD and the FC in *Car Mode*:
 
 #### TCD
 
@@ -650,7 +650,7 @@ This configuration can easily achieved by putting both the TCD and the SID in *C
 #### Flux Capacitor
 
 One-time configuration steps:
-- Enter the Config Portal on the FC, click on *Settings* and check that the hostname of the TCD (usually "timecircuits") is present in the  **_Hostname or IP address of TCD_** under *Wireless communication (BTTF-Network)* settings; do not use an IP address.
+- Enter the Config Portal on the FC, click on *Settings* and check that the hostname of the TCD (usually "timecircuits") is present in the  **_Hostname or IP address of TCD_** under *Wireless communication (BTTF-Network)* settings; do _not_ use an IP address.
 - Furthermore, on the *WiFi Configuration* page, check that the TCD's WiFi network name (SSID; usually "TCD-AP") and password (if the TCD is configured with a password) are present under *Car mode settings*.
 
 If everything is in place, you can enable Car mode on the FC by typing *991ok on the remote. The FC will reboot and attempt to connect to the TCD's AP.
