@@ -578,7 +578,7 @@ Next, head to the Config Portal and set the option **_TCD connected by wire_**. 
 
 ## Home Assistant / MQTT
 
-The FC supports MQTT protocol versions 3.1.1 and 5.0 for the following features:
+The FC supports MQTT protocol versions 3.1.1 and 5.0.
 
 ### Control the FC via MQTT
 
@@ -619,12 +619,6 @@ To set volume level to 10 (3310), issue the following command: **INJECT_3310**
 To play "key2.mp3" (3502), issue **INJECT_3502**
 
 To select the 'music1' folder (3051), issue **INJECT_3051**
-
-### Receive commands from Time Circuits Display
-
-If both TCD and FC are connected to the same broker, and the option **_Publish time travel and alarm events_** is checked on the TCD's side, the FC will receive information on time travel and alarm and play their sequences in sync with the TCD. Unlike BTTFN, however, no other communication takes place.
-
-MQTT and BTTFN can co-exist. However, the TCD only sends out time travel and alarm notifications through either MQTT or BTTFN, never both. If you have other MQTT-aware devices listening to the TCD's public topic (bttf/tcd/pub) in order to react to time travel or alarm messages, use MQTT (ie check **_Publish time travel and alarm events_**). If only BTTFN-aware devices are to be used, uncheck this option to use BTTFN as it has less latency.
 
 ### Setup
 
