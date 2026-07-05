@@ -421,7 +421,7 @@ Other ways of triggering a time travel are available if a [Time Circuits Display
 
 The SD card, apart from being required for [installing](#sound-pack-installation) of the sound-pack, can be used for substituting built-in sound effects and for music played back by the [Music player](#the-music-player). Also, it is _strongly recommended_ to store [secondary settings](#-save-secondary-settings-on-sd) on the SD card to minimize [Flash Wear](#flash-wear). The chosen chase sequence (*1x) is only stored on SD, so for your selection to be persistent across reboots, an SD card is required.
 
-Note that the SD card must be inserted before powering up the device. It is not recognized if inserted while the Flux Capacitor is running. Furthermore, do not remove the SD card while the device is powered.
+The SD card must be inserted before powering up the device. It is not recognized if inserted while the Flux Capacitor is running. Furthermore, do not remove the SD card while the device is powered.
 
 Since the SD card on the control board is inaccessible after assembling the FC, I used a microSD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B09MS85FQ3/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time. See [here](Hardware.md).
 
@@ -462,7 +462,9 @@ To delete a file from the SD card, upload a file whose name is prefixed with "de
 
 For technical reasons, the FC must reboot after mp3 files are uploaded in this way.
 
-Please remember that the maximum bitrate for mp3 files is 128kbps. Also note that the uploaded file is stored to the root folder of the SD card, so this way of uploading cannot be used to upload music files for the Music Player. 
+The maximum bitrate for mp3 files is 128kbps. 
+
+The uploaded files are stored to the root folder of the SD card, so this way of uploading cannot be used to upload music files for the Music Player. 
 
 ## The Music Player
 
@@ -541,7 +543,7 @@ Pressing # quits TCD keypad remote control mode, as does issuing command 3097 on
 
 ### Connecting a TCD by wire
 
->Note that a wired connection only allows for synchronized time travel sequences, no other communication takes place. A wireless connection over BTTFN/WiFi is much more powerful and therefore recommended over a wired connection.
+>A wired connection only allows for synchronized time travel sequences, no other communication takes place. A wireless connection over BTTFN/WiFi is much more powerful and therefore recommended over a wired connection.
 
 For a connection by wire, connect "GND" and "TT IN" (labeled "GPIO" on earlier boards) on the Flux Capacitor's "Time Travel" connector to the TCD like in the table below:
 
@@ -693,7 +695,7 @@ If you are using a fresh ESP32, please go <a href="https://install.out-a-ti.me">
 
 The firmware comes with a sound-pack which needs to be installed separately. The sound-pack is not updated as often as the firmware itself. There will be a message in the Config Portal and a respective [signal](#appendix-b-led-signals) at startup when/if the sound-pack needs to be updated.
 
-_Note that installing the sound-pack requires an [SD card](#sd-card)._
+_Installing the sound-pack requires an [SD card](#sd-card)._
 
 The first step is to extract "sound-pack-fcXX.zip" (which is included in every [Release package](https://github.com/realA10001986/Flux-Capacitor/releases)). It contains one file, named "FCA.bin".
 
@@ -732,7 +734,7 @@ This leads to the firmware update and audio upload page.
 
 To upload a new firmware, such as published in the [Release packages](https://github.com/realA10001986/Flux-Capacitor/releases), select the "**fluxcapacitor-A10001986-Vx.xxx.bin**" or "**Flux_Capacitor_vX.YY.bin**" file as contained in the Release package in the _top_ file selector and click *Update*.
 
-You can also install the FC's sound-pack on this page; download the sound-pack (which is included in every [Release package](https://github.com/realA10001986/Flux-Capacitor/releases)), extract it and select the resulting FCA.bin file in the _bottom_ file selector. Finally, click *Upload*. Note that an SD card is required for this operation.
+You can also install the FC's sound-pack on this page; download the sound-pack (which is included in every [Release package](https://github.com/realA10001986/Flux-Capacitor/releases)), extract it and select the resulting FCA.bin file in the _bottom_ file selector. Finally, click *Upload*. An SD card is required for this operation.
 
 See also [here](#firmware-installation--firmware-update).
 
@@ -817,7 +819,7 @@ See [here](#wifi-power-saving-features).
 
 Selects the "flux" sound mode. "Auto: xx secs" enables the beep for xx seconds after triggering a time travel, upon power-on, and then the TCD sends a respective signal through BTTFN.
 
-Can be changed at any time by typing *20ok (off), *21ok (on), *22ok (Auto 30secs) or *23ok (Auto 60secs), or through the TCD's keypad. Note that a change through IR remote or TCD is saved 10 seconds after the last change (see [here](#powering-down-the-fc)).
+Can be changed at any time by typing *20ok (off), *21ok (on), *22ok (Auto 30secs) or *23ok (Auto 60secs), or through the TCD's keypad. A change through IR remote or TCD is saved 10 seconds after the last change (see [here](#powering-down-the-fc)).
 
 ##### &#9193; Movie sequence for 7 lights
 
@@ -829,7 +831,9 @@ Normally, the Box LEDs flash during the time travel sequence. If you prefer to i
 
 ##### &#9193; Play time travel sounds
 
-If other props are connected, they might bring their own time travel sound effects. In this case, you can uncheck this to disable the Flux Capacitor's own time travel sounds. Note that this only covers sounds played during time travel, not other sound effects.
+If other props are connected, they might bring their own time travel sound effects. In this case, you can uncheck this to disable the Flux Capacitor's own time travel sounds. 
+
+This option only covers sounds played during time travel, not other sound effects.
 
 ##### &#9193; Play TCD-alarm sounds
 
@@ -923,7 +927,7 @@ Normally, [box lights](#box-lighting) are connected to the "Box LED" connectors.
 
 ##### &#9193; Use speed knob by default
 
-Check this if your FC has a pot for chasing speed selection and you want to use this pot. Note that if this option is checked, commands regarding chasing speed from the remote control are ignored.
+Check this if your FC has a pot for chasing speed selection and you want to use this pot. If this option is checked, commands regarding chasing speed from the remote control are ignored.
 
 ##### &#9193; Disable supplied IR remote control
 
