@@ -340,12 +340,13 @@ uint16_t lastPotspeed = FC_SPD_IDLE;
 #define BTTFN_SSRC_P0           4
 #define BTTFN_SSRC_P1           5
 #define BTTFN_SSRC_P2           6
-#define BTTFN_TCDI1_NOREM   0x0001
-#define BTTFN_TCDI1_NOREMKP 0x0002
-#define BTTFN_TCDI1_EXT     0x0004
-#define BTTFN_TCDI1_OFF     0x0008
-#define BTTFN_TCDI1_NM      0x0010
-#define BTTFN_TCDI2_BUSY    0x0001
+#define BTTFN_TCDI1_NOREM     0x0001
+#define BTTFN_TCDI1_NOREMKP   0x0002
+#define BTTFN_TCDI1_EXT       0x0004
+#define BTTFN_TCDI1_OFF       0x0008
+#define BTTFN_TCDI1_NM        0x0010
+#define BTTFN_TCDI2_BUSY      0x0001
+#define BTTFN_TCDI2_TIMEINFO  0x8000
 static const uint8_t BTTFUDPHD[4] = { 'B', 'T', 'T', 'F' };
 static bool          useBTTFN = false;
 static WiFiUDP       bttfUDP;
@@ -1020,7 +1021,9 @@ void main_loop()
                     // quits to let the loop take care of slowing
                     // down to actual speed
                     if(usingGPSS && gpsSpeed >= 0) {
+                        #ifdef FC_DBG
                         Serial.printf("TTP1: usingGPSS && gpsSpeed >= 0: %d\n", gpsSpeed);
+                        #endif
                         TTSSpd = fcLEDs.getSpeed();
                         if(TTSSpd == 2) {
                             TTSSpd = 3;
@@ -3131,6 +3134,20 @@ static void handle_tcd_notification(uint8_t *buf)
             remoteAllowed = !(tcdi1 & BTTFN_TCDI1_NOREMKP);
             tcdIsBusy = !!(tcdi2 & BTTFN_TCDI2_BUSY);
             if(!remoteAllowed || tcdIsBusy) remMode = remHoldKey = false;
+
+            // TEST
+            /*
+            if(tcdi2 & BTTFN_TCDI2_TIMEINFO) {
+                Serial.printf("Current local time:       %04d-%02d-%02d %02d:%02d:%02d (wd %d)\n", 
+                    buf[16 + 0] | (buf[16 + 1] << 8), buf[16 + 2], buf[16 + 3], buf[16 + 4], buf[16 + 5], buf[16 + 6], buf[16 + 7]);
+                Serial.printf("Current Destination time: %04d-%02d-%02d %02d:%02d\n", 
+                    buf[24 + 0] | (buf[24 + 1] << 8), buf[24 + 2], buf[24 + 3], buf[24 + 4], buf[24 + 5]);
+                Serial.printf("Current present time:     %04d-%02d-%02d %02d:%02d\n", 
+                    buf[30 + 0] | (buf[30 + 1] << 8), buf[30 + 2], buf[30 + 3], buf[30 + 4], buf[30 + 5]);
+                Serial.printf("Current last time dep:    %04d-%02d-%02d %02d:%02d\n", 
+                    buf[36 + 0] | (buf[36 + 1] << 8), buf[36 + 2], buf[36 + 3], buf[36 + 4], buf[36 + 5]);
+            }
+            */
         }
         break;
     }

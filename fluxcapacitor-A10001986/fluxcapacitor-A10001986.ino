@@ -118,14 +118,16 @@
 
 /*  Changelog
  *
+ *  2026/07/17 (A10001986) [1.105]
+ *    ********************************************************************************
+ *    ** If updating from below 1.100, please see boxed note at version 1.101 below **
+ *    ********************************************************************************
+ *    - Bugfix: Fix SD initialization in ESP32-Arduino to conform to specs.
+ *      Sandisk Ultra 32GB cards (and possibly others that previously were
+ *      not usable) are now recognized.
  *  2026/06/24 (A10001986) [1.104]
  *    ********************************************************************************
- *    ** If updating from below 1.100, please install 1.100  first to have your     **
- *    ** settings converted. If 1.100 is skipped, many of your settings (static IP, **
- *    ** volume, chase speed, flux sound mode/level, box light level, ir lock) will **
- *    ** be restored to default values. It suffices to install 1.100 and boot once; **
- *    ** you can then immediately  update to a later version.                       **
- *    ** https://github.com/realA10001986/Flux-Capacitor/releases/tag/V1.100        **
+ *    ** If updating from below 1.100, please see boxed note at version 1.101 below **
  *    ********************************************************************************
  *    - IR learning timeout increased to 20 seconds
  *    - MQTT: Add "VOLUME_UP"/"VOLUME_DOWN"/"VOLUME_SET_xxx" commands
@@ -135,12 +137,7 @@
  *      large number of already sorted files (due to excessive recursion).
  *  2026/04/27 (A10001986) [1.103]
  *    ********************************************************************************
- *    ** If updating from below 1.100, please install 1.100  first to have your     **
- *    ** settings converted. If 1.100 is skipped, many of your settings (static IP, **
- *    ** volume, chase speed, flux sound mode/level, box light level, ir lock) will **
- *    ** be restored to default values. It suffices to install 1.100 and boot once; **
- *    ** you can then immediately  update to a later version.                       **
- *    ** https://github.com/realA10001986/Flux-Capacitor/releases/tag/V1.100        **
+ *    ** If updating from below 1.100, please see boxed note at version 1.101 below **
  *    ********************************************************************************
  *    - Add Car Mode: In addition to existing WiFi network connection settings, you 
  *      can now pre-configure TCD-AP SSID and password in WiFi Settings and quickly
@@ -150,12 +147,7 @@
  *    - Fix race condition in Fake Power logic
  *  2026/04/18 (A10001986) [1.102]
  *    ********************************************************************************
- *    ** If updating from below 1.100, please install 1.100  first to have your     **
- *    ** settings converted. If 1.100 is skipped, many of your settings (static IP, **
- *    ** volume, chase speed, flux sound mode/level, box light level, ir lock) will **
- *    ** be restored to default values. It suffices to install 1.100 and boot once; **
- *    ** you can then immediately  update to a later version.                       **
- *    ** https://github.com/realA10001986/Flux-Capacitor/releases/tag/V1.100        **
+ *    ** If updating from below 1.100, please see boxed note at version 1.101 below **
  *    ********************************************************************************
  *    - Fix cutting off custom startup sound through wakeup() when fake-powered on
  *      through the Remote.

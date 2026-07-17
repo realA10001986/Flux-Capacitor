@@ -2281,22 +2281,22 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
       "\x41" "FLUX_ON",          // 6
       "\x41" "FLUX_30",          // 7
       "\x41" "FLUX_60",          // 8
-      "\xc1" "USER1",            // 9   also while off or busy
-      "\xc1" "USER2",            // 10  also while off or busy
-      "\x41" "MP_SHUFFLE_ON",    // 11
-      "\x41" "MP_SHUFFLE_OFF",   // 12
+      "\xc1" "USER1",            // 9   queued while off or busy
+      "\xc1" "USER2",            // 10  queued while off or busy
+      "\x41" "MP_SHUFFLE_ON",    // 11  queued while busy
+      "\x41" "MP_SHUFFLE_OFF",   // 12  queued while busy
       "\x01" "MP_PLAY",          // 13
-      "\x41" "MP_STOP",          // 14
+      "\x41" "MP_STOP",          // 14  queued while busy
       "\x01" "MP_NEXT",          // 15
       "\x01" "MP_PREV",          // 16
       "\x01" "MP_FOLDER_",       // 17  MP_FOLDER_0..MP_FOLDER_9
       "\x01" "PLAYKEY_",         // 18  PLAYKEY_1..PLAYKEY_9
-      "\x41" "STOPKEY",          // 19
+      "\x41" "STOPKEY",          // 19  queued while busy
       "\x01" "INJECT_",          // 20
       "\x01" "VOLUME_UP",        // 21
       "\x01" "VOLUME_DOWN",      // 22
       "\x01" "VOLUME_SET_",      // 23  VOLUME_SET_0..VOLUME_SET_100
-      "\xc1" "MP_REQSTATUS",     // 24  also while off or busy
+      "\xc1" "MP_REQSTATUS",     // 24  executed even while off or busy
       NULL
     };
     static const char *cmdList2[] = {
@@ -2415,7 +2415,7 @@ static void mqttCallback(char *topic, byte *payload, unsigned int length)
         // What needs to be handled here:
         // - complete command parsing
         // - stuff to execute when fake power is off
-        // All other stuff translated into command and queued
+        // All other stuff translated into command and queued (and executed when on)
 
         tblen = strlen(tempBuf);
 

@@ -55,7 +55,7 @@
 #include "fc_global.h"
 
 #include <Arduino.h>
-#include <SD.h>
+#include "src/SD/SD.h"
 #include <FS.h>
 
 #include "AudioFileSourceLoop.h"
@@ -839,7 +839,6 @@ static void mp_buildFileName(char *fnbuf, int num)
 int mp_checkForFolder(int num)
 {
     char fnbuf[32];
-    int ret;
 
     // returns 
     // 1 if folder is ready (contains 000.mp3 and DONE)
@@ -860,10 +859,20 @@ int mp_checkForFolder(int num)
     if(!SD.exists(fnbuf))
         return 0;
 
+    // Check if folder is folder
+    File origin = SD.open(fnbuf);
+    if(!origin) return 0;
+    if(!origin.isDirectory()) {
+        // If musicX is not a folder, return -3
+        origin.close();
+        return -3;
+    }
+    origin.close();
+
     // Check if DONE exists
-    sprintf(fnbuf, "/music%1d%s", num, tcdrdone);
+    strcat(fnbuf, tcdrdone);
     if(SD.exists(fnbuf)) {
-        sprintf(fnbuf, "/music%1d/000.mp3", num);
+        strcpy(fnbuf + 8, "000.mp3");
         if(SD.exists(fnbuf)) {
             // If 000.mp3 and DONE exists, return 1
             return 1;
@@ -872,19 +881,8 @@ int mp_checkForFolder(int num)
         return -2;
     }
       
-    // Check if folder is folder
-    sprintf(fnbuf, "/music%1d", num);
-    File origin = SD.open(fnbuf);
-    if(!origin) return 0;
-    if(!origin.isDirectory()) {
-        // If musicX is not a folder, return -3
-        ret = -3;
-    } else {
-        // If it is a folder, it needs processing
-        ret = -1;
-    }
-    origin.close();
-    return ret;
+    // DONE not present: Needs processing
+    return -1;
 }
 
 /*
@@ -948,16 +946,14 @@ static bool mp_renameFilesInDir(bool isSetup)
 {
     char fnbuf[20];
     char fnbuf3[32];
-    char fnbuf2[256];
     char **a, **d;
     char *c;
-    int num = musFolderNum;
     int count = 0;
     int fileNum = 0;
     int strLength;
     int nameOffs = 8;
     int allocBufIdx = 0;
-    const unsigned long bufSizes[8] = {
+    static const unsigned long bufSizes[8] = {
         16384, 16384, 8192, 8192, 8192, 8192, 8192, 4096 
     };
     char *bufs[8] = { NULL };
@@ -971,7 +967,7 @@ static bool mp_renameFilesInDir(bool isSetup)
     renNow1 = renNow2 = millis();
 
     // Build "DONE"-file name
-    sprintf(fnbuf, "/music%1d", num);
+    sprintf(fnbuf, "/music%1d", musFolderNum);
     strcpy(fnbuf3, fnbuf);
     strcat(fnbuf3, tcdrdone);
 
@@ -1141,11 +1137,13 @@ static bool mp_renameFilesInDir(bool isSetup)
     // Sort file names, and rename
 
     if(fileNum) {
+
+        char fnbuf2[256];
         
         // Sort file names
         mpren_insertionSort(a, fileNum);
     
-        sprintf(fnbuf2, "/music%1d/", num);
+        sprintf(fnbuf2, "/music%1d/", musFolderNum);
         strcpy(fnbuf, fnbuf2);
 
         // If 000.mp3 exists, find current count
