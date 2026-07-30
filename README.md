@@ -37,7 +37,7 @@ For information on updating the firmware on your FC, see [here](#firmware-instal
 
 The first step is to establish access to the FC's configuration website ("Config Portal") in order to configure your FC:
 
-- Power up your FC and wait until the startup sequence has completed.
+- Power up your FC and wait a few seconds.
 - Connect your computer or handheld device to the WiFi network "FC-AP".
 - Navigate your browser to http://flux.local or http://192.168.4.1 to enter the Config Portal.
 
