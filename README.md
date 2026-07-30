@@ -817,7 +817,7 @@ See [here](#wifi-power-saving-features).
 
 ##### &#9193; Flux sound mode
 
-Selects the "flux" sound mode. "Auto: xx secs" enables the beep for xx seconds after triggering a time travel, upon power-on, and then the TCD sends a respective signal through BTTFN.
+Selects the "flux" sound mode. "Auto: xx secs" enables the flux sound for xx seconds after triggering a time travel, upon power-on, and then the TCD sends a respective signal through BTTFN.
 
 Can be changed at any time by typing *20ok (off), *21ok (on), *22ok (Auto 30secs) or *23ok (Auto 60secs), or through the TCD's keypad. A change through IR remote or TCD is saved 10 seconds after the last change (see [here](#powering-down-the-fc)).
 
