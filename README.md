@@ -340,7 +340,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     </tr>
     <tr>
      <td align="left">Quit <a href="#remote-controlling-the-tcds-keypad">TCD keypad remote control mode</a></td>
-     <td align="left">-</td><td>3097</td>
+     <td align="left">#</td><td>3097</td>
     </tr>
    <tr>
      <td align="left">Disable <a href='#car-setup'>car mode</a><sup>1</sup></td>
