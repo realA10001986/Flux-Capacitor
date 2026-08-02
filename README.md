@@ -141,7 +141,7 @@ The main control device is the supplied IR remote control. If a TCD is connected
 
 ### Powering down the FC
 
-The FC sometimes writes data to either the internal flash file system or the SD card. These write operations should not be interrupted by a power loss.
+The FC sometimes writes data to either the internal flash memory or the SD card. These write operations should not be interrupted by a power loss.
 
 In general, it is safe to power-down the FC when it is idle, after it has been fake-powered-down [through the TCD](#bttf-network-bttfn) or after a time travel sequence. 
 
