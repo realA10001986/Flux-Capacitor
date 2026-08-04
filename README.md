@@ -585,32 +585,32 @@ The FC supports MQTT protocol versions 3.1.1 and 5.0.
 ### Control the FC via MQTT
 
 The FC can be controlled through messages sent to topic **bttf/fc/cmd**. Supported commands are
-- TIMETRAVEL: Start a [time travel](#time-travel)
-- FASTER, SLOWER: Make chase faster or slower. Only if speed knob is deactivated.
-- RESETSPEED: Reset chase speed to default. Only if speed knob is deactivated.
-- CHASE_x: x being 0-9, select chase pattern
-- FLUX_OFF: Disables the [flux sound](#the-flux-sound)
-- FLUX_ON: Enables the [flux sound](#the-flux-sound)
-- FLUX_30: Enables the [flux sound](#the-flux-sound) for 30 seconds
-- FLUX_60 Enables the [flux sound](#the-flux-sound) for 60 seconds
-- MP_PLAY: Starts the [Music Player](#the-music-player)
-- MP_STOP: Stops the [Music Player](#the-music-player)
-- MP_NEXT: Jump to next [Music Player](#the-music-player) track
-- MP_PREV: Jump to previous [Music Player](#the-music-player) track
-- MP_SHUFFLE_ON: Enables shuffle mode in [Music Player](#the-music-player)
-- MP_SHUFFLE_OFF: Disables shuffle mode in [Music Player](#the-music-player)
-- MP_FOLDER_x: x being 0-9, set folder number for [Music Player](#the-music-player)
-- MP_REQSTATUS: Publish current [music player status](#-publish-music-player-status-to-bttffcmpstatus) to bttf/fc/mpstatus
-- VOLUME_UP, VOLUME_DOWN: Increase/decrease volume by a notch
-- VOLUME_SET_x: Set volume to x% (x=0-100)
-- USER1, USER2: User commands, see below
-- PLAYKEY_x: Play keyX.mp3 (from SD card), X being in the range from 1 to 9.
-- STOPKEY: Stop playback of keyX file. Does nothing if no keyX file is currently played back.
-- INJECT_x: See below.
+- ```TIMETRAVEL```: Start a [time travel](#time-travel)
+- ```FASTER```, ```SLOWER```: Make chase faster or slower. Only if speed knob is deactivated.
+- ```RESETSPEED```: Reset chase speed to default. Only if speed knob is deactivated.
+- ```CHASE_x```: x being 0-9, select chase pattern
+- ```FLUX_OFF```: Disables the [flux sound](#the-flux-sound)
+- ```FLUX_ON```: Enables the [flux sound](#the-flux-sound)
+- ```FLUX_30```: Enables the [flux sound](#the-flux-sound) for 30 seconds
+- ```FLUX_60```: Enables the [flux sound](#the-flux-sound) for 60 seconds
+- ```MP_PLAY```: Starts the [Music Player](#the-music-player)
+- ```MP_STOP```: Stops the [Music Player](#the-music-player)
+- ```MP_NEXT```: Jump to next [Music Player](#the-music-player) track
+- ```MP_PREV```: Jump to previous [Music Player](#the-music-player) track
+- ```MP_SHUFFLE_ON```: Enables shuffle mode in [Music Player](#the-music-player)
+- ```MP_SHUFFLE_OFF```: Disables shuffle mode in [Music Player](#the-music-player)
+- ```MP_FOLDER_x```: x being 0-9, set folder number for [Music Player](#the-music-player)
+- ```MP_REQSTATUS```: Publish current [music player status](#-publish-music-player-status-to-bttffcmpstatus) to bttf/fc/mpstatus
+- ```VOLUME_UP```, ```VOLUME_DOWN```: Increase/decrease volume by a notch
+- ```VOLUME_SET_x```: Set volume to x% (x=0-100)
+- ```USER1```, ```USER2```: User commands, see below
+- ```PLAYKEY_x```: Play keyX.mp3 (from SD card), X being in the range from 1 to 9.
+- ```STOPKEY```: Stop playback of keyX file. Does nothing if no keyX file is currently played back.
+- ```INJECT_x```: See below.
 
 #### USER1, USER2
 
-The FC features two user [chase-LED-signals](#appendix-b-led-signals) that can be triggered by commands USER1 and USER2. These signals can be accompanied by sound, if "user1.mp3" and/or "user2.mp3" are present on the SD card. This can be used freely, like for HA-integrated doorbells, actuators, etc. 
+The FC features two user [chase-LED-signals](#appendix-b-led-signals) that can be triggered by commands ```USER1``` and ```USER2```. These signals can be accompanied by sound, if "user1.mp3" and/or "user2.mp3" are present on the SD card. This can be used freely, like for HA-integrated doorbells, actuators, etc. 
 
 #### The INJECT_x command
 
