@@ -616,11 +616,11 @@ The FC features two user [chase-LED-signals](#appendix-b-led-signals) that can b
 
 This command allows remote control of the FC through HA/MQTT in the same way as through the TCD keypad by injecting commands into the FC's command queue (hence the name). Commands are listed [here](#commandref); nearly all are supported. For example:
 
-To set volume level to 10 (3310), issue the following command: **INJECT_3310**
+To set volume level to 10 (3310), issue the following command: ```INJECT_3310```
 
-To play "key2.mp3" (3502), issue **INJECT_3502**
+To play "key2.mp3" (3502), issue ```INJECT_3502```
 
-To select the 'music1' folder (3051), issue **INJECT_3051**
+To select the 'music1' folder (3051), issue ```INJECT_3051```
 
 ### Setup
 
