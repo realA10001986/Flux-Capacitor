@@ -642,7 +642,7 @@ If your FC, along with a [Time Circuits Display](https://tcd.out-a-ti.me/), is m
 
 ![STAmode-car](img/stamode-car2.png)
 
-This configuration can easily achieved by putting both the TCD and the FC in *Car Mode*:
+This configuration can easily be achieved by putting both the TCD and the FC in *Car Mode*:
 
 #### TCD
 
