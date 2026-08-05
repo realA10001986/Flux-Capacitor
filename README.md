@@ -603,10 +603,10 @@ The FC can be controlled through messages sent to topic **bttf/fc/cmd**. Support
 - ```MP_REQSTATUS```: Publish current [music player status](#-publish-music-player-status-to-bttffcmpstatus) to bttf/fc/mpstatus
 - ```VOLUME_UP```, ```VOLUME_DOWN```: Increase/decrease volume by a notch
 - ```VOLUME_SET_x```: Set volume to x% (x=0-100)
-- ```USER1```, ```USER2```: User commands, see below
+- ```USER1```, ```USER2```: User commands, see [below](#user1-user2)
 - ```PLAYKEY_x```: Play keyX.mp3 (from SD card), X being in the range from 1 to 9.
 - ```STOPKEY```: Stop playback of keyX file. Does nothing if no keyX file is currently played back.
-- ```INJECT_x```: See below.
+- ```INJECT_x```: See [below](#the-inject_x-command).
 
 #### USER1, USER2
 
@@ -624,7 +624,7 @@ To select the 'music1' folder (3051), issue ```INJECT_3051```
 
 ### Setup
 
-MQTT requires a "broker" (such as [mosquitto](https://mosquitto.org/), [EMQ X](https://www.emqx.io/), [Cassandana](https://github.com/mtsoleimani/cassandana), [RabbitMQ](https://www.rabbitmq.com/), [Ejjaberd](https://www.ejabberd.im/), [HiveMQ](https://www.hivemq.com/) to name a few).
+MQTT requires a "broker" such as [mosquitto](https://mosquitto.org/), [Cassandana](https://github.com/mtsoleimani/cassandana), [RabbitMQ](https://www.rabbitmq.com/), [Ejjaberd](https://www.ejabberd.im/), [HiveMQ](https://www.hivemq.com/) or [EMQX](https://www.emqx.com/), to name a few. For proper operation with low latency, running the broker on your local network is recommended.
 
 ![STAmode-mqtt](img/stamode-mqtt.png)
 
@@ -634,7 +634,7 @@ If your broker supports protocol version 3.1.1, stick with 3.1.1. Version 5.0 ha
 
 If your broker does not allow anonymous logins, a username and password can be specified.
 
-Limitations: TLS/SSL not supported; ".local" domains (MDNS, Bonjour) not supported; the machine running the broker must respond to PING (ICMP) echo requests. For proper operation with low latency, it is recommended that the broker is on your local network. MQTT is disabled when your FC is operated in AP-mode or when connected to the TCD run in AP-Mode (TCD-AP).
+Limitations: TLS/SSL not supported; ".local" domains (MDNS, Bonjour) not supported; the machine running the broker must respond to PING (ICMP) echo requests. MQTT is disabled when your FC is operated in AP-mode or when connected to the TCD run in AP-Mode (TCD-AP).
 
 ## Car Setup
 
