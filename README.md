@@ -409,7 +409,7 @@ In normal operation, those LEDs are off. You can, however, configure a minimum b
 
 ## Time Travel
 
-To travel through time, type "0" on the remote control. The Flux Capacitor will play its time travel sequence.
+To travel through time, type ```0``` on the remote control. The Flux Capacitor will play its time travel sequence.
 
 You can also connect an external Time Travel button to your FC; the button must connect "TT IN" ("GPIO" on earlier versions) to "3.3V" on the "Time Travel" connector. Pressing this button briefly will trigger a time travel.
 
@@ -445,8 +445,7 @@ The following sounds are time-sync'd to display action. If you decide to substit
 The firmware supports some additional user-provided sound effects, which it will load from the SD card. If the respective file is present, it will be used. If that file is absent, no sound will be played.
 
 - "user1.mp3", "user2.mp3": Played when the FC receives [MQTT commands](#home-assistant--mqtt) "USER1" and "USER2", respectively.
-- "key1.mp3", "key3.mp3", "key4.mp3", "key6.mp3", "key7.mp3", "key9.mp3": Will be played if you press the "1"/"3"/"4"/"6"/"7"/"9" button on your remote, through IR commands ```*50xok``` or through [TCD](#commandref) and [HA/MQTT](#control-the-fc-via-mqtt)
-- "key2.mp3", "key5.mp3", "key8.mp3": Can be played through IR commands ```*50xok``` or commands from [TCD](#commandref) and [HA/MQTT](#control-the-fc-via-mqtt).
+- "key1.mp3" - "key9.mp3": Will be played through IR commands ```*501ok``` - ```*509ok``` or commands from [TCD](#commandref) and [HA/MQTT](#control-the-fc-via-mqtt). The respective "keyX.mp3" file will also be played if you press the ```1```/```3```/```4```/```6```/```7```/```9``` button on your remote.
 
 > The seemingly odd way of accessing keyX files through the IR remote is because of synchronicity with other props, especially the TCD and its keymap where the Music Player also occupies keys 2, 5, 8.
 
@@ -472,15 +471,15 @@ The firmware contains a simple music player to play mp3 files located on the SD 
 
 *The maximum bitrate is __128kpbs__. The free [Adapter](https://macroplant.com/adapter/audio-converter) tool can re-encode your mp3 files in batches.*
 
-To be recognized, your mp3 files need to be organized in music folders named *music0* through *music9*. The folder number is 0 by default, i.e. the player starts searching for music in folder *music0*. To select a different folder, type ```*5Xok``` on the remote control, X being 0 through 9.
+To be recognized, your mp3 files need to be organized in music folders named *music0* through *music9*. The folder number is 0 by default, i.e. the player starts searching for music in folder *music0*. To select a different folder, type ```*50ok``` through ```*59ok``` on the remote control.
 
 The names of the audio files must only consist of three-digit numbers, starting at 000.mp3, in consecutive order. No numbers should be left out. Each folder can hold up to 1000 files (000.mp3-999.mp3). 
 
-Since manually renaming mp3 files is somewhat cumbersome, the firmware can do this for you: Just copy your files with their original filenames to a music folder of your choice; when selecting that folder (```*5Xok```), the files will be sorted alphabetically and renamed according to the 3-digit name scheme. (If you want your tracks in a specific order, you must rename them, for instance by inserting a letter or number at the start.) The renaming process can take a while (11 minutes for 1000 files in bad cases). Mac users are advised to delete the ._ files from the SD before putting it back into the FC as this speeds up the process. While the renaming is in progress, the FC's chase LEDs show the fraction of files still left to be processed.
+Since manually renaming mp3 files is somewhat cumbersome, the firmware can do this for you: Just copy your files with their original filenames to a music folder of your choice; when selecting that folder, the files will be sorted alphabetically and renamed according to the 3-digit name scheme. (If you want your tracks in a specific order, you must rename them, for instance by inserting a letter or number at the start.) The renaming process can take a while (11 minutes for 1000 files in bad cases). Mac users are advised to delete the ._ files from the SD before putting it back into the FC as this speeds up the process. While the renaming is in progress, the FC's chase LEDs show the fraction of files still left to be processed.
 
 To add files to a music folder later, just copy them to the folder and delete the file "TCD_DONE.TXT" (so that the firmware knows that something has changed). 
 
-To start and stop music playback, press 5 on your remote. Pressing 2 jumps to the previous track, pressing 8 to the next one.
+To start and stop music playback, press ```5``` on your remote. Pressing ```2``` jumps to the previous track, pressing ```8``` to the next one.
 
 By default, the tracks are played in order, starting at 000.mp3, followed by 001.mp3 and so on. By entering ```*555ok```, you can switch to shuffle mode, in which the tracks are played in random order. Type ```*222ok``` to switch back to consecutive mode. Shuffle mode is saved and persistent.
 
