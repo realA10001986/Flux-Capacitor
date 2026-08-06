@@ -157,10 +157,10 @@ Your FC kit includes an IR remote control. This remote works out-of-the-box and 
 |:--:| 
 | *The FC's standard IR remote control* |
 
-Each time you press a (recognized) key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the bright center LED.
+Each time you press a key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the bright center LED.
 
 Apart from the feedback LED, your FC will also show some feedback signals through its chase LEDs:
-- By default, when initiating a command sequence by pressing \*, the FC will start to show each key pressed afterwards by lighting up another chase LED. This kind of feedback can be disabled using command sequence ```*63ok``` or in the Config Portal;
+- By default, when initiating a command sequence by pressing ```*```, the FC will start to show each key pressed afterwards by lighting up another chase LED. This kind of feedback can be disabled using command sequence ```*63ok``` or in the Config Portal;
 - By default, after executing a command, the FC will show a "success" signal. This kind of feedback can be disabled using command sequence ```*62ok``` or in the Config Portal;
 - If a command was unsuccessful or not recognized, a "bad input" signal will be shown.
 
@@ -199,7 +199,7 @@ In order to only disable the supplied IR remote control, check the option **_Dis
      <td align="center" colspan="3">Single key actions<br>[Code on TCD keypad]</td>
     </tr>
     <tr>
-     <td align="center">1<br><a href="#additional-custom-sounds">Play "key1.mp3"</a><br>[3001]</td>
+     <td align="center"><code>1</code>code><br><a href="#additional-custom-sounds">Play "key1.mp3"</a><br>[3001]</td>
      <td align="center">2<br><a href="#the-music-player">Music Player</a>: Previous track<br>[3002]</td>
      <td align="center">3<br><a href="#additional-custom-sounds">Play "key3.mp3"</a><br>[3003]</td>
     </tr>
@@ -852,7 +852,7 @@ See [here](#appendix-b-led-signals) for all supported signals.
 
 ##### &#9193; Show IR command entry feedback
 
-If this option is checked, the FC will, upon pressing \* on the IR remote control, show command sequence entry progress by lighting up another chase LED on each key pressed. This setting can also be toggled by ```*63ok```.
+If this option is checked, the FC will, upon pressing ```*``` on the IR remote control, show command sequence entry progress by lighting up another chase LED on each key pressed. This setting can also be toggled by ```*63ok```.
 
 ##### &#9193; Screen saver timer
 
