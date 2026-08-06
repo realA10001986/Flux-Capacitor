@@ -244,7 +244,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
     <tr><td>Function</td><td>Code on remote</td><td>Code on TCD</td></tr>
     <tr>
      <td align="left">Select original chase sequence</td>
-     <td align="left"><code>*10ok</code></td><td><code>3010</code>/td>
+     <td align="left"><code>*10ok</code></td><td><code>3010</code></td>
     </tr>
     <tr>
      <td align="left">Select chase sequences 1-9</td>
