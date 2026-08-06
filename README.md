@@ -199,7 +199,7 @@ In order to only disable the supplied IR remote control, check the option **_Dis
      <td align="center" colspan="3">Single key actions<br>[Code on TCD keypad]</td>
     </tr>
     <tr>
-     <td align="center"><code>1</code>code><br><a href="#additional-custom-sounds">Play "key1.mp3"</a><br>[3001]</td>
+     <td align="center"><code>1</code><br><a href="#additional-custom-sounds">Play "key1.mp3"</a><br>[3001]</td>
      <td align="center">2<br><a href="#the-music-player">Music Player</a>: Previous track<br>[3002]</td>
      <td align="center">3<br><a href="#additional-custom-sounds">Play "key3.mp3"</a><br>[3003]</td>
     </tr>
