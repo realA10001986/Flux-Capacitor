@@ -343,11 +343,11 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left"><code>#</td><td><code>3097</code></td>
     </tr>
    <tr>
-     <td align="left">Disable <a href='#car-setup'>car mode</a><sup>1</sup></td>
+     <td align="left">Disable <a href='#car-setup'>car mode</a> (**)</td>
      <td align="left"><code>*990ok</code></td><td><code>3990</code></td>
     </tr>
     <tr>
-     <td align="left">Enable <a href='#car-setup'>car mode</a><sup>1</sup></td>
+     <td align="left">Enable <a href='#car-setup'>car mode</a> (**)</td>
      <td align="left"><code>*991ok</code></td><td><code>3991</code></td>
     </tr>
     <tr>
