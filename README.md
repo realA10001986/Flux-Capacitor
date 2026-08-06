@@ -200,37 +200,37 @@ In order to only disable the supplied IR remote control, check the option **_Dis
     </tr>
     <tr>
      <td align="center"><code>1</code><br><a href="#additional-custom-sounds">Play "key1.mp3"</a><br>[3001]</td>
-     <td align="center">2<br><a href="#the-music-player">Music Player</a>: Previous track<br>[3002]</td>
-     <td align="center">3<br><a href="#additional-custom-sounds">Play "key3.mp3"</a><br>[3003]</td>
+     <td align="center"><code>2</code><br><a href="#the-music-player">Music Player</a>: Previous track<br>[3002]</td>
+     <td align="center"><code>3</code><br><a href="#additional-custom-sounds">Play "key3.mp3"</a><br>[3003]</td>
     </tr>
     <tr>
-     <td align="center">4<br><a href="#additional-custom-sounds">Play "key4.mp3"</a><br>[3004]</td>
-     <td align="center">5<br><a href="#the-music-player">Music Player</a>: Play/Stop<br>[3005]</td>
-     <td align="center">6<br><a href="#additional-custom-sounds">Play "key6.mp3"</a><br>[3006]</td>
+     <td align="center"><code>4</code><br><a href="#additional-custom-sounds">Play "key4.mp3"</a><br>[3004]</td>
+     <td align="center"><code>5</code><br><a href="#the-music-player">Music Player</a>: Play/Stop<br>[3005]</td>
+     <td align="center"><code>6</code><br><a href="#additional-custom-sounds">Play "key6.mp3"</a><br>[3006]</td>
     </tr>
     <tr>
-     <td align="center">7<br><a href="#additional-custom-sounds">Play "key7.mp3"</a><br>[3007]</td>
-     <td align="center">8<br><a href="#the-music-player">Music Player</a>: Next track<br>[3008]</td>
-     <td align="center">9<br><a href="#additional-custom-sounds">Play "key9.mp3"</a><br>[3009]</td>
+     <td align="center"><code>7</code><br><a href="#additional-custom-sounds">Play "key7.mp3"</a><br>[3007]</td>
+     <td align="center"><code>8</code><br><a href="#the-music-player">Music Player</a>: Next track<br>[3008]</td>
+     <td align="center"><code>9</code><br><a href="#additional-custom-sounds">Play "key9.mp3"</a><br>[3009]</td>
     </tr>
     <tr>
-     <td align="center">*<br>Start command sequence</td>
-     <td align="center">0<br><a href="#time-travel">Time Travel</a></td>
-     <td align="center">#<br>Abort command sequence</td>
-    </tr>
-    <tr>
-     <td align="center"></td>
-     <td align="center">&#8593;<br>Increase audio volume<br>(unless knob is enabled)</td>
-     <td align="center"></td>
-    </tr>
-    <tr>
-     <td align="center">&#8592;<br>Decrease chase speed (*)</td>
-     <td align="center">OK<br>Execute command sequence</td>
-     <td align="center">&#8594;<br>Increase chase speed (*)</td>
+     <td align="center"><code>*</code><br>Start command sequence</td>
+     <td align="center"><code>0</code><br><a href="#time-travel">Time Travel</a></td>
+     <td align="center"><code>#</code><br>Abort command sequence</td>
     </tr>
     <tr>
      <td align="center"></td>
-     <td align="center">&#8595;<br>Decrease audio volume<br>(unless knob is enabled)</td>
+     <td align="center"><code>&#8593;</code><br>Increase audio volume<br>(unless knob is enabled)</td>
+     <td align="center"></td>
+    </tr>
+    <tr>
+     <td align="center"><code>&#8592;</code><br>Decrease chase speed (*)</td>
+     <td align="center"><code>OK</code><br>Execute command sequence</td>
+     <td align="center"><code>&#8594;</code><br>Increase chase speed (*)</td>
+    </tr>
+    <tr>
+     <td align="center"></td>
+     <td align="center"><code>&#8595;</code><br>Decrease audio volume<br>(unless knob is enabled)</td>
      <td align="center"></td>
     </tr>
 </table>
