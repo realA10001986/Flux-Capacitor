@@ -518,25 +518,25 @@ To connect your FC to the TCD, just enter the TCD's hostname - usually "timecirc
 Afterwards, the FC and the TCD can communicate wirelessly and 
 - play time travel sequences in sync,
 - both play an alarm-sequence when the TCD's alarm occurs,
-- the FC can be remote controlled through the TCD's keypad (command codes 3xxx),
+- the FC can be remote controlled through the TCD's keypad (command codes ```3xxx```),
 - the FC can remote control the TCD's keypad (see [below](#remote-controlling-the-tcds-keypad))
 - the FC queries the TCD for speed (GPS, rotary encoder, Remote), if desired, to adapt its chase speed,
 - the FC queries the TCD for fake power and night mode, in order to react accordingly if so configured,
-- pressing "0" on the IR remote control or the FC's Time Travel button can trigger a synchronized Time Travel on all BTTFN-connected devices, just like if that Time Travel was triggered through the TCD.
+- pressing ```0``` on the IR remote control or the FC's Time Travel button can trigger a synchronized Time Travel on all BTTFN-connected devices, just like if that Time Travel was triggered through the TCD.
 
 #### Remote controlling the TCD's keypad
 
 The FC can, through its IR remote control, remote control the TCD keypad. The TCD will react to pressing a key on the IR remote as if that key was pressed on the TCD keypad.
 
-As a prerequisite, the TCD must be set to permit remote control. This is done on the TCD through keypad command 995.
+As a prerequisite, the TCD must be set to permit remote control. This is done on the TCD through keypad command ```995```.
 
-To start TCD keypad remote control, type ```*95ok``` on the FC's IR remote control or issue keypad command 3095 on the TCD.
+To start TCD keypad remote control, type ```*95ok``` on the FC's IR remote control or issue keypad command ```3095``` on the TCD.
 
-Keys 0-9 as well as OK (=ENTER) on your IR remote control will now be registered by the TCD as key presses.
+Keys ```0```-```9``` as well as ```ok``` (= ```ENTER``` on the TCD) on your IR remote control will now be registered by the TCD as key presses.
 
-"Holding" a key on the TCD keypad is emulated by pressing ```*``` followed by the key, for instance ```*1``` (to toggle the TCD alarm). Holding "OK" is only accepted by the TCD to stop the alarm, but not for entering the keypad menu.
+"Holding" a key on the TCD keypad is emulated by pressing ```*``` followed by the key, for instance ```*1``` (to toggle the TCD alarm). Holding ```ok``` (= ```ENTER```) is only accepted by the TCD to stop the alarm, but not for entering the keypad menu.
 
-Pressing ```#``` quits TCD keypad remote control mode, as does issuing command 3097 on the TCD or through HA/MQTT.
+Pressing ```#``` quits TCD keypad remote control mode, as does issuing command ```3097``` on the TCD or through HA/MQTT.
 
 >Since the TCD itself can remote control every other compatible prop (3xxx = Flux Capacitor, 6xxx = SID, 7xxx = Futaba Remote Control, 8xxx = VSR, 9xxx = Dash Gauges), and the IR remote can emulate the TCD keypad, it can essentially remote control every other prop.
 
@@ -615,11 +615,11 @@ The FC features two user [chase-LED-signals](#appendix-b-led-signals) that can b
 
 This command allows remote control of the FC through HA/MQTT in the same way as through the TCD keypad by injecting commands into the FC's command queue (hence the name). Commands are listed [here](#commandref); nearly all are supported. For example:
 
-To set volume level to 10 (3310), issue the following command: ```INJECT_3310```
+To set volume level to 10 (```3310```), issue the following command: ```INJECT_3310```
 
-To play "key2.mp3" (3502), issue ```INJECT_3502```
+To play "key2.mp3" (```3502```), issue ```INJECT_3502```
 
-To select the 'music1' folder (3051), issue ```INJECT_3051```
+To select the 'music1' folder (```3051```), issue ```INJECT_3051```
 
 ### Setup
 
@@ -646,7 +646,7 @@ This configuration can easily be achieved by putting both the TCD and the FC in 
 #### TCD
 
 - Set **_Power save timer_** to 0 (zero) in the "AP-mode settings" section on the *WiFi Configuration* page
-- Put your TCD in [*Car Mode*](https://tcd.out-a-ti.me/#car-mode) by issuing keypad command 991.
+- Put your TCD in [*Car Mode*](https://tcd.out-a-ti.me/#car-mode) by issuing keypad command ```991```.
 
 #### Flux Capacitor
 
@@ -792,7 +792,7 @@ By default, when your FC creates a WiFi network of its own ("AP-mode"), this net
 
 By default, and if this field is empty, the FC's own WiFi network ("FC-AP") will be unprotected. If you want to protect your FC access point, enter your password here. It needs to be 8 characters in length and only characters A-Z, a-z, 0-9 and - are allowed.
 
-If you forget this password and are thereby locked out of your FC, enter *123456ok on the IR remote control; this deletes the WiFi password. Then power-down and power-up your FC and the access point will start unprotected.
+If you forget this password and are thereby locked out of your FC, enter ```*123456ok``` on the IR remote control; this deletes the WiFi password. Then power-down and power-up your FC and the access point will start unprotected.
 
 ##### &#9193; WiFi channel
 
@@ -858,7 +858,7 @@ If this option is checked, the FC will, upon pressing ```*``` on the IR remote c
 Enter the number of minutes until the Screen Saver should become active when the FC is idle.
 
 The Screen Saver, when active, stops the flux sound and disables all LEDs, until 
-- a key on the IR remote control is pressed; if IR is [locked](#locking-ir-control), only the # key deactivates the Screen Saver;
+- a key on the IR remote control is pressed; if IR is [locked](#locking-ir-control), only the ```#``` key deactivates the Screen Saver;
 - the time travel button is briefly pressed (the first press when the screen saver is active will not trigger a time travel),
 - on a connected TCD, a destination date is entered (only if TCD is wirelessly connected) or a time travel event is triggered (also when wired).
 
