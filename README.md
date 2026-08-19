@@ -26,7 +26,7 @@ Features include
 - [wireless communication](#bttf-network-bttfn) with [Time Circuits Display](https://circuitsetup.us/product/complete-time-circuits-display-kit/); used for synchronized time travels, alarm, chase speed, night mode, fake power, remote control through TCD keypad and [remote controlling](#remote-controlling-the-tcds-keypad) the TCD keypad.
 - [Home Assistant](#home-assistant--mqtt) (MQTT) support
 - built-in OTA installer for firmware updates and audio files
-- &#128007; &#129370;
+- &#128007; &#129370; &#129370; &#127381;
 
 >[This repository](https://fc.out-a-ti.me) is the upstream source for CircuitSetup's releases. The only difference is that both code and documentation [here](https://fc.out-a-ti.me) might be ahead in development.
 
@@ -175,7 +175,7 @@ IR learning can be initiated by entering ```*987654ok``` on the standard IR remo
 
 >Alternatively, IR learning can be started by pressing and holding a connected [Time Travel](#time-travel) button for a few seconds (while the option **_TCD connected by wire_** in the Config Portal is unchecked).
 
-When IR learning is started, the chase LEDs stop and [light all up](#appendix-b-led-signals). Afterwards, the IR feedback LED will keep blinking - this means the FC is ready to receive a key from your IR remote. Press ```0``` on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then, again while the IR feedback LED is blinking, press ```1```, wait for the acknowledgement, and so on. Enter your keys in the following order:
+When IR learning is started, the chase LEDs stop and [light all up](#appendix-b-led-signals). Afterwards, the key to be pressed is announced and the IR feedback LED will keep blinking - this means the FC is ready to receive a key from your IR remote. Press ```0``` on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then, again, after the announcement and while the IR feedback LED is blinking, press ```1```, wait for the acknowledgement, and so on. Enter your keys in the following order:
 
 ```0``` - ```1``` - ```2``` - ```3``` - ```4``` - ```5``` - ```6``` - ```7``` - ```8``` - ```9``` - ```*``` - ```#``` - ```Arrow up``` - ```Arrow down``` - ```Arrow left``` - ```Arrow right``` - ```OK``` 
 
