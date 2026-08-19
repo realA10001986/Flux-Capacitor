@@ -118,6 +118,12 @@ float           fluxLevel   = 1.0f;
 
 uint32_t        key_playing = 0;
 
+#define SC_VER 1
+static const char     sc_fn[] = "/SC.bin";
+static const uint32_t sc_magic = (SC_VER << 24) | 0x434346;
+static AudioFileSourceLoop *srcSC = NULL;
+static int16_t        segList[31];
+
 static char     append_audio_file[256];
 static float    append_vol;
 static uint32_t append_flags;
@@ -134,6 +140,8 @@ unsigned long   renNow1;
 unsigned long   renNow2;
 
 static float    getVolume();
+
+static void     checkForSC();
 
 static int      mp_findMaxNum();
 static bool     mp_checkForFile(int num);
@@ -177,8 +185,7 @@ void audio_setup()
     loadMusFoldNum();
     loadShuffle();
 
-    // MusicPlayer init
-    // done in main_setup()
+    // MusicPlayer init done in main_setup()
 
     // Check for keyX sounds to avoid unsuccessful file-lookups every time
     for(int i = 1, bm = 1 << 8; i < 10; i++, bm <<= 1) {
@@ -188,6 +195,8 @@ void audio_setup()
 
     haveUserSnd[0] = check_file_SD(userSnd[0]);
     haveUserSnd[1] = check_file_SD(userSnd[1]);
+
+    checkForSC();
 
     audioInitDone = true;
 }
@@ -242,10 +251,27 @@ static int32_t skipID3(char *buf)
     return 0;
 }
 
+static void setupLoopAndBegin(AudioFileSourceLoop *src, uint32_t flags)
+{
+    int32_t pos = 0;
+    char buf[10];
+    
+    buf[0] = 0;
+    
+    src->setPlayLoop(!!(flags & PA_LOOP));
+
+    if(flags & PA_DOID3TS) {
+        src->read((void *)buf, 10);
+        pos = skipID3(buf);
+        src->seek(pos, SEEK_SET);
+    }
+    src->setStartPos(pos);
+
+    mp3->begin(src, out);
+}
+
 void play_file(const char *audio_file, uint32_t flags, float volumeFactor)
 {
-    char buf[10];
-    int32_t curSeek = 0;
     #ifdef FC_HAVEMQTT
     bool mpWasActive = false;
     #endif
@@ -280,8 +306,8 @@ void play_file(const char *audio_file, uint32_t flags, float volumeFactor)
     }
 
     curVolFact  = volumeFactor;
-    dynVol      = (flags & PA_DYNVOL) ? true : false;
-    playingFlux = (flags & PA_ISFLUX) ? true : false;
+    dynVol      = !!(flags & PA_DYNVOL);
+    playingFlux = !!(flags & PA_ISFLUX);
     key_playing = flags & 0x1ff00;
 
     // Reset vol smoothing
@@ -291,29 +317,23 @@ void play_file(const char *audio_file, uint32_t flags, float volumeFactor)
     
     out->SetGain(getVolume());
 
-    buf[0] = 0;
-
-    if(haveSD && ((flags & PA_ALLOWSD) || FlashROMode) && mySD0L->open(audio_file)) {
-        mySD0L->setPlayLoop(!!(flags & PA_LOOP));
-        mySD0L->read((void *)buf, 10);
-        curSeek = skipID3(buf);
-        mySD0L->setStartPos(curSeek);
-        mySD0L->seek(curSeek, SEEK_SET);
-
-        mp3->begin(mySD0L, out);
-
+    if(flags & PA_SCSEGS) {
+        for(int i = 0; i <= ((const int16_t *)audio_file)[0] && i <= 30; i++) {
+            segList[i] = ((const int16_t *)audio_file)[i];
+        }
+        if(srcSC && srcSC->open_c(sc_fn, (const int16_t *)segList)) {
+            mp3->begin(srcSC, out);
+        } else {
+            playingFlux = false;
+            key_playing = 0;
+        }
+    } else if(haveSD && ((flags & PA_ALLOWSD) || FlashROMode) && mySD0L->open(audio_file)) {
+        setupLoopAndBegin(mySD0L, flags|PA_DOID3TS);
         #ifdef FC_DBG
         Serial.println("Playing from SD");
         #endif
     } else if(haveFS && myFS0L->open(audio_file)) {
-        myFS0L->setPlayLoop(!!(flags & PA_LOOP));
-        myFS0L->read((void *)buf, 10);
-        curSeek = skipID3(buf);
-        myFS0L->setStartPos(curSeek);
-        myFS0L->seek(curSeek, SEEK_SET);
-        
-        mp3->begin(myFS0L, out);
-
+        setupLoopAndBegin(myFS0L, flags);
         #ifdef FC_DBG
         Serial.println("Playing from flash FS");
         #endif
@@ -349,7 +369,8 @@ bool play_key(int k, bool stopOnly)
 {
     uint32_t pa_key = (1 << (7+k));
     
-    if(!(haveKeySnd & pa_key)) return false;    
+    if(!(haveKeySnd & pa_key)) 
+        return false;    
 
     if(pa_key == key_playing) {
         mp3->stop();
@@ -410,7 +431,7 @@ bool flux_pending()
  */
  
 bool inc_vol()
-{   
+{
     if(aud_state.curVolume == 255 || aud_state.curVolume == VOL_LEVELS - 1) 
         return false;
 
@@ -420,7 +441,7 @@ bool inc_vol()
 }
 
 bool dec_vol()
-{   
+{
     if(aud_state.curVolume == 255 || aud_state.curVolume == 0) 
         return false;
         
@@ -536,6 +557,21 @@ void setFluxLevel(unsigned int levelIdx)
 bool check_file_SD(const char *audio_file)
 {
     return (haveSD && SD.exists(audio_file));
+}
+
+static void checkForSC()
+{
+    unsigned int sps = 0;
+    uint32_t tbuf[3];
+    bool srcMedium;
+    
+    if((sps = check_file_len(sc_fn, srcMedium, (uint8_t *)&tbuf[0], 12))) {
+        if((tbuf[0] == sc_magic) && (tbuf[1] == sps ^ sc_magic)) {
+            if(srcMedium) srcSC = myFS0L;
+            else          srcSC = mySD0L;
+            //srcSC = srcMedium ? myFS0L : mySD0L;
+        }
+    }
 }
 
 bool checkAudioDone()
@@ -795,7 +831,7 @@ static bool mp_play_int(bool force)
 
     mp_buildFileName(fnbuf, playList[mpCurrIdx]);
     if(SD.exists(fnbuf)) {
-        if(force) play_file(fnbuf, PA_MUSIC|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0f);
+        if(force) play_file(fnbuf, PA_MUSIC|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
         mpActive = force;
         aud_state.curTrack = playList[mpCurrIdx];
         #ifdef FC_HAVEMQTT

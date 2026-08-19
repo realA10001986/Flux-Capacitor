@@ -118,6 +118,17 @@
 
 /*  Changelog
  *
+ *  2026/08/19 (A10001986) [1.106]
+ *    ********************************************************************************
+ *    ** If updating from below 1.100, please see boxed note at version 1.101 below **
+ *    ********************************************************************************
+ *    - New sound pack (FC05)
+ *    - IR learning: Keys to be pressed are now announced for more convenience
+ *    - IR learning bugfix: Reinstate sound (flux, music) after learning
+ *    - Unmute audio if muted while speaking IP address
+ *    - More robust error handling in case of malformed config files
+ *    - SD: More compatibility fixes
+ *    - Code maintenance
  *  2026/07/17 (A10001986) [1.105]
  *    ********************************************************************************
  *    ** If updating from below 1.100, please see boxed note at version 1.101 below **

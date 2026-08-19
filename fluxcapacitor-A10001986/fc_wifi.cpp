@@ -239,7 +239,7 @@ WiFiManagerParameter custom_ssDelay("ssDel", "Screen saver timer (1-999[minutes]
 
 WiFiManagerParameter custom_sectstart_nw("Wireless communication (BTTF-Network)", WFM_SECTS|WFM_HL);
 WiFiManagerParameter custom_tcdIP("tcdIP", "Hostname or IP address of TCD", settings.tcdIP, 31, "pattern='(^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$)|([A-Za-z0-9\\-]+)' placeholder='Example: timecircuits' list='tcdh'");
-WiFiManagerParameter custom_uGPS("uGPS", "Adapt chase speed to TCD-provided speed<br><span>Speed from TCD (GPS, rotary encoder, remote control), if available, will overrule knob and IR remote</span>", settings.useGPSS, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_uTCDS("uTCDS", "Adapt chase speed to TCD-provided speed<br><span>Speed from TCD (GPS, rotary encoder, remote control), if available, will overrule knob and IR remote</span>", settings.useTCDS, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 WiFiManagerParameter custom_uNM("uNM", "Follow TCD night-mode<br><span>If checked, the Screen Saver will activate when TCD is in night-mode.</span>", settings.useNM, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 WiFiManagerParameter custom_uFPO("uFPO", "Follow TCD fake power", settings.useFPO, "", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 WiFiManagerParameter custom_bttfnTT("bttfnTT", "'0' and button trigger BTTFN-wide TT<br><span>If checked, pressing '0' on the IR remote or pressing the Time Travel button triggers a BTTFN-wide TT</span>", settings.bttfnTT, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
@@ -249,7 +249,6 @@ WiFiManagerParameter custom_noETTOL("uEtNL", "TCD signals Time Travel without 5s
 
 WiFiManagerParameter custom_haveSD(wmBuildHaveSD, WFM_SECTS);
 WiFiManagerParameter custom_CfgOnSD("CfgOnSD", "Save secondary settings on SD<br><span>Check this to avoid flash wear</span>", settings.CfgOnSD, "class='mt5 mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
-//WiFiManagerParameter custom_sdFrq("sdFrq", "4MHz SD clock speed<br><span>Checking this might help in case of SD card problems</span>", settings.sdFreq, "style='margin-top:12px'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 
 WiFiManagerParameter custom_swapBL("swapBL", "Use GPIO14 connector for box lights", settings.usePLforBL, "title='Check if you connected your box lights to the GPIO14 connector instead of the Box LED connectors' class='mt5'", WFM_LABEL_AFTER|WFM_IS_CHKBOX|WFM_SECTS);
 WiFiManagerParameter custom_useSknob("sKnob", "Use speed knob by default", settings.useSknob, "title='Check to use speed knob by default, instead of adjusting speed via IR remote control'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
@@ -451,7 +450,7 @@ void wifi_setup()
       
       &custom_sectstart_nw,  // 6
       &custom_tcdIP,
-      &custom_uGPS,
+      &custom_uTCDS,
       &custom_uNM,
       &custom_uFPO,
       &custom_bttfnTT,
@@ -461,7 +460,6 @@ void wifi_setup()
       
       &custom_haveSD,
       &custom_CfgOnSD,
-      //&custom_sdFrq,
   
       &custom_swapBL,
       &custom_useSknob,
@@ -875,7 +873,7 @@ void wifi_loop()
                 char *s = settings.tcdIP;
                 for ( ; *s; ++s) *s = tolower(*s);
             }
-            evalCB(settings.useGPSS, &custom_uGPS);
+            evalCB(settings.useTCDS, &custom_uTCDS);
             evalCB(settings.useNM, &custom_uNM);
             evalCB(settings.useFPO, &custom_uFPO);
             evalCB(settings.bttfnTT, &custom_bttfnTT);
@@ -885,7 +883,6 @@ void wifi_loop()
 
             oldCfgOnSD = settings.CfgOnSD[0];
             evalCB(settings.CfgOnSD, &custom_CfgOnSD);
-            //evalCB(settings.sdFreq, &custom_sdFrq);
 
             evalCB(settings.usePLforBL, &custom_swapBL);
             evalCB(settings.useSknob, &custom_useSknob);
@@ -1248,7 +1245,7 @@ static void checkForUpdate()
     if(uver) {
         haveCVer = true;
         if(((uver << 8) | urev) > ((cver << 8) | crev)) {
-            snprintf(newversion, sizeof(newversion), "%d.%d", uver, urev);
+            snprintf(newversion, sizeof(newversion), "%d.%02d", uver, urev);
         }
     }
 
@@ -1504,7 +1501,7 @@ static void updateConfigPortalValues()
     custom_ssDelay.setValue(settings.ssTimer);
 
     custom_tcdIP.setValue(settings.tcdIP);
-    setCBVal(&custom_uGPS, settings.useGPSS);
+    setCBVal(&custom_uTCDS, settings.useTCDS);
     setCBVal(&custom_uNM, settings.useNM);
     setCBVal(&custom_uFPO, settings.useFPO);
     setCBVal(&custom_bttfnTT, settings.bttfnTT);
@@ -1513,7 +1510,6 @@ static void updateConfigPortalValues()
     setCBVal(&custom_noETTOL, settings.noETTOLead);   
     
     setCBVal(&custom_CfgOnSD, settings.CfgOnSD);
-    //setCBVal(&custom_sdFrq, settings.sdFreq);
 
     setCBVal(&custom_swapBL, settings.usePLforBL);
     setCBVal(&custom_useSknob, settings.useSknob);

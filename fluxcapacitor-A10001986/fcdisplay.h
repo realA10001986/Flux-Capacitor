@@ -90,18 +90,19 @@ class PWMLED {
 #define FCSEQ_NOAUDIO    9
 #define FCSEQ_ERRCOPY    10
 #define FCSEQ_BADINP     11
-#define FCSEQ_NOMUSIC    12
-#define FCSEQ_ALARM      13
-#define FCSEQ_USER1      14
-#define FCSEQ_USER2      15
-#define FCSEQ_UPDAVAIL   16
-#define FCSEQ_PROG1      17
-#define FCSEQ_PROG2      18
-#define FCSEQ_PROG3      19
-#define FCSEQ_PROG4      20
-#define FCSEQ_PROG5      21
-#define FCSEQ_PROG6      22
-#define FCSEQ_CMDSTRT    23
+#define FCSEQ_BADINP2    12
+#define FCSEQ_NOMUSIC    13
+#define FCSEQ_ALARM      14
+#define FCSEQ_USER1      15
+#define FCSEQ_USER2      16
+#define FCSEQ_UPDAVAIL   17
+#define FCSEQ_PROG1      18
+#define FCSEQ_PROG2      19
+#define FCSEQ_PROG3      20
+#define FCSEQ_PROG4      21
+#define FCSEQ_PROG5      22
+#define FCSEQ_PROG6      23
+#define FCSEQ_CMDSTRT    24
 #define FCSEQ_MAX        (FCSEQ_CMDSTRT+6)
 
 /*

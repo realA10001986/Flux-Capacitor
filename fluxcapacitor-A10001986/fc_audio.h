@@ -56,7 +56,7 @@
 #define _FC_AUDIO_H
 
 // Default volume (index or 255 for knob)
-#define DEFAULT_VOLUME 6
+#define DEFAULT_VOLUME 8
 #define VOL_LEVELS 21
 
 #define DEFAULT_FLUX_LEVEL 3
@@ -67,7 +67,9 @@
 #define PA_DYNVOL  0x0008
 #define PA_ISFLUX  0x0010
 #define PA_MUSIC   0x0020
-// upper 8 bits all taken
+#define PA_SCSEGS  0x0040
+#define PA_DOID3TS 0x0080
+// 0x1ff00 taken
 #define PA_MASK    (PA_LOOP|PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL|PA_ISFLUX)
 
 void audio_setup();

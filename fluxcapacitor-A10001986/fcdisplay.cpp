@@ -301,15 +301,20 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][26] = {
           0b100001, 25, 0b000000, 25,
           0b100001, 25, 0b000000, 25, SS_END
         },
+        {                                               // 12: error: Bad/Unsucessful IR input (2)
+          SS_ONESHOT,
+          0b000000, 200, 0b000000, 100, 
+          0b000000, 460, 0b000000, 250, SS_END
+        },
         {
-          SS_ONESHOT,                                   // 12: No music in current music folder
+          SS_ONESHOT,                                   // 13: No music in current music folder
           0b000000,  50,
           0b000101,  50, 0b000000,  50,
           0b000101,  50, 0b000000,  50,
           0b000101,  50, 0b000000,  50, SS_END
         },
         {
-          SS_ONESHOT,                                   // 13: Alarm (BTTFN/MQTT)
+          SS_ONESHOT,                                   // 14: Alarm (BTTFN/MQTT)
           0b000111,  50, 
           0b111000,  50,
           0b000111,  50, 
@@ -322,7 +327,7 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][26] = {
           SS_END
         },
         {
-          SS_ONESHOT,                                   // 14: User signal 1, triggered by MQTT command
+          SS_ONESHOT,                                   // 15: User signal 1, triggered by MQTT command
           0b000000,  10,
           0b000111,  50, 0b000000,  50,
           0b000111,  50, 0b000000,  50,
@@ -331,7 +336,7 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][26] = {
           0b000111,  50, 0b000000,  50, SS_END
         },
         {
-          SS_ONESHOT,                                   // 15: User signal 2, triggered by MQTT command
+          SS_ONESHOT,                                   // 16: User signal 2, triggered by MQTT command
           0b000000,  10,
           0b111000,  50, 0b000000,  50,
           0b111000,  50, 0b000000,  50,
@@ -340,60 +345,60 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][26] = {
           0b111000,  50, 0b000000,  50, SS_END
         },
         {
-          SS_ONESHOT,                                   // 16: Update available
+          SS_ONESHOT,                                   // 17: Update available
           0b000000,  20, 
           0b010101,  75, 0b000000,  50, SS_END
         },
         {
-          SS_LOOP,                                      // 17: Progress 1 on renaming audio files
+          SS_LOOP,                                      // 18: Progress 1 on renaming audio files
           0b100000,  500, 0b000000,  50, SS_END
         },
         {
-          SS_LOOP,                                      // 18: Progress 2 on renaming audio files
+          SS_LOOP,                                      // 19: Progress 2 on renaming audio files
           0b110000,  500, 0b000000,  50, SS_END
         },
         {
-          SS_LOOP,                                      // 19: Progress 3 on renaming audio files
+          SS_LOOP,                                      // 20: Progress 3 on renaming audio files
           0b111000,  500, 0b000000,  50, SS_END
         },
         {
-          SS_LOOP,                                      // 20: Progress 4 on renaming audio files
+          SS_LOOP,                                      // 21: Progress 4 on renaming audio files
           0b111100,  500, 0b000000,  50, SS_END
         },
         {
-          SS_LOOP,                                      // 21: Progress 5 on renaming audio files
+          SS_LOOP,                                      // 22: Progress 5 on renaming audio files
           0b111110,  500, 0b000000,  50, SS_END
         },
         {
-          SS_LOOP,                                      // 22: Progress 6 on renaming audio files
+          SS_LOOP,                                      // 23: Progress 6 on renaming audio files
           0b111111,  500, 0b000000,  50, SS_END
         },
         {
-          SS_ONESHOT,                                   // 23: IR command entry feedback 0
+          SS_ONESHOT,                                   // 24: IR command entry feedback 0
           0b000000,  IFCFBDUR, SS_END
         },
         {
-          SS_ONESHOT,                                   // 24: IR command entry feedback 1
+          SS_ONESHOT,                                   // 25: IR command entry feedback 1
           0b000001,  IFCFBDUR, 0b000000, 25, SS_END
         },
         {
-          SS_ONESHOT,                                   // 25: IR command entry feedback 2
+          SS_ONESHOT,                                   // 26: IR command entry feedback 2
           0b000011,  IFCFBDUR, 0b000000, 25, SS_END
         },
         {
-          SS_ONESHOT,                                   // 26: IR command entry feedback 3
+          SS_ONESHOT,                                   // 27: IR command entry feedback 3
           0b000111,  IFCFBDUR, 0b000000, 25, SS_END
         },
         {
-          SS_ONESHOT,                                   // 27: IR command entry feedback 4
+          SS_ONESHOT,                                   // 28: IR command entry feedback 4
           0b001111,  IFCFBDUR, 0b000000, 25, SS_END
         },
         {
-          SS_ONESHOT,                                   // 28: IR command entry feedback 5
+          SS_ONESHOT,                                   // 29: IR command entry feedback 5
           0b011111,  IFCFBDUR, 0b000000, 25, SS_END
         },
         {
-          SS_ONESHOT,                                   // 29: IR command entry feedback 6
+          SS_ONESHOT,                                   // 30: IR command entry feedback 6
           0b111111,  IFCFBDUR, 0b000000, 25, SS_END
         }
 };        

@@ -141,12 +141,12 @@ bool        fcBusy     = false;
 
 int  networkUserSignal = 0;
 
-static bool useGPSS     = false;
-static bool usingGPSS   = false;
-static int16_t gpsSpeed       = -1;
-static int16_t oldGpsSpeed    = -2;
-static unsigned long lastGPSchange = 0;
-static bool spdIsRotEnc = false;
+static bool useTCDS     = false;
+static bool usingTCDS   = false;
+static bool spdIsNonGPS = false;
+static int16_t tcdSpeed       = -1;
+static int16_t oldTCDSpeed    = -2;
+static unsigned long lastTCDSchange = 0;
 
 static bool useNM = false;
 static bool tcdNM = false;
@@ -281,10 +281,13 @@ bool                 IRLearning = false;
 static uint32_t      backupIRcodes[NUM_IR_KEYS];
 static int           IRLearnIndex = 0;
 static unsigned long IRLearnNow;
+static bool          IRLwasActiveM, IRLwasActiveF;
 static unsigned long IRFBLearnNow;
 static bool          IRLearnBlink = false;
 static bool          triggerIRLN = false;
 static unsigned long triggerIRLNNow;
+static int           irrCnt = 0;
+#define IRRSEG 18
 
 uint32_t             myRemID = 0x87654321;
 static bool          remoteAllowed = false;
@@ -423,7 +426,7 @@ static uint32_t commandQueue[16] = { 0 };
 // Forward declarations ------
 
 static void startIRLearn();
-static void endIRLearn(bool restore);
+static void endIRLearn(bool restore, bool reinstateSound = true);
 static void handleIRinput();
 static void handleIRKey(int command);
 static void handleRemoteCommand();
@@ -436,7 +439,7 @@ static uint16_t getRawSpeed();
 static void     setPotSpeed();
 
 static void timeTravel(bool TCDtriggered, uint16_t P0Dur, uint16_t P1Dur = 0);
-static int convertGPSSpeed(int16_t spd);
+static int convertTCDSpeed(int16_t spd);
 
 static void ttkeyScan();
 static void TTKeyPressed();
@@ -494,7 +497,7 @@ void main_setup()
     
     // Other options
     ssDelay = ssOrigDelay = atoi(settings.ssTimer) * 60 * 1000;    
-    useGPSS = evalBool(settings.useGPSS);
+    useTCDS = evalBool(settings.useTCDS);
     useNM = evalBool(settings.useNM);
     useFPO = evalBool(settings.useFPO);
     bttfnTT = evalBool(settings.bttfnTT);
@@ -514,7 +517,7 @@ void main_setup()
 
     // Swap "box light" <> "GPIO14"
     PLforBL = evalBool(settings.usePLforBL);
-    // As long as we "abuse" the GPIO14 for the IR feedback,
+    // As long as we "abuse" GPIO14 for the IR feedback,
     // swap it for box light as well
     #if IR_FB_PIN == GPIO_14
     IRFeedBackPin = PLforBL ? BLED_PWM_PIN : GPIO_14;
@@ -571,7 +574,7 @@ void main_setup()
         showWaitSequence();
         fcBusy = true;  // Force MP "off" state, if state happens to be sent
         if(prepareCopyAudioFiles()) {
-            play_file("/_installing.mp3", PA_ALLOWSD, 1.0f);
+            play_file("/_installing.mp3", PA_ALLOWSD);
             waitAudioDone(false);
         }
         doCopyAudioFiles();
@@ -646,7 +649,7 @@ void main_setup()
         boxLED.setDC(mbllArray[minBLL]);
     
         // Play startup
-        play_file("/startup.mp3", PA_INTRMUS|PA_ALLOWSD, 1.0f);
+        play_file("/startup.mp3", PA_INTRMUS|PA_ALLOWSD);
         if(playFLUX) {
             append_flux();
         }
@@ -698,7 +701,7 @@ void main_loop()
             }
             
             if(IRLearning) {
-                endIRLearn(true); // Turns LEDs on
+                endIRLearn(true, false); // Turns LEDs on, keeps sound off
             }
             triggerIRLN = false;
             
@@ -719,7 +722,7 @@ void main_loop()
             boxLED.setDC(mbllArray[minBLL]);
 
             // Play startup
-            play_file("/startup.mp3", PA_INTRMUS|PA_ALLOWSD, 1.0f);
+            play_file("/startup.mp3", PA_INTRMUS|PA_ALLOWSD);
             if(playFLUX) {
                 append_flux();
             }
@@ -809,9 +812,9 @@ void main_loop()
     // Eval TCD-provided speed
     // We track speed even when off, so we are immediately
     // up to speed when coming back.
-    if(useGPSS) {
+    if(useTCDS) {
 
-        if(gpsSpeed >= 0) {
+        if(tcdSpeed >= 0) {
 
             if(!bttfnTCDSeqCnt && FPBUnitIsOn && !IRLearning) {
                 bttfnFCPollInt = BTTFN_POLL_INT_FAST;
@@ -819,9 +822,9 @@ void main_loop()
 
             if(!TTrunning || (TTP2 && fDone)) {
 
-                if(!usingGPSS || (now - lastGPSchange > 100)) {   // 200
+                if(!usingTCDS || (now - lastTCDSchange > 100)) {   // 200
                 
-                    uint16_t shouldBe = convertGPSSpeed(gpsSpeed);
+                    uint16_t shouldBe = convertTCDSpeed(tcdSpeed);
                     uint16_t isNow = fcLEDs.getSpeed();
                     uint16_t toSet;
     
@@ -835,18 +838,18 @@ void main_loop()
                         fcLEDs.setSpeed(toSet);
                     }
 
-                    //Serial.printf("%d %d %d (%d)\n", shouldBe, isNow, toSet, gpsSpeed);
+                    //Serial.printf("%d %d %d (%d)\n", shouldBe, isNow, toSet, tcdSpeed);
 
-                    lastGPSchange = now;
+                    lastTCDSchange = now;
 
                 }
 
-                usingGPSS = true;
+                usingTCDS = true;
             }
 
-        } else if(usingGPSS) {
+        } else if(usingTCDS) {
           
-            usingGPSS = false;
+            usingTCDS = false;
             if(!useSKnob) {
                 if(!TTrunning || (TTP2 && fDone)) {
                     fcLEDs.setSpeed(lastIRspeed);
@@ -860,7 +863,7 @@ void main_loop()
     // Poll speed pot
     // We track speed even when off, so we are immediately
     // up to speed when coming back.
-    if(useSKnob && !usingGPSS) {
+    if(useSKnob && !usingTCDS) {
         setPotSpeed();
     }
 
@@ -954,7 +957,7 @@ void main_loop()
                         }
                         
                         if(playTTsounds) {
-                            play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0f);
+                            play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
                         }
 
                     }
@@ -1020,9 +1023,9 @@ void main_loop()
                     // at max. Otherwise we set it so that P2
                     // quits to let the loop take care of slowing
                     // down to actual speed
-                    if(usingGPSS && gpsSpeed >= 0) {
+                    if(usingTCDS && tcdSpeed >= 0) {
                         #ifdef FC_DBG
-                        Serial.printf("TTP1: usingGPSS && gpsSpeed >= 0: %d\n", gpsSpeed);
+                        Serial.printf("TTP1: usingTCDS && tcdSpeed >= 0: %d\n", tcdSpeed);
                         #endif
                         TTSSpd = fcLEDs.getSpeed();
                         if(TTSSpd == 2) {
@@ -1033,7 +1036,7 @@ void main_loop()
                     // If speed is max, we were aborted in P1, so play sound
                     if(!networkAbort || (fcLEDs.getSpeed() == 2)) {
                         if(playTTsounds) {
-                            play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0f);
+                            play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
                         }
                     }
                 }
@@ -1133,7 +1136,7 @@ void main_loop()
                     TTstart = now;
                     bP1idx = 0;
                     if(playTTsounds) {
-                        play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0f);
+                        play_file("/travelstart.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
                     }
                 }
             }
@@ -1191,7 +1194,7 @@ void main_loop()
                     cDone = bDone = fDone = false;
                     TTfUpdNow = TTcUpdNow = TTbUpdNow = now;
                     if(playTTsounds) {
-                        play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0f);
+                        play_file("/timetravel.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
                     }
                 }
             }
@@ -1276,11 +1279,11 @@ void main_loop()
     }
 
     // Wake up on RotEnc/Remote speed changes; on GPS only if old speed was <=0
-    if(gpsSpeed != oldGpsSpeed) {
-        if(FPBUnitIsOn && !TTrunning && !IRLearning && (spdIsRotEnc || oldGpsSpeed <= 0) && gpsSpeed >= 0) {
+    if(tcdSpeed != oldTCDSpeed) {
+        if(FPBUnitIsOn && !TTrunning && !IRLearning && (spdIsNonGPS || oldTCDSpeed <= 0) && tcdSpeed >= 0) {
             wakeup();
         }
-        oldGpsSpeed = gpsSpeed;
+        oldTCDSpeed = tcdSpeed;
     }
 
     now = millis();
@@ -1310,7 +1313,7 @@ void main_loop()
             tcdNM = false;
             tcdFPO = false;
             remoteAllowed = remMode = remHoldKey = false;
-            gpsSpeed = -1;
+            tcdSpeed = -1;
             lastBTTFNpacket = 0;
             BTTFNBootTO = true;
         }
@@ -1344,7 +1347,7 @@ void main_loop()
         if(networkAlarm) {
             networkAlarm = false;
             if(evalBool(settings.playALsnd)) {
-                play_file("/alarm.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL, 1.0f);
+                play_file("/alarm.mp3", PA_INTRMUS|PA_ALLOWSD|PA_DYNVOL);
                 if(FPBUnitIsOn && !ssActive && contFlux()) {
                     append_flux();
                 }
@@ -1472,9 +1475,9 @@ static void timeTravel(bool TCDtriggered, uint16_t P0Dur, uint16_t P1Dur)
     // Let audio_loop take care of updating MP status
 }
 
-static int convertGPSSpeed(int16_t spd)
+static int convertTCDSpeed(int16_t spd)
 {
-    // GPS speeds 0-87 translate into fc LED speeds IDLE - 3; 88+ => 3 (2 reserved for tt)
+    // Speeds 0-87 translate into fc LED speeds IDLE - 3; 88+ => 3 (2 reserved for tt)
     
     int16_t bspd = useSKnob ? lastPotspeed : lastIRspeed;
 
@@ -1523,13 +1526,25 @@ static void restoreIRbackup()
 
 static void startIRLearn()
 {
+    int16_t segList[2];
+
+    IRLwasActiveM = mp_stop(true);
+    IRLwasActiveF = playingFlux;
+    stopAudio();
+    
     fcLEDs.stop(true);
     fcLEDs.off();
     mydelay(15, false);      // wait for ISR to catch up
     fcLEDs.SpecialSignal(FCSEQ_LEARNSTART);
+    
     while(!fcLEDs.SpecialDone()) {
         mydelay(50, true);
     }
+
+    segList[0] = 1;
+    segList[1] = 0;
+    play_file((const char *)segList, PA_SCSEGS);
+
     IRLearning = true;
     IRLearnIndex = 0;
     IRLearnNow = IRFBLearnNow = millis();
@@ -1538,7 +1553,7 @@ static void startIRLearn()
     ir_remote.loop();     // Ignore IR received in the meantime
 }
 
-static void endIRLearn(bool restore)
+static void endIRLearn(bool restore, bool reinstateSound)
 {
     fcLEDs.stop(false);
     fcLEDs.on();
@@ -1547,7 +1562,71 @@ static void endIRLearn(bool restore)
     if(restore) {
         restoreIRbackup();
     }
+
+    if(reinstateSound) {
+        if(IRLwasActiveF && contFlux()) play_flux();
+        else if(IRLwasActiveM)          mp_play();
+    }
+
     ir_remote.loop();     // Ignore IR received in the meantime
+}
+
+static int irrTri()
+{
+    int16_t segList[2];
+    int b = boxLED.getDC();
+    int c = centerLED.getDC();
+    int oldVol = aud_state.curVolume;
+    bool wasActiveM, wasActiveF;
+  
+    irrCnt = 0;
+    
+    fcBusy = true;
+
+    wasActiveM = mp_stop(true);
+    wasActiveF = playingFlux;
+    stopAudio();
+
+    flushDelayedSave();
+
+    if(!oldVol) aud_state.curVolume = DEFAULT_VOLUME;
+
+    boxLED.setDC(0);
+    centerLED.setDC(0);
+    endIRfeedback();
+    irFeedBack = false;
+    fcLEDs.SpecialSignal(FCSEQ_BADINP2);
+
+    mydelay(2000, false);
+
+    centerLED.setDC(25);
+
+    mydelay(1000, false);
+
+    segList[0] = 1;
+    segList[1] = IRRSEG;
+    play_file((const char *)segList, PA_SCSEGS);
+
+    mydelay(4600, false);
+
+    centerLED.setDC(0);
+
+    mydelay(2000, false);
+
+    centerLED.setDC(c);
+    boxLED.setDC(b);
+
+    aud_state.curVolume = oldVol;
+
+    fcBusy = false;
+
+    if(wasActiveF && contFlux()) play_flux();
+    else if(wasActiveM)          mp_play();
+    // Let audio_loop take care of updating MP status (if not playing at this point)
+
+    ir_remote.loop(); // Flush IR afterwards
+
+    return irrCnt;
 }
 
 static void handleIRinput()
@@ -1555,8 +1634,10 @@ static void handleIRinput()
     uint32_t myHash = ir_remote.readHash();
     uint16_t i, j;
     bool done = false;
-    
+
+    #ifdef FC_DBG
     Serial.printf("handleIRinput: Received IR code 0x%x\n", myHash);
+    #endif
 
     if(IRLearning) {
         endIRfeedback();
@@ -1568,14 +1649,21 @@ static void handleIRinput()
             #ifdef FC_DBG
             Serial.println("handleIRinput: All IR keys learned, and saved");
             #endif
+            while(!fcLEDs.SpecialDone()) {
+               mydelay(50, true);
+            }
         } else {
+            int16_t segList[2];
             fcLEDs.SpecialSignal(FCSEQ_LEARNNEXT);
+            while(!fcLEDs.SpecialDone()) {
+               mydelay(50, true);
+            }
+            segList[0] = 1;
+            segList[1] = IRLearnIndex;
+            play_file((const char *)segList, PA_SCSEGS);
             #ifdef FC_DBG
             Serial.println("handleIRinput: IR key learned");
             #endif
-        }
-        while(!fcLEDs.SpecialDone()) {
-            mydelay(50, true);
         }
         if(IRLearning) {
             IRLearnNow = millis();
@@ -1843,11 +1931,11 @@ static void handleIRKey(int key)
             play_volchg();
         } else doInpReaction = -2;
         break;
-    case 14:                          // arrow left: dec LED speed
+    case 14:                          // arrow left: dec chase speed
         if(irLocked) return;
         if(!decIRSpeed()) doInpReaction = -2;
         break;
-    case 15:                          // arrow right: inc LED speed
+    case 15:                          // arrow right: inc chase speed
         if(irLocked) return;
         if(!incIRSpeed()) doInpReaction = -2;
         break;
@@ -2123,7 +2211,7 @@ static int execute(bool isIR, bool injected)
                 if(!isIRLocked) {
                     if(!TTrunning) {
                         useSKnob = !useSKnob;
-                        if(!useSKnob && !usingGPSS) {
+                        if(!useSKnob && !usingTCDS) {
                             fcLEDs.setSpeed(lastIRspeed);
                         }
                         doInpReaction = 1;
@@ -2143,35 +2231,43 @@ static int execute(bool isIR, bool injected)
                     if(!TTrunning) {
                         uint8_t a, b, c, d;
                         char ipbuf[16];
-                        char numfname[] = "/x.mp3";
+                        int16_t segList[1+(3*3)+3];
+                        int j = 1;
+                        int oldVol = aud_state.curVolume;
 
                         fcBusy = true;
-                        
+
                         bool wasActiveM = mp_stop(true);
                         bool wasActiveF = playingFlux;
                         stopAudio();
                         
                         flushDelayedSave();
+                        
                         #ifdef FC_HAVEMQTT
-                        if(!wasActiveM) mp_sendStatus();
+                        // mp_stop(true) sends status, so no apparent need for this
+                        //if(!wasActiveM) mp_sendStatus();
                         #endif
+
+                        if(!oldVol) aud_state.curVolume = DEFAULT_VOLUME;
                         
                         wifi_getIP(a, b, c, d);
                         sprintf(ipbuf, "%d.%d.%d.%d", a, b, c, d);
-                        numfname[1] = ipbuf[0];
-                        play_file(numfname, PA_INTRMUS|PA_ALLOWSD);
-                        for(int i = 1; i < strlen(ipbuf); i++) {
-                            if(ipbuf[i] == '.') {
-                                append_file("/dot.mp3", PA_INTRMUS|PA_ALLOWSD);
-                            } else {
-                                numfname[1] = ipbuf[i];
-                                append_file(numfname, PA_INTRMUS|PA_ALLOWSD);
-                            }
-                            while(append_pending()) {
-                                mydelay(10, false);
-                            }
+
+                        for(int i = 0; i < strlen(ipbuf); i++) {
+                            if(ipbuf[i] == '.')
+                                segList[j++] = 17;
+                            else 
+                                segList[j++] = ipbuf[i] - '0';
                         }
+                        segList[0] = j - 1;
+
+                        play_file((const char *)segList, PA_SCSEGS);
+                        
                         waitAudioDone(false);
+                        waitAudioDone(false);
+                        waitAudioDone(false);
+
+                        aud_state.curVolume = oldVol;
 
                         fcBusy = false;
 
@@ -2228,7 +2324,7 @@ static int execute(bool isIR, bool injected)
         if(!isIRLocked) {
             temp = atoi(inputBuffer);
             if(temp >= 300 && temp <= 399) {
-                temp -= 300;                              // 300-320/399: Set fixed volume level / enable knob
+                temp -= 300;                              // *300-*320/*399: Set fixed volume level / enable knob
                 doInpReaction = 1;
                 if(temp == 99) {
                     aud_state.curVolume = 255;
@@ -2239,7 +2335,7 @@ static int execute(bool isIR, bool injected)
                 } else {
                     doInpReaction = -1;
                 }
-            } else if(temp >= 400 && temp <= 404) {       // *400-*504 box light level
+            } else if(temp >= 400 && temp <= 404) {       // *400-*404 box light level
                 if(!TTrunning) {
                     minBLL = temp - 400;
                     boxLED.setDC(mbllArray[minBLL]);
@@ -2422,6 +2518,10 @@ static int execute(bool isIR, bool injected)
         }
     }
 
+    if(!TTrunning && (doInpReaction == -1)) {
+        if(++irrCnt >= 3) doInpReaction = irrTri();
+    } else irrCnt = 0;
+    
     return doInpReaction;
 }
 
@@ -2596,7 +2696,7 @@ bool decIRSpeed()
         else if(tempi >= 15) tempi += 5;
         else if(tempi >= 1)  tempi++;
         if(tempi > FC_SPD_MIN) tempi = FC_SPD_MIN;
-        if(!usingGPSS) {
+        if(!usingTCDS) {
             fcLEDs.setSpeed(tempi);
         }
         lastIRspeed = tempi;
@@ -2617,7 +2717,7 @@ bool incIRSpeed()
         else if(tempi >= 20)  tempi -= 5;
         else if(tempi > 1)    tempi--;
         if(tempi < FC_SPD_MAX) tempi = FC_SPD_MAX;
-        if(!usingGPSS) {
+        if(!usingTCDS) {
             fcLEDs.setSpeed(tempi);
         }
         lastIRspeed = tempi;
@@ -2631,7 +2731,7 @@ bool incIRSpeed()
 bool resetIRSpeed()
 {
     if(!useSKnob && !TTrunning) {
-        if(!usingGPSS) {
+        if(!usingTCDS) {
             fcLEDs.setSpeed(FC_SPD_IDLE);
         }
         lastIRspeed = FC_SPD_IDLE;
@@ -2988,9 +3088,9 @@ static void bttfn_eval_response(uint8_t *buf, bool checkCaps)
     }
 
     if(buf[5] & 0x02) {
-        gpsSpeed = (int16_t)(buf[18] | (buf[19] << 8));
-        if(gpsSpeed > 88) gpsSpeed = 88;
-        spdIsRotEnc = !!(buf[26] & (0x80|0x20));    // Speed is from RotEnc or Remote
+        tcdSpeed = (int16_t)(buf[18] | (buf[19] << 8));
+        if(tcdSpeed > 88) tcdSpeed = 88;
+        spdIsNonGPS = !!(buf[26] & (0x80|0x20));    // Speed is from RotEnc or Remote
     }
 
     if(buf[5] & 0x10) {
@@ -3055,20 +3155,20 @@ static void handle_tcd_notification(uint8_t *buf)
         if(seqCnt > bttfnTCDSeqCnt || seqCnt == 1) {
             switch(buf[8] | (buf[9] << 8)) {
             case BTTFN_SSRC_GPS:
-                spdIsRotEnc = false;
+                spdIsNonGPS = false;
                 break;
             case BTTFN_SSRC_P1:
                 // If packets come out-of-order, we might
                 // get this one before TTrunning, and we
                 // don't want the loop to switch to
-                // usingGPSS only because of P1 speed
+                // usingTCDS only because of P1 speed
                 if(!TTrunning) return;
                 // fall through
             default:
-                spdIsRotEnc = true;  // Also for Remote
+                spdIsNonGPS = true;
             }
-            gpsSpeed = (int16_t)(buf[6] | (buf[7] << 8));
-            if(gpsSpeed > 88) gpsSpeed = 88;
+            tcdSpeed = (int16_t)(buf[6] | (buf[7] << 8));
+            if(tcdSpeed > 88) tcdSpeed = 88;
         } else {
             #ifdef FC_DBG_NET
             Serial.printf("Out-of-sequence packet received from TCD %d %d\n", seqCnt, bttfnTCDSeqCnt);
@@ -3134,20 +3234,6 @@ static void handle_tcd_notification(uint8_t *buf)
             remoteAllowed = !(tcdi1 & BTTFN_TCDI1_NOREMKP);
             tcdIsBusy = !!(tcdi2 & BTTFN_TCDI2_BUSY);
             if(!remoteAllowed || tcdIsBusy) remMode = remHoldKey = false;
-
-            // TEST
-            /*
-            if(tcdi2 & BTTFN_TCDI2_TIMEINFO) {
-                Serial.printf("Current local time:       %04d-%02d-%02d %02d:%02d:%02d (wd %d)\n", 
-                    buf[16 + 0] | (buf[16 + 1] << 8), buf[16 + 2], buf[16 + 3], buf[16 + 4], buf[16 + 5], buf[16 + 6], buf[16 + 7]);
-                Serial.printf("Current Destination time: %04d-%02d-%02d %02d:%02d\n", 
-                    buf[24 + 0] | (buf[24 + 1] << 8), buf[24 + 2], buf[24 + 3], buf[24 + 4], buf[24 + 5]);
-                Serial.printf("Current present time:     %04d-%02d-%02d %02d:%02d\n", 
-                    buf[30 + 0] | (buf[30 + 1] << 8), buf[30 + 2], buf[30 + 3], buf[30 + 4], buf[30 + 5]);
-                Serial.printf("Current last time dep:    %04d-%02d-%02d %02d:%02d\n", 
-                    buf[36 + 0] | (buf[36 + 1] << 8), buf[36 + 2], buf[36 + 3], buf[36 + 4], buf[36 + 5]);
-            }
-            */
         }
         break;
     }
