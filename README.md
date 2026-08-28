@@ -171,6 +171,9 @@ See [here](#appendix-b-led-signals) for all supported signals.
 
 Your FC can learn the codes of another IR remote control. Most remotes with a carrier signal of 38kHz (which most IR remotes use) will work. However, some remote controls, especially ones for TVs, send keys repeatedly and/or send different codes alternately. If you had the FC learn a remote and the keys are not (always) recognized afterwards or appear to be pressed repeatedly while held, that remote is of that type and cannot be used.
 
+> [!TIP]
+> Usually, home entertainment IR remote controls send repeated codes when pressing the volume keys, and alternate codes for some number keys (in most cases 1 and 2) for using them for entering 2-digit channel numbers. If you have trouble finding a remote that works, a solution can be to use a programmable IR remote with a suitable layout, to program it with working codes from an existing IR remote (which keys those codes come from is unimportant, you can freely map them to keys on your programmable IR remote), and then have the FC learn the keys from said programmable IR remote. 
+
 IR learning can be initiated by entering ```*987654ok``` on the standard IR remote.
 
 >Alternatively, IR learning can be started by pressing and holding a connected [Time Travel](#time-travel) button for a few seconds (while the option **_TCD connected by wire_** in the Config Portal is unchecked).
