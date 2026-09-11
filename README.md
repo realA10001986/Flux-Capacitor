@@ -158,11 +158,11 @@ Your FC kit includes an IR remote control. This remote works out-of-the-box and 
 |:--:| 
 | *The FC's standard IR remote control* |
 
-Each time you press a key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the bright center LED.
-
 Control through the IR remote works through single-key presses and command sequences.
 - Single key actions are triggered by pressing key ```0```-```9```, ```Arrow up```, ```Arrow down```, ```Arrow left``` or ```Arrow right```.
 - Command sequences are started by pressing ```*``` followed by a code, and concluded by ```ok```. ```#``` aborts a started command sequence (for example, in case of mistyping).
+
+Each time you press a key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the bright center LED.
 
 Apart from the feedback LED, your FC will also show some feedback signals through its chase LEDs:
 - By default, when initiating a command sequence by pressing ```*```, the FC will start to show each key pressed afterwards by lighting up another chase LED. This kind of feedback can be disabled using command sequence ```*63ok``` or in the Config Portal.
