@@ -162,7 +162,7 @@ Each time you press a key on the remote, an IR feedback LED will briefly light u
 
 Control through the IR remote works through single-key presses and command sequences.
 - Single key actions are triggered by pressing key ```0```-```9```, ```Arrow up```, ```Arrow down```, ```Arrow left``` or ```Arrow right```.
-- Command sequences are started by pressing ```*``` followed by a code, and concluded by ```OK```. ```#``` aborts a command sequence.
+- Command sequences are started by pressing ```*``` followed by a code, and concluded by ```ok```. ```#``` aborts a started command sequence (for example, in case of mistyping).
 
 Apart from the feedback LED, your FC will also show some feedback signals through its chase LEDs:
 - By default, when initiating a command sequence by pressing ```*```, the FC will start to show each key pressed afterwards by lighting up another chase LED. This kind of feedback can be disabled using command sequence ```*63ok``` or in the Config Portal.
@@ -184,7 +184,7 @@ IR learning can be initiated by entering ```*987654ok``` on the standard IR remo
 
 When IR learning is started, the chase LEDs stop and [light all up](#appendix-b-led-signals). Afterwards, the key to be pressed is announced and the IR feedback LED will keep blinking - this means the FC is ready to receive a key from your IR remote. Press ```0``` on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then, again, after the announcement and while the IR feedback LED is blinking, press ```1```, wait for the acknowledgement, and so on. Enter your keys in the following order:
 
-```0``` - ```1``` - ```2``` - ```3``` - ```4``` - ```5``` - ```6``` - ```7``` - ```8``` - ```9``` - ```*``` - ```#``` - ```Arrow up``` - ```Arrow down``` - ```Arrow left``` - ```Arrow right``` - ```OK``` 
+```0``` - ```1``` - ```2``` - ```3``` - ```4``` - ```5``` - ```6``` - ```7``` - ```8``` - ```9``` - ```*``` - ```#``` - ```Arrow up``` - ```Arrow down``` - ```Arrow left``` - ```Arrow right``` - ```ok``` 
 
 If your remote control lacks the ```*``` (starts command sequence) and ```#``` (aborts command sequence) keys, you can use any other key, of course. ```*``` could be eg. "menu" or "setup", ```#``` could be "exit" or "return".
 
