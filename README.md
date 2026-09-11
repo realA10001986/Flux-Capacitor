@@ -182,7 +182,12 @@ IR learning can be initiated by entering ```*987654ok``` on the standard IR remo
 
 >Alternatively, IR learning can be started by pressing and holding a connected [Time Travel](#time-travel) button for a few seconds (while the option **_TCD connected by wire_** in the Config Portal is unchecked).
 
-When IR learning is started, the chase LEDs stop and [light all up](#appendix-b-led-signals). Afterwards, the key to be pressed is announced and the IR feedback LED will keep blinking - this means the FC is ready to receive a key from your IR remote. Press ```0``` on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then, again, after the announcement and while the IR feedback LED is blinking, press ```1```, wait for the acknowledgement, and so on. Enter your keys in the following order:
+When IR learning is started, the chase LEDs stop and [light all up](#appendix-b-led-signals). Afterwards, the key to be pressed is announced and the IR feedback LED will keep blinking - this means the FC is ready to receive a key from your IR remote. Press ```0``` on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then, again, after the announcement and while the IR feedback LED is blinking, press ```1```, wait for the acknowledgement, and so on. 
+
+<!-- When IR learning is started, the FC stops what it is currently doing and guides you through the process by announcing the key to press next as well as signals through the chase LEDs. Each key is requested twice to sort out unsuitable remote controls. The process starts by the FC briefly lighting up all chase LEDs and announcing "0". At this point, press 0 on your IR remote control. Next, the FC will say "again". Now press 0 again. If the received IR codes match, the FC will proceed to the next key. If a key fails verification, ie if the codes sent on first and second key press don't match, the FC will abort and show an "ERROR" signal. -->
+
+
+Enter your keys in the following order:
 
 ```0``` - ```1``` - ```2``` - ```3``` - ```4``` - ```5``` - ```6``` - ```7``` - ```8``` - ```9``` - ```*``` - ```#``` - ```Arrow up``` - ```Arrow down``` - ```Arrow left``` - ```Arrow right``` - ```ok``` 
 
