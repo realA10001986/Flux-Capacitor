@@ -1045,7 +1045,7 @@ The backchannel is used/required by the A10001986 [Lou's Cafe Jukebox](https://j
     </tr>
     <tr>
      <td align="left"> &#9679; &#9679; &#9679; &#9675; &#9675; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#8635; 5x</td>
-     <td align="left">><a href="#user1-user2">User signal 2</a></td>
+     <td align="left"><a href="#user1-user2">User signal 2</a></td>
     </tr>
     <tr>
      <td align="left"> &#9679; &#9675; &#9679; &#9675; &#9679; &#9675;</td>
