@@ -993,15 +993,15 @@ The backchannel is used/required by the A10001986 [Lou's Cafe Jukebox](https://j
 <table>
     <tr>
      <td align="left">&#9679; &#9679; &#9675; &#9675; &#9679; &#9679;</td>
-     <td align="left">Successful input from IR (optional)</td>
+     <td align="left">IR command sequence execution successful</td>
     </tr>
     <tr>
      <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9675; &#9679; &#9679; &#9679; &#9679; &#9675;</td>
-     <td align="left">Bad/unsuccessful input from IR</td>
+     <td align="left">Bad/unsuccessful IR command sequence</td>
     </tr>
     <tr>
      <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#8635;</td>
-     <td align="left">Please wait, busy</td>
+     <td align="left">Busy, please wait</td>
     </tr>
     <tr>
      <td align="left">&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;</td>
@@ -1049,7 +1049,7 @@ The backchannel is used/required by the A10001986 [Lou's Cafe Jukebox](https://j
     </tr>
     <tr>
      <td align="left"> &#9679; &#9675; &#9679; &#9675; &#9679; &#9675;</td>
-     <td align="left">Firmware update available; shown briefly at power-up (optional)</td>
+     <td align="left">Firmware update available; shown briefly at power-up</td>
     </tr>
 </table>
 
