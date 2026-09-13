@@ -1016,7 +1016,7 @@ The backchannel is used/required by the A10001986 [Lou's Cafe Jukebox](https://j
      <td align="left"><a href="#bttf-network-bttfn">Alarm</a> (from TCD via BTTFN/MQTT)</td>
     </tr>
     <tr>
-     <td align="left">&#9675; &#9675; &#9675; &#9675; &#9675; &#9675; (2000ms)</td>
+     <td align="left">&#9675; &#9675; &#9675; &#9675; &#9675; &#9675;</td>
      <td align="left"><a href="#ir-learning">IR Learning</a>: Start</td>
     </tr>
     <tr>
