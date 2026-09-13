@@ -997,7 +997,7 @@ The backchannel is used/required by the A10001986 [Lou's Cafe Jukebox](https://j
     </tr>
     <tr>
      <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9675; &#9679; &#9679; &#9679; &#9679; &#9675;</td>
-     <td align="left">Bad/unsuccessful IR command sequence</td>
+     <td align="left">Bad/unsuccessful command sequence</td>
     </tr>
     <tr>
      <td align="left">&#9675; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#8635;</td>
