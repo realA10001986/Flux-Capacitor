@@ -1005,7 +1005,7 @@ The backchannel is used/required by the A10001986 [Lou's Cafe Jukebox](https://j
     </tr>
     <tr>
      <td align="left">&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9675;</td>
-     <td align="left">Error: Sound pack <a href="#sound-pack-installation">not installed</a> or outdated</td>
+     <td align="left">Error: Sound pack <a href="#sound-pack-installation">not installed</a> or outdated. Shown briefly at power-up.</td>
     </tr>
     <tr>
      <td align="left">&#9679; &#9679; &#9679; &#9679; &#9675; &#9675;<br>&#9679; &#9679; &#9679; &#9679; &#9679; &#9679;<br>&#8635;</td>
@@ -1049,7 +1049,7 @@ The backchannel is used/required by the A10001986 [Lou's Cafe Jukebox](https://j
     </tr>
     <tr>
      <td align="left"> &#9679; &#9675; &#9679; &#9675; &#9679; &#9675;</td>
-     <td align="left">Firmware update available; shown briefly at power-up</td>
+     <td align="left">Firmware update available. Shown briefly at power-up.</td>
     </tr>
 </table>
 
