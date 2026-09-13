@@ -375,7 +375,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left"><code>*123456ok</code></td><td><code>3123456</code></td>
     </tr>
     <tr>
-     <td align="left">Start IR remote <a href="#ir-learning">learning process (**)</a></td>
+     <td align="left">Start IR remote <a href="#ir-learning">learning process</a> (**)</td>
      <td align="left"><code>*987654ok</code></td><td><code>3987654</code></td>
     </tr>
     <tr>
