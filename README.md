@@ -693,7 +693,7 @@ In order to reduce the number of write operations and thereby prolong the life o
 
 ## Firmware Installation / Firmware Update
 
-If a previous version of the Flux Capacitor firmware is installed on your device, you can update easily using the pre-compiled binary. Enter the [Config Portal](#the-config-portal), click on "Update & Upload", select the pre-compiled binary file ("**fluxcapacitor-A10001986-Vx.xxx.bin**" or "**Flux_Capacitor_vX.YY.bin**") provided in the [Release package](https://github.com/realA10001986/Flux-Capacitor/releases), and click on *Update*.
+To update the firmware of your FC, enter the [Config Portal](#the-config-portal), click on "Update & Upload", select the pre-compiled binary file ("**fluxcapacitor-A10001986-Vx.xxx.bin**" or "**Flux_Capacitor_vX.YY.bin**") provided in the [Release package](https://github.com/realA10001986/Flux-Capacitor/releases) and click on *Update*.
 
 <details>
 <summary>Installing on a fresh ESP32...</summary>
