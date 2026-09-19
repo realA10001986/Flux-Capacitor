@@ -209,19 +209,19 @@ In order to only disable the supplied IR remote control, check the option **_Dis
      <td align="center" colspan="3">Single key actions<br>[Code on TCD keypad]</td>
     </tr>
     <tr>
-     <td align="center"><code>1</code><br><a href="#additional-custom-sounds">Play "key1.mp3"</a><br>[<code>3001</code>]</td>
-     <td align="center"><code>2</code><br><a href="#the-music-player">Music Player</a>: Previous track<br>[<code>3002</code>]</td>
-     <td align="center"><code>3</code><br><a href="#additional-custom-sounds">Play "key3.mp3"</a><br>[<code>3003</code>]</td>
+     <td align="center"><code>1</code><br><a href="#additional-custom-sounds">Play "key1.mp3"</a><br>[<code>3001</code>]<br><br></td>
+     <td align="center"><code>2</code><br><a href="#the-music-player">Music Player</a>: Previous track<br>[<code>3002</code>]<br></td>
+     <td align="center"><code>3</code><br><a href="#additional-custom-sounds">Play "key3.mp3"</a><br>[<code>3003</code>]<br></td>
     </tr>
     <tr>
-     <td align="center"><code>4</code><br><a href="#additional-custom-sounds">Play "key4.mp3"</a><br>[<code>3004</code>]</td>
-     <td align="center"><code>5</code><br><a href="#the-music-player">Music Player</a>: Play/Stop<br>[<code>3005</code>]</td>
-     <td align="center"><code>6</code><br><a href="#additional-custom-sounds">Play "key6.mp3"</a><br>[<code>3006</code>]</td>
+     <td align="center"><code>4</code><br><a href="#additional-custom-sounds">Play "key4.mp3"</a><br>[<code>3004</code>]<br><br></td>
+     <td align="center"><code>5</code><br><a href="#the-music-player">Music Player</a>: Play/Stop<br>[<code>3005</code>]<br><br></td>
+     <td align="center"><code>6</code><br><a href="#additional-custom-sounds">Play "key6.mp3"</a><br>[<code>3006</code>]<br><br></td>
     </tr>
     <tr>
-     <td align="center"><code>7</code><br><a href="#additional-custom-sounds">Play "key7.mp3"</a><br>[<code>3007</code>]</td>
-     <td align="center"><code>8</code><br><a href="#the-music-player">Music Player</a>: Next track<br>[<code>3008</code>]</td>
-     <td align="center"><code>9</code><br><a href="#additional-custom-sounds">Play "key9.mp3"</a><br>[<code>3009</code>]<br>or<br>Trigger "Refill Plutonium chamber"</td>
+     <td align="center"><code>7</code><br><a href="#additional-custom-sounds">Play "key7.mp3"</a><br>[<code>3007</code>]<br><br></td>
+     <td align="center"><code>8</code><br><a href="#the-music-player">Music Player</a>: Next track<br>[<code>3008</code>]<br><br></td>
+     <td align="center"><code>9</code><br><a href="#additional-custom-sounds">Play "key9.mp3"</a><br>[<code>3009</code>]<br>or<br>Trigger <a href="#-9-on-ir-remote-refills-plutonium-chamber">"Refill Plutonium chamber"</a></td>
     </tr>
     <tr>
      <td align="center"><code>*</code><br>Start command sequence</td>
