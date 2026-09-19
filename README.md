@@ -878,7 +878,7 @@ The music player will continue to run.
 
 ##### &#9193; Hostname of TCD
 
-If you want to have your SID to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the TCD's hostname - usually 'timecircuits' - here. Although specifying the TCD's IP address is supported as well, the hostname is preferred because it makes your setup independent of the network environment.
+If you want to have your FC to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the TCD's hostname - usually 'timecircuits' - here. Although specifying the TCD's IP address is supported as well, the hostname is preferred because it makes your setup independent of the network environment.
 
 ##### &#9193; Adapt chase speed to TCD-provided speed
 
