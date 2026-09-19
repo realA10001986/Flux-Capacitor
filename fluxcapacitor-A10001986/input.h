@@ -119,11 +119,11 @@ class FCButton {
         void attachLongPressStop(void (*newFunction)(void));
 
         void scan(void);
-        void reset(void);
 
     private:
 
         void transitionTo(ButtonState nextState);
+        void reset(void);
 
         void (*_pressFunc)(void) = NULL;
         void (*_longPressStartFunc)(void) = NULL;

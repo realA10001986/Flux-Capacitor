@@ -15,15 +15,15 @@
  ***                          Version Strings                          ***
  *************************************************************************/
 
-#define FC_VERSION       "V1.106"           // Do NOT change format.
-#define FC_VERSION_EXTRA "AUG192026"
+#define FC_VERSION       "V1.107"           // Do NOT change format.
+#define FC_VERSION_EXTRA "SEP182026"
 
 /*************************************************************************
  ***                           Miscellaneous                           ***
  *************************************************************************/
 
 // Uncomment for HomeAssistant MQTT protocol support
-#define FC_HAVEMQTT
+#define HAVE_MQTT
 
 // External time travel lead time, as defined by TCD firmware
 // If FC is connected to TCD by wire, and the option "Signal Time Travel 
@@ -49,8 +49,8 @@
 #if defined __has_include && __has_include(<esp_arduino_version.h>)
 #include <esp_arduino_version.h>
 #ifdef ESP_ARDUINO_VERSION_MAJOR
-    #if ESP_ARDUINO_VERSION >= ESP_ARDUINO_VERSION_VAL(2,0,8)
-    #define HAVE_GETNEXTFILENAME
+    #if ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(2,0,8)
+    #error "ESP-arduino >= 2.0.8 required"
     #endif
 #endif
 #endif

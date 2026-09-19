@@ -282,7 +282,7 @@ static const DRAM_ATTR uint16_t _specialArray[FCSEQ_MAX][26] = {
         {
           SS_ONESHOT,                                   // 8: RemMode quit
           0b000000,  50,
-          0b110000, 200, SS_END
+          0b111000, 200, SS_END
         },
         {                                               // 9: error: sound pack not installed/current
           SS_ONESHOT,

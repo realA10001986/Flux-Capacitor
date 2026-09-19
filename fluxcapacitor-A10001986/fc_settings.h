@@ -62,6 +62,10 @@ void unmount_fs();
 
 unsigned int check_file_len(const char *audio_file, bool& srcMedium, uint8_t *tbuf, uint32_t tsz);
 
+void deleteFileFromSD(const char *fn);
+bool readFileFromSD(const char *fn, uint8_t *buf, int len);
+bool writeFileToSD(const char *fn, uint8_t *buf, int len);
+
 bool evalBool(char *s);
 
 void write_settings();
@@ -203,6 +207,7 @@ struct Settings {
     char useNM[2]           = MS(DEF_USE_NM);
     char useFPO[2]          = MS(DEF_USE_FPO);
     char bttfnTT[2]         = MS(DEF_BTTFN_TT); 
+    char k9[2]              = "0";
 
     char TCDpresent[2]      = MS(DEF_TCD_PRES);
     char noETTOLead[2]      = MS(DEF_NO_ETTO_LEAD);
@@ -213,7 +218,7 @@ struct Settings {
     char useSknob[2]        = MS(DEF_SKNOB);
     char disDIR[2]          = MS(DEF_DISDIR);
 
-#ifdef FC_HAVEMQTT  
+#ifdef HAVE_MQTT  
     char useMQTT[2]         = "0";
     char mqttVers[2]        = "0"; // 0 = 3.1.1, 1 = 5.0
     char mqttServer[80]     = "";  // ip or domain [:port]  

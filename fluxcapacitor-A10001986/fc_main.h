@@ -81,6 +81,7 @@ void showWaitSequence();
 void endWaitSequence();
 void showCopyError();
 
+void exLEDsOff();
 void allOff();
 void prepareReboot();
 
@@ -92,7 +93,6 @@ void startFluxTimer();
 void doKeySound(int key);
 void doStopKeySound();
 
-bool switchMusicFolder(uint8_t nmf, bool isSetup = false);
 void showMPRProgress(int perc);
 
 void mydelay(unsigned long mydel, bool withIR);
@@ -110,7 +110,7 @@ extern bool irLocked;
 extern bool irShowPosFBDisplay;
 extern bool irShowCmdFBDisplay;
 
-extern bool TCDconnected;
+extern bool TCDbyWire;
 
 extern bool FPBUnitIsOn;
 extern bool fluxNM;
@@ -122,7 +122,6 @@ extern int  playFLUX;
 extern bool IRLearning;
 
 extern bool networkTimeTravel;
-extern bool networkTCDTT;
 extern bool networkReentry;
 extern bool networkAbort;
 extern bool networkAlarm;
@@ -136,7 +135,7 @@ extern uint32_t myRemID;
 extern bool doPrepareTT;
 extern bool doWakeup;
 
-extern bool fcBusy;
+extern int  fcBusy;
 
 extern bool showUpdAvail;
 

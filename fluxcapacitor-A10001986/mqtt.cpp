@@ -52,7 +52,7 @@
 
 //#define MQTT_DBG
 
-#ifdef FC_HAVEMQTT
+#ifdef HAVE_MQTT
 
 #include "mqtt.h"
 
@@ -1078,4 +1078,4 @@ void PubSubClient::cancelPing()
     _pstate = PING_IDLE;   
 }
 
-#endif  // FC_HAVEMQTT
+#endif  // HAVE_MQTT

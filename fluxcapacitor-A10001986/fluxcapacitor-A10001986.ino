@@ -118,6 +118,25 @@
 
 /*  Changelog
  *
+ *  2026/09/18 (A10001986) [1.107]
+ *    ********************************************************************************
+ *    ** If updating from below 1.100, please see boxed note at version 1.101 below **
+ *    ********************************************************************************
+ *    - New sound pack (FC06)
+ *    - IR Learning: Each key now needs to pressed twice to sort out unsuitable remotes
+ *      sending alternate codes on consecutive key presses.
+ *    - Add option to use key "9" on IR remote to refill Plutonium (requires TCD with
+ *      firmware >= 3.27, and Dash Gauges).
+ *    - Fix minor issues with ID3v1 and ID3v2.4-UTF8 tags
+ *    - Speed up booting with folders containing many files
+ *    - Music Player: The "TCD_DONE.TXT" file is now obsolete. The firmware instead uses
+ *      a cache file in the top-most folder of the SD card ("musicXc") which needs to be
+ *      deleted when files are added to the respective folder.
+ *    - Bonjour/mDNS: Send good-bye packet on controlled reboots
+ *    - Protect the FC from uploading a wrong firmware by accident. The filename of
+ *      the firmware binary now must contain the word "flux". The check is case-
+ *      insensitive.
+ *    - Minor fixes in connection with feedback signals
  *  2026/08/19 (A10001986) [1.106]
  *    ********************************************************************************
  *    ** If updating from below 1.100, please see boxed note at version 1.101 below **
