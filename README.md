@@ -876,9 +876,9 @@ The music player will continue to run.
 
 #### <ins>Settings for BTTFN communication</ins>
 
-##### &#9193; Hostname or IP address of TCD
+##### &#9193; Hostname of TCD
 
-If you want to have your FC to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the TCD's hostname - usually 'timecircuits' - or IP address here. Hostname is preferred because it makes the setup independent of the network environment.
+If you want to have your SID to communicate with a Time Circuits Display wirelessly ("BTTF-Network"), enter the TCD's hostname - usually 'timecircuits' - here. Although specifying the TCD's IP address is supported as well, the hostname is preferred because it makes your setup independent of the network environment.
 
 ##### &#9193; Adapt chase speed to TCD-provided speed
 
@@ -886,13 +886,13 @@ If this option is checked and your TCD is equipped with a GPS sensor or a rotary
 
 While the FC receives speed from the TCD, IR controls and MQTT commands for chase speed are not entirely ignored: They have no visual effect, but they are saved.
 
-##### &#9193; Follow TCD night-mode
-
-If this option is checked, and your TCD goes into night mode, the FC will activate the Screen Saver with a very short timeout, and reduce its audio volume.
-
 ##### &#9193; Follow TCD fake power
 
 If this option is checked, and your TCD is equipped with a fake power switch, the FC will also fake-power up/down. If fake power is off, no LED is active and the FC will ignore all input from buttons, knobs and the IR control.
+
+##### &#9193; Follow TCD night-mode
+
+If this option is checked, and your TCD goes into night mode, the FC will activate the Screen Saver with a very short timeout, and reduce its audio volume.
 
 ##### &#9193; '0' and button trigger BTTFN-wide TT
 
