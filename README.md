@@ -182,9 +182,7 @@ IR learning can be initiated by entering ```*987654ok``` on the standard IR remo
 
 >Alternatively, IR learning can be started by pressing and holding a connected [Time Travel](#time-travel) button for a few seconds (while the option **_TCD connected by wire_** in the Config Portal is unchecked).
 
-When IR learning is started, the chase LEDs stop and [light all up](#appendix-b-led-signals). Afterwards, the key to be pressed is announced and the IR feedback LED will keep blinking - this means the FC is ready to receive a key from your IR remote. Press ```0``` on your remote, which the FC will [visually acknowledge](#appendix-b-led-signals). Then, again, after the announcement and while the IR feedback LED is blinking, press ```1```, wait for the acknowledgement, and so on. 
-
-<!-- When IR learning is started, the FC stops the chase and guides you through the process by announcing the key to press as well as signals through the chase LEDs. Each key is requested twice to sort out unsuitable remote controls. The process starts by the FC briefly lighting up all chase LEDs and announcing "0". At this point, press 0 on your IR remote control. The FC will acknowledge code reception by a [LED signal](#appendix-b-led-signals) and say "again". Now press 0 again. If the received IR codes match, the FC will proceed to the next key. If a key fails verification, ie if the codes sent on first and second key press don't match, the FC will abort and show an "error" signal. -->
+When IR learning is started, the FC stops the chase and guides you through the process by announcing the key to press as well as signals through the chase LEDs. Each key is requested twice to sort out unsuitable remote controls. The process starts by the FC briefly lighting up all chase LEDs and announcing "0". At this point, press 0 on your IR remote control. The FC will acknowledge code reception by a [LED signal](#appendix-b-led-signals) and say "again". Now press 0 again. If the received IR codes match, the FC will proceed to the next key. If a key fails verification, ie if the codes sent on first and second key press don't match, the FC will abort and show an "error" signal.
 
 Keys are requested in the following order:
 
@@ -223,7 +221,7 @@ In order to only disable the supplied IR remote control, check the option **_Dis
     <tr>
      <td align="center"><code>7</code><br><a href="#additional-custom-sounds">Play "key7.mp3"</a><br>[<code>3007</code>]</td>
      <td align="center"><code>8</code><br><a href="#the-music-player">Music Player</a>: Next track<br>[<code>3008</code>]</td>
-     <td align="center"><code>9</code><br><a href="#additional-custom-sounds">Play "key9.mp3"</a><br>[<code>3009</code>]</td>
+     <td align="center"><code>9</code><br><a href="#additional-custom-sounds">Play "key9.mp3"</a><br>[<code>3009</code>]<br>or<br>Trigger "Refill Plutonium chamber"</td>
     </tr>
     <tr>
      <td align="center"><code>*</code><br>Start command sequence</td>
@@ -481,7 +479,7 @@ The uploaded files are stored to the root folder of the SD card, so this way of 
 The firmware contains a simple music player to play mp3 files located on the SD card. 
 
 > [!NOTE]
-> The maximum mp3 bitrate is __128kpbs__. The free [Adapter](https://macroplant.com/adapter/audio-converter) tool can re-encode your mp3 files in batches.
+> The maximum mp3 bitrate is __128kpbs__. The free [Adapter&#10548;](https://macroplant.com/adapter/audio-converter) tool can re-encode your mp3 files in batches.
 
 To be recognized, your mp3 files need to be organized in music folders named *music0* through *music9*. The folder number is 0 by default, i.e. the player starts searching for music in folder *music0*. To select a different folder, issue command sequences ```*50ok``` through ```*59ok``` on the remote control.
 
@@ -489,7 +487,7 @@ The names of the audio files must only consist of three-digit numbers, starting 
 
 Since manually renaming mp3 files is somewhat cumbersome, the firmware can do this for you: Just copy your files with their original filenames to a music folder of your choice; when selecting that folder, the files will be sorted alphabetically and renamed according to the 3-digit name scheme. (If you want your tracks in a specific order, you must rename them, for instance by inserting a letter or number at the start.) The renaming process can take a while (11 minutes for 1000 files in bad cases). Mac users are advised to delete the ._ files from the SD before putting it back into the FC as this speeds up the process. While the renaming is in progress, the FC's chase LEDs show the fraction of files still left to be processed.
 
-To add files to a music folder later, just copy them to the folder and delete the file "TCD_DONE.TXT" (so that the firmware knows that something has changed). 
+To add files to a music folder later, just copy them to the music folder, and delete the cache file "musicXc" (X being the folder number) located in the top-most folder. That way that the firmware knows that something has changed and will examine the folder.
 
 To start and stop music playback, press ```5``` on your remote. Pressing ```2``` jumps to the previous track, pressing ```8``` to the next one.
 
@@ -899,6 +897,14 @@ If this option is checked, and your TCD is equipped with a fake power switch, th
 ##### &#9193; '0' and button trigger BTTFN-wide TT
 
 If the FC is connected to a TCD through BTTFN, this option allows to trigger a synchronized time travel on all BTTFN-connected devices when pressing ```0``` on the IR remote control or pressing the Time Travel button, just as if the Time Travel was triggered by the TCD. If this option is unchecked, pressing ```0``` or the Time Travel button only triggers a Time Travel sequence on the FC.
+
+##### &#9193; '9' on IR remote refills Plutonium chamber
+
+This option determines the function of key ```9``` on the IR remote control: 
+
+If unchecked, pressing ```9``` plays ["key9.mp3"](#additional-custom-sounds) on your SD card. This is the default.
+
+If this option is checked, pressing ```9``` will issue a "Refill Plutonium Chamber" command for your [Dash Gauges](https://dg.out-a-ti.me). (Requires TCD firmware 3.27 or newer.)
 
 #### <ins>Settings for wired connections</ins>
 
