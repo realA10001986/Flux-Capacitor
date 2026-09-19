@@ -165,7 +165,7 @@ Control through the IR remote works through single-key presses and command seque
 Each time you press a key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the bright center LED.
 
 Apart from the feedback LED, your FC will also show some feedback signals through its chase LEDs:
-- By default, when initiating a command sequence by pressing ```*```, the FC will start to show each key pressed afterwards by lighting up another chase LED. This kind of feedback can be disabled using command sequence ```*63ok``` or in the Config Portal.
+- By default, when initiating a command sequence by pressing ```*```, the FC will stop the chase and acknoowledge each key pressed afterwards by lighting up another chase LED. This kind of feedback can be disabled using command sequence ```*63ok``` or in the Config Portal.
 - By default, after executing a command, the FC will show a "success" signal. This kind of feedback can be disabled using command sequence ```*62ok``` or in the Config Portal.
 - If a command was unsuccessful or not recognized, a "bad input" signal will be shown.
 
