@@ -453,8 +453,8 @@ The following sounds are time-sync'd to display action. If you decide to substit
 
 The firmware supports some additional user-provided sound effects, which it will load from the SD card. If the respective file is present, it will be used. If that file is absent, no sound will be played.
 
-- "user1.mp3", "user2.mp3": Played when the FC receives [MQTT commands](#home-assistant--mqtt) "USER1" and "USER2", respectively.
 - "key1.mp3" - "key9.mp3": Will be played through IR commands ```*501ok``` - ```*509ok``` or commands from [TCD](#commandref) and [HA/MQTT](#control-the-fc-via-mqtt). The respective "keyX.mp3" file will also be played if you press the ```1```/```3```/```4```/```6```/```7```/```9``` button on your remote.
+- "user1.mp3", "user2.mp3": Played when the FC receives [MQTT commands](#home-assistant--mqtt) "USER1" and "USER2", respectively.
 
 > The seemingly odd way of accessing keyX files through the IR remote is because of synchronicity with other props, especially the TCD and its keymap where the Music Player also occupies keys 2, 5, 8.
 
