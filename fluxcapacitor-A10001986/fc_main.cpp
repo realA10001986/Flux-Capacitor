@@ -2515,7 +2515,7 @@ static int execute(bool isIR, bool injected)
             if(!TTrunning) {                          // *888xxx go to song #xxx
                 if(!strncmp(inputBuffer, "888", 3)) {
                     if(haveMusic) {
-                        uint16_t num = ((inputBuffer[3] - '0') * 100) + read2digs(4);
+                        int num = ((inputBuffer[3] - '0') * 100) + read2digs(4);
                         num = mp_gotonum(num, true);
                         doInpReaction = 1;
                     } else doInpReaction = -1;

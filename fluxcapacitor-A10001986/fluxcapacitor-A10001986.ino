@@ -118,6 +118,13 @@
 
 /*  Changelog
  *
+ *  2026/09/21 (A10001986) [1.108]
+ *    ********************************************************************************
+ *    ** If updating from below 1.100, please see boxed note at version 1.101 below **
+ *    ********************************************************************************
+ *    - Car Mode: Automatically pair FC to currently connected TCD by means of the
+ *      TCD's BSSID upon first successful connection in Car Mode. This avoids connecting
+ *      to other people's TCDs if in close range (meet-ups, exhibitions).
  *  2026/09/18 (A10001986) [1.107]
  *    ********************************************************************************
  *    ** If updating from below 1.100, please see boxed note at version 1.101 below **

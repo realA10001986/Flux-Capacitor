@@ -110,9 +110,11 @@ static const char *fluxCustHTMLSrc[6] = {
 
 static const char tcdList[] = "<datalist id='tcda'><option value='TCD-AP%s'></option></datalist><datalist id='hnl'><option value='flux'></option></datalist>";
 
-static const char tcdSSIDp[] = "<div style='margin:0 0 10px 0;padding:0;font-size:80%%'>SSID of currently connected TCD is <b>TCD-AP%s</b> (%s password)</div>";
+static const char tcdSSID0[] = "<div style='margin:0 0 10px 0;padding:0;font-size:80%'>";
+static const char tcdSSIDp[] = "%sSSID of currently connected TCD is <b>TCD-AP%s</b></div>";
+static const char tcdSSIDq[] = "%sCurrently connected TCD has %s password configured</div>";
 static const char tcdAPPW1[] = "no";
-static const char tcdAPPW2[] = "with";
+static const char tcdAPPW2[] = "a";
 
 static const char *apChannelCustHTMLSrc[14] = {
     "'>WiFi channel",
@@ -153,6 +155,7 @@ static const char mqttMsgGenError[] = "Error";
 
 static const char *wmBuildTCDAPList(const char *dest, int op);
 static const char *wmBuildTCDSSID(const char *dest, int op);
+static const char *wmBuildTCDPW(const char *dest, int op);
 static const char *wmBuildApChnl(const char *dest, int op);
 static const char *wmBuildBestApChnl(const char *dest, int op);
 
@@ -193,12 +196,13 @@ static const char mqttStatus[] = "%s%s%s%s%s (%d)</div>";
 
 WiFiManagerParameter custom_asel(wmBuildTCDAPList);
 
-WiFiManagerParameter custom_sectstart_cm("Car mode settings", WFM_SECTS_HEAD|WFM_HL);
-WiFiManagerParameter custom_cmhint("<div style='margin:0 0 10px 0;padding:0;font-size:80%;white-space:break-spaces;'>In Car mode, the device connects to the TCD's access point instead of the WiFi network configured above.</div>");
+WiFiManagerParameter custom_sectstart_cm("Car Mode settings", WFM_SECTS_HEAD|WFM_HL);
+WiFiManagerParameter custom_cmhint("<div style='margin:0 0 10px 0;padding:0;font-size:80%;white-space:break-spaces;'>In Car Mode, the device connects to the TCD's access point instead of the WiFi network configured above.</div>");
 WiFiManagerParameter custom_ssidcm("Network name (SSID) of TCD-AP", settings.cm_ssid, 13, "pattern='[A-Za-z0-9\\-]+' placeholder='Example: TCD-AP' list='tcda'");
-WiFiManagerParameter custom_passcm("Password for TCD-AP", settings.cm_pass, 8, "minlength='8' pattern='[A-Za-z0-9\\-]+'");
 WiFiManagerParameter custom_tcdssid(wmBuildTCDSSID);
-WiFiManagerParameter custom_bssidcm("TCD-AP BSSID (optional)", settings.cm_bssid, 17, "pattern='^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$' placeholder='XX:XX:XX:XX:XX:XX'");
+WiFiManagerParameter custom_passcm("Password for TCD-AP", settings.cm_pass, 8, "minlength='8' pattern='[A-Za-z0-9\\-]+'");
+WiFiManagerParameter custom_tcdpw(wmBuildTCDPW);
+WiFiManagerParameter custom_bssidcm("TCD-AP BSSID<br><span>Will be filled out automatically after first connect if left empty.</span>", settings.cm_bssid, 17, "pattern='^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$' placeholder='XX:XX:XX:XX:XX:XX'");
 WiFiManagerParameter custom_ecm("Enable Car Mode now", settings.ecmKludge, "", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 
 WiFiManagerParameter custom_hostName("Hostname<br><span>Network device ID. Config Portal URL: http://<i>hostname</i>.local<br>Valid characters: a-z/0-9/-</span>", settings.hostName, 31, "pattern='[A-Za-z0-9\\-]+' placeholder='flux' list='hnl'", WFM_LABEL_BEFORE|WFM_SECTS);
@@ -228,11 +232,11 @@ WiFiManagerParameter custom_PIRCFB("Show IR command entry feedback", settings.PI
 WiFiManagerParameter custom_ssDelay("Screen saver timer (1-999[minutes]; 0=off)", settings.ssTimer, 3, "type='number' min='0' max='999'");
 
 WiFiManagerParameter custom_sectstart_nw("Wireless communication (BTTF-Network)", WFM_SECTS|WFM_HL);
-WiFiManagerParameter custom_tcdIP("Hostname or IP address of TCD", settings.tcdIP, 31, "pattern='(^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$)|([A-Za-z0-9\\-]+)' placeholder='Example: timecircuits' list='tcdh'");
+WiFiManagerParameter custom_tcdIP("Hostname of TCD", settings.tcdIP, 31, "pattern='(^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$)|([A-Za-z0-9\\-]+)' placeholder='Example: timecircuits' list='tcdh'");
 WiFiManagerParameter custom_uTCDS("Adapt chase speed to TCD-provided speed<br><span>Speed from TCD (GPS, rotary encoder, remote control), if available, will overrule knob and IR remote</span>", settings.useTCDS, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
-WiFiManagerParameter custom_uNM("Follow TCD night-mode<br><span>If checked, the Screen Saver will activate when TCD is in night-mode.</span>", settings.useNM, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 WiFiManagerParameter custom_uFPO("Follow TCD fake power", settings.useFPO, "", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
-WiFiManagerParameter custom_bttfnTT("'0' and button trigger BTTFN-wide TT<br><span>If checked, pressing '0' on the IR remote or pressing the Time Travel button triggers a BTTFN-wide TT</span>", settings.bttfnTT, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_uNM("Follow TCD night-mode<br><span>If checked, the Screen Saver will activate when TCD is in night-mode.</span>", settings.useNM, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
+WiFiManagerParameter custom_bttfnTT("'0' and button trigger BTTFN-wide Time Travel<br><span>If checked, pressing '0' on the IR remote or pressing the Time Travel button triggers a Tíme Travel on all BTTFN-connected props</span>", settings.bttfnTT, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 WiFiManagerParameter custom_k9("'9' on IR remote refills Plutonium chamber<br><span>If unchecked, key '9' plays 'key9.mp3' on SD card</span>", settings.k9, "class='mb0'", WFM_LABEL_AFTER|WFM_IS_CHKBOX);
 
 WiFiManagerParameter custom_TCDpresent("TCD connected by wire", settings.TCDpresent, "title='Check this if you have a Time Circuits Display connected via wire' class='mt5'", WFM_LABEL_AFTER|WFM_IS_CHKBOX|WFM_SECTS);
@@ -404,8 +408,9 @@ void wifi_setup()
       &custom_sectstart_cm,
       &custom_cmhint,
       &custom_ssidcm,
-      &custom_passcm,
       &custom_tcdssid,
+      &custom_passcm,
+      &custom_tcdpw,
       &custom_bssidcm,
       &custom_ecm,
 
@@ -442,8 +447,8 @@ void wifi_setup()
       &custom_sectstart_nw,  // 6
       &custom_tcdIP,
       &custom_uTCDS,
-      &custom_uNM,
       &custom_uFPO,
+      &custom_uNM,
       &custom_bttfnTT,
       &custom_k9,
   
@@ -700,9 +705,24 @@ void wifi_setup()
     }
 #endif
 
-    // Start the Config Portal
     if(WiFi.status() == WL_CONNECTED) {
+
+        // Start the Config Portal
         wifiStartCP();
+
+        // Marry us to the current TCD in carMode
+        if(carMode && !*settings.cm_bssid) {
+            uint8_t *tcdbssid = WiFi.BSSID();
+            if(tcdbssid) {
+                #ifdef FC_DBG
+                Serial.printf("Now married to TCD with BSSID %02x:%02x:%02x:%02x:%02x:%02x\n", 
+                    tcdbssid[0], tcdbssid[1], tcdbssid[2], tcdbssid[3], tcdbssid[4], tcdbssid[5]);
+                #endif
+                sprintf(settings.cm_bssid, "%02x:%02x:%02x:%02x:%02x:%02x",
+                    tcdbssid[0], tcdbssid[1], tcdbssid[2], tcdbssid[3], tcdbssid[4], tcdbssid[5]);
+                write_settings();
+            }
+        }
     }
 
     wifiSetupDone = true;
@@ -1596,7 +1616,7 @@ static const char *wmBuildTCDSSID(const char *dest, int op)
     if(!bttfnHaveTCDSSID)
         return NULL;
 
-    unsigned int l = STRLEN(tcdSSIDp) + (TCDpwMarker ? STRLEN(tcdAPPW2) : STRLEN(tcdAPPW1)) + 4;
+    unsigned int l = STRLEN(tcdSSIDp) + STRLEN(tcdSSID0) + 4;
     l += strlen(TCDSSID);
 
     if(op == WM_CP_LEN) {
@@ -1606,7 +1626,31 @@ static const char *wmBuildTCDSSID(const char *dest, int op)
 
     char *str = (char *)malloc(l);
 
-    sprintf(str, tcdSSIDp, TCDSSID, TCDpwMarker ? tcdAPPW2 : tcdAPPW1);
+    sprintf(str, tcdSSIDp, tcdSSID0, TCDSSID);
+
+    return str;
+}
+
+static const char *wmBuildTCDPW(const char *dest, int op)
+{
+    if(op == WM_CP_DESTROY) {
+        if(dest) free((void *)dest);
+        return NULL;
+    }
+
+    if(!bttfnHaveTCDSSID)
+        return NULL;
+
+    unsigned int l = STRLEN(tcdSSIDq) + STRLEN(tcdSSID0) + (TCDpwMarker ? STRLEN(tcdAPPW2) : STRLEN(tcdAPPW1)) + 4;
+
+    if(op == WM_CP_LEN) {
+        wmLenBuf = l;
+        return (const char *)&wmLenBuf;
+    }
+
+    char *str = (char *)malloc(l);
+
+    sprintf(str, tcdSSIDq, tcdSSID0, TCDpwMarker ? tcdAPPW2 : tcdAPPW1);
 
     return str;
 }

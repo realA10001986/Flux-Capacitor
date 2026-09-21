@@ -15,8 +15,8 @@
  ***                          Version Strings                          ***
  *************************************************************************/
 
-#define FC_VERSION       "V1.107"           // Do NOT change format.
-#define FC_VERSION_EXTRA "SEP182026"
+#define FC_VERSION       "V1.108"           // Do NOT change format.
+#define FC_VERSION_EXTRA "SEP212026"
 
 /*************************************************************************
  ***                           Miscellaneous                           ***
