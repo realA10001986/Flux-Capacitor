@@ -162,10 +162,10 @@ Control through the IR remote works through single-key presses and command seque
 - Single key actions are triggered by pressing keys ```0```-```9```, ```Arrow up```, ```Arrow down```, ```Arrow left``` or ```Arrow right```.
 - Command sequences are started by pressing ```*``` followed by a numerical code, and concluded by ```ok```. ```#``` aborts command sequence entry (for example, in case of mistyping).
 
-Each time you press a key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the board, next to the bright center LED.
+Each time you press a key on the remote, an IR feedback LED will briefly light up. This LED is located in the center of the circuit board, next to the bright center LED.
 
 Apart from the feedback LED, your FC will also show some feedback signals through its chase LEDs:
-- By default, when initiating a command sequence by pressing ```*```, the FC will stop the chase and acknoowledge each key pressed afterwards by lighting up another chase LED. This kind of feedback can be disabled using command sequence ```*63ok``` or in the Config Portal.
+- By default, when initiating a command sequence by pressing ```*```, the FC will stop the chase and acknowledge each key pressed afterwards by lighting up another chase LED. This kind of feedback can be disabled using command sequence ```*63ok``` or in the Config Portal.
 - By default, after executing a command, the FC will show a "success" signal. This kind of feedback can be disabled using command sequence ```*62ok``` or in the Config Portal.
 - If a command was unsuccessful or not recognized, a "bad input" signal will be shown.
 
@@ -196,7 +196,7 @@ To make the FC forget a learned IR remote control, type ```*654321ok```.
 
 ### Locking IR Control
 
-You can have your FC ignore IR commands from any IR remote control (be it the default supplied one, be it one you had the FC learn) by entering ```*70ok```. After this sequence, the FC will ignore all IR commands until ```*70ok``` is entered again. The purpose of this function is to enable you to use the same remote for your FC and other props.
+You can have your FC ignore IR commands from any IR remote control (be it the supplied one, be it one you had the FC learn) by entering ```*70ok```. After this sequence, the FC will ignore all IR commands until ```*70ok``` is entered again. The purpose of this function is to enable you to use the same remote for your FC and other props.
 
 The status of the IR lock is saved 10 seconds after its last change, and is persistent across reboots.
 
