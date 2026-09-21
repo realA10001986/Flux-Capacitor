@@ -535,8 +535,14 @@ uint8_t WiFiManager::connectWifi(const char *ssid, const char *pass, const char 
 
             // We try without a user-provided BSSID on the last connection attempt.
             // Still better than to fall-back to AP mode.
+            // Not in Car Mode though: We don't want to connect to other people's TCDs.
             if(retry == _connectRetries) {
-                if(pbssid) {
+                #ifdef WM_CCM
+                if(pbssid && !_cCarMode)
+                #else
+                if(pbssid)
+                #endif
+                {
                     _badBSSID = true;
                     pbssid = NULL;
                     #ifdef _A10001986_DBG
