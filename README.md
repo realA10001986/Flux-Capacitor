@@ -390,7 +390,7 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
 
 ## The Flux Sound
 
-By default, the FC plays a "flux" sound continuously.
+The "flux" sound is an electrical-sounding, low volume background noise. By default, the FC does not play a "flux" sound. 
 
 The flux sound can be permanently disabled, permanently enabled or enabled for 30 or 60 seconds
 
