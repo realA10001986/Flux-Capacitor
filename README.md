@@ -36,7 +36,7 @@ For information on updating the firmware of your FC, see [here](#firmware-instal
 
 >The following instructions only need to be followed once, on fresh FCs. They do not need to be repeated after a firmware update.
 
-The first step is to put a **good-quality** ("endurance", "long life", ...) **and empty microSD card into the card slot**. The maximum size is 32GB and the card must be FAT32 formatted. [More information](#sd-card)
+The first step is to put a **good-quality** ("endurance", "industrial", "long life", ...) **and empty microSD card into the card slot**. The maximum size is 32GB and the card must be FAT32 formatted. [More information](#sd-card)
 
 The second step is to establish access to the FC's configuration website ("Config Portal") in order to configure your FC:
 
