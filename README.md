@@ -21,7 +21,7 @@ Features include
 - [Time Travel](#time-travel) function, triggered by button, [Time Circuits Display](https://circuitsetup.us/product/complete-time-circuits-display-kit/) (TCD) or via [Home Assistant](#home-assistant--mqtt)
 - [IR remote controlled](#ir-remote-control); can learn keys from third-party remote
 - [music player](#the-music-player): Play mp3 files located on an SD card
-- [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player
+- [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player. SD card required for firmware updates.
 - advanced network-accessible [Config Portal](#the-config-portal) for setup (http://flux.local)
 - [wireless communication](#bttf-network-bttfn) with [Time Circuits Display](https://circuitsetup.us/product/complete-time-circuits-display-kit/); used for synchronized time travels, alarm, chase speed, night mode, fake power, remote control through TCD keypad and [remote controlling](#remote-controlling-the-tcds-keypad) the TCD keypad.
 - [Home Assistant](#home-assistant--mqtt) (MQTT) support
