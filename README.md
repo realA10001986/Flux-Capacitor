@@ -21,7 +21,6 @@ Features include
 - [Time Travel](#time-travel) function, triggered by button, [Time Circuits Display](https://circuitsetup.us/product/complete-time-circuits-display-kit/) (TCD) or via [Home Assistant](#home-assistant--mqtt)
 - [IR remote controlled](#ir-remote-control); can learn keys from third-party remote
 - [music player](#the-music-player): Play mp3 files located on an SD card
-- [SD card](#sd-card) support for custom audio files for effects, and music for the Music Player. SD card required for firmware updates.
 - advanced network-accessible [Config Portal](#the-config-portal) for setup (http://flux.local)
 - [wireless communication](#bttf-network-bttfn) with [Time Circuits Display](https://circuitsetup.us/product/complete-time-circuits-display-kit/); used for synchronized time travels, alarm, chase speed, night mode, fake power, remote control through TCD keypad and [remote controlling](#remote-controlling-the-tcds-keypad) the TCD keypad.
 - [Home Assistant](#home-assistant--mqtt) (MQTT) support
@@ -34,9 +33,11 @@ For information on updating the firmware of your FC, see [here](#firmware-instal
 
 ## Initial Configuration
 
->The following instructions only need to be followed once, on fresh FCs. They do not need to be repeated after a firmware update.
+**Some functions of your FC require an SD card.** The first step is therefore to put a **good-quality** ("endurance", "industrial", "long life", ...) **and empty microSD card into the card slot**. The SD card must be inserted before powering up the FC. It is not recognized if inserted while the FC is running. Furthermore, do not remove the SD card while the FC is powered.
 
-The first step is to put a **good-quality** ("endurance", "industrial", "long life", ...) **and empty microSD card into the card slot**. The maximum size is 32GB and the card must be FAT32 formatted. [More information](#sd-card)
+>SD/SDHC/SDXC cards up to 32GB are supported. The card needs to be FAT32-formatted (not exFAT). Transcend, Sandisk Ultra and Industrial, Verbatim Premium and Samsung Pro Endurance SDHC cards usually work fine. Some SD cards might not be recognized due to off-specs initialization quirks. SDUC cards are not supported.
+
+>Since the SD card on the control board is inaccessible after assembling the FC, I used a microSD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B09MS85FQ3/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time. See [here](Hardware.md).
 
 The second step is to establish access to the FC's configuration website ("Config Portal") in order to configure your FC:
 
@@ -427,15 +428,7 @@ You can also connect an external Time Travel button to your FC; the button must 
 
 Other ways of triggering a time travel are available if a [Time Circuits Display](#connecting-a-time-circuits-display) is connected.
 
-## SD Card
-
->Only SD/SDHC/SDXC cards up to 32GB are supported. Card needs to be FAT32-formatted (not exFAT). Transcend, Sandisk Ultra (as of firmware version 1.105) and Industrial, Verbatim Premium and Samsung Pro Endurance SDHC cards usually work fine. Some SD cards might not be recognized due to off-specs initialization quirks. SDUC cards are not supported.
-
-The SD card, apart from being required for [installing](#sound-pack-installation) the sound-pack, can be used for substituting built-in sound effects and for music played back by the [Music player](#the-music-player). Also, it is _strongly recommended_ to store [secondary settings](#-save-secondary-settings-on-sd) on the SD card to minimize [Flash Wear](#flash-wear). The chosen chase sequence (```*1x```) is only stored on SD, so for your selection to be persistent across reboots, an SD card is required.
-
-The SD card must be inserted before powering up the device. It is not recognized if inserted while the Flux Capacitor is running. Furthermore, do not remove the SD card while the device is powered.
-
-Since the SD card on the control board is inaccessible after assembling the FC, I used a microSD extension (like [this one](https://www.amazon.com/Memory-Micro-SD-Female-Extension-Extender/dp/B09MS85FQ3/)), and mounted the slot through a hole in the bottom of my FC so that the SD card can be accessed at any time. See [here](Hardware.md).
+## Sound Customization
 
 ### Sound substitution
 
@@ -693,7 +686,12 @@ In order to reduce the number of write operations and thereby prolong the life o
 
 ## Firmware Installation / Firmware Update
 
-To update the firmware of your FC, enter the [Config Portal](#the-config-portal), click on "Update & Upload", select the pre-compiled binary file ("**fluxcapacitor-A10001986-Vx.xxx.bin**" or "**Flux_Capacitor_vX.YY.bin**") provided in the [Release package](https://github.com/realA10001986/Flux-Capacitor/releases) and click on *Update*.
+To update the firmware of your FC, 
+- download the firmware file provided in the [Release package](https://github.com/realA10001986/Flux-Capacitor/releases) ("**fluxcapacitor-A10001986-Vx.xxx.bin**" for A10001986 releases, "**Flux_Capacitor_vX.YY.bin**" for CircuitSetup releases)
+- enter the [Config Portal](#the-config-portal),
+- click on "Update & Upload",
+- select the downloaded firmware file in the _top_ file selector, and
+- click on *Update*. 
 
 <details>
 <summary>Installing on a fresh ESP32...</summary>
@@ -706,11 +704,15 @@ If you are using a fresh ESP32, please go <a href="https://install.out-a-ti.me">
 
 The firmware comes with a sound-pack which needs to be installed separately. The sound-pack is not updated as often as the firmware itself. There will be a message in the Config Portal and a respective [signal](#appendix-b-led-signals) at startup when/if the sound-pack needs to be updated.
 
-_Installing the sound-pack requires an [SD card](#sd-card)._
+_Installing the sound-pack requires an [SD card](#initial-configuration)._
 
-The first step is to extract "sound-pack-fcXX.zip" (which is included in every [Release package](https://github.com/realA10001986/Flux-Capacitor/releases)). It contains one file, named "FCA.bin".
-
-Next, head to the [Config Portal](#the-config-portal), click on "Update & Upload", select the "FCA.bin" file in the _bottom_ file selector and click on *Upload*.
+To update the sound-pack of your FC, 
+- download the sound-pack file provided in the [Release package](https://github.com/realA10001986/Flux-Capacitor/releases) ("**sound-pack-fcXX.zip**"),
+- extract the downloaded file. It contains one file named FCA.bin.
+- enter the [Config Portal](#the-config-portal),
+- click on "Update & Upload",
+- select the FCA.bin file in the _bottom_ file selector, and
+- click on *Upload*. 
 
 <details>
 <summary>Alternative way</summary>
@@ -746,13 +748,11 @@ This leads to the [HomeAssistant/MQTT Settings page](#hamqtt-settings).
 
 This leads to the firmware update and audio upload page.
 
-To upload a new firmware, such as published in the [Release packages](https://github.com/realA10001986/Flux-Capacitor/releases), select the "**fluxcapacitor-A10001986-Vx.xxx.bin**" or "**Flux_Capacitor_vX.YY.bin**" file as contained in the Release package in the _top_ file selector and click *Update*.
+See [here](#firmware-installation--firmware-update) for firmware update instructions.
 
-You can also install the FC's sound-pack on this page; download the sound-pack (which is included in every [Release package](https://github.com/realA10001986/Flux-Capacitor/releases)), extract it and select the resulting FCA.bin file in the _bottom_ file selector. Finally, click *Upload*. An SD card is required for this operation.
-
-See also [here](#firmware-installation--firmware-update).
-
-Finally, this page is also for uploading [custom or replacement sound files](#installing-custom--replacement-audio-files) to the SD card. Select an mp3 file in the _bottom_ file selector and click *Upload*. (Maximum 16 files at a time.)
+This page is also for uploading [custom or replacement sound files](#installing-custom--replacement-audio-files) to the SD card:
+- Select one or more mp3 file(s) in the _bottom_ file selector (max 16 files at a time) and
+- click *Upload*.
 
 ---
 
@@ -929,18 +929,14 @@ If your FC is connected wirelessly, this option has no effect.
 
 ##### &#9193; Save secondary settings on SD
 
-If this is checked, secondary settings (volume, chase speed, minimum box light level, flux mode and level, IR lock status, learned IR keys, ...) are stored on the SD card (if one is present). This helps to minimize write operations to the internal flash memory and to prolong the lifetime of your Flux Capacitor. See [Flash Wear](#flash-wear).
+_Please leave this option checked. It is safe to have this option checked even with no SD card present._
 
-Apart from Flash Wear, there is another reason for using an SD card for settings: Writing data to internal flash memory can cause delays of up to 1.5 seconds, which interrupt sound playback and have other undesired effects. The FC needs to save data from time to time, so for a smooth experience without unexpected and unwanted delays, please use an SD card and check this option.
-
-It is safe to have this option checked even with no SD card present.
+If this is checked, some settings are stored on the SD card. This helps to minimize write operations to the internal flash memory and to prolong the lifetime of your FC. Apart from Flash Wear, there is another reason for using an SD card for settings: The FC needs to save data from time to time. Writing data to internal flash memory can cause delays of up to 1.5 seconds, which interrupt sound playback and have other undesired effects.
 
 If you want copy settings from one SD card to another, do as follows:
 - With the old SD card still in the slot, enter the Config Portal, turn off _Save secondary settings on SD_, and click "SAVE".
 - After the FC has rebooted, power it down, and swap the SD card for your new one.
 - Power-up the FC, enter the Config Portal, re-enable _Save secondary settings on SD_, and click "SAVE".
-
-This procedure ensures that all your settings are copied from the old to the new SD card.
 
 #### <ins>Hardware configuration settings</ins>
 
