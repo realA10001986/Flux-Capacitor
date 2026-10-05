@@ -684,7 +684,7 @@ The firmware consists of two parts: The main firmware, and a sound-pack.
 
 First, download main firmware and sound-pack. Both files are in every [Release package](https://github.com/realA10001986/Flux-Capacitor/releases/latest), and named
 - "**fluxcapacitor-A10001986-Vx.xxx.bin**" for A10001986 releases, "**Flux_Capacitor_vX.YY.bin**" for CircuitSetup releases,
-- "**sound-pack-fcXX.zip**" for A10001986 releases, "**DGA.bin**" for CircuitSetup releases.
+- "**sound-pack-fcXX.zip**" for A10001986 releases, "**FCA.bin**" for CircuitSetup releases.
 
 ### Main firmware
 
