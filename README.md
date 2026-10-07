@@ -727,7 +727,9 @@ Alternatively, you can install the sound-pack the following way:
 <!--
 ## Factory Reset
 
-To reset your FC to factory default settings, issue command sequence ```*397159ok``` twice in a row. The FC will reboot in AP-mode.
+To reset your FC to factory default settings, issue command sequence ```*397159ok``` twice in a row. 
+
+Since any configured WiFi connection is deleted as well, the FC will reboot in AP-mode.
 
 -->
 
