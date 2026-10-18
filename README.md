@@ -730,7 +730,7 @@ To update the sound-pack of your FC,
 <br>
 Alternatively, you can install the sound-pack the following way:
 <ul>
-<li>Using a computer, copy "FCA-FCxx.bin" to the root directory of a FAT32 formatted SD card and rename it to "FCA.bin",</li>
+<li>Using a computer, copy "FCA-FCxx.bin" to a FAT32 formatted SD card and rename it to "FCA.bin",</li>
 <li>power down the Flux Capacitor,</li>
 <li>insert this SD card into the slot and</li>
 <li>power up the Flux Capacitor; the sound-pack will be installed automatically.</li>
@@ -789,6 +789,10 @@ If there are several APs with identical SSID nearby, the FC will connect to the 
 
 Checking this box (and clicking SAVE) deletes the currently saved WiFi network (SSID and password as well as static IP data) and reboots the device; it will restart in "access point" (AP) mode. See [here](#connecting-to-a-wifi-network).
 
+##### &#9193; WiFi connection attempts
+
+Number of times the firmware tries to reconnect to a WiFi network, before falling back to AP-mode. See [here](#connecting-to-a-wifi-network)
+
 ##### &#9193; Car mode settings
 
 In Car mode, the device connects to the TCD-AP as configured here instead of the WiFi network configured above. 
@@ -807,10 +811,6 @@ The device's hostname in the WiFi network. Defaults to 'flux'. This also is the 
 If you have more than one FC in your local network, please give them unique hostnames.
 
 _This setting applies to both AP-mode and when your FC is connected to a WiFi network._ 
-
-##### &#9193; WiFi connection attempts
-
-Number of times the firmware tries to reconnect to a WiFi network, before falling back to AP-mode. See [here](#connecting-to-a-wifi-network)
 
 #### <ins>Settings for AP-mode</ins>
 
