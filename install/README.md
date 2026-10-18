@@ -1,6 +1,6 @@
 This folder holds all files necessary for immediate installation on your Flux Capacitor. Here you'll find
 - a binary of the current firmware, ready for upload to the device ("fluxcapacitor-A10001986-x.xx.bin");
-- the latest matching sound-pack ("FCA-xxx.bin")
+- the latest matching sound-pack ("FCA-xxxx.bin")
 
 For installation instructions, see [here](../README.md#firmware-installation--firmware-update).
 
