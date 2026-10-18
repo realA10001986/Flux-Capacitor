@@ -4,6 +4,7 @@
  * (C) 2023-2026 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
+ * This code was written without the use of artificial intelligence.
  *
  * Sound handling
  *
@@ -251,6 +252,20 @@ static int32_t skipID3(uint8_t *buf)
     return 0;
 }
 
+static void audioCancel()
+{
+    playingFlux = false;
+    key_playing = 0;
+}
+
+static void audioBegin(AudioFileSourceLoop *src, AudioGenerator *gen)
+{
+    if(!gen->begin(src, out)) {
+        gen->stop();  // frees buffers, stops i2c, closes file
+        audioCancel();
+    }
+}
+
 static void setupLoopAndBegin(AudioFileSourceLoop *src, uint32_t flags)
 {
     int32_t pos = 0;
@@ -274,7 +289,7 @@ static void setupLoopAndBegin(AudioFileSourceLoop *src, uint32_t flags)
     }
     src->setStartPos(pos);
 
-    mp3->begin(src, out);
+    audioBegin(src, mp3); //mp3->begin(src, out);
 }
 
 void play_file(const char *audio_file, uint32_t flags, float volumeFactor)
@@ -329,10 +344,9 @@ void play_file(const char *audio_file, uint32_t flags, float volumeFactor)
             segList[i] = ((const int16_t *)audio_file)[i];
         }
         if(srcSC && srcSC->open_c(sc_fn, (const int16_t *)segList)) {
-            mp3->begin(srcSC, out);
+            audioBegin(srcSC, mp3); //mp3->begin(srcSC, out);
         } else {
-            playingFlux = false;
-            key_playing = 0;
+            audioCancel();
         }
     } else if(haveSD && ((flags & PA_ALLOWSD) || FlashROMode) && mySD0L->open(audio_file)) {
         setupLoopAndBegin(mySD0L, flags|PA_DOID3TS);
@@ -345,8 +359,7 @@ void play_file(const char *audio_file, uint32_t flags, float volumeFactor)
         Serial.println("Playing from flash FS");
         #endif
     } else {
-        playingFlux = false;
-        key_playing = 0;
+        audioCancel();
         #ifdef FC_DBG
         Serial.println("Audio file not found");
         #endif

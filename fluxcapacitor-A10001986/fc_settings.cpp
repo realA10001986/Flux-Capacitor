@@ -4,6 +4,7 @@
  * (C) 2023-2026 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
+ * This code was written without the use of artificial intelligence.
  *
  * Settings & file handling
  * 
@@ -97,11 +98,14 @@
 #define DECLARE_D_JSON(x,n) DynamicJsonDocument n(x);
 #endif 
 
+#define SND_REQ_VERSION "FC07"
 #define NUM_AUDIOFILES 10
-#define SND_REQ_VERSION "FC06"
-#define AC_FMTV 2
 #define AC_TS   1265802
-#define AC_OHSZ (14 + ((NUM_AUDIOFILES+1)*(32+4)))
+#define AC_FMTV 3
+#define AC_OHSZ (19 + ((NUM_AUDIOFILES+1)*(32+8)))
+
+Settings settings;
+IPSettings ipsettings;
 
 // Secondary settings
 // Do not change or insert new values, this
@@ -132,10 +136,8 @@ static struct [[gnu::packed]] {
 
 static int      secSetValidBytes = 0;
 static uint32_t secSettingsHash  = 0;
-static bool     haveSecSettings  = false;
 static int      terSetValidBytes = 0;
 static uint32_t terSettingsHash  = 0;
-static bool     haveTerSettings  = false;
 
 static uint32_t mainConfigHash = 0;
 static uint32_t ipHash = 0;
@@ -146,6 +148,7 @@ static const char *CONID  = "FCAA";
 const char        rspv[] = SND_REQ_VERSION;
 static uint32_t   soa = AC_TS;
 static bool       ic = false;
+static int        ict = 0;
 static uint8_t*   f(uint8_t *d, uint32_t m, int y) { return d; }
 static char       *uploadFileNames[MAX_SIM_UPLOADS] = { NULL };
 static char       *uploadRealFileNames[MAX_SIM_UPLOADS] = { NULL };
@@ -158,7 +161,7 @@ static const char *irCfgName  = "/fcirkeys.json";   // Learned IR keys (flash/SD
 static const char *terCfgName = "/fc3cfg";          // Tertiary settings (SD)
 
 #ifdef SETTINGS_TRANSITION_2
-static const char *obsFiles[] = {
+static const char * const obsFiles[] = {
     "/fcipcfg.json",  "/fcid.json",     "/fcvolcfg.json", "/fcspdcfg.json",
     "/fcbllcfg.json", "/fcirlcfg.json", "/fcipat.json",   "/fcmcfg.json",
     "/_installing.mp3",
@@ -169,7 +172,7 @@ static const char *obsFiles[] = {
 static const char fwfn[]      = "/fcfw.bin";
 static const char fwfnold[]   = "/fcfw.old";
 
-static const char *jsonNames[NUM_IR_KEYS] = {
+static const char * const jsonNames[NUM_IR_KEYS] = {
     "key0", "key1", "key2", "key3", "key4", 
     "key5", "key6", "key7", "key8", "key9", 
     "keySTAR", "keyHASH",
@@ -179,8 +182,8 @@ static const char *jsonNames[NUM_IR_KEYS] = {
 };
 
 static const char *fsNoAvail = "Filesystem not available";
-static const char *failFileWrite = "Failed to open file for writing";
 #ifdef FC_DBG
+static const char *failFileWrite = "Failed to open file for writing";
 static const char *badConfig = "Settings bad/missing/incomplete; writing new file";
 #endif
 
@@ -297,6 +300,13 @@ unsigned int check_file_len(const char *fn, bool& srcMedium, uint8_t *tbuf, uint
     }
 
     return s;
+}
+
+static void deleteFileFromFS(const char *fn)
+{
+    if(haveFS) {
+        MYNVS.remove(fn);
+    }
 }
 
 void deleteFileFromSD(const char *fn)
@@ -876,17 +886,28 @@ static void removeObsFiles()
         #endif
         for(int i = 0; i < 10; i++) {
             oBuf[1] = i + '0';
-            MYNVS.remove(oBuf);
+            deleteFileFromFS(oBuf);
         }
-        MYNVS.remove("/dot.mp3");
+        deleteFileFromFS("/dot.mp3");
     }
 
     #ifdef SETTINGS_TRANSITION_2
     for(int i = 0; ; i++) {
         if(!obsFiles[i]) break;
-        MYNVS.remove(obsFiles[i]);
+        deleteFileFromFS(obsFiles[i]);
     }
     #endif
+}
+
+void resettofactorydefault()
+{
+    const char *fns[] = {
+        cfgName, ipCfgName, idName, irCfgName, secCfgName, terCfgName
+    };
+    for(int i = 0; i < sizeof(fns) / sizeof(fns[0]); i++) {
+        deleteFileFromFS(fns[i]);
+        deleteFileFromSD(fns[i]);
+    }
 }
 
 /*
@@ -1067,14 +1088,12 @@ void settings_setup()
     // Load secondary config file
     if(loadConfigFile(secCfgName, (uint8_t *)&secSettings, sizeof(secSettings), secSetValidBytes)) {
         secSettingsHash = calcHash((uint8_t *)&secSettings, sizeof(secSettings));
-        haveSecSettings = true;
     }
 
     // Load tertiary config file (SD only)
     if(haveSD) {
         if(loadConfigFile(terCfgName, (uint8_t *)&terSettings, sizeof(terSettings), terSetValidBytes, 1)) {
             terSettingsHash = calcHash((uint8_t *)&terSettings, sizeof(terSettings));
-            haveTerSettings = true;
         }
     }
 
@@ -1090,7 +1109,7 @@ void settings_setup()
 
     // Check if SD contains the default sound files
     if(haveSD && (haveFS || FlashROMode)) {
-        allowCPA = check_if_default_audio_present();
+        allowCPA = check_for_new_sp();
     }
 
     for(int i = 0; i < MAX_SIM_UPLOADS; i++) {
@@ -1191,7 +1210,7 @@ void deleteIRKeys()
     if(configOnSD) {
         deleteFileFromSD(irCfgName);
     } else if(haveFS) {
-        MYNVS.remove(irCfgName);
+        deleteFileFromFS(irCfgName);
     }
 }
 
@@ -1207,21 +1226,16 @@ void updateVolSettings()
 
 void loadCurVolume()
 {
-    if(haveSecSettings) {
-        #ifdef FC_DBG
-        Serial.println("loadCurVolume: extracting from secSettings");
-        #endif
-        if(secSettings.curVolume == 255 || secSettings.curVolume <= VOL_LEVELS - 1) {
-            aud_state.curVolume = secSettings.curVolume;
-        }
-        if(secSettings.fluxLvlIdx <= 3) {
-            fluxLvlIdx = secSettings.fluxLvlIdx;
-        }
-        if(secSettings.playFLUX <= 3) {
-            playFLUX   = secSettings.playFLUX;
-        }
-        updateVolSettings();
+    if(secSettings.curVolume == 255 || secSettings.curVolume <= VOL_LEVELS - 1) {
+        aud_state.curVolume = secSettings.curVolume;
     }
+    if(secSettings.fluxLvlIdx <= 3) {
+        fluxLvlIdx = secSettings.fluxLvlIdx;
+    }
+    if(secSettings.playFLUX <= 3) {
+        playFLUX   = secSettings.playFLUX;
+    }
+    updateVolSettings();
 }
 
 void storeCurVolume()
@@ -1246,13 +1260,8 @@ void saveCurVolume()
 
 void loadCurSpeed()
 {
-    if(haveSecSettings) {
-        #ifdef FC_DBG
-        Serial.println("loadCurSpeed: extracting from secSettings");
-        #endif
-        if(secSettings.lastIRspeed >= FC_SPD_MAX && secSettings.lastIRspeed <= FC_SPD_MIN) {
-            lastIRspeed = secSettings.lastIRspeed;
-        }
+    if(secSettings.lastIRspeed >= FC_SPD_MAX && secSettings.lastIRspeed <= FC_SPD_MIN) {
+        lastIRspeed = secSettings.lastIRspeed;
     }
 }
 
@@ -1275,13 +1284,8 @@ void saveCurSpeed()
 
 void loadBLLevel()
 {
-    if(haveSecSettings) {
-        #ifdef FC_DBG
-        Serial.println("loadBLLevel: extracting from secSettings");
-        #endif
-        if(secSettings.minBLL <= 4) {
-            minBLL = secSettings.minBLL;
-        }
+    if(secSettings.minBLL <= 4) {
+        minBLL = secSettings.minBLL;
     }
 }
 
@@ -1304,12 +1308,7 @@ void saveBLLevel()
 
 void loadIRLock()
 {
-    if(haveSecSettings) {
-        #ifdef FC_DBG
-        Serial.println("loadIRLock: extracting from secSettings");
-        #endif
-        irLocked = !!secSettings.irLocked;
-    }
+    irLocked = !!secSettings.irLocked;
 }
 
 void storeIRLock()
@@ -1331,12 +1330,7 @@ void saveIRLock()
 
 void loadPosIRFB()
 {
-    if(haveSecSettings) {
-        #ifdef FC_DBG
-        Serial.println("loadPosIRFB: extracting from secSettings");
-        #endif
-        irShowPosFBDisplay = !!secSettings.irShowPosFBDisplay;
-    }
+    irShowPosFBDisplay = !!secSettings.irShowPosFBDisplay;
 }
 
 void savePosIRFB()
@@ -1351,12 +1345,7 @@ void savePosIRFB()
 
 void loadIRCFB()
 {
-    if(haveSecSettings) {
-        #ifdef FC_DBG
-        Serial.println("loadIRCFB: extracting from secSettings");
-        #endif
-        irShowCmdFBDisplay = !!secSettings.irShowCmdFBDisplay;
-    }
+    irShowCmdFBDisplay = !!secSettings.irShowCmdFBDisplay;
 }
 
 void saveIRCFB()
@@ -1371,9 +1360,7 @@ void saveIRCFB()
 
 static void loadUpdAvail()
 {
-    if(haveSecSettings) {
-        showUpdAvail = !!secSettings.showUpdAvail;
-    }
+    showUpdAvail = !!secSettings.showUpdAvail;
 }
 
 void saveUpdAvail()
@@ -1388,12 +1375,8 @@ void saveUpdAvail()
 
 void loadUpdVers(int &v, int& r)
 {
-    if(haveSecSettings) {
-        v = secSettings.updateV;
-        r = secSettings.updateR;
-    } else {
-        v = r = 0;
-    }
+    v = secSettings.updateV;
+    r = secSettings.updateR;
 }
 
 void saveUpdVers(int v, int r)
@@ -1420,9 +1403,7 @@ void saveAllSecCP()
 
 static void loadCarMode()
 {
-    if(haveSecSettings) {
-        carMode = !!secSettings.carMode;
-    }
+    carMode = !!secSettings.carMode;
 }
 
 void saveCarMode()
@@ -1438,14 +1419,9 @@ void saveCarMode()
 
 void loadIdlePat()
 {
-    if(haveTerSettings) {
-        #ifdef FC_DBG
-        Serial.println("loadIdlePat: extracting from terSettings");
-        #endif
-        if(terSettings.fluxPat <= 9) {
-            fluxPat = terSettings.fluxPat;
-        }
-    }
+    if(terSettings.fluxPat <= 9) {
+        fluxPat = terSettings.fluxPat;
+    } 
 }
 
 void storeIdlePat()
@@ -1467,14 +1443,9 @@ void saveIdlePat()
 
 void loadMusFoldNum()
 {
-    if(haveTerSettings) {
-        #ifdef FC_DBG
-        Serial.println("loadMusFoldNum: extracting from terSettings");
-        #endif
-        if(terSettings.musFolderNum <= 9) {
-            musFolderNum = terSettings.musFolderNum;
-        }
-    }
+    if(terSettings.musFolderNum <= 9) {
+        musFolderNum = terSettings.musFolderNum;
+    }   
 }
 
 void saveMusFoldNum()
@@ -1485,9 +1456,7 @@ void saveMusFoldNum()
 
 void loadShuffle()
 {
-    if(haveTerSettings) {
-        aud_state.mpShuffle = terSettings.mpShuffle;
-    }
+    aud_state.mpShuffle = terSettings.mpShuffle;
 }
 
 void saveShuffle()
@@ -1554,8 +1523,10 @@ void writeIpSettings()
     saveConfigFile(ipCfgName, (uint8_t *)&ipsettings, sizeof(ipsettings), -1);
 }
 
-void deleteIpSettings()
+bool deleteIpSettings()
 {
+    bool ret;
+    
     #ifdef FC_DBG
     Serial.println("deleteIpSettings: Deleting ip config");
     #endif
@@ -1563,10 +1534,14 @@ void deleteIpSettings()
     ipHash = 0;
 
     if(FlashROMode) {
+        ret = SD.exists(ipCfgName);
         deleteFileFromSD(ipCfgName);
     } else if(haveFS) {
-        MYNVS.remove(ipCfgName);
+        ret = MYNVS.exists(ipCfgName);
+        deleteFileFromFS(ipCfgName);
     }
+
+    return ret;
 }
 
 /*
@@ -1665,8 +1640,8 @@ void moveSettings()
         deleteFileFromSD(secCfgName);
         deleteFileFromSD(irCfgName);
     } else {
-        MYNVS.remove(secCfgName);
-        MYNVS.remove(irCfgName);
+        deleteFileFromFS(secCfgName);
+        deleteFileFromFS(irCfgName);
     }
 }
 
@@ -1719,19 +1694,82 @@ static uint32_t getuint32(uint8_t *buf)
     return t;
 }
 
-static void cfc(File& sfile, bool doCopy, int& haveErr, int& haveWriteErr)
+static uint32_t cc(File& f, uint32_t s, uint8_t *buf, uint32_t bufSize)
+{
+    static const uint32_t cc_table[] = {
+        0x00000000, 0x1db71064, 0x3b6e20c8, 0x26d930ac,
+        0x76dc4190, 0x6b6b51f4, 0x4db26158, 0x5005713c,
+        0xedb88320, 0xf00f9344, 0xd6d6a3e8, 0xcb61b38c,
+        0x9b64c2b0, 0x86d3d2d4, 0xa00ae278, 0xbdbdf21c
+    };
+    uint32_t cc = ~0L;
+    uint8_t  a;
+    size_t   rd;
+
+    while((rd = f.read(buf, bufSize))) {
+        s -= rd;
+        for(int i = 0; i < rd; i++) {
+            a = buf[i];
+            cc = cc_table[(cc ^ a) & 0x0f] ^ (cc >> 4);
+            cc = cc_table[(cc ^ (a >> 4)) & 0x0f] ^ (cc >> 4);
+        }
+    }
+
+    cc ^= s;
+
+    return ~cc;
+};
+
+static bool dfile_open(File& file, bool tSD, const char *fn, uint32_t s, uint32_t c, bool& sk, uint8_t *buf, int bufSize)
+{
+    File t;
+    fs::FS *myFS = tSD ? (fs::FS*)&SD : (fs::FS*)&MYNVS;
+
+    if(!s) {
+        myFS->remove(fn);
+        sk = true;
+        return true;
+    }
+    
+    if((t = myFS->open(fn, FILE_READ))) {
+        if(t.size() == s) {
+            if(c == cc(t, s, buf, bufSize)) {
+                sk = true;
+                return true;
+            }
+        }
+        t.close();
+    }
+
+    sk = false;
+    return (file = myFS->open(fn, FILE_WRITE));
+}
+
+static void dfile_delete(const char *buf1, bool tSD)
+{
+    if(tSD)
+        deleteFileFromSD(buf1);
+    else 
+        deleteFileFromFS(buf1);
+}
+
+static void cfc(uint8_t *bbuf, int bbufSize, File& sfile, bool doCopy, int& haveErr, int& haveWriteErr)
 {
     #ifdef FC_DBG
     static const char *funcName = "cfc";
     #endif
-    uint8_t buf1[1+32+4];
-    uint8_t buf2[1024];
-    uint32_t s;
-    bool skip = false, tSD = false;
+    uint8_t buf1[1+32+4+4], rbuf[512];
+    uint8_t *cbuf;
+    int     cbufSize;
+    uint32_t s, c;
+    bool skip = false, tSD = FlashROMode;
     File dfile;
 
+    cbuf = bbuf ? bbuf : rbuf;
+    cbufSize = bbuf ? bbufSize : sizeof(rbuf);
+
     buf1[0] = '/';
-    sfile.read(buf1 + 1, 32+4);   
+    sfile.read(buf1 + 1, 32+4+4);   
     s = getuint32((*r)(buf1 + 1, soa, 32) + 32);
     if(buf1[1] == '_') {
         tSD = true;
@@ -1740,35 +1778,36 @@ static void cfc(File& sfile, bool doCopy, int& haveErr, int& haveWriteErr)
         skip = !doCopy;
     }
     if(!skip) {
-        if((dfile = (tSD || FlashROMode) ? SD.open((const char *)buf1, FILE_WRITE) : MYNVS.open((const char *)buf1, FILE_WRITE))) {
-            uint32_t t = 1024;
-            #ifdef FC_DBG
-            Serial.printf("%s: Opened destination file: %s, length %d\n", funcName, (const char *)buf1, s);
-            #endif
-            while(s > 0) {
-                t = (s < t) ? s : t;
-                if(sfile.read(buf2, t) != t) {
-                    haveErr++;
-                    break;
-                }
-                if(dfile.write((*r)(buf2, soa, t), t) != t) {
-                    #ifdef FC_DBG
-                    Serial.printf("%s: Write error\n", funcName);
-                    #endif
-                    haveErr++;
-                    haveWriteErr++;
-                    break;
-                }
-                s -= t;
-            }
-        } else {
+        c = getuint32(buf1 + 1 + 32 + 4);
+        if(!dfile_open(dfile, tSD, (const char *)buf1, s, c, skip, cbuf, cbufSize)) {
             haveErr++;
             haveWriteErr++;
             Serial.printf("Error opening destination file: %s\n", buf1);
         }
+    }
+    if(!skip && !haveErr) {
+        uint32_t t = cbufSize;
+        #ifdef FC_DBG
+        Serial.printf("%s: Opened destination file: %s\n", funcName, (const char *)buf1);
+        #endif
+        while(s > 0) {
+            t = (s < t) ? s : t;
+            if(sfile.read(cbuf, t) != t) {
+                haveErr++;
+                break;
+            }
+            if(dfile.write((*r)(cbuf, soa, t), t) != t) {
+                haveErr++;
+                haveWriteErr++;
+                break;
+            }
+            s -= t;
+        }
+        dfile.close();
+        if(haveErr) dfile_delete((const char *)buf1, tSD);
     } else {
         #ifdef FC_DBG
-        Serial.printf("%s: Skipped file: %s, length %d\n", funcName, (const char *)buf1, s);
+        Serial.printf("%s: Skipped file: %s\n", funcName, (const char *)buf1);
         #endif
         sfile.seek(sfile.position() + s);
     }
@@ -1779,9 +1818,9 @@ bool check_allow_CPA()
     return allowCPA;
 }
 
-bool check_if_default_audio_present()
+bool check_for_new_sp()
 {
-    uint8_t dbuf[16];
+    uint8_t dbuf[20];
     File file;
     size_t ts;
 
@@ -1792,42 +1831,66 @@ bool check_if_default_audio_present()
 
     if(SD.exists(CONFN)) {
         if(file = SD.open(CONFN, FILE_READ)) {
-            ts = file.size();
-            file.read(dbuf, 14);
-            file.close();
-            if((!memcmp(dbuf, CONID, 4))         && 
-               ((*(dbuf+4) & 0x7f) == AC_FMTV)   &&
-               (!memcmp(dbuf+5, rspv, 4))        &&
-               (*(dbuf+9) == (NUM_AUDIOFILES+1)) &&
-               (getuint32(dbuf+10) == soa)       &&
-               (ts > soa + AC_OHSZ)) {
-                ic = true;
-                if(!(*(dbuf+4) & 0x80)) r  = f;
+            ts = file.read(dbuf, 19);
+            if(idSpCallback(dbuf, ts) > 1) {
+                ts = file.size();
+                if((!memcmp(dbuf+13, rspv, 4))        &&
+                   (*(dbuf+17) == (NUM_AUDIOFILES+1)) &&
+                   (getuint32(dbuf+5) == soa)         &&
+                   (ts > soa + AC_OHSZ)) {
+                    ic = true;
+                    if(!(*(dbuf+4) & 0x80)) r  = f;
+                    ict = *(dbuf+18);
+                }
             }
+            file.close();
         }
     }
 
     return ic;
 }
 
-bool prepareCopyAudioFiles()
+size_t idSpCallback(uint8_t *dbuf, size_t len)
 {
-    int i, haveErr = 0, haveWriteErr = 0;
+    size_t t = 0;
+    if(len >= 12) {
+        if(!memcmp(dbuf, CONID, 4)) {
+            t = 1;         
+            if(((*(dbuf+4) & 0x7f) == AC_FMTV) &&
+               ((*(dbuf+5) ^ 0x55) == *(dbuf+9))) {
+                t = (size_t)getuint32(dbuf+5) + 128;
+            }
+        }
+    }
+    return t;
+}
+
+static void _inst_sp_common(int totnof, bool isCopy, int& haveErr, int& haveWriteErr)
+{
+    File sfile;
+    
+    if(sfile = SD.open(CONFN, FILE_READ)) {
+        uint8_t *buf = (uint8_t *)malloc(4096);
+        sfile.seek(19);
+        for(int i = 0; i < totnof; i++) {
+           cfc(buf, 4096, sfile, isCopy, haveErr, haveWriteErr);
+           if(haveErr) break;
+        }
+        free(buf);
+        sfile.close();
+    } else {
+        haveErr++;
+    }
+}
+
+bool prepare_install_sp()
+{
+    int haveErr = 0, haveWriteErr = 0;
     
     if(!ic)
         return true;
 
-    File sfile;
-    if(sfile = SD.open(CONFN, FILE_READ)) {
-        sfile.seek(14);
-        for(i = 0; i < NUM_AUDIOFILES+1; i++) {
-           cfc(sfile, false, haveErr, haveWriteErr);
-           if(haveErr) break;
-        }
-        sfile.close();
-    } else {
-        return false;
-    }
+    _inst_sp_common(ict, false, haveErr, haveWriteErr);
 
     return (haveErr == 0);
 }
@@ -1835,10 +1898,10 @@ bool prepareCopyAudioFiles()
 // Returns false if copy failed because of a write error (which 
 //    might be cured by a reformat of the FlashFS)
 // Returns true if ok or source error (file missing, read error)
-// Sets delIDfile to true if copy fully succeeded
-static bool copy_audio_files(bool& delIDfile)
+// Sets delIDfile to true in any case (to avoid repeated flash-hurting attempts)
+static bool install_sp(bool& delIDfile)
 {
-    int i, haveErr = 0, haveWriteErr = 0;
+    int haveErr = 0, haveWriteErr = 0;
 
     if(!allowCPA) {
         delIDfile = false;
@@ -1846,34 +1909,24 @@ static bool copy_audio_files(bool& delIDfile)
     }
 
     if(ic) {
-        File sfile;
-        if(sfile = SD.open(CONFN, FILE_READ)) {
-            sfile.seek(14);
-            for(i = 0; i < NUM_AUDIOFILES+1; i++) {
-               cfc(sfile, true, haveErr, haveWriteErr);
-               if(haveErr) break;
-            }
-            sfile.close();
-        } else {
-            haveErr++;
-        }
+        _inst_sp_common(ict, true, haveErr, haveWriteErr);
     } else {
         haveErr++;
     }
 
-    delIDfile = (haveErr == 0);
+    delIDfile = true;   // (haveErr == 0);
 
     return (haveWriteErr == 0);
 }
 
-void doCopyAudioFiles()
+void do_install_sp()
 {
     bool delIDfile = false;
 
-    if((!copy_audio_files(delIDfile)) && !FlashROMode) {
+    if((!install_sp(delIDfile)) && !FlashROMode) {
         // If copy fails because of a write error, re-format flash FS
         reInstallFlashFS();
-        copy_audio_files(delIDfile);// Retry copy
+        install_sp(delIDfile);// Retry copy
     }
 
     if(haveSD) {

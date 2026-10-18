@@ -4,6 +4,7 @@
  * (C) 2023-2026 Thomas Winischhofer (A10001986)
  * https://github.com/realA10001986/Flux-Capacitor
  * https://fc.out-a-ti.me
+ * This code was written without the use of artificial intelligence.
  *
  * Settings handling
  *
@@ -70,6 +71,8 @@ bool evalBool(char *s);
 
 void write_settings();
 
+void resettofactorydefault();
+
 void settings_setup();
 
 void saveIRKeys();
@@ -119,13 +122,14 @@ void saveShuffle();
 
 bool loadIpSettings();
 void writeIpSettings();
-void deleteIpSettings();
+bool deleteIpSettings();
 
 void moveSettings();
 
-bool check_if_default_audio_present();
-bool prepareCopyAudioFiles();
-void doCopyAudioFiles();
+bool check_for_new_sp();
+size_t idSpCallback(uint8_t *buf, size_t len);
+bool prepare_install_sp();
+void do_install_sp();
 
 bool check_allow_CPA();
 void delete_ID_file();
@@ -164,7 +168,7 @@ void   freeUploadFileNames();
 #define DEF_IRCFB           1     // 0: Don't show command entry feedback; 1: do
 #define DEF_SS_TIMER        0     // "Screen saver" timeout in minutes; 0 = ss off
 
-#define DEF_TCD_IP          ""    // TCD hostname (or ip address) for BTTFN
+#define DEF_TCD_IP          "timecircuits"    // TCD hostname for BTTFN
 #define DEF_USE_TCDS        0     // 0: Ignore TCD-provided speed; 1: Use it for chase speed
 #define DEF_USE_NM          0     // 0: Ignore TCD night mode; 1: Follow TCD night mode
 #define DEF_USE_FPO         0     // 0: Ignore TCD fake power; 1: Follow TCD fake power
