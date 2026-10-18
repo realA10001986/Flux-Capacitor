@@ -31,6 +31,16 @@ Features include
 
 For information on updating the firmware of your FC, see [here](#firmware-installation--firmware-update).
 
+#### What's new in 2.00
+
+- Re-arrange WiFi Configuration page for a better user experience
+- BTTFN: "Hostname of TCD" now defaults to "timecircuits" instead of being empty. As a result, a factory-fresh FC now connects to a TCD in the network without any user configuration changes.
+- IR command sequence ```*123456ok``` now only deletes FC-AP password, and ```*123457ok``` deletes static IP config. Both lead to a reboot if applicable.
+- IR command sequence ```*397159ok```, when entered twice, resets all settings to factory defaults.
+- New sound-pack (FC07)
+- Sound-pack uploads are done through the top file selector, and no longer through the bottom one. The bottom one is for custom mp3 file upload only.
+- **Future firmware updates may only consist of one single file instead of "main firmware" plus "sound-pack". Firmware updates will require an SD card. In order to update to versions beyond 2.00, version 2.00 must be installed first.**
+
 ## Initial Configuration
 
 **Some key features of your FC require an SD card.** The first step is therefore to put a **good-quality** ("endurance", "industrial", "long life", ...) **and empty microSD card into the card slot**. The SD card must be inserted before powering up the FC. It is not recognized if inserted while the FC is running. Furthermore, do not remove the SD card while the FC is powered.
@@ -79,7 +89,7 @@ Click on "WiFi Configuration" and either select a network from the top of the pa
 
 >If there are several APs with identical SSID nearby, you can select a specific AP by its BSSID (AP's MAC address). You can either manually find out your AP's BSSID and enter it or have it filled out automatically: Click "Scan for networks", then "Show all". If you click on an AP, its BSSID will be copied into BSSID field in the form below. To see which AP is which, hover over the name to see its BSSID as a tooltip.
 
->Your FC requests an IP address via DHCP, unless you entered valid data in the fields for static IP addresses (IP, gateway, netmask, DNS). If the device is inaccessible as a result of incorrect static IPs, wait until it has completed its startup sequence, then type ```*123456ok```<!-- ```*123457ok```--> on the IR remote; static IP data will be deleted and the device will return to DHCP after a reboot.
+>Your FC requests an IP address via DHCP, unless you entered valid data in the fields for static IP addresses (IP, gateway, netmask, DNS). If the device is inaccessible as a result of incorrect static IPs, wait until it has completed its startup sequence, then type ````*123457ok``` on the IR remote; static IP data will be deleted and the device will return to DHCP after a reboot.
 
 </details>
 
@@ -371,11 +381,6 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">Toggle firmware update signals at power-up</td>
      <td align="left"><code>*53281ok</code></td><td><code>3053281</code></td>
     </tr>
-    <tr>
-     <td align="left">Delete static IP address and AP WiFi password (**)</td>
-     <td align="left"><code>*123456ok</code></td><td><code>3123456</code></td>
-    </tr>
-    <!--
       <tr>
      <td align="left">Delete FC-AP WiFi password (**)</td>
      <td align="left"><code>*123456ok</code></td><td><code>3123456</code></td>
@@ -384,7 +389,6 @@ Numbers in brackets are the code to be entered on the TCD keypad if a TCD is con
      <td align="left">Delete static IP configuration (**)</td>
      <td align="left"><code>*123457ok</code></td><td><code>3123457</code></td>
     </tr>
-      -->
     <tr>
      <td align="left">Start IR remote <a href="#ir-learning">learning process</a> (**)</td>
      <td align="left"><code>*987654ok</code></td><td><code>3987654</code></td>
@@ -694,7 +698,7 @@ The firmware consists of two parts: The main firmware, and a sound-pack.
 
 First, download main firmware and sound-pack. Both files are in every [Release package](https://github.com/realA10001986/Flux-Capacitor/releases/latest), and named
 - "**fluxcapacitor-A10001986-Vx.xxx.bin**" for A10001986 releases, "**Flux_Capacitor_vX.YY.bin**" for CircuitSetup releases,
-- "**sound-pack-fcXX.zip**" for A10001986 releases, "**FCA.bin**" for CircuitSetup releases.
+- "**FCA-FCxx.bin**" for A10001986 releases, "**FCA.bin**" for CircuitSetup releases.
 
 ### Main firmware
 
@@ -716,10 +720,9 @@ After updating the main firmware, there will be a notification on the Config Por
 _Installing the sound-pack requires an [SD card](#initial-configuration)._
 
 To update the sound-pack of your FC, 
-- (if the sound-pack is a zip file, extract it. It contains one file named FCA.bin)
 - enter the [Config Portal](#the-config-portal),
 - click on "Update & Upload",
-- select the FCA.bin file in the _bottom_ file selector, and
+- select the FCA-FCxx.bin file in the _top_ file selector, and
 - click on *Upload*. 
 
 <details>
@@ -727,22 +730,18 @@ To update the sound-pack of your FC,
 <br>
 Alternatively, you can install the sound-pack the following way:
 <ul>
-<li>Using a computer, copy "FCA.bin" to the root directory of a FAT32 formatted SD card;</li>
+<li>Using a computer, copy "FCA-FCxx.bin" to the root directory of a FAT32 formatted SD card and rename it to "FCA.bin",</li>
 <li>power down the Flux Capacitor,</li>
 <li>insert this SD card into the slot and</li>
 <li>power up the Flux Capacitor; the sound-pack will be installed automatically.</li>
 </ul>
 </details>
 
-<!--
 ## Factory Reset
 
 To reset your FC to factory default settings, issue command sequence ```*397159ok``` twice in a row. 
 
 Since any configured WiFi connection is deleted as well, the FC will reboot in AP-mode.
-
--->
-
 
 ---
 
@@ -823,7 +822,7 @@ By default, when your FC creates a WiFi network of its own ("AP-mode"), this net
 
 By default, and if this field is empty, the FC's own WiFi network ("FC-AP") will be unprotected. If you want to protect your FC access point, enter your password here. It needs to be 8 characters in length and only characters A-Z, a-z, 0-9 and - are allowed.
 
-If you forget this password and are thereby locked out of your FC, enter ```*123456ok``` on the IR remote control; this deletes the WiFi password. Then power-down and power-up your FC and the access point will start unprotected.<!-- automatic reboot -->
+If you forget this password and are thereby locked out of your FC, enter ```*123456ok``` on the IR remote control; this deletes the WiFi password and reboots your FC. Afterwards, the FC-AP access point will be unprotected.
 
 ##### &#9193; WiFi channel
 
