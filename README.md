@@ -795,6 +795,14 @@ By default, the FC requests an IP address via DHCP. However, you can also config
 
 Number of times the firmware tries to reconnect to a WiFi network, before falling back to AP-mode. See [here](#connecting-to-a-wifi-network)
 
+##### &#9193; Hostname
+
+The device's hostname in the WiFi network. Defaults to 'flux'. This also is the domain name at which the Config Portal is accessible from a browser in the same local network. The URL of the Config Portal then is http://<i>hostname</i>.local (the default is http://flux.local)
+
+If you have more than one FC in your local network, please give them unique hostnames.
+
+_This setting applies to both AP-mode and when your FC is connected to a WiFi network._ 
+
 ##### &#9193; Car mode settings
 
 In Car mode, the device connects to the TCD-AP as configured here instead of the WiFi network configured above. 
@@ -805,14 +813,6 @@ The **_TCD-AP BSSID_** field is optional for you to fill out. The TCD displays i
 > If you ever need to connect your FC to a different TCD (or, for instance, swap out your TCD's circuit board), this field needs to be cleared in order to pair your FC to the new TCD. Note that if the FC fails to connect to a BSSID-identified TCD, it will boot into [AP-Mode](#connecting-to-a-wifi-network) ("FC-AP").
 
 If you want to enter Car mode immediately after saving your settings, check **_Enable car mode now_**. You can also later enable Car mode by typing ```*991ok``` on the remote. ```*990ok``` disables Car mode.
-
-##### &#9193; Hostname
-
-The device's hostname in the WiFi network. Defaults to 'flux'. This also is the domain name at which the Config Portal is accessible from a browser in the same local network. The URL of the Config Portal then is http://<i>hostname</i>.local (the default is http://flux.local)
-
-If you have more than one FC in your local network, please give them unique hostnames.
-
-_This setting applies to both AP-mode and when your FC is connected to a WiFi network._ 
 
 #### <ins>Settings for AP-mode</ins>
 
